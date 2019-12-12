@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
-"""Tests for `nodeledge` package."""
+"""Tests for `nodedge` package."""
 
 
 import unittest
-from nodeledge.ack_scene import AckScene
+from nodedge.ack_scene import AckScene
 
 
-class TestNodeledge(unittest.TestCase):
-    """Tests for `nodeledge` package."""
+class TestNodedge(unittest.TestCase):
+    """Tests for `nodedge` package."""
 
     def setUp(self):
         """Set up test fixtures, if any."""

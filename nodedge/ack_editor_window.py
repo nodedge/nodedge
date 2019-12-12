@@ -4,7 +4,7 @@ import os
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
-from nodeledge.ack_editor_widget import AckEditorWidget
+from nodedge.ack_editor_widget import AckEditorWidget
 
 
 class AckEditorWindow(QMainWindow):
@@ -18,7 +18,7 @@ class AckEditorWindow(QMainWindow):
         self.__logger.setLevel(logging.INFO)
 
 
-        self.companyName = "Nodeledge"
+        self.companyName = "Nodedge"
         self.filename = None
 
         QApplication.instance().clipboard().dataChanged.connect(self.onClipboardChanged)
@@ -30,7 +30,7 @@ class AckEditorWindow(QMainWindow):
 
         # Initialize menus
         fileMenu: QMenu = menuBar.addMenu("&File")
-        self.addActionToMenu(fileMenu, "&New", "Ctrl+N", "Create new NodeLedge", self.onNewFile)
+        self.addActionToMenu(fileMenu, "&New", "Ctrl+N", "Create new Nodedge", self.onNewFile)
         fileMenu.addSeparator()
         self.addActionToMenu(fileMenu, "&Open", "Ctrl+O", "Open file", self.onOpenFile)
         self.addActionToMenu(fileMenu, "&Save", "Ctrl+S", "Save file", self.onSaveFile)
@@ -70,11 +70,11 @@ class AckEditorWindow(QMainWindow):
         pass
 
     def updateTitle(self):
-        title = "AckNodeLedge the beauty of "
+        title = "Create nodedge"
         if self.filename is None:
-            title += "physics!"
+            title += "!"
         else:
-            title += f"{os.path.basename(self.filename)}"
+            title += f"with {os.path.basename(self.filename)}"
 
         if self.centralWidget().scene.hasBeenModified:
             title += "*"
@@ -192,7 +192,7 @@ class AckEditorWindow(QMainWindow):
         if not self.isModified():
             return True
 
-        res = QMessageBox.warning(self, "AckNodeledge is about to close", "There are unsaved modifications. \n"
+        res = QMessageBox.warning(self, "Nodedge is about to close", "There are unsaved modifications. \n"
                                                                           "Do you want to save your changes?",
                                   QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
 

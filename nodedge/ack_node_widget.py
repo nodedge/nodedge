@@ -3,7 +3,7 @@ from collections import OrderedDict
 from PyQt5.QtWidgets import *
 from PyQt5 import QtGui
 
-from nodeledge.ack_serializable import AckSerializable
+from nodedge.ack_serializable import AckSerializable
 
 
 class AckNodeWidget(QWidget, AckSerializable):

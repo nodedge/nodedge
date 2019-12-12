@@ -2,7 +2,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
-from nodeledge.ack_editor_window import AckEditorWindow
+from nodedge.ack_editor_window import AckEditorWindow
 
 
 class CalculatorWindow(AckEditorWindow):

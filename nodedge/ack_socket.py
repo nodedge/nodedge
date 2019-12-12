@@ -1,8 +1,8 @@
 import logging
 from collections import OrderedDict
 
-from nodeledge.ack_serializable import AckSerializable
-from nodeledge.ack_graphics_socket import AckGraphicsSocket
+from nodedge.ack_serializable import AckSerializable
+from nodedge.ack_graphics_socket import AckGraphicsSocket
 
 
 LEFT_TOP = 1

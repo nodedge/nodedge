@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from nodeledge.ack_socket import *
+from nodedge.ack_socket import *
 import math
 
 

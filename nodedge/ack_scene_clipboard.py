@@ -1,8 +1,8 @@
 import logging
 from collections import OrderedDict
-from nodeledge.ack_graphics_edge import AckGraphicsEdge
-from nodeledge.ack_node import AckNode
-from nodeledge.ack_edge import AckEdge
+from nodedge.ack_graphics_edge import AckGraphicsEdge
+from nodedge.ack_node import AckNode
+from nodedge.ack_edge import AckEdge
 
 
 class AckSceneClipboard:

@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Nodeledge'
+project = 'Nodedge'
 copyright = '2019, Anthony De Bortoli'
 author = 'Anthony De Bortoli'
 

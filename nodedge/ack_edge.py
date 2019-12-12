@@ -1,4 +1,4 @@
-from nodeledge.ack_graphics_edge import *
+from nodedge.ack_graphics_edge import *
 
 EDGE_TYPE_DIRECT = 1
 EDGE_TYPE_BEZIER = 2

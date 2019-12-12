@@ -1,5 +1,5 @@
 import logging
-from nodeledge.ack_graphics_edge import AckGraphicsEdge
+from nodedge.ack_graphics_edge import AckGraphicsEdge
 
 
 class AckSceneHistory:

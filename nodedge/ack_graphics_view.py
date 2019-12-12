@@ -1,5 +1,5 @@
-from nodeledge.ack_edge import *
-from nodeledge.ack_graphics_cutline import AckCutline
+from nodedge.ack_edge import *
+from nodedge.ack_graphics_cutline import AckCutline
 
 MODE_NOOP = 1
 MODE_EDGE_DRAG = 2

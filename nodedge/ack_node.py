@@ -1,6 +1,6 @@
-from nodeledge.ack_graphics_node import AckGraphicsNode
-from nodeledge.ack_node_widget import AckNodeWidget
-from nodeledge.ack_socket import *
+from nodedge.ack_graphics_node import AckGraphicsNode
+from nodedge.ack_node_widget import AckNodeWidget
+from nodedge.ack_socket import *
 
 
 class AckNode(AckSerializable):

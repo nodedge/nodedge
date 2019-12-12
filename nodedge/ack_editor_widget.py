@@ -1,7 +1,7 @@
-from nodeledge.ack_scene import AckScene
-from nodeledge.ack_graphics_view import AckGraphicsView
-from nodeledge.ack_node import AckNode
-from nodeledge.ack_edge import *
+from nodedge.ack_scene import AckScene
+from nodedge.ack_graphics_view import AckGraphicsView
+from nodedge.ack_node import AckNode
+from nodedge.ack_edge import *
 
 
 class AckEditorWidget(QWidget):
@@ -52,7 +52,7 @@ class AckEditorWidget(QWidget):
         rectangle.setFlag(QGraphicsItem.ItemIsMovable)
         rectangle.setFlag(QGraphicsItem.ItemIsSelectable)
 
-        text = self.graphicsScene.addText("Welcome in Acknodeledge!", QFont("Ubuntu"))
+        text = self.graphicsScene.addText("Welcome in Nodedge!", QFont("Ubuntu"))
         text.setFlag(QGraphicsItem.ItemIsMovable)
         text.setFlag(QGraphicsItem.ItemIsSelectable)
         text.setDefaultTextColor(QColor.fromRgbF(1., 1., 1.))

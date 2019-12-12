@@ -2,13 +2,13 @@ import json
 import logging
 
 from collections import OrderedDict
-from nodeledge.ack_serializable import AckSerializable
-from nodeledge.ack_node import AckNode
-from nodeledge.ack_edge import AckEdge
-from nodeledge.ack_scene_history import AckSceneHistory
-from nodeledge.ack_scene_clipboard import AckSceneClipboard
+from nodedge.ack_serializable import AckSerializable
+from nodedge.ack_node import AckNode
+from nodedge.ack_edge import AckEdge
+from nodedge.ack_scene_history import AckSceneHistory
+from nodedge.ack_scene_clipboard import AckSceneClipboard
 
-from nodeledge.ack_graphics_scene import AckGraphicsScene
+from nodedge.ack_graphics_scene import AckGraphicsScene
 
 
 class AckScene(AckSerializable):
