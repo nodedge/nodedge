@@ -1,0 +1,138 @@
+{
+    "id": 2174653255584,
+    "sceneWidth": 64000,
+    "sceneHeight": 64000,
+    "nodes": [
+        {
+            "id": 2174653274480,
+            "title": "My Mew Node!",
+            "posX": -341.0,
+            "posY": -137.0,
+            "inputs": [
+                {
+                    "id": 2174701565792,
+                    "index": 0,
+                    "allowsMultiEdges": false,
+                    "position": 1,
+                    "socketType": 1
+                },
+                {
+                    "id": 2174701565840,
+                    "index": 1,
+                    "allowsMultiEdges": false,
+                    "position": 1,
+                    "socketType": 2
+                },
+                {
+                    "id": 2174701573024,
+                    "index": 2,
+                    "allowsMultiEdges": false,
+                    "position": 1,
+                    "socketType": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2174701573120,
+                    "index": 0,
+                    "allowsMultiEdges": true,
+                    "position": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {}
+        },
+        {
+            "id": 2174653274528,
+            "title": "My Mew Node!",
+            "posX": -75.0,
+            "posY": 0.0,
+            "inputs": [
+                {
+                    "id": 2174701573408,
+                    "index": 0,
+                    "allowsMultiEdges": false,
+                    "position": 1,
+                    "socketType": 1
+                },
+                {
+                    "id": 2174701573456,
+                    "index": 1,
+                    "allowsMultiEdges": false,
+                    "position": 1,
+                    "socketType": 2
+                },
+                {
+                    "id": 2174701573552,
+                    "index": 2,
+                    "allowsMultiEdges": false,
+                    "position": 1,
+                    "socketType": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2174701573648,
+                    "index": 0,
+                    "allowsMultiEdges": true,
+                    "position": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {}
+        },
+        {
+            "id": 2174653274576,
+            "title": "My Mew Node!",
+            "posX": 200.0,
+            "posY": -50.0,
+            "inputs": [
+                {
+                    "id": 2174701573936,
+                    "index": 0,
+                    "allowsMultiEdges": false,
+                    "position": 1,
+                    "socketType": 1
+                },
+                {
+                    "id": 2174701573984,
+                    "index": 1,
+                    "allowsMultiEdges": false,
+                    "position": 1,
+                    "socketType": 2
+                },
+                {
+                    "id": 2174701574080,
+                    "index": 2,
+                    "allowsMultiEdges": false,
+                    "position": 1,
+                    "socketType": 3
+                }
+            ],
+            "outputs": [
+                {
+                    "id": 2174701574176,
+                    "index": 0,
+                    "allowsMultiEdges": true,
+                    "position": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {}
+        }
+    ],
+    "edges": [
+        {
+            "id": 2174701573360,
+            "edgeType": 2,
+            "startSocket": 2174701573120,
+            "endSocket": 2174701573456
+        },
+        {
+            "id": 2174701573888,
+            "edgeType": 2,
+            "startSocket": 2174701573648,
+            "endSocket": 2174701574080
+        }
+    ]
+}
