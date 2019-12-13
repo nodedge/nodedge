@@ -5,7 +5,7 @@ import math
 import logging
 
 
-class AckGraphicsScene(QGraphicsScene):
+class GraphicsScene(QGraphicsScene):
     def __init__(self, scene, parent=None):
         super().__init__(parent)
 

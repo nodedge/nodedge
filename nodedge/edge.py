@@ -1,10 +1,10 @@
-from nodedge.ack_graphics_edge import *
+from nodedge.graphics_edge import *
 
 EDGE_TYPE_DIRECT = 1
 EDGE_TYPE_BEZIER = 2
 
 
-class AckEdge(AckSerializable):
+class Edge(Serializable):
     def __init__(self, scene, startSocket=None, endSocket=None, edgeType=EDGE_TYPE_DIRECT):
         super().__init__()
 
@@ -69,11 +69,11 @@ class AckEdge(AckSerializable):
         self._edgeType = value
 
         if self.edgeType == EDGE_TYPE_DIRECT:
-            self.graphicsEdge = AckGraphicsEdgeDirect(self)
+            self.graphicsEdge = GraphicsEdgeDirect(self)
         elif self.edgeType == EDGE_TYPE_BEZIER:
-            self.graphicsEdge = AckGraphicsEdgeBezier(self)
+            self.graphicsEdge = GraphicsEdgeBezier(self)
         else:
-            self.graphicsEdge = AckGraphicsEdgeBezier(self)
+            self.graphicsEdge = GraphicsEdgeBezier(self)
 
         self.scene.graphicsScene.addItem(self.graphicsEdge)
 

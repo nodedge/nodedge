@@ -1,11 +1,11 @@
 import logging
 from collections import OrderedDict
-from nodedge.ack_graphics_edge import AckGraphicsEdge
-from nodedge.ack_node import AckNode
-from nodedge.ack_edge import AckEdge
+from nodedge.graphics_edge import GraphicsEdge
+from nodedge.node import Node
+from nodedge.edge import Edge
 
 
-class AckSceneClipboard:
+class SceneClipboard:
     def __init__(self, scene):
         self.scene = scene
 
@@ -23,7 +23,7 @@ class AckSceneClipboard:
                 serializedSelectedNodes.append(item.node.serialize())
                 for socket in item.node.inputs+item.node.outputs:
                     selectedSocket[socket.id] = socket
-            elif isinstance(item, AckGraphicsEdge):
+            elif isinstance(item, GraphicsEdge):
                 selectedEdges.append(item.edge)
 
         self.__logger.debug(f"Nodes: {serializedSelectedNodes}")
@@ -92,7 +92,7 @@ class AckSceneClipboard:
         # Create each node
 
         for nodeData in data["nodes"]:
-            newNode = AckNode(self.scene)
+            newNode = Node(self.scene)
             newNode.deserialize(nodeData, hashmap, restoreId=False)
 
             # Reajust the new node position
@@ -102,7 +102,7 @@ class AckSceneClipboard:
         # Create each edge
         if "edges" in data:
             for edgeData in data["edges"]:
-                newEdge = AckEdge(self.scene)
+                newEdge = Edge(self.scene)
                 newEdge.deserialize(edgeData, hashmap, restoreId=False)
 
         # Store history

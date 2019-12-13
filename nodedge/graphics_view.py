@@ -1,12 +1,12 @@
-from nodedge.ack_edge import *
-from nodedge.ack_graphics_cutline import AckCutline
+from nodedge.edge import *
+from nodedge.graphics_cutline import GraphicsCutline
 
 MODE_NOOP = 1
 MODE_EDGE_DRAG = 2
 MODE_EDGE_CUT = 3
 
 
-class AckGraphicsView(QGraphicsView):
+class GraphicsView(QGraphicsView):
     scenePosChanged = pyqtSignal(int, int)
 
     def __init__(self, graphicsScene, parent=None):
@@ -32,9 +32,9 @@ class AckGraphicsView(QGraphicsView):
 
         self.editingFlag = False
 
-        self.dragEdge: (AckEdge, None) = None
+        self.dragEdge: (Edge, None) = None
 
-        self.cutline = AckCutline()
+        self.cutline = GraphicsCutline()
         self.graphicsScene.addItem(self.cutline)
 
     def __repr__(self):
@@ -107,7 +107,7 @@ class AckGraphicsView(QGraphicsView):
 
         self.__logger.debug("LMB "+self.debugModifiers(event)+f"{item}")
 
-        if hasattr(item, "node") or isinstance(item, AckGraphicsEdge) or item is None:
+        if hasattr(item, "node") or isinstance(item, GraphicsEdge) or item is None:
             if event.modifiers() & Qt.ShiftModifier:
                 event.ignore()
                 fakeEvent = QMouseEvent(QEvent.MouseButtonPress, event.localPos(), event.screenPos(),
@@ -116,7 +116,7 @@ class AckGraphicsView(QGraphicsView):
                 super().mousePressEvent(fakeEvent)
                 return
 
-        if type(item) is AckGraphicsSocket:
+        if type(item) is GraphicsSocket:
             if self.mode == MODE_NOOP:
                 self.mode = MODE_EDGE_DRAG
                 self.__logger.debug(f"{self.mode = }")
@@ -147,12 +147,12 @@ class AckGraphicsView(QGraphicsView):
     def dragEdgeStart(self, item):
         self.__logger.info("Assign socket.")
         self.dragStartSocket = item.socket
-        self.dragEdge = AckEdge(self.graphicsScene.scene, item.socket, edgeType=EDGE_TYPE_BEZIER)
+        self.dragEdge = Edge(self.graphicsScene.scene, item.socket, edgeType=EDGE_TYPE_BEZIER)
 
     def leftMouseButtonRelease(self, event):
         item = self.getItemAtClick(event)
 
-        if hasattr(item, "node") or isinstance(item, AckGraphicsEdge) or item is None:
+        if hasattr(item, "node") or isinstance(item, GraphicsEdge) or item is None:
             if event.modifiers() & Qt.ShiftModifier:
                 event.ignore()
                 fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
@@ -233,7 +233,7 @@ class AckGraphicsView(QGraphicsView):
 
     def deleteSelected(self):
         for item in self.graphicsScene.selectedItems():
-            if isinstance(item, AckGraphicsEdge):
+            if isinstance(item, GraphicsEdge):
                 item.edge.remove()
             elif hasattr(item, "node"):
                 item.node.remove()
@@ -245,9 +245,9 @@ class AckGraphicsView(QGraphicsView):
 
         if item is None:
             self.__logger.info(self)
-        elif type(item) is AckGraphicsSocket:
+        elif type(item) is GraphicsSocket:
             self.__logger.info(f"\n||||{item.socket} connected to \n||||{item.socket.edges}")
-        elif type(item) in [AckGraphicsEdgeDirect, AckGraphicsEdgeBezier]:
+        elif type(item) in [GraphicsEdgeDirect, GraphicsEdgeBezier]:
             log = f"\n||||{item.edge} connects"
             log += f"\n||||{item.edge.startSocket.node} \n||||{item.edge.endSocket.node}"
 
@@ -288,7 +288,7 @@ class AckGraphicsView(QGraphicsView):
         self.dragEdge.remove()
         self.dragEdge = None
 
-        if type(item) is AckGraphicsSocket:
+        if type(item) is GraphicsSocket:
             if item.socket != self.dragStartSocket:
 
                 if not self.dragStartSocket.allowsMultiEdges:
@@ -297,7 +297,7 @@ class AckGraphicsView(QGraphicsView):
                 if not item.socket.allowsMultiEdges:
                     item.socket.removeAllEdges()
 
-                newEdge = AckEdge(self.graphicsScene.scene, self.dragStartSocket, item.socket, edgeType=EDGE_TYPE_BEZIER)
+                newEdge = Edge(self.graphicsScene.scene, self.dragStartSocket, item.socket, edgeType=EDGE_TYPE_BEZIER)
                 item.socket.addEdge(newEdge)
                 self.__logger.debug(f"New edge created: {newEdge} connecting"
                                     f"\n|||| {newEdge.startSocket} to"

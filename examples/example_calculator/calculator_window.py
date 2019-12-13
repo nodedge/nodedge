@@ -2,12 +2,12 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
-from nodedge.ack_editor_window import AckEditorWindow
+from nodedge.editor_window import EditorWindow
 from nodedge.utils import dumpException
 import logging
 
 
-class CalculatorWindow(AckEditorWindow):
+class CalculatorWindow(EditorWindow):
     def __init__(self):
         super(CalculatorWindow, self).__init__()
         self.__logger = logging.getLogger(__file__)

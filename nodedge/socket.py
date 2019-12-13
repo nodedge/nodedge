@@ -1,8 +1,8 @@
 import logging
 from collections import OrderedDict
 
-from nodedge.ack_serializable import AckSerializable
-from nodedge.ack_graphics_socket import AckGraphicsSocket
+from nodedge.serializable import Serializable
+from nodedge.graphics_socket import GraphicsSocket
 
 
 LEFT_TOP = 1
@@ -11,7 +11,7 @@ RIGHT_TOP = 3
 RIGHT_BOTTOM = 4
 
 
-class AckSocket(AckSerializable):
+class Socket(Serializable):
     def __init__(self, node, index=0, position=LEFT_TOP, socketType=1, allowsMultiEdges=True):
         super().__init__()
         self.node = node
@@ -24,7 +24,7 @@ class AckSocket(AckSerializable):
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.DEBUG)
 
-        self.graphicsSocket = AckGraphicsSocket(self, self.socketType)
+        self.graphicsSocket = GraphicsSocket(self, self.socketType)
         self.graphicsSocket.setPos(*self.node.getSocketPos(index, position))
 
         self.edges = []

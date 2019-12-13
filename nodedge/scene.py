@@ -2,16 +2,16 @@ import json
 import logging
 
 from collections import OrderedDict
-from nodedge.ack_serializable import AckSerializable
-from nodedge.ack_node import AckNode
-from nodedge.ack_edge import AckEdge
-from nodedge.ack_scene_history import AckSceneHistory
-from nodedge.ack_scene_clipboard import AckSceneClipboard
+from nodedge.serializable import Serializable
+from nodedge.node import Node
+from nodedge.edge import Edge
+from nodedge.scene_history import SceneHistory
+from nodedge.scene_clipboard import SceneClipboard
 
-from nodedge.ack_graphics_scene import AckGraphicsScene
+from nodedge.graphics_scene import GraphicsScene
 
 
-class AckScene(AckSerializable):
+class Scene(Serializable):
     def __init__(self):
         super().__init__()
         self.nodes = []
@@ -23,8 +23,8 @@ class AckScene(AckSerializable):
         self.sceneWidth = 64000
         self.sceneHeight = 64000
 
-        self.history = AckSceneHistory(self)
-        self.clipboard = AckSceneClipboard(self)
+        self.history = SceneHistory(self)
+        self.clipboard = SceneClipboard(self)
 
         self._hasBeenModified = False
         self.hasBeenModified = False
@@ -52,7 +52,7 @@ class AckScene(AckSerializable):
         self._hasBeenModifiedListeners.append(callback)
 
     def initUI(self):
-        self.graphicsScene = AckGraphicsScene(self)
+        self.graphicsScene = GraphicsScene(self)
         self.graphicsScene.setScene(self.sceneWidth, self.sceneHeight)
 
     def addNode(self, node):
@@ -120,9 +120,9 @@ class AckScene(AckSerializable):
 
         # Create nodes
         for nodeData in data["nodes"]:
-            AckNode(self).deserialize(nodeData, hashmap, restoreId)
+            Node(self).deserialize(nodeData, hashmap, restoreId)
 
         # Create edges
         for edgeData in data["edges"]:
-            AckEdge(self).deserialize(edgeData, hashmap, restoreId)
+            Edge(self).deserialize(edgeData, hashmap, restoreId)
         return True

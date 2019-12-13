@@ -1,10 +1,10 @@
-from nodedge.ack_scene import AckScene
-from nodedge.ack_graphics_view import AckGraphicsView
-from nodedge.ack_node import AckNode
-from nodedge.ack_edge import *
+from nodedge.scene import Scene
+from nodedge.graphics_view import GraphicsView
+from nodedge.node import Node
+from nodedge.edge import *
 
 
-class AckEditorWidget(QWidget):
+class EditorWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -19,12 +19,12 @@ class AckEditorWidget(QWidget):
         self.setLayout(self.layout)
 
         # Create graphics view
-        self.scene = AckScene()
+        self.scene = Scene()
 
         # Add content
         self.addNodes()
 
-        self.view = AckGraphicsView(self.scene.graphicsScene, self)
+        self.view = GraphicsView(self.scene.graphicsScene, self)
         self.layout.addWidget(self.view)
 
         # self.addDebugContent()
@@ -32,16 +32,16 @@ class AckEditorWidget(QWidget):
     def addNodes(self):
         inputs = [1, 2, 3]
         outputs = [1]
-        node1 = AckNode(self.scene, "My Mew Node!", inputs=inputs, outputs=outputs)
-        node2 = AckNode(self.scene, "My Mew Node!", inputs=inputs, outputs=outputs)
-        node3 = AckNode(self.scene, "My Mew Node!", inputs=inputs, outputs=outputs)
+        node1 = Node(self.scene, "My Mew Node!", inputs=inputs, outputs=outputs)
+        node2 = Node(self.scene, "My Mew Node!", inputs=inputs, outputs=outputs)
+        node3 = Node(self.scene, "My Mew Node!", inputs=inputs, outputs=outputs)
 
         node1.setPos(-350, -250)
         node2.setPos(-75, -0)
         node3.setPos(200, -50)
 
-        edge1 = AckEdge(self.scene, node1.outputs[0], node2.inputs[1], edgeType=EDGE_TYPE_BEZIER)
-        edge2 = AckEdge(self.scene, node2.outputs[0], node3.inputs[2], edgeType=EDGE_TYPE_BEZIER)
+        edge1 = Edge(self.scene, node1.outputs[0], node2.inputs[1], edgeType=EDGE_TYPE_BEZIER)
+        edge2 = Edge(self.scene, node2.outputs[0], node3.inputs[2], edgeType=EDGE_TYPE_BEZIER)
 
     def addDebugContent(self):
         green_brush = QBrush(Qt.green)

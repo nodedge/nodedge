@@ -4,7 +4,7 @@
 
 
 import unittest
-from nodedge.ack_scene import AckScene
+from nodedge.scene import Scene
 
 
 class TestNodedge(unittest.TestCase):
@@ -18,4 +18,4 @@ class TestNodedge(unittest.TestCase):
 
     def test_000_sceneGotHasBeenModifiedProperty(self):
         """Test if scene got hasBeenModified property."""
-        assert(hasattr(AckScene, "hasBeenModified"))
+        assert(hasattr(Scene, "hasBeenModified"))

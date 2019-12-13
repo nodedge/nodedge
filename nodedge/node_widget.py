@@ -3,10 +3,10 @@ from collections import OrderedDict
 from PyQt5.QtWidgets import *
 from PyQt5 import QtGui
 
-from nodedge.ack_serializable import AckSerializable
+from nodedge.serializable import Serializable
 
 
-class AckNodeWidget(QWidget, AckSerializable):
+class NodeWidget(QWidget, Serializable):
     def __init__(self, node, parent=None):
         super().__init__(parent)
         self.node = node

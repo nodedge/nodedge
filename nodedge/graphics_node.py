@@ -3,7 +3,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 
-class AckGraphicsNode(QGraphicsItem):
+class GraphicsNode(QGraphicsItem):
     def __init__(self, node, parent=None):
         super().__init__(parent)
 

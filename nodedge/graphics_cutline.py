@@ -4,7 +4,7 @@ from PyQt5.QtCore import *
 import typing
 
 
-class AckCutline(QGraphicsItem):
+class GraphicsCutline(QGraphicsItem):
     def __init__(self, parent=None):
         super().__init__(parent)
 

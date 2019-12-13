@@ -1,11 +1,11 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from nodedge.ack_socket import *
+from nodedge.socket import *
 import math
 
 
-class AckGraphicsEdge(QGraphicsPathItem):
+class GraphicsEdge(QGraphicsPathItem):
     def __init__(self, edge, parent=None):
         super().__init__(parent)
         self.edge = edge
@@ -64,14 +64,14 @@ class AckGraphicsEdge(QGraphicsPathItem):
         return cutpath.intersects(path)
 
 
-class AckGraphicsEdgeDirect(AckGraphicsEdge):
+class GraphicsEdgeDirect(GraphicsEdge):
     def calcPath(self):
         path = QPainterPath(QPointF(self.posSource[0], self.posSource[1]))
         path.lineTo(self.posDestination[0], self.posDestination[1])
         return path
 
 
-class AckGraphicsEdgeBezier(AckGraphicsEdge):
+class GraphicsEdgeBezier(GraphicsEdge):
     def calcPath(self):
         s = self.posSource
         d = self.posDestination

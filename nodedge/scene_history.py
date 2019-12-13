@@ -1,8 +1,8 @@
 import logging
-from nodedge.ack_graphics_edge import AckGraphicsEdge
+from nodedge.graphics_edge import GraphicsEdge
 
 
-class AckSceneHistory:
+class SceneHistory:
     def __init__(self, scene, maxLength=32):
         self.scene = scene
 
@@ -69,7 +69,7 @@ class AckSceneHistory:
         for item in self.scene.graphicsScene.selectedItems():
             if hasattr(item, "node"):
                 selectedObjects["nodes"].append(item.node.id)
-            elif isinstance(item, AckGraphicsEdge):
+            elif isinstance(item, GraphicsEdge):
                 selectedObjects["edges"].append(item.edge.id)
 
         stamp = {

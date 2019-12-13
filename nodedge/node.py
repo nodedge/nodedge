@@ -1,9 +1,9 @@
-from nodedge.ack_graphics_node import AckGraphicsNode
-from nodedge.ack_node_widget import AckNodeWidget
-from nodedge.ack_socket import *
+from nodedge.graphics_node import GraphicsNode
+from nodedge.node_widget import NodeWidget
+from nodedge.socket import *
 
 
-class AckNode(AckSerializable):
+class Node(Serializable):
     def __init__(self, scene, title="Undefined node", inputs=[], outputs=[]):
         super().__init__()
 
@@ -13,9 +13,9 @@ class AckNode(AckSerializable):
         self._title = title
         self.scene = scene
 
-        self.content = AckNodeWidget(self)
+        self.content = NodeWidget(self)
 
-        self.graphicsNode = AckGraphicsNode(self)
+        self.graphicsNode = GraphicsNode(self)
         self.title = title
 
         self.scene.addNode(self)
@@ -39,13 +39,13 @@ class AckNode(AckSerializable):
     def initInputsOutputs(self, inputs, outputs):
         counter = 0
         for inp in inputs:
-            socket = AckSocket(node=self, index=counter, position=LEFT_TOP, socketType=inp, allowsMultiEdges=False)
+            socket = Socket(node=self, index=counter, position=LEFT_TOP, socketType=inp, allowsMultiEdges=False)
             counter += 1
             self.inputs.append(socket)
 
         counter = 0
         for out in outputs:
-            socket = AckSocket(node=self, index=counter, position=RIGHT_BOTTOM, socketType=out)
+            socket = Socket(node=self, index=counter, position=RIGHT_BOTTOM, socketType=out)
             counter += 1
             self.outputs.append(socket)
 
@@ -116,15 +116,15 @@ class AckNode(AckSerializable):
 
         self.inputs = []
         for socketData in data["inputs"]:
-            newSocket = AckSocket(node=self, index=socketData["index"], position=socketData["position"],
-                                  socketType=socketData["socketType"])
+            newSocket = Socket(node=self, index=socketData["index"], position=socketData["position"],
+                               socketType=socketData["socketType"])
             newSocket.deserialize(socketData, hashmap, restoreId)
             self.inputs.append(newSocket)
 
         self.outputs = []
         for socketData in data["outputs"]:
-            newSocket = AckSocket(node=self, index=socketData["index"], position=socketData["position"],
-                                  socketType=socketData["socketType"])
+            newSocket = Socket(node=self, index=socketData["index"], position=socketData["position"],
+                               socketType=socketData["socketType"])
             newSocket.deserialize(socketData, hashmap, restoreId)
             self.outputs.append(newSocket)
 

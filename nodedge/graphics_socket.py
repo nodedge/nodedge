@@ -3,9 +3,9 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 
-class AckGraphicsSocket(QGraphicsItem):
+class GraphicsSocket(QGraphicsItem):
     def __init__(self, socket, socketType=1):
-        super(AckGraphicsSocket, self).__init__(socket.node.graphicsNode)
+        super(GraphicsSocket, self).__init__(socket.node.graphicsNode)
 
         self.radius = 6.
         self.outline_width = 1.

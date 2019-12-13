@@ -4,10 +4,10 @@ import os
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
-from nodedge.ack_editor_widget import AckEditorWidget
+from nodedge.editor_widget import EditorWidget
 
 
-class AckEditorWindow(QMainWindow):
+class EditorWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -31,7 +31,7 @@ class AckEditorWindow(QMainWindow):
 
         self.createMenus()
 
-        self.nodeEditor = AckEditorWidget()
+        self.nodeEditor = EditorWidget()
         self.setCentralWidget(self.nodeEditor)
         self.nodeEditor.scene.addHasBeenModifiedListener(self.updateTitle)
 
