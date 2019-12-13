@@ -17,8 +17,8 @@ class AckEditorWindow(QMainWindow):
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
 
-
         self.companyName = "Nodedge"
+        self.productName = "Editor"
         self.filename = None
 
         QApplication.instance().clipboard().dataChanged.connect(self.onClipboardChanged)
@@ -26,48 +26,85 @@ class AckEditorWindow(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        menuBar: QMenuBar = self.menuBar()
 
-        # Initialize menus
-        fileMenu: QMenu = menuBar.addMenu("&File")
-        self.addActionToMenu(fileMenu, "&New", "Ctrl+N", "Create new Nodedge", self.onNewFile)
-        fileMenu.addSeparator()
-        self.addActionToMenu(fileMenu, "&Open", "Ctrl+O", "Open file", self.onOpenFile)
-        self.addActionToMenu(fileMenu, "&Save", "Ctrl+S", "Save file", self.onSaveFile)
-        self.addActionToMenu(fileMenu, "Save &As", "Ctrl+Shift+S", "Save file as...", self.onSaveFileAs)
-        fileMenu.addSeparator()
-        self.addActionToMenu(fileMenu, "&Quit", "Ctrl+Q", "Exit application", self.close)
+        self.createActions()
 
-        editMenu = menuBar.addMenu("&Edit")
-        self.addActionToMenu(editMenu, "&Undo", "Ctrl+Z", "Undo last operation", self.onUndo)
-        self.addActionToMenu(editMenu, "&Redo", "Ctrl+Shift+Z", "Redo last operation", self.onRedo)
-        editMenu.addSeparator()
-        self.addActionToMenu(editMenu, "C&ut", "Ctrl+X", "Cut selected items", self.onCut)
-        self.addActionToMenu(editMenu, "&C&opy", "Ctrl+C", "Copy selected items", self.onCopy)
-        self.addActionToMenu(editMenu, "&C&opy", "Ctrl+V", "Paste selected items", self.onPaste)
-        editMenu.addSeparator()
-        self.addActionToMenu(editMenu, "&Delete", "Del", "Delete selected items", self.onDelete)
+        self.createMenus()
 
-        layoutMenu = menuBar.addMenu("&Layout")
-        helpMenu = menuBar.addMenu("&Help")
-
-        nodeEditor = AckEditorWidget()
-        nodeEditor.scene.addHasBeenModifiedListener(self.updateTitle)
-        self.setCentralWidget(nodeEditor)
+        self.nodeEditor = AckEditorWidget()
+        self.setCentralWidget(self.nodeEditor)
+        self.nodeEditor.scene.addHasBeenModifiedListener(self.updateTitle)
 
         # Initialize status bar
-        self.statusBar().showMessage("")
-        self.statusMousePos = QLabel("")
-        self.statusBar().addPermanentWidget(self.statusMousePos)
-        self.centralWidget().view.scenePosChanged.connect(self.OnScenePosChanged)
+        self.createStatusBar()
 
         # Set window properties
         self.setGeometry(960, 30, 960, 960)
         self.updateTitle()
         self.show()
 
+    def createStatusBar(self):
+        self.statusBar().showMessage("")
+        self.statusMousePos = QLabel("")
+        self.statusBar().addPermanentWidget(self.statusMousePos)
+        self.nodeEditor.view.scenePosChanged.connect(self.OnScenePosChanged)
+
+    # noinspection PyArgumentList
     def createActions(self):
-        pass
+        self.newAct: QAction = QAction("&New", self,
+                              shortcut="Ctrl+N", statusTip="Create new Nodedge",
+                              triggered=self.onNewFile)
+
+        self.openAct = QAction("&Open", self,
+                               shortcut="Ctrl+O", statusTip="Open file",
+                               triggered=self.onOpenFile)
+        self.saveAct = QAction("&Save", self,
+                               shortcut="Ctrl+S", statusTip="Save file",
+                               triggered=self.onSaveFile)
+        self.saveAsAct = QAction("Save &As", self,
+                                 shortcut="Ctrl+Shift+S", statusTip="Save file as...",
+                                 triggered=self.onSaveFileAs)
+        self.quitAct = QAction("&Quit", self,
+                               shortcut="Ctrl+Q", statusTip="Exit application",
+                               triggered=self.close)
+        self.undoAct = QAction("&Undo", self,
+                               shortcut="Ctrl+Z", statusTip="Undo last operation",
+                               triggered=self.onUndo)
+        self.redoAct = QAction("&Redo", self,
+                               shortcut="Ctrl+Shift+Z", statusTip="Redo last operation",
+                               triggered=self.onRedo)
+        self.cutAct = QAction("C&ut", self,
+                              shortcut="Ctrl+X", statusTip="Cut selected items",
+                              triggered=self.onCut)
+        self.copyAct = QAction("&Copy", self,
+                               shortcut="Ctrl+C", statusTip="Copy selected items",
+                               triggered=self.onCopy)
+        self.pasteAct = QAction("&Paste", self,
+                                shortcut="Ctrl+V", statusTip="Paste selected items",
+                                triggered=self.onPaste)
+        self.delAct = QAction("&Delete", self,
+                              shortcut="Del", statusTip="Delete selected items",
+                              triggered=self.onDelete)
+
+    def createMenus(self):
+        fileMenu: QMenu = self.menuBar().addMenu("&File")
+        fileMenu.addAction(self.newAct)
+        fileMenu.addSeparator()
+        fileMenu.addAction(self.openAct)
+        fileMenu.addAction(self.saveAct)
+        fileMenu.addAction(self.saveAsAct)
+        fileMenu.addSeparator()
+        fileMenu.addAction(self.quitAct)
+
+        editMenu: QMenu = self.menuBar().addMenu("&Edit")
+        editMenu.addAction(self.undoAct)
+        editMenu.addAction(self.redoAct)
+        editMenu.addSeparator()
+        editMenu.addAction(self.cutAct)
+        editMenu.addAction(self.copyAct)
+        editMenu.addAction(self.pasteAct)
+        editMenu.addSeparator()
+        editMenu.addAction(self.delAct)
 
     def updateTitle(self):
         title = "Create nodedge"
@@ -76,17 +113,10 @@ class AckEditorWindow(QMainWindow):
         else:
             title += f"with {os.path.basename(self.filename)}"
 
-        if self.centralWidget().scene.hasBeenModified:
+        if self.nodeEditor.scene.hasBeenModified:
             title += "*"
 
         self.setWindowTitle(title)
-
-    def addActionToMenu(self, menu, name, shortcut, tooltip, callback):
-        act = QAction(name, self)
-        act.setShortcut(shortcut)
-        act.setToolTip(tooltip)
-        act.triggered.connect(callback)
-        menu.addAction(act)
 
     def onClipboardChanged(self):
         clipboard = QApplication.instance().clipboard()
@@ -97,7 +127,7 @@ class AckEditorWindow(QMainWindow):
 
     def onNewFile(self):
         if self.maybeSave():
-            self.centralWidget().scene.clear()
+            self.nodeEditor.scene.clear()
             self.__logger.info("Creating new graph")
             self.filename = None
         self.updateTitle()
@@ -109,7 +139,7 @@ class AckEditorWindow(QMainWindow):
             if filename == "":
                 return
             if os.path.isfile(filename):
-                self.centralWidget().scene.loadFromFile(filename)
+                self.nodeEditor.scene.loadFromFile(filename)
                 self.filename = filename
 
             self.updateTitle()
@@ -120,7 +150,7 @@ class AckEditorWindow(QMainWindow):
         if self.filename is None:
             return self.onSaveFileAs()
 
-        self.centralWidget().scene.saveToFile(self.filename)
+        self.nodeEditor.scene.saveToFile(self.filename)
         self.__logger.debug("Saving graph")
         self.statusBar().showMessage(f"Successfully saved to {self.filename}")
 
@@ -141,26 +171,26 @@ class AckEditorWindow(QMainWindow):
         return True
 
     def onUndo(self):
-        self.centralWidget().scene.history.undo()
+        self.nodeEditor.scene.history.undo()
         self.__logger.debug("Undoing last action")
 
     def onRedo(self):
-        self.centralWidget().scene.history.redo()
+        self.nodeEditor.scene.history.redo()
         self.__logger.debug("Redoing last action")
 
     def onDelete(self):
-        self.centralWidget().view.deleteSelected()
+        self.nodeEditor.view.deleteSelected()
         self.__logger.debug("Deleting selected items")
 
     def onCut(self):
         self.__logger.debug("Cutting selected items")
-        data = self.centralWidget().scene.clipboard.serializeSelected(delete=True)
+        data = self.nodeEditor.scene.clipboard.serializeSelected(delete=True)
         strData = json.dumps(data, indent=4)
         QApplication.instance().clipboard().setText(strData)
 
     def onCopy(self):
         self.__logger.debug("Copying selected items")
-        data = self.centralWidget().scene.clipboard.serializeSelected(delete=False)
+        data = self.nodeEditor.scene.clipboard.serializeSelected(delete=False)
         strData = json.dumps(data, indent=4)
         self.__logger.debug(strData)
         QApplication.instance().clipboard().setText(strData)
@@ -179,21 +209,14 @@ class AckEditorWindow(QMainWindow):
         if "nodes" not in data:
             self.__logger.debug("JSON does not contain any nodes!")
 
-        self.centralWidget().scene.clipboard.deserialize(data)
-
-    def closeEvent(self, event):
-
-        if self.maybeSave():
-            event.accept()
-        else:
-            event.ignore()
+        self.nodeEditor.scene.clipboard.deserialize(data)
 
     def maybeSave(self):
         if not self.isModified():
             return True
 
         res = QMessageBox.warning(self, "Nodedge is about to close", "There are unsaved modifications. \n"
-                                                                          "Do you want to save your changes?",
+                                                                     "Do you want to save your changes?",
                                   QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
 
         if res == QMessageBox.Save:
@@ -204,16 +227,16 @@ class AckEditorWindow(QMainWindow):
         return True
 
     def isModified(self):
-        return self.centralWidget().scene.hasBeenModified
+        return self.nodeEditor.scene.hasBeenModified
 
     def readSettings(self):
-        settings = QSettings('Trolltech', 'MDI Example')
+        settings = QSettings(self.companyName, self.productName)
         pos = settings.value('pos', QPoint(200, 200))
         size = settings.value('size', QSize(400, 400))
         self.move(pos)
         self.resize(size)
 
     def writeSettings(self):
-        settings = QSettings('Trolltech', 'MDI Example')
+        settings = QSettings(self.companyName, self.productName)
         settings.setValue('pos', self.pos())
         settings.setValue('size', self.size())
