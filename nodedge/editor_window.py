@@ -19,7 +19,6 @@ class EditorWindow(QMainWindow):
 
         self.companyName = "Nodedge"
         self.productName = "Editor"
-        self.filename = None
 
         QApplication.instance().clipboard().dataChanged.connect(self.onClipboardChanged)
 
@@ -31,9 +30,9 @@ class EditorWindow(QMainWindow):
 
         self.createMenus()
 
-        self.nodeEditor = EditorWidget()
-        self.setCentralWidget(self.nodeEditor)
-        self.nodeEditor.scene.addHasBeenModifiedListener(self.updateTitle)
+        self.editorWidget = EditorWidget()
+        self.setCentralWidget(self.editorWidget)
+        self.editorWidget.scene.addHasBeenModifiedListener(self.updateTitle)
 
         # Initialize status bar
         self.createStatusBar()
@@ -47,7 +46,7 @@ class EditorWindow(QMainWindow):
         self.statusBar().showMessage("")
         self.statusMousePos = QLabel("")
         self.statusBar().addPermanentWidget(self.statusMousePos)
-        self.nodeEditor.view.scenePosChanged.connect(self.OnScenePosChanged)
+        self.editorWidget.view.scenePosChanged.connect(self.OnScenePosChanged)
 
     # noinspection PyArgumentList
     def createActions(self):
@@ -108,12 +107,12 @@ class EditorWindow(QMainWindow):
 
     def updateTitle(self):
         title = "Create nodedge"
-        if self.filename is None:
+        if not self.editorWidget.hasName():
             title += "!"
         else:
-            title += f"with {os.path.basename(self.filename)}"
+            title += f"with {self.editorWidget.shortFilename()}"
 
-        if self.nodeEditor.scene.hasBeenModified:
+        if self.editorWidget.isModified():
             title += "*"
 
         self.setWindowTitle(title)
@@ -127,7 +126,7 @@ class EditorWindow(QMainWindow):
 
     def newFile(self):
         if self.maybeSave():
-            self.nodeEditor.scene.clear()
+            self.editorWidget.scene.clear()
             self.__logger.info("Creating new graph")
             self.filename = None
         self.updateTitle()
@@ -139,7 +138,7 @@ class EditorWindow(QMainWindow):
             if filename == "":
                 return
             if os.path.isfile(filename):
-                self.nodeEditor.scene.loadFromFile(filename)
+                self.editorWidget.scene.loadFromFile(filename)
                 self.filename = filename
 
             self.updateTitle()
@@ -150,7 +149,7 @@ class EditorWindow(QMainWindow):
         if self.filename is None:
             return self.saveFileAs()
 
-        self.nodeEditor.scene.saveToFile(self.filename)
+        self.editorWidget.scene.saveToFile(self.filename)
         self.__logger.debug("Saving graph")
         self.statusBar().showMessage(f"Successfully saved to {self.filename}")
 
@@ -171,26 +170,26 @@ class EditorWindow(QMainWindow):
         return True
 
     def undo(self):
-        self.nodeEditor.scene.history.undo()
+        self.editorWidget.scene.history.undo()
         self.__logger.debug("Undoing last action")
 
     def redo(self):
-        self.nodeEditor.scene.history.redo()
+        self.editorWidget.scene.history.redo()
         self.__logger.debug("Redoing last action")
 
     def delete(self):
-        self.nodeEditor.view.deleteSelected()
+        self.editorWidget.view.deleteSelected()
         self.__logger.debug("Deleting selected items")
 
     def cut(self):
         self.__logger.debug("Cutting selected items")
-        data = self.nodeEditor.scene.clipboard.serializeSelected(delete=True)
+        data = self.editorWidget.scene.clipboard.serializeSelected(delete=True)
         strData = json.dumps(data, indent=4)
         QApplication.instance().clipboard().setText(strData)
 
     def copy(self):
         self.__logger.debug("Copying selected items")
-        data = self.nodeEditor.scene.clipboard.serializeSelected(delete=False)
+        data = self.editorWidget.scene.clipboard.serializeSelected(delete=False)
         strData = json.dumps(data, indent=4)
         self.__logger.debug(strData)
         QApplication.instance().clipboard().setText(strData)
@@ -209,7 +208,7 @@ class EditorWindow(QMainWindow):
         if "nodes" not in data:
             self.__logger.debug("JSON does not contain any nodes!")
 
-        self.nodeEditor.scene.clipboard.deserialize(data)
+        self.editorWidget.scene.clipboard.deserialize(data)
 
     def maybeSave(self):
         if not self.isModified():
@@ -227,7 +226,7 @@ class EditorWindow(QMainWindow):
         return True
 
     def isModified(self):
-        return self.nodeEditor.scene.hasBeenModified
+        return self.editorWidget.scene.hasBeenModified
 
     def readSettings(self):
         settings = QSettings(self.companyName, self.productName)

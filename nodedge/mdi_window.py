@@ -4,17 +4,21 @@ from PyQt5.QtCore import *
 
 from nodedge.editor_window import EditorWindow
 from nodedge.utils import dumpException
+from nodedge.editor_widget import EditorWidget
+from nodedge.mdi_sub_window import MdiSubWindow
 import logging
 
 
-class CalculatorWindow(EditorWindow):
+class MdiWindow(EditorWindow):
     def __init__(self):
-        super(CalculatorWindow, self).__init__()
+        super(MdiWindow, self).__init__()
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.DEBUG)
 
     def initUI(self):
         self.mdiArea = QMdiArea()
+        self.mdiArea.setViewMode(QMdiArea.TabbedView)
+
         self.mdiArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.mdiArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.setCentralWidget(self.mdiArea)
@@ -36,6 +40,10 @@ class CalculatorWindow(EditorWindow):
         self.readSettings()
 
         self.setWindowTitle("Calculator")
+
+    def newFile(self):
+        subWindow = self.createMdiSubWindow()
+        subWindow.show()
 
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
@@ -83,7 +91,6 @@ class CalculatorWindow(EditorWindow):
         self.helpMenu: QMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.aboutAct)
 
-
     def createToolBars(self):
         pass
 
@@ -102,21 +109,48 @@ class CalculatorWindow(EditorWindow):
         windows = self.mdiArea.subWindowList()
         self.separatorAct.setVisible(len(windows) != 0)
 
-        # for i, window in enumerate(windows):
-        #     child = window.widget()
-        #
-        #     text = "%d %s" % (i + 1, child.userFriendlyCurrentFile())
-        #     if i < 9:
-        #         text = '&' + text
-        #
-        #     action = self.windowMenu.addAction(text)
-        #     action.setCheckable(True)
-        #     action.setChecked(child is self.activeMdiChild())
-        #     action.triggered.connect(self.windowMapper.map)
-        #     self.windowMapper.setMapping(action, window)
+        for i, window in enumerate(windows):
+            child: EditorWidget = window.widget()
+
+            text = "%d %s" % (i + 1, child.shortFilename())
+            if i < 9:
+                text = '&' + text
+
+            action = self.windowMenu.addAction(text)
+            action.setCheckable(True)
+            action.setChecked(child is self.activeMdiChild())
+            action.triggered.connect(self.windowMapper.map)
+            self.windowMapper.setMapping(action, window)
+
+    def activeMdiChild(self):
+        """ Returns Editor widget.
+        """
+        activeSubWindow = self.mdiArea.activeSubWindow()
+        if activeSubWindow:
+            return activeSubWindow.widget()
+        return None
 
     def updateMenus(self):
-        pass
+        hasMdiChild = self.activeMdiChild() is not None
+        self.saveAct.setEnabled(hasMdiChild)
+        self.saveAsAct.setEnabled(hasMdiChild)
+        self.pasteAct.setEnabled(hasMdiChild)
+        self.closeAct.setEnabled(hasMdiChild)
+        self.closeAllAct.setEnabled(hasMdiChild)
+        self.tileAct.setEnabled(hasMdiChild)
+        self.cascadeAct.setEnabled(hasMdiChild)
+        self.nextAct.setEnabled(hasMdiChild)
+        self.previousAct.setEnabled(hasMdiChild)
+        self.separatorAct.setVisible(hasMdiChild)
+
+        hasSelection = self.activeMdiChild() is not None #and self.activeMdiChild().hasSelection()
+        self.cutAct.setEnabled(hasSelection)
+        self.copyAct.setEnabled(hasSelection)
+
+    def createMdiSubWindow(self):
+        editor = MdiSubWindow()
+        subWindow = self.mdiArea.addSubWindow(editor)
+        return subWindow
 
     def setActiveSubWindow(self, window):
         if window:

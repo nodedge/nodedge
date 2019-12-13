@@ -20,9 +20,9 @@ class GraphicsScene(QGraphicsScene):
         self.scene_width = 64000
         self.scene_height = 64000
 
-        self._color_background = QColor("#393939")
-        self._color_light = QColor("#2f2f2f")
-        self._color_dark = QColor("#292929")
+        self._color_background = QColor("#ffffff")
+        self._color_light = QColor("#ffffff")
+        self._color_dark = QColor("#ffffff")
 
         self._pen_light = QPen(self._color_light)
         self._pen_light.setWidth(1)

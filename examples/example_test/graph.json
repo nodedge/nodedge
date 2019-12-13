@@ -6,8 +6,8 @@
         {
             "id": 2174653274480,
             "title": "My Mew Node!",
-            "posX": -341.0,
-            "posY": -137.0,
+            "posX": 57.0,
+            "posY": -81.0,
             "inputs": [
                 {
                     "id": 2174701565792,
@@ -45,8 +45,8 @@
         {
             "id": 2174653274528,
             "title": "My Mew Node!",
-            "posX": -75.0,
-            "posY": 0.0,
+            "posX": -380.0,
+            "posY": -288.0,
             "inputs": [
                 {
                     "id": 2174701573408,
@@ -84,8 +84,8 @@
         {
             "id": 2174653274576,
             "title": "My Mew Node!",
-            "posX": 200.0,
-            "posY": -50.0,
+            "posX": -395.0,
+            "posY": 88.0,
             "inputs": [
                 {
                     "id": 2174701573936,
@@ -133,6 +133,30 @@
             "edgeType": 2,
             "startSocket": 2174701573648,
             "endSocket": 2174701574080
+        },
+        {
+            "id": 2631837553328,
+            "edgeType": 2,
+            "startSocket": 2174701573408,
+            "endSocket": 2174701574176
+        },
+        {
+            "id": 2631837553424,
+            "edgeType": 2,
+            "startSocket": 2174701573984,
+            "endSocket": 2174701573552
+        },
+        {
+            "id": 2631837553472,
+            "edgeType": 2,
+            "startSocket": 2174701573648,
+            "endSocket": 2174701565792
+        },
+        {
+            "id": 2631837553520,
+            "edgeType": 2,
+            "startSocket": 2174701573648,
+            "endSocket": 2174701565840
         }
     ]
 }

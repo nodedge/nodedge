@@ -1,12 +1,12 @@
 import sys
 from PyQt5.QtWidgets import *
 
-from examples.example_calculator.calculator_window import CalculatorWindow
+from nodedge.mdi_window import MdiWindow
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    window = CalculatorWindow()
+    window = MdiWindow()
     window.show()
 
     sys.exit(app.exec_())

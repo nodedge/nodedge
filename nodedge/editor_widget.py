@@ -2,7 +2,7 @@ from nodedge.scene import Scene
 from nodedge.graphics_view import GraphicsView
 from nodedge.node import Node
 from nodedge.edge import *
-
+import os
 
 class EditorWidget(QWidget):
     def __init__(self, parent=None):
@@ -10,6 +10,8 @@ class EditorWidget(QWidget):
 
         self.styleSheetFileName = "qss/nodestyle.qss"
         self.loadStyleSheet(self.styleSheetFileName)
+
+        self.filename = None
 
         self.initUI()
 
@@ -28,6 +30,14 @@ class EditorWidget(QWidget):
         self.layout.addWidget(self.view)
 
         # self.addDebugContent()
+
+    def hasName(self):
+        return self.filename is not None
+
+    def shortFilename(self):
+        name = os.path.basename(self.filename) if self.hasName() else "New graph"
+        # TODO: Add * hasBeenModified here
+        return name
 
     def addNodes(self):
         inputs = [1, 2, 3]
