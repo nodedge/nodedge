@@ -226,7 +226,7 @@ class EditorWindow(QMainWindow):
         return True
 
     def isModified(self):
-        return self.editorWidget.scene.hasBeenModified
+        return self.editorWidget.scene.isModified
 
     def readSettings(self):
         settings = QSettings(self.companyName, self.productName)

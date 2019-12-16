@@ -52,7 +52,7 @@ class SceneHistory:
         self.currentStep += 1
         self.__logger.debug(f"Setting step to {self.currentStep}")
 
-        self.scene.hasBeenModified = sceneHasBeenModified
+        self.scene.isModified = sceneHasBeenModified
 
     def restore(self):
         self.__logger.debug(f"Restoring history with current step: {self.currentStep} / {len(self.stack)} "

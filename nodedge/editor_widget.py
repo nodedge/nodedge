@@ -4,6 +4,7 @@ from nodedge.node import Node
 from nodedge.edge import *
 import os
 
+
 class EditorWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -53,30 +54,6 @@ class EditorWidget(QWidget):
         edge1 = Edge(self.scene, node1.outputs[0], node2.inputs[1], edgeType=EDGE_TYPE_BEZIER)
         edge2 = Edge(self.scene, node2.outputs[0], node3.inputs[2], edgeType=EDGE_TYPE_BEZIER)
 
-    def addDebugContent(self):
-        green_brush = QBrush(Qt.green)
-        outline_pen = QPen(Qt.black)
-        outline_pen.setWidth(2)
-
-        rectangle = self.graphicsScene.addRect(-100, -100, 80, 100, outline_pen, green_brush)
-        rectangle.setFlag(QGraphicsItem.ItemIsMovable)
-        rectangle.setFlag(QGraphicsItem.ItemIsSelectable)
-
-        text = self.graphicsScene.addText("Welcome in Nodedge!", QFont("Ubuntu"))
-        text.setFlag(QGraphicsItem.ItemIsMovable)
-        text.setFlag(QGraphicsItem.ItemIsSelectable)
-        text.setDefaultTextColor(QColor.fromRgbF(1., 1., 1.))
-
-        widget1 = QPushButton("Show shortcuts")
-        proxy1 = self.graphicsScene.addWidget(widget1)
-        proxy1.setFlag(QGraphicsItem.ItemIsMovable)
-        proxy1.setPos(0, 100)
-
-        widget2 = QTextEdit()
-        proxy2 = self.graphicsScene.addWidget(widget2)
-        proxy2.setFlag(QGraphicsItem.ItemIsMovable)
-        proxy2.setPos(100, 0)
-
     def loadStyleSheet(self, fileName):
         print(f"Style loading: {fileName}")
         file = QFile(fileName)
@@ -84,3 +61,5 @@ class EditorWidget(QWidget):
         styleSheet = file.readAll()
         QApplication.instance().setStyleSheet(str(styleSheet, encoding="utf-8"))
 
+    def isModified(self):
+        return self.scene.isModified

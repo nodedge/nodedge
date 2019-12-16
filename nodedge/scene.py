@@ -27,19 +27,19 @@ class Scene(Serializable):
         self.clipboard = SceneClipboard(self)
 
         self._hasBeenModified = False
-        self.hasBeenModified = False
+        self.isModified = False
         self._hasBeenModifiedListeners = []
 
         self.initUI()
 
     @property
-    def hasBeenModified(self):
+    def isModified(self):
         return False
         # return self._hasBeenModified
 
-    @hasBeenModified.setter
-    def hasBeenModified(self, value):
-        if not self.hasBeenModified and value:
+    @isModified.setter
+    def isModified(self, value):
+        if not self.isModified and value:
             self._hasBeenModified = value
 
             # Call all registered listeners
@@ -77,14 +77,14 @@ class Scene(Serializable):
         while len(self.nodes) > 0:
             self.nodes[0].remove()
 
-        self.hasBeenModified = False
+        self.isModified = False
 
     def saveToFile(self, filename):
         with open(filename, "w") as file:
             file.write(json.dumps(self.serialize(), indent=4))
             self.__logger.info(f"Saving to {filename} was successful.")
 
-            self.hasBeenModified = False
+            self.isModified = False
 
     def loadFromFile(self, filename):
         with open(filename, "r") as file:
@@ -92,7 +92,7 @@ class Scene(Serializable):
             data = json.loads(rawData, encoding="utf-8")
             self.deserialize(data)
 
-            self.hasBeenModified = False
+            self.isModified = False
 
     def serialize(self):
         nodes, edges = [], []
