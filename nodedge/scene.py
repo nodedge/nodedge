@@ -26,7 +26,7 @@ class Scene(Serializable):
         self.history = SceneHistory(self)
         self.clipboard = SceneClipboard(self)
 
-        self._hasBeenModified = False
+        self._isModified = False
         self.isModified = False
         self._hasBeenModifiedListeners = []
 
@@ -34,19 +34,18 @@ class Scene(Serializable):
 
     @property
     def isModified(self):
-        return False
-        # return self._hasBeenModified
+        return self._isModified
 
     @isModified.setter
     def isModified(self, value):
         if not self.isModified and value:
-            self._hasBeenModified = value
+            self._isModified = value
 
             # Call all registered listeners
             for callback in self._hasBeenModifiedListeners:
                 callback()
 
-        self._hasBeenModified = value
+        self._isModified = value
 
     def addHasBeenModifiedListener(self, callback):
         self._hasBeenModifiedListeners.append(callback)

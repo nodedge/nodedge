@@ -142,7 +142,7 @@ class GraphicsView(QGraphicsView):
 
         # Store in history after executing transmitting event to super, to consider new selection in the history stamp.
         if self.dragMode() == QGraphicsView.RubberBandDrag:
-            self.graphicsScene.scene.history.store("Change selection", sceneHasBeenModified=False)
+            self.graphicsScene.scene.history.store("Change selection", sceneIsModified=False)
 
     def dragEdgeStart(self, item):
         self.__logger.info("Assign socket.")

@@ -34,7 +34,7 @@ class SceneHistory:
             self.currentStep += 1
             self.restore()
 
-    def store(self, desc, sceneHasBeenModified=True):
+    def store(self, desc, sceneIsModified=True):
         self.__logger.debug(f"Storing \'{desc}\' in history with current step: {self.currentStep} / {len(self.stack)} "
                             f"(max. {self._maxLength})")
         stamp = self._createStamp(desc)
@@ -52,7 +52,7 @@ class SceneHistory:
         self.currentStep += 1
         self.__logger.debug(f"Setting step to {self.currentStep}")
 
-        self.scene.isModified = sceneHasBeenModified
+        self.scene.isModified = sceneIsModified
 
     def restore(self):
         self.__logger.debug(f"Restoring history with current step: {self.currentStep} / {len(self.stack)} "

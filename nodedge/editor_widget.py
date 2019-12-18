@@ -35,10 +35,10 @@ class EditorWidget(QWidget):
     def hasName(self):
         return self.filename is not None
 
-    def shortFilename(self):
+    def userFriendlyFilename(self):
         name = os.path.basename(self.filename) if self.hasName() else "New graph"
         # TODO: Add * hasBeenModified here
-        return name
+        return name + ("*" if self.isModified() else "")
 
     def addNodes(self):
         inputs = [1, 2, 3]

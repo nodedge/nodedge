@@ -8,7 +8,9 @@ class MdiSubWindow(EditorWidget):
 
         self.setAttribute(Qt.WA_DeleteOnClose)
 
-        self.setTitle()
+        self.scene.addHasBeenModifiedListener(self.updateTitle)
 
-    def setTitle(self):
-        self.setWindowTitle(self.shortFilename())
+        self.updateTitle()
+
+    def updateTitle(self):
+        self.setWindowTitle(self.userFriendlyFilename())

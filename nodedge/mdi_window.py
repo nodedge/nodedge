@@ -112,7 +112,7 @@ class MdiWindow(EditorWindow):
         for i, window in enumerate(windows):
             child: EditorWidget = window.widget()
 
-            text = "%d %s" % (i + 1, child.shortFilename())
+            text = "%d %s" % (i + 1, child.userFriendlyFilename())
             if i < 9:
                 text = '&' + text
 

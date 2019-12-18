@@ -114,8 +114,6 @@ class GraphicsNode(QGraphicsItem):
         painter.setBrush(self._brush_background)
         painter.drawPath(path_content.simplified())
 
-
-
         # outline
         path_outline = QPainterPath()
         path_outline.addRoundedRect(0, 0, self.width, self.height, self.edge_size, self.edge_size)
