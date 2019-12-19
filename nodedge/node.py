@@ -1,6 +1,7 @@
 from nodedge.graphics_node import GraphicsNode
 from nodedge.node_widget import NodeWidget
 from nodedge.socket import *
+from nodedge.utils import dumpException
 
 
 class Node(Serializable):
@@ -103,29 +104,32 @@ class Node(Serializable):
                             ])
 
     def deserialize(self, data, hashmap={}, restoreId=True):
-        if restoreId:
-            self.id = data["id"]
-        hashmap[data["id"]] = self
+        try:
+            if restoreId:
+                self.id = data["id"]
+            hashmap[data["id"]] = self
 
-        self.setPos(data["posX"], data["posY"])
+            self.setPos(data["posX"], data["posY"])
 
-        self.title = data["title"]
+            self.title = data["title"]
 
-        data["inputs"].sort(key=lambda socket: socket["index"]+socket["position"]*1000)
-        data["outputs"].sort(key=lambda socket: socket["index"]+socket["position"]*1000)
+            data["inputs"].sort(key=lambda socket: socket["index"]+socket["position"]*1000)
+            data["outputs"].sort(key=lambda socket: socket["index"]+socket["position"]*1000)
 
-        self.inputs = []
-        for socketData in data["inputs"]:
-            newSocket = Socket(node=self, index=socketData["index"], position=socketData["position"],
-                               socketType=socketData["socketType"])
-            newSocket.deserialize(socketData, hashmap, restoreId)
-            self.inputs.append(newSocket)
+            self.inputs = []
+            for socketData in data["inputs"]:
+                newSocket = Socket(node=self, index=socketData["index"], position=socketData["position"],
+                                   socketType=socketData["socketType"])
+                newSocket.deserialize(socketData, hashmap, restoreId)
+                self.inputs.append(newSocket)
 
-        self.outputs = []
-        for socketData in data["outputs"]:
-            newSocket = Socket(node=self, index=socketData["index"], position=socketData["position"],
-                               socketType=socketData["socketType"])
-            newSocket.deserialize(socketData, hashmap, restoreId)
-            self.outputs.append(newSocket)
+            self.outputs = []
+            for socketData in data["outputs"]:
+                newSocket = Socket(node=self, index=socketData["index"], position=socketData["position"],
+                                   socketType=socketData["socketType"])
+                newSocket.deserialize(socketData, hashmap, restoreId)
+                self.outputs.append(newSocket)
+        except Exception as e:
+            dumpException(e)
 
         return True

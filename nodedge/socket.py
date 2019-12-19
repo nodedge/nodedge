@@ -47,6 +47,13 @@ class Socket(Serializable):
         else:
             self.__logger.warning(f"Trying to remove {edgeToRemove} from {self}.")
 
+    def determineAllowsMultiEdges(self, data):
+        if "allowsMultiEdges" in data:
+            return data["allowsMultiEdges"]
+        else:
+            # Probably older version of file, make right socket multiedged by default
+            return data["position"] in (RIGHT_BOTTOM, RIGHT_TOP)
+
     def removeAllEdges(self):
         while self.edges:
             edge = self.edges.pop(0)

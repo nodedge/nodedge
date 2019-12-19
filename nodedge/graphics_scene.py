@@ -20,7 +20,7 @@ class GraphicsScene(QGraphicsScene):
         self.scene_width = 64000
         self.scene_height = 64000
 
-        self._color_background = QColor("#ffffff")
+        self._color_background = QColor("#eaeaea")
         self._color_light = QColor("#ffffff")
         self._color_dark = QColor("#ffffff")
 

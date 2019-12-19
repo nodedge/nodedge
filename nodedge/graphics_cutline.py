@@ -9,7 +9,7 @@ class GraphicsCutline(QGraphicsItem):
         super().__init__(parent)
 
         self.linePoints = []
-        self._pen = QPen(Qt.white)
+        self._pen = QPen(Qt.gray)
         self._pen.setWidth(2.)
         self._pen.setDashPattern([3, 3])
 

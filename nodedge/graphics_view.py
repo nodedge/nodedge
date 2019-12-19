@@ -1,5 +1,7 @@
 from nodedge.edge import *
 from nodedge.graphics_cutline import GraphicsCutline
+from nodedge.utils import dumpException
+
 
 MODE_NOOP = 1
 MODE_EDGE_DRAG = 2
@@ -67,8 +69,10 @@ class GraphicsView(QGraphicsView):
         if event.button() == Qt.MiddleButton:
             self.middleMouseButtonPress(event)
         elif event.button() == Qt.LeftButton:
-            self.leftMouseButtonPress(event)
-            self.__logger.debug("")
+            try:
+                self.leftMouseButtonPress(event)
+            except Exception as e:
+                dumpException(e)
         elif event.button() == Qt.RightButton:
             self.rightMouseButtonPress(event)
 

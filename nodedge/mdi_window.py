@@ -1,12 +1,17 @@
+import os
+
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
 from nodedge.editor_window import EditorWindow
-from nodedge.utils import dumpException
+from nodedge.utils import loadStyleSheets
 from nodedge.editor_widget import EditorWidget
 from nodedge.mdi_sub_window import MdiSubWindow
 import logging
+
+# Images for the dark skin
+import nodedge.qss.calculator_dark_resources
 
 
 class MdiWindow(EditorWindow):
@@ -16,6 +21,15 @@ class MdiWindow(EditorWindow):
         self.__logger.setLevel(logging.DEBUG)
 
     def initUI(self):
+        self.companyName = "Nodedge"
+        self.productName = "Calculator"
+
+        self.styleSheetFilename = os.path.join(os.path.dirname(__file__), "qss/calculator.qss")
+        loadStyleSheets(
+            os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),
+            # self.styleSheetFilename
+        )
+
         self.mdiArea = QMdiArea()
         self.mdiArea.setViewMode(QMdiArea.TabbedView)
 
@@ -35,8 +49,6 @@ class MdiWindow(EditorWindow):
 
         self.createNodesDock()
 
-        self.companyName = "Nodedge"
-        self.productName = "Calculator"
         self.readSettings()
 
         self.setWindowTitle("Calculator")
