@@ -1,4 +1,4 @@
-from nodedge.scene import Scene
+from nodedge.scene import Scene, InvalidFile
 from nodedge.graphics_view import GraphicsView
 from nodedge.node import Node
 from nodedge.edge import *
@@ -8,6 +8,9 @@ import os
 class EditorWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+
+        self.__logger = logging.getLogger(__file__)
+        self.__logger.setLevel(logging.DEBUG)
 
         self.filename = None
 
@@ -32,6 +35,11 @@ class EditorWidget(QWidget):
     def hasName(self):
         return self.filename is not None
 
+    @property
+    def shortName(self):
+        return os.path.basename(self.filename)
+
+    @property
     def userFriendlyFilename(self):
         name = os.path.basename(self.filename) if self.hasName() else "New graph"
         # TODO: Add * hasBeenModified here
@@ -53,3 +61,32 @@ class EditorWidget(QWidget):
 
     def isModified(self):
         return self.scene.isModified
+
+    def loadFile(self, filename):
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        try:
+            self.scene.loadFromFile(filename)
+            self.filename = filename
+            # Clear history
+            QApplication.restoreOverrideCursor()
+            return True
+        except InvalidFile as e:
+            self.__logger.warning(f"Error loading {filename}: {e}")
+            QApplication.restoreOverrideCursor()
+            QMessageBox.warning(self, f"Error loading {os.path.basename(filename)}", str(e))
+            return False
+        finally:
+            pass
+
+    def saveFile(self, filename=None):
+        # When called with empty parameter, don't store the filename
+        if filename is not None:
+            self.filename = filename
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        self.scene.saveToFile(self.filename)
+        QApplication.restoreOverrideCursor()
+
+        return True
+
+    def updateTitle(self):
+        self.setWindowTitle(self.userFriendlyFilename)

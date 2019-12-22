@@ -124,26 +124,29 @@ class MdiWindow(EditorWindow):
         for i, window in enumerate(windows):
             child: EditorWidget = window.widget()
 
-            text = "%d %s" % (i + 1, child.userFriendlyFilename())
+            text = "%d %s" % (i + 1, child.userFriendlyFilename)
             if i < 9:
                 text = '&' + text
 
             action = self.windowMenu.addAction(text)
             action.setCheckable(True)
-            action.setChecked(child is self.activeMdiChild())
+            action.setChecked(child is self.currentEditorWidget)
             action.triggered.connect(self.windowMapper.map)
             self.windowMapper.setMapping(action, window)
 
-    def activeMdiChild(self):
+    @property
+    def currentEditorWidget(self):
         """ Returns Editor widget.
         """
         activeSubWindow = self.mdiArea.activeSubWindow()
         if activeSubWindow:
-            return activeSubWindow.widget()
-        return None
+            self.lastActiveEditorWidget = activeSubWindow.widget()
+        return self.lastActiveEditorWidget
 
     def updateMenus(self):
-        hasMdiChild = self.activeMdiChild() is not None
+        active = self.currentEditorWidget
+        hasMdiChild = self.currentEditorWidget is not None
+
         self.saveAct.setEnabled(hasMdiChild)
         self.saveAsAct.setEnabled(hasMdiChild)
         self.pasteAct.setEnabled(hasMdiChild)
@@ -155,7 +158,7 @@ class MdiWindow(EditorWindow):
         self.previousAct.setEnabled(hasMdiChild)
         self.separatorAct.setVisible(hasMdiChild)
 
-        hasSelection = self.activeMdiChild() is not None #and self.activeMdiChild().hasSelection()
+        hasSelection = self.currentEditorWidget is not None #and self.activeMdiChild().hasSelection()
         self.cutAct.setEnabled(hasSelection)
         self.copyAct.setEnabled(hasSelection)
 
@@ -179,7 +182,7 @@ class MdiWindow(EditorWindow):
         self.listWidget.addItem("Add")
         self.listWidget.addItem("Substract")
         self.listWidget.addItem("Multiply")
-        self.listWidget.addItem("Dive")
+        self.listWidget.addItem("Divide")
 
         self.nodesDock = QDockWidget("Nodes")
         self.nodesDock.setWidget(self.listWidget)
@@ -194,3 +197,32 @@ class MdiWindow(EditorWindow):
         else:
             self.writeSettings()
             event.accept()
+
+    def openFile(self):
+        filenames, filter = QFileDialog.getOpenFileNames(parent=self, caption="Open graph from file")
+
+        for filename in filenames:
+            self.__logger.debug(f"Loading {filename}")
+            if filename:
+                existingSubWindow = self.findMdiSubWindow(filename)
+                if existingSubWindow:
+                    self.__logger.debug("Existing subwindow")
+                    self.mdiArea.setActiveSubWindow(existingSubWindow)
+                else:
+                    # Create a new subwindow and open the file
+                    editor = MdiSubWindow()
+                    if editor.loadFile(filename):
+                        self.__logger.debug("Loading success")
+                        self.statusBar().showMessage(f"File {filename} loaded.", 5000)
+                        editor.updateTitle()
+                        subWindow = self.mdiArea.addSubWindow(editor)
+                        subWindow.show()
+                    else:
+                        self.__logger.debug("Loading fail")
+                        editor.close()
+
+    def findMdiSubWindow(self, filename):
+        for window in self.mdiArea.subWindowList():
+            if window.widget().filename == filename:
+                return window
+        return None

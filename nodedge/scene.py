@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 
 from collections import OrderedDict
 from nodedge.serializable import Serializable
@@ -7,9 +8,8 @@ from nodedge.node import Node
 from nodedge.edge import Edge
 from nodedge.scene_history import SceneHistory
 from nodedge.scene_clipboard import SceneClipboard
-
 from nodedge.graphics_scene import GraphicsScene
-
+from nodedge.utils import dumpException
 
 class Scene(Serializable):
     def __init__(self):
@@ -88,10 +88,14 @@ class Scene(Serializable):
     def loadFromFile(self, filename):
         with open(filename, "r") as file:
             rawData = file.read()
-            data = json.loads(rawData, encoding="utf-8")
-            self.deserialize(data)
-
-            self.isModified = False
+            try:
+                data = json.loads(rawData, encoding="utf-8")
+                self.deserialize(data)
+                self.isModified = False
+            except json.JSONDecodeError:
+                raise InvalidFile(f"{os.path.basename(filename)} is not a valid JSON file")
+            except Exception as e:
+                dumpException(e)
 
     def serialize(self):
         nodes, edges = [], []
@@ -125,3 +129,7 @@ class Scene(Serializable):
         for edgeData in data["edges"]:
             Edge(self).deserialize(edgeData, hashmap, restoreId)
         return True
+
+
+class InvalidFile(Exception):
+    pass

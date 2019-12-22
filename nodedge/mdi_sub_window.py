@@ -12,5 +12,3 @@ class MdiSubWindow(EditorWidget):
 
         self.updateTitle()
 
-    def updateTitle(self):
-        self.setWindowTitle(self.userFriendlyFilename())

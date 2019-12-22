@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
 from nodedge.editor_widget import EditorWidget
+from nodedge.utils import pp
 
 
 class EditorWindow(QMainWindow):
@@ -21,6 +22,8 @@ class EditorWindow(QMainWindow):
         self.productName = "Editor"
 
         QApplication.instance().clipboard().dataChanged.connect(self.onClipboardChanged)
+
+        self.lastActiveEditorWidget = None
 
         self.initUI()
 
@@ -46,7 +49,7 @@ class EditorWindow(QMainWindow):
         self.statusBar().showMessage("")
         self.statusMousePos = QLabel("")
         self.statusBar().addPermanentWidget(self.statusMousePos)
-        self.currentEditorWidget().view.scenePosChanged.connect(self.OnScenePosChanged)
+        self.currentEditorWidget.view.scenePosChanged.connect(self.OnScenePosChanged)
 
     # noinspection PyArgumentList
     def createActions(self):
@@ -107,16 +110,20 @@ class EditorWindow(QMainWindow):
 
     def updateTitle(self):
         title = "Create Nodedge"
-        if not self.currentEditorWidget().hasName():
-            title += "!"
+        if self.currentEditorWidget:
+            if not self.currentEditorWidget.hasName():
+                title += "!"
 
-            if self.currentEditorWidget().isModified():
-                title += "*"
-        else:
-            title += f" with {self.currentEditorWidget().userFriendlyFilename()}"
+                if self.currentEditorWidget.isModified():
+                    title += "*"
+            else:
+                title += f" with {self.currentEditorWidget.userFriendlyFilename}"
 
-        self.setWindowTitle(title)
+            self.setWindowTitle(title)
 
+            self.currentEditorWidget.updateTitle()
+
+    @property
     def currentEditorWidget(self):
         return self.centralWidget()
 
@@ -129,70 +136,68 @@ class EditorWindow(QMainWindow):
 
     def newFile(self):
         if self.maybeSave():
-            self.currentEditorWidget().scene.clear()
+            self.currentEditorWidget.scene.clear()
             self.__logger.info("Creating new graph")
-            self.filename = None
+            self.currentEditorWidget.filename = None
         self.updateTitle()
 
     def openFile(self):
+        self.__logger.debug("Opening graph")
         if self.maybeSave():
             filename, filter = QFileDialog.getOpenFileName(parent=self, caption="Open graph from file")
 
             if filename == "":
                 return
             if os.path.isfile(filename):
-                self.currentEditorWidget().scene.loadFromFile(filename)
-                self.currentEditorWidget().filename = filename
+                self.currentEditorWidget.loadFile(filename)
+                self.statusBar().showMessage(f"Successfully opened {os.path.basename(filename)}", 5000)
 
-            self.updateTitle()
-
-            self.__logger.debug("Opening graph")
+                self.updateTitle()
 
     def saveFile(self):
-        if self.filename is None:
+        self.__logger.debug("Saving graph")
+        if not self.currentEditorWidget.hasName():
             return self.saveFileAs()
 
-        self.currentEditorWidget().scene.saveToFile(self.filename)
-        self.__logger.debug("Saving graph")
-        self.statusBar().showMessage(f"Successfully saved to {self.filename}")
-
+        self.currentEditorWidget.saveFile(self.currentEditorWidget.filename)
+        self.statusBar().showMessage(f"Successfully saved to {self.currentEditorWidget.shortName}", 5000)
         self.updateTitle()
-
+        self.currentEditorWidget.updateTitle()
         return True
 
     def saveFileAs(self):
+        self.__logger.debug("Saving graph as...")
         filename, filter = QFileDialog.getSaveFileName(parent=self, caption="Save graph to file")
 
         if filename == "":
             return False
 
-        self.filename = filename
-        self.saveFile()
-
-        self.__logger.debug("Saving graph as...")
+        self.currentEditorWidget.saveFile(filename)
+        self.statusBar().showMessage(f"Successfully saved to {self.currentEditorWidget.shortName}", 5000)
+        self.updateTitle()
         return True
 
     def undo(self):
-        self.currentEditorWidget().scene.history.undo()
         self.__logger.debug("Undoing last action")
+        self.currentEditorWidget.scene.history.undo()
 
     def redo(self):
-        self.currentEditorWidget().scene.history.redo()
         self.__logger.debug("Redoing last action")
+        self.currentEditorWidget.scene.history.redo()
 
     def delete(self):
-        self.currentEditorWidget().view.deleteSelected()
         self.__logger.debug("Deleting selected items")
+        self.currentEditorWidget.view.deleteSelected()
 
     def cut(self):
         self.__logger.debug("Cutting selected items")
-        data = self.currentEditorWidget().scene.clipboard.serializeSelected(delete=True)
+        data = self.currentEditorWidget.scene.clipboard.serializeSelected(delete=True)
         strData = json.dumps(data, indent=4)
         QApplication.instance().clipboard().setText(strData)
 
     def copy(self):
         self.__logger.debug("Copying selected items")
-        data = self.currentEditorWidget().scene.clipboard.serializeSelected(delete=False)
+        data = self.currentEditorWidget.scene.clipboard.serializeSelected(delete=False)
         strData = json.dumps(data, indent=4)
         self.__logger.debug(strData)
         QApplication.instance().clipboard().setText(strData)
@@ -211,10 +216,10 @@ class EditorWindow(QMainWindow):
         if "nodes" not in data:
             self.__logger.debug("JSON does not contain any nodes!")
 
-        self.currentEditorWidget().scene.clipboard.deserialize(data)
+        self.currentEditorWidget.scene.clipboard.deserialize(data)
 
     def maybeSave(self):
-        if not self.isModified():
+        if not self.currentEditorWidget.isModified():
             return True
 
         res = QMessageBox.warning(self, "Nodedge is about to close", "There are unsaved modifications. \n"
@@ -227,9 +232,6 @@ class EditorWindow(QMainWindow):
             return False
 
         return True
-
-    def isModified(self):
-        return self.currentEditorWidget().scene.isModified
 
     def readSettings(self):
         settings = QSettings(self.companyName, self.productName)

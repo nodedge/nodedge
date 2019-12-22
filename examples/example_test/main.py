@@ -3,6 +3,8 @@ import sys
 import inspect
 from PyQt5.QtWidgets import *
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+
 from nodedge.editor_window import EditorWindow
 from nodedge.utils import loadStyleSheet
 
