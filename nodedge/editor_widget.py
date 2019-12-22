@@ -10,7 +10,7 @@ class EditorWidget(QWidget):
         super().__init__(parent)
 
         self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.DEBUG)
+        self.__logger.setLevel(logging.INFO)
 
         self.filename = None
 

@@ -18,7 +18,16 @@ class MdiWindow(EditorWindow):
     def __init__(self):
         super(MdiWindow, self).__init__()
         self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.DEBUG)
+        self.__logger.setLevel(logging.INFO)
+
+    @property
+    def currentEditorWidget(self):
+        """ Returns Editor widget.
+        """
+        activeSubWindow = self.mdiArea.activeSubWindow()
+        if activeSubWindow:
+            self.lastActiveEditorWidget = activeSubWindow.widget()
+        return self.lastActiveEditorWidget
 
     def initUI(self):
         self.companyName = "Nodedge"
@@ -52,10 +61,6 @@ class MdiWindow(EditorWindow):
         self.readSettings()
 
         self.setWindowTitle("Calculator")
-
-    def newFile(self):
-        subWindow = self.createMdiSubWindow()
-        subWindow.show()
 
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
@@ -104,7 +109,34 @@ class MdiWindow(EditorWindow):
         self.helpMenu.addAction(self.aboutAct)
 
     def createToolBars(self):
-        pass
+        self.fileToolBar = self.addToolBar("File")
+        self.fileToolBar.addAction(self.newAct)
+        self.fileToolBar.addAction(self.openAct)
+        self.fileToolBar.addAction(self.saveAct)
+
+        self.editToolBar = self.addToolBar("Edit")
+        self.editToolBar.addAction(self.cutAct)
+        self.editToolBar.addAction(self.copyAct)
+        self.editToolBar.addAction(self.pasteAct)
+
+    def updateMenus(self):
+        active = self.currentEditorWidget
+        hasMdiChild = self.currentEditorWidget is not None
+
+        self.saveAct.setEnabled(hasMdiChild)
+        self.saveAsAct.setEnabled(hasMdiChild)
+        self.pasteAct.setEnabled(hasMdiChild)
+        self.closeAct.setEnabled(hasMdiChild)
+        self.closeAllAct.setEnabled(hasMdiChild)
+        self.tileAct.setEnabled(hasMdiChild)
+        self.cascadeAct.setEnabled(hasMdiChild)
+        self.nextAct.setEnabled(hasMdiChild)
+        self.previousAct.setEnabled(hasMdiChild)
+        self.separatorAct.setVisible(hasMdiChild)
+
+        hasSelection = self.currentEditorWidget is not None #and self.activeMdiChild().hasSelection()
+        self.cutAct.setEnabled(hasSelection)
+        self.copyAct.setEnabled(hasSelection)
 
     def updateWindowMenu(self):
         self.windowMenu.clear()
@@ -134,48 +166,20 @@ class MdiWindow(EditorWindow):
             action.triggered.connect(self.windowMapper.map)
             self.windowMapper.setMapping(action, window)
 
-    @property
-    def currentEditorWidget(self):
-        """ Returns Editor widget.
-        """
-        activeSubWindow = self.mdiArea.activeSubWindow()
-        if activeSubWindow:
-            self.lastActiveEditorWidget = activeSubWindow.widget()
-        return self.lastActiveEditorWidget
-
-    def updateMenus(self):
-        active = self.currentEditorWidget
-        hasMdiChild = self.currentEditorWidget is not None
-
-        self.saveAct.setEnabled(hasMdiChild)
-        self.saveAsAct.setEnabled(hasMdiChild)
-        self.pasteAct.setEnabled(hasMdiChild)
-        self.closeAct.setEnabled(hasMdiChild)
-        self.closeAllAct.setEnabled(hasMdiChild)
-        self.tileAct.setEnabled(hasMdiChild)
-        self.cascadeAct.setEnabled(hasMdiChild)
-        self.nextAct.setEnabled(hasMdiChild)
-        self.previousAct.setEnabled(hasMdiChild)
-        self.separatorAct.setVisible(hasMdiChild)
-
-        hasSelection = self.currentEditorWidget is not None #and self.activeMdiChild().hasSelection()
-        self.cutAct.setEnabled(hasSelection)
-        self.copyAct.setEnabled(hasSelection)
-
     def createMdiSubWindow(self):
         editor = MdiSubWindow()
         subWindow = self.mdiArea.addSubWindow(editor)
         return subWindow
 
+    def findMdiSubWindow(self, filename):
+        for window in self.mdiArea.subWindowList():
+            if window.widget().filename == filename:
+                return window
+        return None
+
     def setActiveSubWindow(self, window):
         if window:
             self.mdiArea.setActiveSubWindow(window)
-
-    def about(self):
-        QMessageBox.about(self, "About Nodedge calculator",
-                "\"Your assumptions are your windows on the world. \n"
-                "Scrub them off every once in a while, or the light won't come in.\" \n "
-                "Isaac Asimov.")
 
     def createNodesDock(self):
         self.listWidget = QListWidget()
@@ -197,6 +201,10 @@ class MdiWindow(EditorWindow):
         else:
             self.writeSettings()
             event.accept()
+
+    def newFile(self):
+        subWindow = self.createMdiSubWindow()
+        subWindow.show()
 
     def openFile(self):
         filenames, filter = QFileDialog.getOpenFileNames(parent=self, caption="Open graph from file")
@@ -221,8 +229,8 @@ class MdiWindow(EditorWindow):
                         self.__logger.debug("Loading fail")
                         editor.close()
 
-    def findMdiSubWindow(self, filename):
-        for window in self.mdiArea.subWindowList():
-            if window.widget().filename == filename:
-                return window
-        return None
+    def about(self):
+        QMessageBox.about(self, "About Nodedge calculator",
+                "\"Your assumptions are your windows on the world. \n"
+                "Scrub them off every once in a while, or the light won't come in.\" \n "
+                "Isaac Asimov.")

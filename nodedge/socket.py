@@ -22,7 +22,7 @@ class Socket(Serializable):
         self.allowsMultiEdges = allowsMultiEdges
 
         self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.DEBUG)
+        self.__logger.setLevel(logging.INFO)
 
         self.graphicsSocket = GraphicsSocket(self, self.socketType)
         self.graphicsSocket.setPos(*self.node.getSocketPos(index, position))
