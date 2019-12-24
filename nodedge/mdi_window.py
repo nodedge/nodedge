@@ -1,4 +1,5 @@
 import os
+import typing
 
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -19,15 +20,14 @@ class MdiWindow(EditorWindow):
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
         super(MdiWindow, self).__init__()
-
-
-
-    def currentNodeEditorWidget(self):
+        
+    @property
+    def currentEditorWidget(self) -> EditorWidget:
         """ we're returning NodeEditorWidget here... """
         activeSubWindow = self.mdiArea.activeSubWindow()
-        if activeSubWindow:
-            return activeSubWindow.widget()
-        return None
+        if activeSubWindow and activeSubWindow.widget and isinstance(activeSubWindow.widget(), (EditorWidget)):
+            self.lastActiveEditorWidget = activeSubWindow.widget()
+        return typing.cast(EditorWidget, self.lastActiveEditorWidget)
 
     def initUI(self):
         self.companyName = "Nodedge"
@@ -171,8 +171,7 @@ class MdiWindow(EditorWindow):
     def updateEditMenu(self):
         self.__logger.debug("Update edit menu")
 
-        print("update Edit Menu")
-        active = self.currentNodeEditorWidget()
+        active = self.currentEditorWidget
         hasMdiChild = (active is not None)
 
         self.pasteAct.setEnabled(hasMdiChild)
@@ -223,6 +222,7 @@ class MdiWindow(EditorWindow):
 
     def newFile(self):
         subWindow = self.createMdiSubWindow()
+        typing.cast(EditorWidget, subWindow.widget()).addNodes()
         subWindow.show()
 
     def openFile(self):

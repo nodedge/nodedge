@@ -11,6 +11,7 @@ from nodedge.scene_clipboard import SceneClipboard
 from nodedge.graphics_scene import GraphicsScene
 from nodedge.utils import dumpException
 
+
 class Scene(Serializable):
     def __init__(self):
         super().__init__()

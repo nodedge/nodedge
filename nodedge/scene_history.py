@@ -2,6 +2,7 @@ import logging
 from nodedge.graphics_edge import GraphicsEdge
 from nodedge.utils import dumpException
 
+
 class SceneHistory:
     def __init__(self, scene, maxLength=32):
         self.scene = scene
@@ -16,6 +17,7 @@ class SceneHistory:
     def clear(self):
         self.currentStep = -1
         self.stack = []
+        self.scene.history.storeInitialStamp()
 
     def __str__(self):
         dlog = f"History [{self.currentStep} / {len(self.stack)}, max. {self._maxLength}]"

@@ -12,6 +12,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
 
     window = EditorWindow()
+    window.editorWidget.addNodes()
     module_directory = os.path.dirname(inspect.getfile(window.__class__))
 
     loadStyleSheet(f"{module_directory}/qss/nodestyle.qss")

@@ -21,16 +21,9 @@ class EditorWidget(QWidget):
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.layout)
 
-        # Create graphics view
         self.scene = Scene()
-
-        # Add content
-        self.addNodes()
-
         self.view = GraphicsView(self.scene.graphicsScene, self)
         self.layout.addWidget(self.view)
-
-        # self.addDebugContent()
 
     def hasName(self):
         return self.filename is not None
@@ -57,6 +50,8 @@ class EditorWidget(QWidget):
         edge1 = Edge(self.scene, node1.outputs[0], node2.inputs[1], edgeType=EDGE_TYPE_BEZIER)
         edge2 = Edge(self.scene, node2.outputs[0], node3.inputs[2], edgeType=EDGE_TYPE_BEZIER)
 
+        self.scene.history.storeInitialStamp()
+
     def isModified(self):
         return self.scene.isModified
 
@@ -75,12 +70,20 @@ class EditorWidget(QWidget):
     def hasSelectedItems(self):
         return self.selectedItems != []
 
+    def updateTitle(self):
+        self.setWindowTitle(self.userFriendlyFilename)
+
+    def newFile(self):
+        self.scene.clear()
+        self.filename = None
+        self.scene.history.clear()
+
     def loadFile(self, filename):
         QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
             self.scene.loadFromFile(filename)
             self.filename = filename
-            # Clear history
+            self.scene.history.clear()
             QApplication.restoreOverrideCursor()
             return True
         except InvalidFile as e:
@@ -101,5 +104,3 @@ class EditorWidget(QWidget):
 
         return True
 
-    def updateTitle(self):
-        self.setWindowTitle(self.userFriendlyFilename)
