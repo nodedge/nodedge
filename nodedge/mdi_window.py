@@ -16,18 +16,18 @@ import nodedge.qss.calculator_dark_resources
 
 class MdiWindow(EditorWindow):
     def __init__(self):
-        super(MdiWindow, self).__init__()
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
+        super(MdiWindow, self).__init__()
 
-    @property
-    def currentEditorWidget(self):
-        """ Returns Editor widget.
-        """
+
+
+    def currentNodeEditorWidget(self):
+        """ we're returning NodeEditorWidget here... """
         activeSubWindow = self.mdiArea.activeSubWindow()
         if activeSubWindow:
-            self.lastActiveEditorWidget = activeSubWindow.widget()
-        return self.lastActiveEditorWidget
+            return activeSubWindow.widget()
+        return None
 
     def initUI(self):
         self.companyName = "Nodedge"
@@ -40,19 +40,22 @@ class MdiWindow(EditorWindow):
         )
 
         self.mdiArea = QMdiArea()
-        self.mdiArea.setViewMode(QMdiArea.TabbedView)
-
         self.mdiArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.mdiArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.mdiArea.setViewMode(QMdiArea.TabbedView)
+        self.mdiArea.setDocumentMode(True)
+        self.mdiArea.setTabsClosable(True)
+        self.mdiArea.setTabsMovable(True)
         self.setCentralWidget(self.mdiArea)
 
         self.mdiArea.subWindowActivated.connect(self.updateMenus)
+
         self.windowMapper = QSignalMapper(self)
         self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
 
         self.createActions()
         self.createMenus()
-        self.createToolBars()
+        # self.createToolBars()
         self.createStatusBar()
         self.updateMenus()
 
@@ -98,16 +101,6 @@ class MdiWindow(EditorWindow):
                                 statusTip="Show the application's About box",
                                 triggered=self.about)
 
-    def createMenus(self):
-        super().createMenus()
-
-        self.windowMenu = self.menuBar().addMenu("&Window")
-        self.updateWindowMenu()
-        self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
-
-        self.helpMenu: QMenu = self.menuBar().addMenu("&Help")
-        self.helpMenu.addAction(self.aboutAct)
-
     def createToolBars(self):
         self.fileToolBar = self.addToolBar("File")
         self.fileToolBar.addAction(self.newAct)
@@ -119,13 +112,24 @@ class MdiWindow(EditorWindow):
         self.editToolBar.addAction(self.copyAct)
         self.editToolBar.addAction(self.pasteAct)
 
+    def createMenus(self):
+        super().createMenus()
+
+        self.windowMenu = self.menuBar().addMenu("&Window")
+        self.updateWindowMenu()
+        self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
+
+        self.helpMenu: QMenu = self.menuBar().addMenu("&Help")
+        self.helpMenu.addAction(self.aboutAct)
+
+        self.editMenu.aboutToShow.connect(self.updateEditMenu)
+
     def updateMenus(self):
         active = self.currentEditorWidget
-        hasMdiChild = self.currentEditorWidget is not None
+        hasMdiChild = active is not None
 
         self.saveAct.setEnabled(hasMdiChild)
         self.saveAsAct.setEnabled(hasMdiChild)
-        self.pasteAct.setEnabled(hasMdiChild)
         self.closeAct.setEnabled(hasMdiChild)
         self.closeAllAct.setEnabled(hasMdiChild)
         self.tileAct.setEnabled(hasMdiChild)
@@ -134,9 +138,7 @@ class MdiWindow(EditorWindow):
         self.previousAct.setEnabled(hasMdiChild)
         self.separatorAct.setVisible(hasMdiChild)
 
-        hasSelection = self.currentEditorWidget is not None #and self.activeMdiChild().hasSelection()
-        self.cutAct.setEnabled(hasSelection)
-        self.copyAct.setEnabled(hasSelection)
+        self.updateEditMenu()
 
     def updateWindowMenu(self):
         self.windowMenu.clear()
@@ -165,6 +167,23 @@ class MdiWindow(EditorWindow):
             action.setChecked(child is self.currentEditorWidget)
             action.triggered.connect(self.windowMapper.map)
             self.windowMapper.setMapping(action, window)
+
+    def updateEditMenu(self):
+        self.__logger.debug("Update edit menu")
+
+        print("update Edit Menu")
+        active = self.currentNodeEditorWidget()
+        hasMdiChild = (active is not None)
+
+        self.pasteAct.setEnabled(hasMdiChild)
+
+        hasSelection = hasMdiChild and active.hasSelectedItems()
+        self.cutAct.setEnabled(hasSelection)
+        self.copyAct.setEnabled(hasMdiChild and active.hasSelectedItems())
+        self.deleteAct.setEnabled(hasMdiChild and active.hasSelectedItems())
+
+        self.undoAct.setEnabled(hasMdiChild and active.canUndo)
+        self.redoAct.setEnabled(hasMdiChild and active.canRedo)
 
     def createMdiSubWindow(self):
         editor = MdiSubWindow()

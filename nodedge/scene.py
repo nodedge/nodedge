@@ -130,6 +130,9 @@ class Scene(Serializable):
             Edge(self).deserialize(edgeData, hashmap, restoreId)
         return True
 
+    def selectedItems(self):
+        return self.graphicsScene.selectedItems()
+
 
 class InvalidFile(Exception):
     pass

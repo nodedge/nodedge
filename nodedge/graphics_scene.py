@@ -32,7 +32,6 @@ class GraphicsScene(QGraphicsScene):
 
         self.setBackgroundBrush(self._color_background)
 
-
     def setScene(self, width, height):
         self.setSceneRect(-width // 2, -height // 2, width, height)
 

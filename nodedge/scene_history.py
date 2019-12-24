@@ -27,25 +27,27 @@ class SceneHistory:
     def storeInitialStamp(self):
         self.store("Initial history stamp")
 
+    @property
     def canUndo(self):
         return self.currentStep > 0
+
+    @property
+    def canRedo(self):
+        return self.currentStep + 1 < len(self.stack)
 
     def undo(self):
         self.__logger.debug("Undo")
 
-        if self.canUndo():
+        if self.canUndo:
             self.currentStep -= 1
             self.restore()
 
     def redo(self):
         self.__logger.debug("Redo")
 
-        if self.canRedo():
+        if self.canRedo:
             self.currentStep += 1
             self.restore()
-
-    def canRedo(self):
-        return self.currentStep + 1 < len(self.stack)
 
     def store(self, desc, sceneIsModified=True):
         self.__logger.debug(f"Storing \'{desc}\' in history with current step: {self.currentStep} / {len(self.stack)} "
@@ -53,7 +55,7 @@ class SceneHistory:
         stamp = self._createStamp(desc)
 
         # If the current step is not at the end of the stack.
-        if self.canRedo():
+        if self.canRedo:
             self.stack = self.stack[0:self.currentStep+1]
 
         # If history is outside of limits

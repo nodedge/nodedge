@@ -46,21 +46,34 @@ class EditorWidget(QWidget):
         return name + ("*" if self.isModified() else "")
 
     def addNodes(self):
-        inputs = [1, 2, 3]
-        outputs = [1]
-        node1 = Node(self.scene, "My Mew Node!", inputs=inputs, outputs=outputs)
-        node2 = Node(self.scene, "My Mew Node!", inputs=inputs, outputs=outputs)
-        node3 = Node(self.scene, "My Mew Node!", inputs=inputs, outputs=outputs)
+        node1 = Node(self.scene, "Node 1", inputs=[1, 2, 3], outputs=[1])
+        node2 = Node(self.scene, "Node 2", inputs=[1, 2, 3], outputs=[1])
+        node3 = Node(self.scene, "Node 3", inputs=[1, 2, 3], outputs=[1])
 
         node1.setPos(-350, -250)
-        node2.setPos(-75, -0)
-        node3.setPos(200, -50)
+        node2.setPos(-75, 100)
+        node3.setPos(200, -75)
 
         edge1 = Edge(self.scene, node1.outputs[0], node2.inputs[1], edgeType=EDGE_TYPE_BEZIER)
         edge2 = Edge(self.scene, node2.outputs[0], node3.inputs[2], edgeType=EDGE_TYPE_BEZIER)
 
     def isModified(self):
         return self.scene.isModified
+
+    @property
+    def canUndo(self):
+        return self.scene.history.canUndo
+
+    @property
+    def canRedo(self):
+        return self.scene.history.canRedo
+
+    @property
+    def selectedItems(self):
+        return self.scene.selectedItems()
+
+    def hasSelectedItems(self):
+        return self.selectedItems != []
 
     def loadFile(self, filename):
         QApplication.setOverrideCursor(Qt.WaitCursor)

@@ -35,5 +35,9 @@ class GraphicsSocket(QGraphicsItem):
         painter.drawEllipse(-self.radius, -self.radius, 2*self.radius, 2*self.radius)
 
     def boundingRect(self):
-        return QRectF(-self.radius - self.outline_width, -self.radius - self.outline_width,
-                      2*(self.radius + self.outline_width), 2*(self.radius + self.outline_width))
+        return QRectF(
+            - self.radius - self.outline_width,
+            - self.radius - self.outline_width,
+            2 * (self.radius + self.outline_width),
+            2 * (self.radius + self.outline_width),
+        )

@@ -5,7 +5,7 @@ EDGE_TYPE_BEZIER = 2
 
 
 class Edge(Serializable):
-    def __init__(self, scene, startSocket=None, endSocket=None, edgeType=EDGE_TYPE_DIRECT):
+    def __init__(self, scene, startSocket=None, endSocket=None, edgeType=EDGE_TYPE_BEZIER):
         super().__init__()
 
         self.__logger = logging.getLogger(__file__)
