@@ -65,7 +65,7 @@ class EditorWidget(QWidget):
 
     @property
     def selectedItems(self):
-        return self.scene.selectedItems()
+        return self.scene.selectedItems
 
     def hasSelectedItems(self):
         return self.selectedItems != []
@@ -83,7 +83,8 @@ class EditorWidget(QWidget):
         try:
             self.scene.loadFromFile(filename)
             self.filename = filename
-            self.scene.history.clear()
+            # Don't store initial stamp because the file has still not been changed.
+            self.scene.history.clear(storeInitialStamp=False)
             QApplication.restoreOverrideCursor()
             return True
         except InvalidFile as e:

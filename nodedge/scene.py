@@ -29,9 +29,17 @@ class Scene(Serializable):
 
         self._isModified = False
         self.isModified = False
+
+        self._lastSelectedItems = []
+
         self._hasBeenModifiedListeners = []
+        self._itemSelectedListeners = []
+        self._itemsDeselectedListeners = []
 
         self.initUI()
+
+        self.graphicsScene.itemSelected.connect(self.onItemSelected)
+        self.graphicsScene.itemsDeselected.connect(self.onItemsDeselected)
 
     @property
     def isModified(self):
@@ -40,6 +48,7 @@ class Scene(Serializable):
     @isModified.setter
     def isModified(self, value):
         if not self.isModified and value:
+            # Set it now, because it will be read during the next for loop.
             self._isModified = value
 
             # Call all registered listeners
@@ -48,12 +57,61 @@ class Scene(Serializable):
 
         self._isModified = value
 
-    def addHasBeenModifiedListener(self, callback):
-        self._hasBeenModifiedListeners.append(callback)
+    @property
+    def lastSelectedItems(self):
+        return self._lastSelectedItems
+
+    @lastSelectedItems.setter
+    def lastSelectedItems(self, value):
+        if value != self._lastSelectedItems:
+            self._lastSelectedItems = value
 
     def initUI(self):
         self.graphicsScene = GraphicsScene(self)
         self.graphicsScene.setScene(self.sceneWidth, self.sceneHeight)
+
+    @property
+    def selectedItems(self):
+        return self.graphicsScene.selectedItems()
+
+    def onItemSelected(self):
+        selectedItems = self.selectedItems
+        if selectedItems != self._lastSelectedItems:
+            self.lastSelectedItems = selectedItems
+            self.history.store("Change selection")
+
+            for callback in self._itemSelectedListeners:
+                callback()
+        self.__logger.debug("Everything done after item has been selected")
+
+    def onItemsDeselected(self):
+        self.resetLastSelectedStates()
+        if self.lastSelectedItems:
+            self.lastSelectedItems = []
+            self.history.store("Deselect everything")
+
+        self.__logger.debug("Everything done after all items have been deselected")
+
+        for callback in self._itemsDeselectedListeners:
+            callback()
+
+    def addHasBeenModifiedListener(self, callback):
+        self._hasBeenModifiedListeners.append(callback)
+
+    def addItemSelectedListener(self, callback):
+        self._itemSelectedListeners.append(callback)
+
+    def addItemsDeselectedListener(self, callback):
+        self._itemsDeselectedListeners.append(callback)
+
+    def resetLastSelectedStates(self):
+        """"Custom flag to detect node or edge has been selected"""
+
+        for node in self.nodes:
+            node.graphicsNode.selectedState = False
+
+        for edge in self.edges:
+            edge.graphicsEdge.selectedState = False
 
     def addNode(self, node):
         self.nodes.append(node)
@@ -130,9 +188,6 @@ class Scene(Serializable):
         for edgeData in data["edges"]:
             Edge(self).deserialize(edgeData, hashmap, restoreId)
         return True
-
-    def selectedItems(self):
-        return self.graphicsScene.selectedItems()
 
 
 class InvalidFile(Exception):

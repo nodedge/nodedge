@@ -31,8 +31,8 @@ class GraphicsView(QGraphicsView):
         self.mode = MODE_NOOP
         self.lastLMBClickScenePos = None
         self.edgeStartDragThreshold = 10
-
         self.editingFlag = False
+        self.rubberBandDraggingRectangle = False
 
         self.dragEdge: (Edge, None) = None
 
@@ -89,24 +89,10 @@ class GraphicsView(QGraphicsView):
         else:
             super().mouseReleaseEvent(event)
 
-    def middleMouseButtonPress(self, event):
-        release_event = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
-                                    Qt.LeftButton, Qt.NoButton, event.modifiers())
-        super().mouseReleaseEvent(release_event)
-        self.setDragMode(QGraphicsView.ScrollHandDrag)
-        fake_event = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
-                                 Qt.LeftButton, event.buttons() | Qt.LeftButton, event.modifiers())
-        super().mousePressEvent(fake_event)
-
-    def middleMouseButtonRelease(self, event):
-        fake_event = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
-                                 Qt.LeftButton, event.buttons() & -Qt.LeftButton, event.modifiers())
-        super().mouseReleaseEvent(fake_event)
-        self.setDragMode(QGraphicsView.RubberBandDrag)
-
     def leftMouseButtonPress(self, event):
 
         item = self.getItemAtClick(event)
+
         self.lastLMBClickScenePos = self.mapToScene(event.pos())
 
         self.__logger.debug("LMB "+self.debugModifiers(event)+f"{item}")
@@ -141,17 +127,10 @@ class GraphicsView(QGraphicsView):
                 super().mouseReleaseEvent(fakeEvent)
                 QApplication.setOverrideCursor(Qt.CrossCursor)
                 return
+            else:
+                self.rubberBandDraggingRectangle = True
 
         super().mousePressEvent(event)
-
-        # Store in history after executing transmitting event to super, to consider new selection in the history stamp.
-        if self.dragMode() == QGraphicsView.RubberBandDrag:
-            self.graphicsScene.scene.history.store("Change selection", sceneIsModified=False)
-
-    def dragEdgeStart(self, item):
-        self.__logger.info("Assign socket.")
-        self.dragStartSocket = item.socket
-        self.dragEdge = Edge(self.graphicsScene.scene, item.socket, edgeType=EDGE_TYPE_BEZIER)
 
     def leftMouseButtonRelease(self, event):
         item = self.getItemAtClick(event)
@@ -179,7 +158,89 @@ class GraphicsView(QGraphicsView):
             self.mode = MODE_NOOP
             return
 
+        if self.rubberBandDraggingRectangle:
+            self.rubberBandDraggingRectangle = False
+            # self.graphicsScene.scene.history.store("Change selection", sceneIsModified=False)
+            selectedItems = self.graphicsScene.selectedItems()
+            if not selectedItems:
+                self.graphicsScene.itemsDeselected.emit()
+
+            if selectedItems != self.graphicsScene.scene.lastSelectedItems:
+                self.graphicsScene.itemSelected.emit()
+            return
+
         super().mouseReleaseEvent(event)
+
+    def middleMouseButtonPress(self, event):
+        release_event = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
+                                    Qt.LeftButton, Qt.NoButton, event.modifiers())
+        super().mouseReleaseEvent(release_event)
+        self.setDragMode(QGraphicsView.ScrollHandDrag)
+        fake_event = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
+                                 Qt.LeftButton, event.buttons() | Qt.LeftButton, event.modifiers())
+        super().mousePressEvent(fake_event)
+
+    def middleMouseButtonRelease(self, event):
+        fake_event = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
+                                 Qt.LeftButton, event.buttons() & -Qt.LeftButton, event.modifiers())
+        super().mouseReleaseEvent(fake_event)
+        self.setDragMode(QGraphicsView.RubberBandDrag)
+
+    def rightMouseButtonPress(self, event):
+        item = self.getItemAtClick(event)
+
+        if item is None:
+            self.__logger.info(self)
+        elif type(item) is GraphicsSocket:
+            self.__logger.info(f"\n||||{item.socket} connected to \n||||{item.socket.edges}")
+        elif type(item) in [GraphicsEdgeDirect, GraphicsEdgeBezier]:
+            log = f"\n||||{item.edge} connects"
+            log += f"\n||||{item.edge.startSocket.node} \n||||{item.edge.endSocket.node}"
+
+            self.__logger.info(log)
+
+        super().mousePressEvent(event)
+
+    def rightMouseButtonRelease(self, event):
+        super().mouseReleaseEvent(event)
+
+    def dragEdgeStart(self, item):
+        self.__logger.info("Assign socket.")
+        self.dragStartSocket = item.socket
+        self.dragEdge = Edge(self.graphicsScene.scene, item.socket, edgeType=EDGE_TYPE_BEZIER)
+
+    def dragEdgeEnd(self, item):
+        """
+        :param item: selected QItem
+        :return: True if we skip the rest of the code. False otherwise.
+        """
+        self.mode = MODE_NOOP
+        self.__logger.debug(f"{self.mode = }")
+
+        self.dragEdge.remove()
+        self.dragEdge = None
+
+        if type(item) is GraphicsSocket:
+            if item.socket != self.dragStartSocket:
+
+                if not self.dragStartSocket.allowsMultiEdges:
+                    self.dragStartSocket.removeAllEdges()
+
+                if not item.socket.allowsMultiEdges:
+                    item.socket.removeAllEdges()
+
+                newEdge = Edge(self.graphicsScene.scene, self.dragStartSocket, item.socket, edgeType=EDGE_TYPE_BEZIER)
+                item.socket.addEdge(newEdge)
+                self.__logger.debug(f"New edge created: {newEdge} connecting"
+                                    f"\n|||| {newEdge.startSocket} to"
+                                    f"\n |||| {newEdge.endSocket}")
+
+                self.graphicsScene.scene.history.store("Create a new edge by dragging")
+                self.__logger.info("Socket assigned.")
+                return True
+
+        self.__logger.debug("Drag edge successful.")
+        return False
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
         if self.mode == MODE_EDGE_DRAG:
@@ -224,96 +285,6 @@ class GraphicsView(QGraphicsView):
         else:
             super().keyPressEvent(event)
 
-    def cutIntersectingEdges(self):
-        for ix in range(len(self.cutline.linePoints)-1):
-            p1 = self.cutline.linePoints[ix]
-            p2 = self.cutline.linePoints[ix+1]
-
-            for edge in self.graphicsScene.scene.edges:
-                if edge.graphicsEdge.intersectsWith(p1, p2):
-                    edge.remove()
-
-        self.graphicsScene.scene.history.store("Delete cut edges.")
-
-    def deleteSelected(self):
-        for item in self.graphicsScene.selectedItems():
-            if isinstance(item, GraphicsEdge):
-                item.edge.remove()
-            elif hasattr(item, "node"):
-                item.node.remove()
-
-        self.graphicsScene.scene.history.store("Delete selected objects.")
-
-    def rightMouseButtonPress(self, event):
-        item = self.getItemAtClick(event)
-
-        if item is None:
-            self.__logger.info(self)
-        elif type(item) is GraphicsSocket:
-            self.__logger.info(f"\n||||{item.socket} connected to \n||||{item.socket.edges}")
-        elif type(item) in [GraphicsEdgeDirect, GraphicsEdgeBezier]:
-            log = f"\n||||{item.edge} connects"
-            log += f"\n||||{item.edge.startSocket.node} \n||||{item.edge.endSocket.node}"
-
-            self.__logger.info(log)
-
-        super().mousePressEvent(event)
-
-    def rightMouseButtonRelease(self, event):
-        super().mouseReleaseEvent(event)
-
-    def getItemAtClick(self, event):
-        """" Return the object on which the user has clicked/released with a mouse button."""
-        pos = event.pos()
-        obj = self.itemAt(pos)
-        return obj
-
-    def distanceBetweenClickAndReleaseIsOff(self, event):
-        """ Measure if we are too far from the last LMB click scene position. """
-        newLMBClickPos = self.mapToScene(event.pos())
-        distScene = newLMBClickPos - self.lastLMBClickScenePos
-        edgeStartDragThresholdSquared = self.edgeStartDragThreshold ** 2
-        distSceneSquared = distScene.x() * distScene.x() + distScene.y() * distScene.y()
-        if distSceneSquared < edgeStartDragThresholdSquared:
-            self.__logger.debug(f"Squared distance between new and last LMB click: "
-                                f"{distSceneSquared} < {edgeStartDragThresholdSquared}")
-            return False
-        else:
-            return True
-
-    def dragEdgeEnd(self, item):
-        """
-        :param item: selected QItem
-        :return: True if we skip the rest of the code. False otherwise.
-        """
-        self.mode = MODE_NOOP
-        self.__logger.debug(f"{self.mode = }")
-
-        self.dragEdge.remove()
-        self.dragEdge = None
-
-        if type(item) is GraphicsSocket:
-            if item.socket != self.dragStartSocket:
-
-                if not self.dragStartSocket.allowsMultiEdges:
-                    self.dragStartSocket.removeAllEdges()
-
-                if not item.socket.allowsMultiEdges:
-                    item.socket.removeAllEdges()
-
-                newEdge = Edge(self.graphicsScene.scene, self.dragStartSocket, item.socket, edgeType=EDGE_TYPE_BEZIER)
-                item.socket.addEdge(newEdge)
-                self.__logger.debug(f"New edge created: {newEdge} connecting"
-                                    f"\n|||| {newEdge.startSocket} to"
-                                    f"\n |||| {newEdge.endSocket}")
-
-                self.graphicsScene.scene.history.store("Create a new edge by dragging")
-                self.__logger.info("Socket assigned.")
-                return True
-
-        self.__logger.debug("Drag edge successful.")
-        return False
-
     def wheelEvent(self, event):
         # Compute zoom factor
         zoomOutFactor = 1. / self.zoomInFactor
@@ -337,6 +308,45 @@ class GraphicsView(QGraphicsView):
         # Set scene scale
         if not clamped or self.zoomClamp is False:
             self.scale(zoomFactor, zoomFactor)
+
+    def cutIntersectingEdges(self):
+        for ix in range(len(self.cutline.linePoints)-1):
+            p1 = self.cutline.linePoints[ix]
+            p2 = self.cutline.linePoints[ix+1]
+
+            for edge in self.graphicsScene.scene.edges:
+                if edge.graphicsEdge.intersectsWith(p1, p2):
+                    edge.remove()
+
+        self.graphicsScene.scene.history.store("Delete cut edges.")
+
+    def deleteSelected(self):
+        for item in self.graphicsScene.selectedItems():
+            if isinstance(item, GraphicsEdge):
+                item.edge.remove()
+            elif hasattr(item, "node"):
+                item.node.remove()
+
+        self.graphicsScene.scene.history.store("Delete selected objects.")
+
+    def getItemAtClick(self, event):
+        """" Return the object on which the user has clicked/released with a mouse button."""
+        pos = event.pos()
+        obj = self.itemAt(pos)
+        return obj
+
+    def distanceBetweenClickAndReleaseIsOff(self, event):
+        """ Measure if we are too far from the last LMB click scene position. """
+        newLMBClickPos = self.mapToScene(event.pos())
+        distScene = newLMBClickPos - self.lastLMBClickScenePos
+        edgeStartDragThresholdSquared = self.edgeStartDragThreshold ** 2
+        distSceneSquared = distScene.x() * distScene.x() + distScene.y() * distScene.y()
+        if distSceneSquared < edgeStartDragThresholdSquared:
+            self.__logger.debug(f"Squared distance between new and last LMB click: "
+                                f"{distSceneSquared} < {edgeStartDragThresholdSquared}")
+            return False
+        else:
+            return True
 
     def debugModifiers(self, event):
         dlog = ""

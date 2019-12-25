@@ -6,6 +6,9 @@ import logging
 
 
 class GraphicsScene(QGraphicsScene):
+    itemSelected = pyqtSignal()
+    itemsDeselected = pyqtSignal()
+
     def __init__(self, scene, parent=None):
         super().__init__(parent)
 

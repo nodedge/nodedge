@@ -182,46 +182,57 @@ class EditorWindow(QMainWindow):
         self.updateTitle()
         return True
 
+    def closeEvent(self, event):
+        if self.maybeSave():
+            event.accept()
+        else:
+            event.ignore()
+
     def undo(self):
         self.__logger.debug("Undoing last action")
-        self.currentEditorWidget.scene.history.undo()
+        if self.currentEditorWidget:
+            self.currentEditorWidget.scene.history.undo()
 
     def redo(self):
         self.__logger.debug("Redoing last action")
-        self.currentEditorWidget.scene.history.redo()
+        if self.currentEditorWidget:
+            self.currentEditorWidget.scene.history.redo()
 
     def delete(self):
         self.__logger.debug("Deleting selected items")
-        self.currentEditorWidget.view.deleteSelected()
+        if self.currentEditorWidget:
+            self.currentEditorWidget.view.deleteSelected()
 
     def cut(self):
         self.__logger.debug("Cutting selected items")
-        data = self.currentEditorWidget.scene.clipboard.serializeSelected(delete=True)
-        strData = json.dumps(data, indent=4)
-        QApplication.instance().clipboard().setText(strData)
+        if self.currentEditorWidget:
+            data = self.currentEditorWidget.scene.clipboard.serializeSelected(delete=True)
+            strData = json.dumps(data, indent=4)
+            QApplication.instance().clipboard().setText(strData)
 
     def copy(self):
         self.__logger.debug("Copying selected items")
-        data = self.currentEditorWidget.scene.clipboard.serializeSelected(delete=False)
-        strData = json.dumps(data, indent=4)
-        self.__logger.debug(strData)
-        QApplication.instance().clipboard().setText(strData)
+        if self.currentEditorWidget:
+            data = self.currentEditorWidget.scene.clipboard.serializeSelected(delete=False)
+            strData = json.dumps(data, indent=4)
+            self.__logger.debug(strData)
+            QApplication.instance().clipboard().setText(strData)
 
     def paste(self):
         self.__logger.debug("Pasting saved items in clipboard")
-        rawData = QApplication.instance().clipboard().text()
+        if self.currentEditorWidget:
+            rawData = QApplication.instance().clipboard().text()
+            try:
+                data = json.loads(rawData)
+            except ValueError as e:
+                self.__logger.debug(f"Pasting of not valid json data: {e}")
+                return
 
-        try:
-            data = json.loads(rawData)
-        except ValueError as e:
-            self.__logger.debug(f"Pasting of not valid json data: {e}")
-            return
+            # Check if json data are correct
+            if "nodes" not in data:
+                self.__logger.debug("JSON does not contain any nodes!")
 
-        # Check if json data are correct
-        if "nodes" not in data:
-            self.__logger.debug("JSON does not contain any nodes!")
-
-        self.currentEditorWidget.scene.clipboard.deserialize(data)
+            self.currentEditorWidget.scene.clipboard.deserialize(data)
 
     def maybeSave(self):
         if not self.currentEditorWidget.isModified():

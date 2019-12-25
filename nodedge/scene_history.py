@@ -10,14 +10,20 @@ class SceneHistory:
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.DEBUG)
 
+        self._historyModifiedListeners = []
+
         self._maxLength = maxLength
         self.currentStep = -1
         self.stack = []
 
-    def clear(self):
+    def addHistoryModifiedListener(self, callback):
+        self._historyModifiedListeners.append(callback)
+
+    def clear(self, storeInitialStamp=True):
         self.currentStep = -1
         self.stack = []
-        self.scene.history.storeInitialStamp()
+        if storeInitialStamp:
+            self.scene.history.storeInitialStamp()
 
     def __str__(self):
         dlog = f"History [{self.currentStep} / {len(self.stack)}, max. {self._maxLength}]"
@@ -43,6 +49,7 @@ class SceneHistory:
         if self.canUndo:
             self.currentStep -= 1
             self.restore()
+            self.scene.isModified = True
 
     def redo(self):
         self.__logger.debug("Redo")
@@ -50,6 +57,7 @@ class SceneHistory:
         if self.canRedo:
             self.currentStep += 1
             self.restore()
+            self.scene.isModified = True
 
     def store(self, desc, sceneIsModified=True):
         self.__logger.debug(f"Storing \'{desc}\' in history with current step: {self.currentStep} / {len(self.stack)} "
@@ -71,11 +79,18 @@ class SceneHistory:
 
         self.scene.isModified = sceneIsModified
 
+        # Always trigger history modified event.
+        for callback in self._historyModifiedListeners:
+            callback()
+
     def restore(self):
         self.__logger.debug(f"Restoring history with current step: {self.currentStep} / {len(self.stack)} "
                             f"(max. {self._maxLength})")
 
         self._restoreStamp(self.stack[self.currentStep])
+
+        for callback in self._historyModifiedListeners:
+            callback()
 
     def _createStamp(self, desc):
         selectedObjects = {

@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
 from nodedge.editor_window import EditorWindow
-from nodedge.utils import loadStyleSheets
+from nodedge.utils import loadStyleSheets, dumpException
 from nodedge.editor_widget import EditorWidget
 from nodedge.mdi_sub_window import MdiSubWindow
 import logging
@@ -31,7 +31,9 @@ class MdiWindow(EditorWindow):
 
     def initUI(self):
         self.companyName = "Nodedge"
-        self.productName = "Calculator"
+        self.productName = "Nodedge"
+        self.icon = QIcon(os.path.join(os.path.dirname(__file__), 'resources/icon.png'))
+        self.setWindowIcon(self.icon)
 
         self.styleSheetFilename = os.path.join(os.path.dirname(__file__), "qss/calculator.qss")
         loadStyleSheets(
@@ -63,7 +65,7 @@ class MdiWindow(EditorWindow):
 
         self.readSettings()
 
-        self.setWindowTitle("Calculator")
+        self.setWindowTitle(self.productName)
 
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
@@ -169,25 +171,43 @@ class MdiWindow(EditorWindow):
             self.windowMapper.setMapping(action, window)
 
     def updateEditMenu(self):
-        self.__logger.debug("Update edit menu")
+        try:
+            self.__logger.debug("Update edit menu")
 
-        active = self.currentEditorWidget
-        hasMdiChild = (active is not None)
+            active = self.currentEditorWidget
+            hasMdiChild = (active is not None)
 
-        self.pasteAct.setEnabled(hasMdiChild)
+            self.pasteAct.setEnabled(hasMdiChild)
 
-        hasSelection = hasMdiChild and active.hasSelectedItems()
-        self.cutAct.setEnabled(hasSelection)
-        self.copyAct.setEnabled(hasMdiChild and active.hasSelectedItems())
-        self.deleteAct.setEnabled(hasMdiChild and active.hasSelectedItems())
+            hasSelection = hasMdiChild and active.hasSelectedItems()
+            self.cutAct.setEnabled(hasSelection)
+            self.copyAct.setEnabled(hasMdiChild and active.hasSelectedItems())
+            self.deleteAct.setEnabled(hasMdiChild and active.hasSelectedItems())
 
-        self.undoAct.setEnabled(hasMdiChild and active.canUndo)
-        self.redoAct.setEnabled(hasMdiChild and active.canRedo)
+            self.undoAct.setEnabled(hasMdiChild and active.canUndo)
+            self.redoAct.setEnabled(hasMdiChild and active.canRedo)
+        except Exception as e:
+            dumpException(e)
 
-    def createMdiSubWindow(self):
-        editor = MdiSubWindow()
+    def createMdiSubWindow(self, childWidget=None):
+        editor = childWidget if childWidget is not None else MdiSubWindow()
         subWindow = self.mdiArea.addSubWindow(editor)
+
+        icon = QIcon(".")
+        subWindow.setWindowIcon(icon)
+        editor.scene.history.addHistoryModifiedListener(self.updateEditMenu)
+        editor.addCloseEventListener(self.onSubWindowClosed)
+
         return subWindow
+
+    def onSubWindowClosed(self, widget, event):
+        subWindowToBeDeleted = self.findMdiSubWindow(widget.filename)
+        self.mdiArea.setActiveSubWindow(subWindowToBeDeleted)
+
+        if self.maybeSave():
+            event.accept()
+        else:
+            event.ignore()
 
     def findMdiSubWindow(self, filename):
         for window in self.mdiArea.subWindowList():
@@ -242,7 +262,7 @@ class MdiWindow(EditorWindow):
                         self.__logger.debug("Loading success")
                         self.statusBar().showMessage(f"File {filename} loaded.", 5000)
                         editor.updateTitle()
-                        subWindow = self.mdiArea.addSubWindow(editor)
+                        subWindow = self.createMdiSubWindow(editor)
                         subWindow.show()
                     else:
                         self.__logger.debug("Loading fail")

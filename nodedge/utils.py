@@ -13,7 +13,7 @@ def dumpException(e):
 
 
 def loadStyleSheet(fileName):
-    print(f"Style loading: {fileName}")
+    logging.info(f"Style loading: {fileName}")
     file = QFile(fileName)
     file.open(QFile.ReadOnly or QFile.Text)
     styleSheet = file.readAll()

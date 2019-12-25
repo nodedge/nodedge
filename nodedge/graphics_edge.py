@@ -10,33 +10,66 @@ class GraphicsEdge(QGraphicsPathItem):
         super().__init__(parent)
         self.edge = edge
 
+        self.__logger = logging.getLogger(__file__)
+        self.__logger.setLevel(logging.INFO)
+
+        self._posSource = [0, 0]
+        self._posDestination = [200, 100]
+
+        self._lastSelectedState = False
+
+        self.initUI()
+
+    @property
+    def selectedState(self):
+        return self._lastSelectedState
+
+    @selectedState.setter
+    def selectedState(self, value):
+        self._lastSelectedState = value
+
+    def initUI(self):
+        self.initStyle()
+        self.setFlag(QGraphicsItem.ItemIsSelectable)
+
+    def initStyle(self):
         self._color = QColor("#001000")
         self._colorSelected = QColor("#00ff00")
+
         self._pen = QPen(self._color)
         self._pen.setWidthF(2.)
+
         self._penSelected = QPen(self._colorSelected)
         self._penSelected.setWidthF(2.)
+
         self._penDragging = QPen(self._color)
         self._penDragging.setWidthF(2.)
         self._penDragging.setStyle(Qt.DashLine)
 
-        self.setFlag(QGraphicsItem.ItemIsSelectable)
-
         self.setZValue(-1)
-
-        self.posSource = [0, 0]
-        self.posDestination = [200, 100]
 
         self._controlPointRoundness = 100
 
     def setSource(self, x, y):
-        self.posSource = [x, y]
+        self._posSource = [x, y]
 
     def setDestination(self, x, y):
-        self.posDestination = [x, y]
+        self._posDestination = [x, y]
 
     def boundingRect(self):
         return self.shape().boundingRect()
+
+    def onSelected(self):
+        self.__logger.debug("")
+        self.edge.scene.graphicsScene.itemSelected.emit()
+
+    def mouseReleaseEvent(self, event: 'QGraphicsSceneMouseEvent') -> None:
+        super().mouseReleaseEvent(event)
+        isSelected = self.isSelected()
+        if self._lastSelectedState != isSelected:
+            self.edge.scene.resetLastSelectedStates()
+            self._lastSelectedState = isSelected
+            self.onSelected()
 
     def shape(self):
         return self.calcPath()
@@ -66,15 +99,15 @@ class GraphicsEdge(QGraphicsPathItem):
 
 class GraphicsEdgeDirect(GraphicsEdge):
     def calcPath(self):
-        path = QPainterPath(QPointF(self.posSource[0], self.posSource[1]))
-        path.lineTo(self.posDestination[0], self.posDestination[1])
+        path = QPainterPath(QPointF(self._posSource[0], self._posSource[1]))
+        path.lineTo(self._posDestination[0], self._posDestination[1])
         return path
 
 
 class GraphicsEdgeBezier(GraphicsEdge):
     def calcPath(self):
-        s = self.posSource
-        d = self.posDestination
+        s = self._posSource
+        d = self._posDestination
         dist = (d[0] - s[0]) * 0.5
 
         cpx_s = dist
@@ -93,10 +126,10 @@ class GraphicsEdgeBezier(GraphicsEdge):
                 cpy_d = verticalDistance / (1e-4 + (math.fabs(verticalDistance))) * self._controlPointRoundness
                 cpy_s = -cpy_d
 
-        path = QPainterPath(QPointF(self.posSource[0], self.posSource[1]))
-        path.cubicTo(s[0]+cpx_s, s[1]+cpy_s,
-                     d[0]+cpx_d, d[1]+cpy_d,
-                     self.posDestination[0], self.posDestination[1])
+        path = QPainterPath(QPointF(self._posSource[0], self._posSource[1]))
+        path.cubicTo(s[0] + cpx_s, s[1] + cpy_s,
+                     d[0] + cpx_d, d[1] + cpy_d,
+                     self._posDestination[0], self._posDestination[1])
         return path
 
 

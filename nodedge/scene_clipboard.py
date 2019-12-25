@@ -106,6 +106,6 @@ class SceneClipboard:
                 newEdge.deserialize(edgeData, hashmap, restoreId=False)
 
         # Store history
-        self.scene.history.store("Pasted items in scene.")
+        self.scene.history.store("Paste items in scene.")
 
         self.__logger.debug(f"Deserializing from clipboard: {data}")
