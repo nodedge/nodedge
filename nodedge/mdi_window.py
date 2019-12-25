@@ -9,6 +9,7 @@ from nodedge.editor_window import EditorWindow
 from nodedge.utils import loadStyleSheets, dumpException
 from nodedge.editor_widget import EditorWidget
 from nodedge.mdi_sub_window import MdiSubWindow
+from nodedge.drag_listbox import DragListbox
 import logging
 
 # Images for the dark skin
@@ -55,13 +56,14 @@ class MdiWindow(EditorWindow):
         self.windowMapper = QSignalMapper(self)
         self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
 
+        self.createNodesDock()
+
         self.createActions()
         self.createMenus()
         # self.createToolBars()
         self.createStatusBar()
         self.updateMenus()
 
-        self.createNodesDock()
 
         self.readSettings()
 
@@ -70,6 +72,7 @@ class MdiWindow(EditorWindow):
     def createStatusBar(self):
         self.statusBar().showMessage("Ready")
 
+    # noinspection PyArgumentList
     def createActions(self):
         super().createActions()
 
@@ -95,6 +98,11 @@ class MdiWindow(EditorWindow):
                                    shortcut=QKeySequence.PreviousChild,
                                    statusTip="Move the focus to the previous window",
                                    triggered=self.mdiArea.activatePreviousSubWindow)
+
+        self.nodeToolbarAct = QAction("&Node toolbar", self,
+                                      shortcut="ctrl+alt+n",
+                                      statusTip="Enable/Disable the node toolbar",
+                                      triggered=self.onNodesToolbarTriggered)
 
         self.separatorAct = QAction(self)
         self.separatorAct.setSeparator(True)
@@ -144,11 +152,20 @@ class MdiWindow(EditorWindow):
 
     def updateWindowMenu(self):
         self.windowMenu.clear()
+
+        nodesToolbar = self.windowMenu.addAction("Nodes toolbar") # self.nodeToolbarAct
+        nodesToolbar.setCheckable(True)
+        nodesToolbar.setChecked(self.nodesDock.isVisible())
+        nodesToolbar.triggered.connect(self.onNodesToolbarTriggered)
+
+        self.windowMenu.addSeparator()
         self.windowMenu.addAction(self.closeAct)
         self.windowMenu.addAction(self.closeAllAct)
+
         self.windowMenu.addSeparator()
         self.windowMenu.addAction(self.tileAct)
         self.windowMenu.addAction(self.cascadeAct)
+
         self.windowMenu.addSeparator()
         self.windowMenu.addAction(self.nextAct)
         self.windowMenu.addAction(self.previousAct)
@@ -220,14 +237,10 @@ class MdiWindow(EditorWindow):
             self.mdiArea.setActiveSubWindow(window)
 
     def createNodesDock(self):
-        self.listWidget = QListWidget()
-        self.listWidget.addItem("Add")
-        self.listWidget.addItem("Substract")
-        self.listWidget.addItem("Multiply")
-        self.listWidget.addItem("Divide")
+        self.nodesListWidget = DragListbox()
 
         self.nodesDock = QDockWidget("Nodes")
-        self.nodesDock.setWidget(self.listWidget)
+        self.nodesDock.setWidget(self.nodesListWidget)
         self.nodesDock.setFloating(False)
 
         self.addDockWidget(Qt.RightDockWidgetArea, self.nodesDock)
@@ -273,3 +286,11 @@ class MdiWindow(EditorWindow):
                 "\"Your assumptions are your windows on the world. \n"
                 "Scrub them off every once in a while, or the light won't come in.\" \n "
                 "Isaac Asimov.")
+
+    def onNodesToolbarTriggered(self):
+        self.__logger.debug("")
+
+        if self.nodesDock.isVisible():
+            self.nodesDock.hide()
+        else:
+            self.nodesDock.show()
