@@ -103,6 +103,8 @@ class MdiWindow(EditorWindow):
                                       shortcut="ctrl+alt+n",
                                       statusTip="Enable/Disable the node toolbar",
                                       triggered=self.onNodesToolbarTriggered)
+        self.nodeToolbarAct.setCheckable(True)
+        self.nodeToolbarAct.setChecked(self.nodesDock.isVisible())
 
         self.separatorAct = QAction(self)
         self.separatorAct.setSeparator(True)
@@ -153,10 +155,7 @@ class MdiWindow(EditorWindow):
     def updateWindowMenu(self):
         self.windowMenu.clear()
 
-        nodesToolbar = self.windowMenu.addAction("Nodes toolbar") # self.nodeToolbarAct
-        nodesToolbar.setCheckable(True)
-        nodesToolbar.setChecked(self.nodesDock.isVisible())
-        nodesToolbar.triggered.connect(self.onNodesToolbarTriggered)
+        self.windowMenu.addAction(self.nodeToolbarAct)
 
         self.windowMenu.addSeparator()
         self.windowMenu.addAction(self.closeAct)

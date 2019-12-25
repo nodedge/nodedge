@@ -39,6 +39,9 @@ class GraphicsView(QGraphicsView):
         self.cutline = GraphicsCutline()
         self.graphicsScene.addItem(self.cutline)
 
+        self._dragEnterListeners = []
+        self._dropListeners = []
+
     def __repr__(self):
         rep = f"\n||||Scene:"
         rep += f"\n||||Nodes:"
@@ -64,6 +67,22 @@ class GraphicsView(QGraphicsView):
 
         self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
         self.setDragMode(QGraphicsView.RubberBandDrag)
+
+        self.setAcceptDrops(True)
+
+    def dragEnterEvent(self, event: QDragEnterEvent) -> None:
+        for callback in self._dragEnterListeners:
+            callback(event)
+
+    def dropEvent(self, event: QDropEvent) -> None:
+        for callback in self._dropListeners:
+            callback(event)
+
+    def addDragEnterListener(self, callback):
+        self._dragEnterListeners.append(callback)
+
+    def addDropListener(self, callback):
+        self._dropListeners.append(callback)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MiddleButton:

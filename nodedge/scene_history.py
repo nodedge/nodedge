@@ -8,7 +8,7 @@ class SceneHistory:
         self.scene = scene
 
         self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.DEBUG)
+        self.__logger.setLevel(logging.INFO)
 
         self._historyModifiedListeners = []
 

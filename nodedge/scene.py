@@ -104,6 +104,12 @@ class Scene(Serializable):
     def addItemsDeselectedListener(self, callback):
         self._itemsDeselectedListeners.append(callback)
 
+    def addDragEnterListener(self, callback):
+        self.graphicsScene.views()[0].addDragEnterListener(callback)
+
+    def addDropListener(self, callback):
+        self.graphicsScene.views()[0].addDropListener(callback)
+
     def resetLastSelectedStates(self):
         """"Custom flag to detect node or edge has been selected"""
 

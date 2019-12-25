@@ -23,7 +23,7 @@ class GraphicsScene(QGraphicsScene):
         self.scene_width = 64000
         self.scene_height = 64000
 
-        self._color_background = QColor("#eaeaea")
+        self._color_background = QColor("#242424")
         self._color_light = QColor("#ffffff")
         self._color_dark = QColor("#ffffff")
 
@@ -34,6 +34,10 @@ class GraphicsScene(QGraphicsScene):
         self._pen_dark.setWidth(2)
 
         self.setBackgroundBrush(self._color_background)
+
+    def dragMoveEvent(self, event: 'QGraphicsSceneDragDropEvent') -> None:
+        # Drag events won't be allowed until dragMoveEvent is overridden.
+        pass
 
     def setScene(self, width, height):
         self.setSceneRect(-width // 2, -height // 2, width, height)
