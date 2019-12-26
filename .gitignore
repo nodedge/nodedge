@@ -5,6 +5,7 @@
 *.avi
 *.pkl
 *.python-version
+*.tar*
 
 venv/
 .idea/
@@ -16,3 +17,4 @@ _template/
 *.egg-info/
 .tox/
 mdi/
+demo_pyqtdeploy/

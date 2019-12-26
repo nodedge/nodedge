@@ -229,8 +229,8 @@ class EditorWindow(QMainWindow):
                 return
 
             # Check if json data are correct
-            if "nodes" not in data:
-                self.__logger.debug("JSON does not contain any nodes!")
+            if "blocks" not in data:
+                self.__logger.debug("JSON does not contain any blocks!")
 
             self.currentEditorWidget.scene.clipboard.deserialize(data)
 

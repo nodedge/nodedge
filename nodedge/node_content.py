@@ -6,7 +6,7 @@ from PyQt5 import QtGui
 from nodedge.serializable import Serializable
 
 
-class NodeWidget(QWidget, Serializable):
+class NodeContent(QWidget, Serializable):
     def __init__(self, node, parent=None):
         super().__init__(parent)
         self.node = node
@@ -28,12 +28,11 @@ class NodeWidget(QWidget, Serializable):
 
         ])
 
-    def deserialize(self, data, hashmap={}):
+    def deserialize(self, data, hashmap={}, restoreId=False):
         return False
 
 
 class AckTextEdit(QTextEdit):
-
     def focusInEvent(self, e: QtGui.QFocusEvent) -> None:
         super().parentWidget().setEditingFlag(True)
         super().focusInEvent(e)

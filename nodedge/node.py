@@ -1,5 +1,5 @@
 from nodedge.graphics_node import GraphicsNode
-from nodedge.node_widget import NodeWidget
+from nodedge.node_content import NodeContent
 from nodedge.socket import *
 from nodedge.utils import dumpException
 
@@ -7,25 +7,33 @@ from nodedge.utils import dumpException
 class Node(Serializable):
     def __init__(self, scene, title="Undefined node", inputs=[], outputs=[]):
         super().__init__()
+        self._title = title
+        self.scene = scene
 
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
 
-        self._title = title
-        self.scene = scene
-
-        self.content = NodeWidget(self)
-
-        self.graphicsNode = GraphicsNode(self)
-        self.title = title
+        self.initInnerClasses()
+        self.initSettings()
 
         self.scene.addNode(self)
         self.scene.graphicsScene.addItem(self.graphicsNode)
 
-        self._socket_spacing = 22
         self.inputs = []
         self.outputs = []
         self.initInputsOutputs(inputs, outputs)
+
+    def initInnerClasses(self):
+        self.content = NodeContent(self)
+        self.graphicsNode = GraphicsNode(self)
+
+    def initSettings(self):
+        self.title = self._title
+        self._socketSpacing = 22
+        self._inputSocketPosition = LEFT_TOP
+        self._outputSocketPosition = RIGHT_BOTTOM
+        self._inputAllowsMultiEdges = False
+        self._outputAllowsMultiEdges = True
 
     def __str__(self):
         return f"0x{hex(id(self))[-4:]} Node({self.title}, {self.inputs}, {self.outputs})"
@@ -37,35 +45,49 @@ class Node(Serializable):
         self._title = value
         self.graphicsNode.title = value
 
-    def initInputsOutputs(self, inputs, outputs):
-        counter = 0
-        for inp in inputs:
-            socket = Socket(node=self, index=counter, position=LEFT_TOP, socketType=inp, allowsMultiEdges=False)
-            counter += 1
-            self.inputs.append(socket)
-
-        counter = 0
-        for out in outputs:
-            socket = Socket(node=self, index=counter, position=RIGHT_BOTTOM, socketType=out)
-            counter += 1
-            self.outputs.append(socket)
-
-    def getSocketPos(self, index, position):
-        x = 0 if (position in (LEFT_TOP, LEFT_BOTTOM)) else self.graphicsNode.width
-
-        if position in (LEFT_BOTTOM, RIGHT_BOTTOM):
-            y = self.graphicsNode.height - (2 * self.graphicsNode.edge_size + index * self._socket_spacing)
-        else:
-            y = self.graphicsNode.titleHeight + 2 * self.graphicsNode.edge_size + index * self._socket_spacing
-
-        return [x, y]
-
     @property
     def pos(self):
         return self.graphicsNode.pos() # QPointF
 
     def setPos(self, x, y):
         self.graphicsNode.setPos(x, y)
+
+    def initInputsOutputs(self, inputs, outputs, reset=True):
+        """"Create sockets for inputs and outputs"""
+        # Reset existing sockets.
+        if reset:
+            if hasattr(self, "inputs") and hasattr(self, "outputs"):
+                for socket in self.inputs+self.outputs:
+                    self.scene.graphicsScene.removeItem(socket.graphicsSocket)
+                self.inputs = []
+                self.outputs = []
+
+        # Create new sockets.
+        for ind, inp in enumerate(inputs):
+            socket = Socket(node=self,
+                            index=ind,
+                            position=self._inputSocketPosition,
+                            socketType=inp,
+                            allowsMultiEdges=self._inputAllowsMultiEdges)
+            self.inputs.append(socket)
+
+        for ind, out in enumerate(outputs):
+            socket = Socket(node=self,
+                            index=ind,
+                            position=self._outputSocketPosition,
+                            socketType=out,
+                            allowsMultiEdges=self._outputAllowsMultiEdges)
+            self.outputs.append(socket)
+
+    def getSocketPos(self, index, position):
+        x = 0 if (position in (LEFT_TOP, LEFT_BOTTOM)) else self.graphicsNode.width
+
+        if position in (LEFT_BOTTOM, RIGHT_BOTTOM):
+            y = self.graphicsNode.height - (2 * self.graphicsNode.edge_size + index * self._socketSpacing)
+        else:
+            y = self.graphicsNode.titleHeight + 2 * self.graphicsNode.edge_size + index * self._socketSpacing
+
+        return [x, y]
 
     def updateConnectedEdges(self):
         for socket in self.inputs + self.outputs:

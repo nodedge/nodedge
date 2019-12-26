@@ -6,7 +6,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from nodedge.utils import dumpException
-from nodedge.mdi_config import *
+from nodedge.blocks.block_config import *
 
 
 class DragListbox(QListWidget):

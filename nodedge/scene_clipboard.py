@@ -17,7 +17,7 @@ class SceneClipboard:
 
         serializedSelectedNodes, selectedEdges, selectedSocket = [], [], {}
 
-        # Sort edges and nodes
+        # Sort edges and blocks
         for item in self.scene.graphicsScene.selectedItems():
             if hasattr(item, "node"):
                 serializedSelectedNodes.append(item.node.serialize())
@@ -49,7 +49,7 @@ class SceneClipboard:
 
         # Create data
         data = OrderedDict([
-            ("nodes", serializedSelectedNodes),
+            ("blocks", serializedSelectedNodes),
             ("edges", serializedEdgesToKeep),
         ])
 
@@ -70,7 +70,7 @@ class SceneClipboard:
 
         # Calculate selected objects bounding box and center
         minX, maxX, minY, maxY = 1e8, -1e8, 1e8, -1e8
-        for nodeData in data["nodes"]:
+        for nodeData in data["blocks"]:
             x, y = nodeData["posX"], nodeData["posY"]
             if x < minX:
                 minX = x
@@ -85,13 +85,13 @@ class SceneClipboard:
 
         # center = view.mapToScene(view.rect().center)
 
-        # Calculate the offset of newly created nodes
+        # Calculate the offset of newly created blocks
         offsetX = mouseScenePos.x() - boundedBoxCenterX
         offsetY = mouseScenePos.y() - boundedBoxCenterY
 
         # Create each node
 
-        for nodeData in data["nodes"]:
+        for nodeData in data["blocks"]:
             newNode = Node(self.scene)
             newNode.deserialize(nodeData, hashmap, restoreId=False)
 

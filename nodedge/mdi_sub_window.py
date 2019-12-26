@@ -4,8 +4,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 from nodedge.editor_widget import EditorWidget
-from nodedge.mdi_config import *
-from nodedge.node import Node
+from nodedge.blocks.block_config import *
+from nodedge.blocks.block import Block
 
 
 class MdiSubWindow(EditorWidget):
@@ -60,7 +60,7 @@ class MdiSubWindow(EditorWidget):
         self.__logger.debug(f"Received text ({text}) and code ({operationCode}) at pos ({scenePos})")
 
         # FIXME: [WIP] Nodes should not be created this way.
-        node = Node(self.scene, text, inputs=[1, 1], outputs=[2])
+        node = Block(self.scene, text, operationCode)
         node.setPos(scenePos.x(), scenePos.y())
 
         event.setDropAction(Qt.MoveAction)

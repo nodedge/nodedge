@@ -1,10 +1,10 @@
 from PyQt5.QtCore import *
-from examples.example_calculator.calc_conf import *
-from examples.example_calculator.calc_node_base import *
-from nodeeditor.utils import dumpException
+from PyQt5.QtWidgets import *
+from nodedge.node_content import NodeContent
+from nodedge.utils import dumpException
 
 
-class CalcInputContent(QDMNodeContentWidget):
+class CalcInputContent(NodeContent):
     def initUI(self):
         self.edit = QLineEdit("1", self)
         self.edit.setAlignment(Qt.AlignRight)
@@ -15,7 +15,7 @@ class CalcInputContent(QDMNodeContentWidget):
         res['value'] = self.edit.text()
         return res
 
-    def deserialize(self, data, hashmap={}):
+    def deserialize(self, data, hashmap={}, restoreId=False):
         res = super().deserialize(data, hashmap)
         try:
             value = data['value']

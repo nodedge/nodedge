@@ -120,7 +120,7 @@ class GraphicsNode(QGraphicsItem):
     def mouseMoveEvent(self, event):
         super().mouseMoveEvent(event)
 
-        #TODO: Optimize this condition. Just update the selected nodes.
+        #TODO: Optimize this condition. Just update the selected blocks.
         for node in self.scene().scene.nodes:
             if node.graphicsNode.isSelected():
                 node.updateConnectedEdges()
@@ -138,7 +138,7 @@ class GraphicsNode(QGraphicsItem):
             self.node.scene.resetLastSelectedStates()
             self._lastSelectedState = True
 
-            # Store the last selected, because moving does also select the nodes.
+            # Store the last selected, because moving does also select the blocks.
             self.node.scene.lastSelectedItems = self.node.scene.selectedItems
 
             # Skip storing selection as it has just been done.

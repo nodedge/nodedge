@@ -173,7 +173,7 @@ class Scene(Serializable):
         return OrderedDict([("id",  self.id),
                             ("sceneWidth", self.sceneWidth),
                             ("sceneHeight", self.sceneHeight),
-                            ("nodes", nodes),
+                            ("blocks", nodes),
                             ("edges", edges)
                             ])
 
@@ -186,8 +186,8 @@ class Scene(Serializable):
 
         hashmap = {}
 
-        # Create nodes
-        for nodeData in data["nodes"]:
+        # Create blocks
+        for nodeData in data["blocks"]:
             Node(self).deserialize(nodeData, hashmap, restoreId)
 
         # Create edges

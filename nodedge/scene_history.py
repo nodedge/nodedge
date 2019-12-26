@@ -94,13 +94,13 @@ class SceneHistory:
 
     def _createStamp(self, desc):
         selectedObjects = {
-            "nodes": [],
+            "blocks": [],
             "edges": []
         }
 
         for item in self.scene.graphicsScene.selectedItems():
             if hasattr(item, "node"):
-                selectedObjects["nodes"].append(item.node.id)
+                selectedObjects["blocks"].append(item.node.id)
             elif isinstance(item, GraphicsEdge):
                 selectedObjects["edges"].append(item.edge.id)
 
@@ -125,7 +125,7 @@ class SceneHistory:
                         edge.graphicsEdge.setSelected(True)
                         break
 
-            for nodeId in stamp["selection"]["nodes"]:
+            for nodeId in stamp["selection"]["blocks"]:
                 for node in self.scene.nodes:
                     if node.id == nodeId:
                         node.graphicsNode.setSelected(True)

@@ -33,7 +33,7 @@ class MdiWindow(EditorWindow):
     def initUI(self):
         self.companyName = "Nodedge"
         self.productName = "Nodedge"
-        self.icon = QIcon(os.path.join(os.path.dirname(__file__), 'resources/icon.png'))
+        self.icon = QIcon(os.path.join(os.path.dirname(__file__), 'resources/icon_red_3d.png'))
         self.setWindowIcon(self.icon)
 
         self.styleSheetFilename = os.path.join(os.path.dirname(__file__), "qss/calculator.qss")
