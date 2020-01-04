@@ -1,3 +1,5 @@
+import os
+
 LISTBOX_MIMETYPE = "application/x-item"
 
 OP_NODE_INPUT = 1
@@ -9,6 +11,11 @@ OP_NODE_DIVIDE = 6
 
 BLOCKS = {
 }
+
+BLOCKS_ICONS_PATH = f"{os.path.dirname(__file__)}/../resources/node_icons"
+
+# Way to register by function call
+# associateOperationCodeWithBlock(OP_NODE_ADD, AddBlock)
 
 
 class BlockConfigException(Exception):
@@ -42,3 +49,6 @@ def getClassFromOperationCode(operationCode):
     if operationCode not in BLOCKS:
         raise OperationCodeNotRegistered(f"{operationCode} is not registered yet.")
     return BLOCKS[operationCode]
+
+# Register blocks
+from nodedge.blocks import *

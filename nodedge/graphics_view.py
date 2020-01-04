@@ -226,9 +226,12 @@ class GraphicsView(QGraphicsView):
         super().mouseReleaseEvent(event)
 
     def dragEdgeStart(self, item):
-        self.__logger.info("Assign socket.")
-        self.dragStartSocket = item.socket
-        self.dragEdge = Edge(self.graphicsScene.scene, item.socket, edgeType=EDGE_TYPE_BEZIER)
+        try:
+            self.__logger.info("Assign socket.")
+            self.dragStartSocket = item.socket
+            self.dragEdge = Edge(self.graphicsScene.scene, item.socket, edgeType=EDGE_TYPE_BEZIER)
+        except Exception as e:
+            dumpException(e)
 
     def dragEdgeEnd(self, item):
         """
@@ -241,24 +244,27 @@ class GraphicsView(QGraphicsView):
         self.dragEdge.remove()
         self.dragEdge = None
 
-        if type(item) is GraphicsSocket:
-            if item.socket != self.dragStartSocket:
+        try:
+            if type(item) is GraphicsSocket:
+                if item.socket != self.dragStartSocket:
 
-                if not self.dragStartSocket.allowsMultiEdges:
-                    self.dragStartSocket.removeAllEdges()
+                    if not self.dragStartSocket.allowsMultiEdges:
+                        self.dragStartSocket.removeAllEdges()
 
-                if not item.socket.allowsMultiEdges:
-                    item.socket.removeAllEdges()
+                    if not item.socket.allowsMultiEdges:
+                        item.socket.removeAllEdges()
 
-                newEdge = Edge(self.graphicsScene.scene, self.dragStartSocket, item.socket, edgeType=EDGE_TYPE_BEZIER)
-                item.socket.addEdge(newEdge)
-                self.__logger.debug(f"New edge created: {newEdge} connecting"
-                                    f"\n|||| {newEdge.startSocket} to"
-                                    f"\n |||| {newEdge.endSocket}")
+                    newEdge = Edge(self.graphicsScene.scene, self.dragStartSocket, item.socket, edgeType=EDGE_TYPE_BEZIER)
+                    item.socket.addEdge(newEdge)
+                    self.__logger.debug(f"New edge created: {newEdge} connecting"
+                                        f"\n|||| {newEdge.startSocket} to"
+                                        f"\n |||| {newEdge.endSocket}")
 
-                self.graphicsScene.scene.history.store("Create a new edge by dragging")
-                self.__logger.info("Socket assigned.")
-                return True
+                    self.graphicsScene.scene.history.store("Create a new edge by dragging")
+                    self.__logger.info("Socket assigned.")
+                    return True
+        except Exception as e:
+            dumpException(e)
 
         self.__logger.debug("Drag edge successful.")
         return False

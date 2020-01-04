@@ -11,7 +11,6 @@ from nodedge.editor_widget import EditorWidget
 from nodedge.mdi_sub_window import MdiSubWindow
 from nodedge.drag_listbox import DragListbox
 from nodedge.blocks.block_config import BLOCKS
-from nodedge.blocks.blocks import *
 import logging
 
 # Images for the dark skin
@@ -21,7 +20,7 @@ import nodedge.qss.calculator_dark_resources
 class MdiWindow(EditorWindow):
     def __init__(self):
         self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.DEBUG)
+        self.__logger.setLevel(logging.INFO)
         super(MdiWindow, self).__init__()
         
     @property

@@ -8,7 +8,7 @@ pp = PrettyPrinter(indent=4).pprint
 
 
 def dumpException(e):
-    logging.warning(f"Exception: {e}")
+    logging.warning(f"{e.__class__.__name__} Exception: {e}")
     traceback.print_tb(e.__traceback__)
 
 
