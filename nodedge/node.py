@@ -68,7 +68,9 @@ class Node(Serializable):
                             index=ind,
                             position=self._inputSocketPosition,
                             socketType=inp,
-                            allowsMultiEdges=self._inputAllowsMultiEdges)
+                            allowsMultiEdges=self._inputAllowsMultiEdges,
+                            countOnThisNodeSide=len(inputs),
+                            isInput=True)
             self.inputs.append(socket)
 
         for ind, out in enumerate(outputs):
@@ -76,16 +78,36 @@ class Node(Serializable):
                             index=ind,
                             position=self._outputSocketPosition,
                             socketType=out,
-                            allowsMultiEdges=self._outputAllowsMultiEdges)
+                            allowsMultiEdges=self._outputAllowsMultiEdges,
+                            countOnThisNodeSide=len(outputs),
+                            isInput=False)
             self.outputs.append(socket)
 
-    def getSocketPos(self, index, position):
-        x = 0 if (position in (LEFT_TOP, LEFT_BOTTOM)) else self.graphicsNode.width
+    def getSocketPos(self, index, position, countOnThisSide=1):
+        x = 0 if (position in (LEFT_TOP, LEFT_CENTER, LEFT_BOTTOM)) else self.graphicsNode.width
 
         if position in (LEFT_BOTTOM, RIGHT_BOTTOM):
-            y = self.graphicsNode.height - (2 * self.graphicsNode.edge_size + index * self._socketSpacing)
+            y = self.graphicsNode.height - self.graphicsNode.edgeRoundness - self.graphicsNode.titleVerticalPadding \
+                - index * self._socketSpacing
+        elif position in (LEFT_CENTER, RIGHT_CENTER):
+            numberOfSockets = countOnThisSide
+            nodeHeight = self.graphicsNode.height
+            topOffset = self.graphicsNode.titleHeight + 2 * self.graphicsNode.titleVerticalPadding
+            availableHeight = nodeHeight - topOffset
+
+            totalHeightofAllSockets = numberOfSockets * self._socketSpacing
+
+            newTop = availableHeight - totalHeightofAllSockets
+
+            y = topOffset + availableHeight / 2.0 + (index - 0.5) * self._socketSpacing
+            if numberOfSockets > 1:
+                y -= self._socketSpacing * (numberOfSockets - 1) / 2
+
+        elif position in (LEFT_TOP, RIGHT_TOP):
+            y = self.graphicsNode.titleHeight + self.graphicsNode.titleVerticalPadding \
+                + self.graphicsNode.edgeRoundness + index * self._socketSpacing
         else:
-            y = self.graphicsNode.titleHeight + 2 * self.graphicsNode.edge_size + index * self._socketSpacing
+            y = 0
 
         return [x, y]
 
@@ -138,20 +160,25 @@ class Node(Serializable):
             data["inputs"].sort(key=lambda socket: socket["index"]+socket["position"]*1000)
             data["outputs"].sort(key=lambda socket: socket["index"]+socket["position"]*1000)
 
+            numberOfInputs = len(data["inputs"])
+            numberOfOutputs = len(data["outputs"])
+
             self.inputs = []
             for socketData in data["inputs"]:
                 newSocket = Socket(node=self, index=socketData["index"], position=socketData["position"],
-                                   socketType=socketData["socketType"])
+                                   socketType=socketData["socketType"], countOnThisNodeSide=numberOfInputs, isInput=True)
                 newSocket.deserialize(socketData, hashmap, restoreId)
                 self.inputs.append(newSocket)
 
             self.outputs = []
             for socketData in data["outputs"]:
                 newSocket = Socket(node=self, index=socketData["index"], position=socketData["position"],
-                                   socketType=socketData["socketType"])
+                                   socketType=socketData["socketType"], countOnThisNodeSide=numberOfOutputs, isInput=False)
                 newSocket.deserialize(socketData, hashmap, restoreId)
                 self.outputs.append(newSocket)
         except Exception as e:
             dumpException(e)
 
-        return True
+        res = self.content.deserialize(data["content"], hashmap)
+
+        return True & res

@@ -13,7 +13,7 @@ class CalcOutputContent(QDMNodeContentWidget):
 
 @register_node(OP_NODE_OUTPUT)
 class CalcNode_Output(CalcNode):
-    icon = "icons/out.png"
+    icon = "icons/output.png"
     op_code = OP_NODE_OUTPUT
     op_title = "Output"
     content_label_objname = "calc_node_output"

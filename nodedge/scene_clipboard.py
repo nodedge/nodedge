@@ -10,7 +10,7 @@ class SceneClipboard:
         self.scene = scene
 
         self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.INFO)
+        self.__logger.setLevel(logging.DEBUG)
 
     def serializeSelected(self, delete=False):
         self.__logger.debug("Copying to clipboard")
@@ -55,7 +55,7 @@ class SceneClipboard:
 
         # If cut (aka delete) remove selected items
         if delete:
-            self.scene.graphicsScene.views()[0].deleteSelected()
+            self.scene.view.deleteSelected()
             # Store history
             self.scene.history.store("Cut out selected items from scene")
 
@@ -65,7 +65,7 @@ class SceneClipboard:
         hashmap = {}
 
         # Calculate mouse scene position
-        view = self.scene.graphicsScene.views()[0]
+        view = self.scene.view
         mouseScenePos = view.lastSceneMousePos
 
         # Calculate selected objects bounding box and center
@@ -92,7 +92,7 @@ class SceneClipboard:
         # Create each node
 
         for nodeData in data["blocks"]:
-            newNode = Node(self.scene)
+            newNode = self.scene.getNodeClassFromData(nodeData)(self.scene)
             newNode.deserialize(nodeData, hashmap, restoreId=False)
 
             # Reajust the new node position

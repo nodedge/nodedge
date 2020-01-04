@@ -2,6 +2,7 @@ from collections import OrderedDict
 
 from PyQt5.QtWidgets import *
 from PyQt5 import QtGui
+from PyQt5.QtCore import *
 
 from nodedge.serializable import Serializable
 
@@ -12,6 +13,7 @@ class NodeContent(QWidget, Serializable):
         self.node = node
 
         self.initUI()
+        self.setAttribute(Qt.WA_TranslucentBackground)
 
     def initUI(self):
         self.layout = QVBoxLayout()
@@ -21,7 +23,7 @@ class NodeContent(QWidget, Serializable):
         self.layout.addWidget(AckTextEdit("X3"))
 
     def setEditingFlag(self, value):
-        self.node.scene.graphicsScene.views()[0].editingFlag = value
+        self.node.scene.view.editingFlag = value
 
     def serialize(self):
         return OrderedDict([
@@ -29,7 +31,7 @@ class NodeContent(QWidget, Serializable):
         ])
 
     def deserialize(self, data, hashmap={}, restoreId=False):
-        return False
+        return True
 
 
 class AckTextEdit(QTextEdit):

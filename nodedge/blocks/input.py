@@ -28,7 +28,7 @@ class CalcInputContent(NodeContent):
 
 @register_node(OP_NODE_INPUT)
 class CalcNode_Input(CalcNode):
-    icon = "icons/in.png"
+    icon = "icons/input.png"
     op_code = OP_NODE_INPUT
     op_title = "Input"
     content_label_objname = "calc_node_input"

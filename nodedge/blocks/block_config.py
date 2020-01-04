@@ -1,7 +1,7 @@
 LISTBOX_MIMETYPE = "application/x-item"
 
-OP_NODE_IN = 1
-OP_NODE_OUT = 2
+OP_NODE_INPUT = 1
+OP_NODE_OUTPUT = 2
 OP_NODE_ADD = 3
 OP_NODE_SUBTRACT = 4
 OP_NODE_MULTIPLY = 5
@@ -19,8 +19,26 @@ class InvalidNodeRegistration(BlockConfigException):
     pass
 
 
-def registerNode(operationCode, referenceClass):
+class OperationCodeNotRegistered(BlockConfigException):
+    pass
+
+
+def associateOperationCodeWithBlock(operationCode, referenceClass):
     if operationCode in BLOCKS:
         raise InvalidNodeRegistration(f"Duplicite node registration of {operationCode}. "
                                       f"{BLOCKS[operationCode]} already registered.")
     BLOCKS[operationCode] = referenceClass
+
+
+def registerNode(operationCode):
+    def decorator(blockClass):
+        associateOperationCodeWithBlock(operationCode, blockClass)
+        return blockClass
+
+    return decorator
+
+
+def getClassFromOperationCode(operationCode):
+    if operationCode not in BLOCKS:
+        raise OperationCodeNotRegistered(f"{operationCode} is not registered yet.")
+    return BLOCKS[operationCode]

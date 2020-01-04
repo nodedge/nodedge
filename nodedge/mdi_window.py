@@ -10,6 +10,8 @@ from nodedge.utils import loadStyleSheets, dumpException
 from nodedge.editor_widget import EditorWidget
 from nodedge.mdi_sub_window import MdiSubWindow
 from nodedge.drag_listbox import DragListbox
+from nodedge.blocks.block_config import BLOCKS
+from nodedge.blocks.blocks import *
 import logging
 
 # Images for the dark skin
@@ -19,7 +21,7 @@ import nodedge.qss.calculator_dark_resources
 class MdiWindow(EditorWindow):
     def __init__(self):
         self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.INFO)
+        self.__logger.setLevel(logging.DEBUG)
         super(MdiWindow, self).__init__()
         
     @property
@@ -33,13 +35,13 @@ class MdiWindow(EditorWindow):
     def initUI(self):
         self.companyName = "Nodedge"
         self.productName = "Nodedge"
-        self.icon = QIcon(os.path.join(os.path.dirname(__file__), 'resources/icon_red_3d.png'))
+        self.icon = QIcon(os.path.join(os.path.dirname(__file__), 'resources/favicon_red_white_bg.png'))
         self.setWindowIcon(self.icon)
 
         self.styleSheetFilename = os.path.join(os.path.dirname(__file__), "qss/calculator.qss")
         loadStyleSheets(
-            os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),
-            # self.styleSheetFilename
+            # os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),
+            self.styleSheetFilename
         )
 
         self.mdiArea = QMdiArea()
@@ -188,7 +190,7 @@ class MdiWindow(EditorWindow):
 
     def updateEditMenu(self):
         try:
-            self.__logger.debug("Update edit menu")
+            # self.__logger.debug("Update edit menu")
 
             active = self.currentEditorWidget
             hasMdiChild = (active is not None)

@@ -128,7 +128,7 @@ class GraphicsView(QGraphicsView):
         if type(item) is GraphicsSocket:
             if self.mode == MODE_NOOP:
                 self.mode = MODE_EDGE_DRAG
-                self.__logger.debug(f"{self.mode = }")
+                self.__logger.debug(f"Drag mode: {self.mode}")
                 self.dragEdgeStart(item)
                 return
 
@@ -191,6 +191,20 @@ class GraphicsView(QGraphicsView):
         super().mouseReleaseEvent(event)
 
     def middleMouseButtonPress(self, event):
+        # Debug logging
+        item = self.getItemAtClick(event)
+
+        if item is None:
+            self.__logger.info(self)
+        elif type(item) is GraphicsSocket:
+            self.__logger.info(f"\n||||{item.socket} connected to \n||||{item.socket.edges}")
+        elif type(item) in [GraphicsEdgeDirect, GraphicsEdgeBezier]:
+            log = f"\n||||{item.edge} connects"
+            log += f"\n||||{item.edge.startSocket.node} \n||||{item.edge.endSocket.node}"
+
+            self.__logger.info(log)
+
+        # Faking event to enable mouse dragging the scene
         release_event = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
                                     Qt.LeftButton, Qt.NoButton, event.modifiers())
         super().mouseReleaseEvent(release_event)
@@ -206,18 +220,6 @@ class GraphicsView(QGraphicsView):
         self.setDragMode(QGraphicsView.RubberBandDrag)
 
     def rightMouseButtonPress(self, event):
-        item = self.getItemAtClick(event)
-
-        if item is None:
-            self.__logger.info(self)
-        elif type(item) is GraphicsSocket:
-            self.__logger.info(f"\n||||{item.socket} connected to \n||||{item.socket.edges}")
-        elif type(item) in [GraphicsEdgeDirect, GraphicsEdgeBezier]:
-            log = f"\n||||{item.edge} connects"
-            log += f"\n||||{item.edge.startSocket.node} \n||||{item.edge.endSocket.node}"
-
-            self.__logger.info(log)
-
         super().mousePressEvent(event)
 
     def rightMouseButtonRelease(self, event):
@@ -234,7 +236,7 @@ class GraphicsView(QGraphicsView):
         :return: True if we skip the rest of the code. False otherwise.
         """
         self.mode = MODE_NOOP
-        self.__logger.debug(f"{self.mode = }")
+        self.__logger.debug(f"Drag mode: {self.mode}")
 
         self.dragEdge.remove()
         self.dragEdge = None

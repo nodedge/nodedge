@@ -8,6 +8,7 @@
 *.tar*
 
 venv/
+venv36/
 .idea/
 docs/build/
 docs/source/_build
@@ -18,3 +19,6 @@ _template/
 .tox/
 mdi/
 demo_pyqtdeploy/
+test_fbs/
+src
+target

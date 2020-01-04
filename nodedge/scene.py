@@ -36,6 +36,9 @@ class Scene(Serializable):
         self._itemSelectedListeners = []
         self._itemsDeselectedListeners = []
 
+        # Store callback for retrieving the nodes classes
+        self.nodeClassSelector = None
+
         self.initUI()
 
         self.graphicsScene.itemSelected.connect(self.onItemSelected)
@@ -74,6 +77,10 @@ class Scene(Serializable):
     def selectedItems(self):
         return self.graphicsScene.selectedItems()
 
+    @property
+    def view(self):
+        return self.graphicsScene.views()[0]
+
     def onItemSelected(self):
         selectedItems = self.selectedItems
         if selectedItems != self._lastSelectedItems:
@@ -105,10 +112,10 @@ class Scene(Serializable):
         self._itemsDeselectedListeners.append(callback)
 
     def addDragEnterListener(self, callback):
-        self.graphicsScene.views()[0].addDragEnterListener(callback)
+        self.view.addDragEnterListener(callback)
 
     def addDropListener(self, callback):
-        self.graphicsScene.views()[0].addDropListener(callback)
+        self.view.addDropListener(callback)
 
     def resetLastSelectedStates(self):
         """"Custom flag to detect node or edge has been selected"""
@@ -188,12 +195,23 @@ class Scene(Serializable):
 
         # Create blocks
         for nodeData in data["blocks"]:
-            Node(self).deserialize(nodeData, hashmap, restoreId)
+            self.getNodeClassFromData(nodeData)(self).deserialize(nodeData, hashmap, restoreId)
 
         # Create edges
         for edgeData in data["edges"]:
             Edge(self).deserialize(edgeData, hashmap, restoreId)
         return True
+
+    def getNodeClassFromData(self, data):
+        return Node if self.nodeClassSelector is None else self.nodeClassSelector(data)
+
+    def setNodeClassSelector(self, classSelectingFunction):
+        """"When the function self.nodeClassSelector is set, the user can use different node classes"""
+
+        self.nodeClassSelector = classSelectingFunction
+
+    def itemAt(self, pos):
+        return self.view.itemAt(pos)
 
 
 class InvalidFile(Exception):

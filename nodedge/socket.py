@@ -6,17 +6,22 @@ from nodedge.graphics_socket import GraphicsSocket
 
 
 LEFT_TOP = 1
-LEFT_BOTTOM = 2
-RIGHT_TOP = 3
-RIGHT_BOTTOM = 4
+LEFT_CENTER = 2
+LEFT_BOTTOM = 3
+RIGHT_TOP = 4
+RIGHT_CENTER = 5
+RIGHT_BOTTOM = 6
 
 
 class Socket(Serializable):
-    def __init__(self, node, index=0, position=LEFT_TOP, socketType=1, allowsMultiEdges=True):
+    def __init__(self, node, index=0, position=LEFT_TOP, socketType=1,
+                 allowsMultiEdges=True, countOnThisNodeSide=1, isInput=False):
         super().__init__()
         self.node = node
         self.index = index
         self.position = position
+        self.countOnThisNodeSide = countOnThisNodeSide
+        self.isInput = isInput
 
         self.socketType = socketType
         self.allowsMultiEdges = allowsMultiEdges
@@ -25,15 +30,18 @@ class Socket(Serializable):
         self.__logger.setLevel(logging.INFO)
 
         self.graphicsSocket = GraphicsSocket(self, self.socketType)
-        self.graphicsSocket.setPos(*self.node.getSocketPos(index, position))
+        self.setSocketPos()
 
         self.edges = []
 
     def __repr__(self):
         return f"0x{hex(id(self))[-4:]} Socket({self.index}, {self.position}, {self.socketType}, {self.allowsMultiEdges})"
 
+    def setSocketPos(self):
+        self.graphicsSocket.setPos(*self.node.getSocketPos(self.index, self.position, self.countOnThisNodeSide))
+
     def getSocketPos(self):
-        ret = self.node.getSocketPos(self.index, self.position)
+        ret = self.node.getSocketPos(self.index, self.position, self.countOnThisNodeSide)
         self.__logger.debug(f"getSocketPos: {self.index}, {self.position}, {self.node}, {ret}")
 
         return ret

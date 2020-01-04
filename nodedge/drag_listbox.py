@@ -28,14 +28,13 @@ class DragListbox(QListWidget):
         self.addNodes()
 
     def addNodes(self):
-        nodesIconPath = f"{os.path.dirname(__file__)}/resources/node_icons"
 
-        self.addNode("Input", f"{nodesIconPath}/in.png", OP_NODE_IN)
-        self.addNode("Ouput", f"{nodesIconPath}/out.png", OP_NODE_OUT)
-        self.addNode("Add", f"{nodesIconPath}/add.png", OP_NODE_ADD)
-        self.addNode("Substract", f"{nodesIconPath}/subtract.png", OP_NODE_SUBTRACT)
-        self.addNode("Multiply", f"{nodesIconPath}/multiply.png", OP_NODE_MULTIPLY)
-        self.addNode("Divide", f"{nodesIconPath}/divide.png", OP_NODE_DIVIDE)
+        keys = list(BLOCKS.keys())
+        keys.sort()
+
+        for key in keys:
+            node = getClassFromOperationCode(key)
+            self.addNode(node.operationTitle, node.icon, node.operationCode)
 
     def addNode(self, name, iconPath=None, operationCode=0):
         item = QListWidgetItem(name, self)

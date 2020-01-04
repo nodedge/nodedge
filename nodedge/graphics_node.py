@@ -24,7 +24,7 @@ class GraphicsNode(QGraphicsItem):
     @title.setter
     def title(self, value):
         self._title = value
-        self.title_item.setPlainText(self._title)
+        self.titleItem.setPlainText(self._title)
 
     @property
     def selectedState(self):
@@ -38,44 +38,44 @@ class GraphicsNode(QGraphicsItem):
         self.initSizes()
         self.initStyle()
         self.initTitle()
-        self.initSocket()
         self.initContent()
 
         self.setFlag(QGraphicsItem.ItemIsSelectable)
         self.setFlag(QGraphicsItem.ItemIsMovable)
 
     def initStyle(self):
-        self._title_color = Qt.white
-        self._title_font = QFont("Ubuntu", 10)
-        self._pen_default = QPen(QColor("#7F000000"))
-        self._pen_selected = QPen(QColor("#FFFFA637"))
-        self._brush_title = QBrush(QColor("#FF313131"))
-        self._brush_background = QBrush(QColor("#E3212121"))
+        self._titleColor = Qt.white
+        self._titleFont = QFont("Ubuntu", 10)
+        self._penDefault = QPen(QColor("#7F000000"))
+        self._penSelected = QPen(QColor("#FFFFA637"))
+        self._brushTitle = QBrush(QColor("#FF313131"))
+        self._brushBackground = QBrush(QColor("#E3212121"))
 
     def initSizes(self):
         self.width = 180
         self.height = 240
-        self.edge_size = 10.
+        self.edgeRoundness = 5.
+        self.edgePadding = 10.
         self.titleHeight = 24.
-        self._padding = 4.
+        self.titleHorizontalPadding = 4.
+        self.titleVerticalPadding = 4.
 
     def initTitle(self):
-        self.title_item = QGraphicsTextItem(self)
-        self.title_item.setDefaultTextColor(self._title_color)
-        self.title_item.setFont(self._title_font)
-        self.title_item.setPos(self._padding, 0)
-        self.title_item.setTextWidth(self.width - 2*self._padding)
+        self.titleItem = QGraphicsTextItem(self)
+        self.titleItem.setDefaultTextColor(self._titleColor)
+        self.titleItem.setFont(self._titleFont)
+        self.titleItem.setPos(self.titleHorizontalPadding, 0)
+        self.titleItem.setTextWidth(self.width - 2 * self.titleHorizontalPadding)
+        self.titleItem.node = self.node
 
         self.title = self.node.title
 
     def initContent(self):
         self.graphicsContent = QGraphicsProxyWidget(self)
-        self.content.setGeometry(self.edge_size, self.titleHeight + self.edge_size,
-                                 self.width - 2 * self.edge_size, self.height - 2 * self.edge_size - self.titleHeight)
+        self.content.setGeometry(self.edgePadding, self.titleHeight + self.edgePadding,
+                                 self.width - 2 * self.edgePadding, self.height
+                                 - 2 * self.edgePadding - self.titleHeight)
         self.graphicsContent.setWidget(self.content)
-
-    def initSocket(self):
-        pass
 
     def boundingRect(self):
         return QRectF(0, 0,
@@ -85,37 +85,40 @@ class GraphicsNode(QGraphicsItem):
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
 
         # title
-        path_title = QPainterPath()
-        path_title.setFillRule(Qt.WindingFill)
-        path_title.addRoundedRect(0, 0,
-                                  self.width, self.titleHeight,
-                                  self.edge_size, self.edge_size)
-        path_title.addRect(0, self.titleHeight - self.edge_size, self.edge_size, self.edge_size)
-        path_title.addRect(self.width - self.edge_size, self.titleHeight - self.edge_size, self.edge_size, self.edge_size)
+        pathTitle = QPainterPath()
+        pathTitle.setFillRule(Qt.WindingFill)
+        pathTitle.addRoundedRect(0, 0, self.width, self.titleHeight, self.edgeRoundness, self.edgeRoundness)
+        maxTopRect = max(self.titleHeight - self.edgeRoundness, self.titleHeight/2.)
+        maxHeightRect = min(self.edgeRoundness, self.titleHeight/2.)
+        pathTitle.addRect(0, maxTopRect, self.edgeRoundness, maxHeightRect)
+        pathTitle.addRect(self.width - self.edgeRoundness, maxTopRect,
+                          self.edgeRoundness, maxHeightRect)
+
         painter.setPen(Qt.NoPen)
-        painter.setBrush(self._brush_title)
-        painter.drawPath(path_title.simplified())
+        painter.setBrush(self._brushTitle)
+        painter.drawPath(pathTitle.simplified())
 
         # content
-        path_content = QPainterPath()
-        path_content.setFillRule(Qt.WindingFill)
-        path_content.addRoundedRect(0, self.titleHeight,
-                                    self.width, self.height - self.titleHeight,
-                                    self.edge_size, self.edge_size)
-        path_content.addRect(0, self.titleHeight,
-                             self.edge_size, self.edge_size)
-        path_content.addRect(self.width - self.edge_size, self.titleHeight,
-                             self.edge_size, self.edge_size)
+        pathContent = QPainterPath()
+        pathContent.setFillRule(Qt.WindingFill)
+        pathContent.addRoundedRect(0, self.titleHeight,
+                                   self.width, self.height - self.titleHeight,
+                                   self.edgeRoundness, self.edgeRoundness)
+        maxHeightRect = min(self.edgeRoundness, self.height/2)
+        pathContent.addRect(0, self.titleHeight,
+                            self.edgeRoundness, maxHeightRect)
+        pathContent.addRect(self.width - self.edgeRoundness, self.titleHeight,
+                            self.edgeRoundness, maxHeightRect)
         painter.setPen(Qt.NoPen)
-        painter.setBrush(self._brush_background)
-        painter.drawPath(path_content.simplified())
+        painter.setBrush(self._brushBackground)
+        painter.drawPath(pathContent.simplified())
 
         # outline
-        path_outline = QPainterPath()
-        path_outline.addRoundedRect(0, 0, self.width, self.height, self.edge_size, self.edge_size)
-        painter.setPen(self._pen_default if not self.isSelected() else self._pen_selected)
+        pathOutline = QPainterPath()
+        pathOutline.addRoundedRect(0, 0, self.width, self.height, self.edgeRoundness, self.edgeRoundness)
+        painter.setPen(self._penDefault if not self.isSelected() else self._penSelected)
         painter.setBrush(Qt.NoBrush)
-        painter.drawPath(path_outline.simplified())
+        painter.drawPath(pathOutline.simplified())
 
     def mouseMoveEvent(self, event):
         super().mouseMoveEvent(event)
