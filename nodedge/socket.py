@@ -30,18 +30,18 @@ class Socket(Serializable):
         self.__logger.setLevel(logging.INFO)
 
         self.graphicsSocket = GraphicsSocket(self, self.socketType)
-        self.setSocketPos()
+        self.updateSocketPos()
 
         self.edges = []
 
     def __repr__(self):
         return f"0x{hex(id(self))[-4:]} Socket({self.index}, {self.position}, {self.socketType}, {self.allowsMultiEdges})"
 
-    def setSocketPos(self):
-        self.graphicsSocket.setPos(*self.node.getSocketPos(self.index, self.position, self.countOnThisNodeSide))
+    def updateSocketPos(self):
+        self.graphicsSocket.setPos(*self.node.socketPos(self.index, self.position, self.countOnThisNodeSide))
 
-    def getSocketPos(self):
-        ret = self.node.getSocketPos(self.index, self.position, self.countOnThisNodeSide)
+    def socketPos(self):
+        ret = self.node.socketPos(self.index, self.position, self.countOnThisNodeSide)
         self.__logger.debug(f"getSocketPos: {self.index}, {self.position}, {self.node}, {ret}")
 
         return ret

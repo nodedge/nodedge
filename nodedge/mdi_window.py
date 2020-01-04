@@ -259,8 +259,15 @@ class MdiWindow(EditorWindow):
         typing.cast(EditorWidget, subWindow.widget()).addNodes()
         subWindow.show()
 
-    def openFile(self):
-        filenames, filter = QFileDialog.getOpenFileNames(parent=self, caption="Open graph from file")
+        return subWindow
+
+    def openFile(self, filenames):
+        if isinstance(filenames, bool) or filenames is None:
+            filenames, filter = QFileDialog.getOpenFileNames(parent=self, caption="Open graph from file")
+        else:
+            # If only one file is given as input, convert the string in list to let the next for loop work properly.
+            if isinstance(filenames, str):
+                filenames = [filenames]
 
         for filename in filenames:
             self.__logger.debug(f"Loading {filename}")

@@ -43,9 +43,9 @@ class EditorWidget(QWidget):
         node2 = Node(self.scene, "Node 2", inputs=[1, 2, 3], outputs=[1])
         node3 = Node(self.scene, "Node 3", inputs=[1, 2, 3], outputs=[1])
 
-        node1.setPos(-350, -250)
-        node2.setPos(-75, 100)
-        node3.setPos(200, -75)
+        node1.pos = (-350, -250)
+        node2.pos = (-75, 100)
+        node3.pos = (200, -75)
 
         edge1 = Edge(self.scene, node1.outputs[0], node2.inputs[1], edgeType=EDGE_TYPE_BEZIER)
         edge2 = Edge(self.scene, node2.outputs[0], node3.inputs[2], edgeType=EDGE_TYPE_BEZIER)

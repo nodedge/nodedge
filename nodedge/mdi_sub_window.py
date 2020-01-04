@@ -98,7 +98,7 @@ class MdiSubWindow(EditorWidget):
 
         try:
             node = getClassFromOperationCode(operationCode)(self.scene)
-            node.setPos(scenePos.x(), scenePos.y())
+            node.pos = (scenePos.x(), scenePos.y())
             self.scene.history.store(f"Created node {node.__class__.__name__}.")
         except Exception as e:
             dumpException(e)
@@ -126,9 +126,45 @@ class MdiSubWindow(EditorWidget):
         except Exception as e:
             dumpException(e)
 
-    def handleNewNodeContextMenu(self, event):
-        self.__contextLogger.debug("")
+    def handleNodeContextMenu(self, event):
+        contextMenu = QMenu()
+        markDirtyAct = contextMenu.addAction("Mark dirty")
+        markDescendantsDirtyAct = contextMenu.addAction("Mark descendants as dirty")
+        markInvalidAct = contextMenu.addAction("Mark invalid")
+        unmarkAct = contextMenu.addAction("Unmark invalid")
+        evalAct = contextMenu.addAction("Eval")
+        action = contextMenu.exec_(self.mapToGlobal(event.pos()))
 
+        selected = None
+        item = self.scene.itemAt(event.pos())
+
+        if type(item) == QGraphicsProxyWidget:
+            item = item.widget()
+
+        if hasattr(item, "node"):
+            selected = item.node
+        elif hasattr(item, "socket"):
+            selected = item.socket.node
+
+        self.__contextLogger.debug(f"Node {selected} is selected")
+
+        if selected is not None:
+            if action == markDirtyAct:
+                selected.isDirty = True
+            elif action == markDescendantsDirtyAct:
+                selected.markDescendantsDirty()
+            elif action == unmarkAct:
+                selected.isInvalid = False
+            elif action == markInvalidAct:
+                selected.isInvalid = True
+            elif action == evalAct:
+                val = selected.eval()
+                self.__contextLogger.debug(f"Evaluated value: {val}")
+
+            # Manually trigger paint method.
+            selected.graphicsNode.update()
+
+    def handleNewNodeContextMenu(self, event):
         contextMenu = self.initNodesContextMenu()
         action = contextMenu.exec_(self.mapToGlobal(event.pos()))
 
@@ -139,7 +175,6 @@ class MdiSubWindow(EditorWidget):
             self.__contextLogger.debug(f"New node: {newNode}")
 
     def handleEdgeContextMenu(self, event):
-        self.__contextLogger.debug("")
         contextMenu = QMenu()
         bezierAct = contextMenu.addAction("Bezier Edge")
         directAct = contextMenu.addAction("Direct Edge")
@@ -155,30 +190,3 @@ class MdiSubWindow(EditorWidget):
             selected.edgeType = EDGE_TYPE_BEZIER
         if selected and action == directAct:
             selected.edgeType = EDGE_TYPE_DIRECT
-
-    def handleNodeContextMenu(self, event):
-        self.__contextLogger.debug("")
-
-        contextMenu = QMenu()
-        markDirtyAct = contextMenu.addAction("Mark dirty")
-        markInvalidAct = contextMenu.addAction("Mark invalid")
-        UnmarkAct = contextMenu.addAction("Unmark invalid")
-        EvalAct = contextMenu.addAction("Eval")
-        action = contextMenu.exec_(self.mapToGlobal(event.pos()))
-
-        selected = None
-        item = self.scene.itemAt(event.pos())
-
-        if type(item) == QGraphicsProxyWidget:
-            item = item.widget()
-
-        if hasattr(item, "node"):
-            selected = item.node
-        if hasattr(item, "socket"):
-            selected = item.socket.node
-
-        self.__contextLogger.debug(f"Node {selected} is selected")
-
-        # TODO: Implement actions in node context menu
-
-

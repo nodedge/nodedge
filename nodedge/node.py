@@ -21,7 +21,11 @@ class Node(Serializable):
 
         self.inputs = []
         self.outputs = []
-        self.initInputsOutputs(inputs, outputs)
+        self.initSockets(inputs, outputs)
+
+        # Evaluation attributes
+        self._isDirty = False
+        self._isInvalid = False
 
     def initInnerClasses(self):
         self.content = NodeContent(self)
@@ -35,24 +39,7 @@ class Node(Serializable):
         self._inputAllowsMultiEdges = False
         self._outputAllowsMultiEdges = True
 
-    def __str__(self):
-        return f"0x{hex(id(self))[-4:]} Node({self.title}, {self.inputs}, {self.outputs})"
-
-    @property
-    def title(self): return self._title
-    @title.setter
-    def title(self, value):
-        self._title = value
-        self.graphicsNode.title = value
-
-    @property
-    def pos(self):
-        return self.graphicsNode.pos() # QPointF
-
-    def setPos(self, x, y):
-        self.graphicsNode.setPos(x, y)
-
-    def initInputsOutputs(self, inputs, outputs, reset=True):
+    def initSockets(self, inputs, outputs, reset=True):
         """"Create sockets for inputs and outputs"""
         # Reset existing sockets.
         if reset:
@@ -83,7 +70,28 @@ class Node(Serializable):
                             isInput=False)
             self.outputs.append(socket)
 
-    def getSocketPos(self, index, position, countOnThisSide=1):
+    def __str__(self):
+        return f"0x{hex(id(self))[-4:]} Node({self.title}, {self.inputs}, {self.outputs})"
+
+    @property
+    def title(self): return self._title
+    @title.setter
+    def title(self, value):
+        self._title = value
+        self.graphicsNode.title = value
+
+    @property
+    def pos(self):
+        return self.graphicsNode.pos() # QPointF
+    @pos.setter
+    def pos(self, pos):
+        try:
+            x, y = pos
+        except ValueError:
+            raise ValueError("Pass an iterable with two numbers.")
+        self.graphicsNode.setPos(x, y)
+
+    def socketPos(self, index, position, countOnThisSide=1):
         x = 0 if (position in (LEFT_TOP, LEFT_CENTER, LEFT_BOTTOM)) else self.graphicsNode.width
 
         if position in (LEFT_BOTTOM, RIGHT_BOTTOM):
@@ -130,6 +138,78 @@ class Node(Serializable):
         self.__logger.debug("Removing the node from the scene.")
         self.scene.removeNode(self)
 
+    # Node evaluation functions
+
+    @property
+    def isDirty(self):
+        return self._isDirty
+    @isDirty.setter
+    def isDirty(self, value):
+        if self._isDirty != value:
+            self._isDirty = value
+
+        if self._isDirty:
+            self.onMarkedDirty()
+
+    def onMarkedDirty(self):
+        pass
+
+    def markChildrenDirty(self, newValue=True):
+        for otherNode in self.getChildrenNodes():
+            otherNode.isDirty = newValue
+
+    def markDescendantsDirty(self, newValue=True):
+        for otherNode in self.getChildrenNodes():
+            otherNode.isDirty = newValue
+            otherNode.markChildrenDirty(newValue)
+
+    @property
+    def isInvalid(self):
+        return self._isInvalid
+    @isInvalid.setter
+    def isInvalid(self, value):
+        if self._isInvalid != value:
+            self._isInvalid = value
+
+        if self._isInvalid:
+            self.onMarkedInvalid()
+
+    def onMarkedInvalid(self):
+        pass
+
+    def markChildrenInvalid(self, newValue=True):
+        for otherNode in self.getChildrenNodes():
+            otherNode.isInvalid = newValue
+
+    def markDescendantsInvalid(self, newValue=True):
+        for otherNode in self.getChildrenNodes():
+            otherNode.isInvalid = newValue
+            otherNode.markChildrenInvalid(newValue)
+
+    def eval(self):
+        self.isDirty = False
+        self.isInvalid = False
+        return 0
+
+    def evalChildren(self):
+        for node in self.getChildrenNodes():
+            node.eval()
+
+    # Traversing node functions
+
+    def getChildrenNodes(self):
+        if not self.outputs:
+            return []
+
+        otherNodes = []
+        for ix in range(len(self.outputs)):
+            for edge in self.outputs[ix].edges:
+                otherNode = edge.getOtherSocket(self.outputs[ix]).node
+                otherNodes.append(otherNode)
+
+        return otherNodes
+
+    # Serialization functions
     def serialize(self):
         inputs, outputs = [], []
         for socket in self.inputs:
@@ -153,8 +233,7 @@ class Node(Serializable):
                 self.id = data["id"]
             hashmap[data["id"]] = self
 
-            self.setPos(data["posX"], data["posY"])
-
+            self.pos = (data["posX"], data["posY"])
             self.title = data["title"]
 
             data["inputs"].sort(key=lambda socket: socket["index"]+socket["position"]*1000)

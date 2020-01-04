@@ -146,10 +146,11 @@ class EditorWindow(QMainWindow):
             self.currentEditorWidget.newFile()
         self.updateTitle()
 
-    def openFile(self):
+    def openFile(self, filename):
         self.__logger.debug("Opening graph")
         if self.maybeSave():
-            filename, filter = QFileDialog.getOpenFileName(parent=self, caption="Open graph from file")
+            if filename is None:
+                filename, filter = QFileDialog.getOpenFileName(parent=self, caption="Open graph from file")
 
             if filename == "":
                 return

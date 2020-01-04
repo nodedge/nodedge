@@ -81,13 +81,13 @@ class Edge(Serializable):
             self.updatePos()
 
     def updatePos(self):
-        startPos = self.startSocket.getSocketPos()
+        startPos = self.startSocket.socketPos()
         startPos[0] += self.startSocket.node.graphicsNode.pos().x()
         startPos[1] += self.startSocket.node.graphicsNode.pos().y()
         self.graphicsEdge.setSource(*startPos)
         # TODO: simplify terminology: end -> destination | start -> source
         if self.endSocket is not None:
-            endPos = self.endSocket.getSocketPos()
+            endPos = self.endSocket.socketPos()
             endPos[0] += self.endSocket.node.graphicsNode.pos().x()
             endPos[1] += self.endSocket.node.graphicsNode.pos().y()
             self.graphicsEdge.setDestination(*endPos)
@@ -97,6 +97,9 @@ class Edge(Serializable):
         self.__logger.debug(f"Start socket: {self.startSocket}")
         self.__logger.debug(f"End socket: {self.endSocket}")
         self.graphicsEdge.update()
+
+    def getOtherSocket(self, knownSocket):
+        return self.startSocket if knownSocket == self.endSocket else self.endSocket
 
     def removeFromSockets(self):
         # TODO: Is it meaningful?
