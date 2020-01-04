@@ -260,6 +260,12 @@ class GraphicsView(QGraphicsView):
                                         f"\n|||| {newEdge.startSocket} to"
                                         f"\n |||| {newEdge.endSocket}")
 
+                    for socket in [self.dragStartSocket, item.socket]:
+                        socket.node.onEdgeConnectionChanged(newEdge)
+
+                        if socket.isInput:
+                            socket.node.onInputChanged(newEdge)
+
                     self.graphicsScene.scene.history.store("Create a new edge by dragging")
                     self.__logger.info("Socket assigned.")
                     return True

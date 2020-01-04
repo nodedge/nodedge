@@ -15,6 +15,10 @@ class InputBlock(Block):
     def __init__(self, scene, inputs=(2, 2), outputs=(1,)):
         super().__init__(scene, inputs=[], outputs=(1,))
 
+        self.eval()
+
     def initInnerClasses(self):
         self.content = InputBlockContent(self)
         self.graphicsNode = GraphicsBlock(self)
+
+        self.content.edit.textChanged.connect(self.onInputChanged)

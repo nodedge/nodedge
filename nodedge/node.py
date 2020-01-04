@@ -11,7 +11,7 @@ class Node(Serializable):
         self.scene = scene
 
         self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.INFO)
+        self.__logger.setLevel(logging.DEBUG)
 
         self.initInnerClasses()
         self.initSettings()
@@ -72,6 +72,14 @@ class Node(Serializable):
 
     def __str__(self):
         return f"0x{hex(id(self))[-4:]} Node({self.title}, {self.inputs}, {self.outputs})"
+
+    def onEdgeConnectionChanged(self, newEdge):
+        self.__logger.debug(f"{newEdge}")
+
+    def onInputChanged(self, newEdge):
+        self.__logger.debug(f"{newEdge}")
+        self.isDirty = True
+        self.markDescendantsDirty()
 
     @property
     def title(self): return self._title
@@ -196,7 +204,6 @@ class Node(Serializable):
             node.eval()
 
     # Traversing node functions
-
     def getChildrenNodes(self):
         if not self.outputs:
             return []
