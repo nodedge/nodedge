@@ -14,11 +14,11 @@ class Block(Node):
     contentLabel = ""
     contentLabelObjectName = "blockBackground"
 
-    def __init__(self, scene, inputs=(2, 2), outputs=(1,)):
-        super().__init__(scene, self.__class__.operationTitle, inputs, outputs)
+    def __init__(self, scene, inputSockets=(2, 2), outputSockets=(1,)):
+        super().__init__(scene, self.__class__.operationTitle, inputSockets, outputSockets)
 
         self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.DEBUG)
+        self.__logger.setLevel(logging.INFO)
 
         self.value = None
 
@@ -39,22 +39,46 @@ class Block(Node):
         self.isDirty = True
         self.eval()
 
+    def checkInputsValidity(self):
+        for index in range(len(self.inputSockets)):
+            inputNodes = self.inputNodesAt(index)
+            inputNodesLength = len(inputNodes)
+            if inputNodesLength > 1:
+                raise RedundantInputError(f"{inputNodesLength} inputs connected to input socket #{index}.")
+            if inputNodesLength == 0:
+                raise MissInputError(f"No input connected to input socket #{index}.")
+
     def evalImplementation(self):
-        return 123
+        raise NotImplementedError(f"evalImplementation has not been overridden by {self.__class__.__name__}")
 
     def eval(self):
         if not self.isDirty and not self.isInvalid:
-            self.__logger.debug("Returning cached value")
+            # self.__logger.debug(f"Returning cached value of {self}")
             return self.value
 
         try:
-            val = self.evalImplementation()
+            self.checkInputsValidity()
+            self.value = self.evalImplementation()
             self.isDirty = False
             self.isInvalid = False
-            return val
+            self.graphicsNode.setToolTip("")
+            self.markChildrenDirty()
+            self.evalChildren()
+            return self.value
+        except (ValueError, EvaluationError, NotImplementedError) as e:
+            self.isInvalid = True
+            self.graphicsNode.setToolTip(str(e))
+            self.markChildrenDirty()
+
         except Exception as e:
             self.isInvalid = True
+            self.graphicsNode.setToolTip(str(e))
             dumpException(e)
+            self.markChildrenDirty()
+
+        # finally:
+        #     self.markChildrenDirty()
+        #     self.evalChildren()
 
     def serialize(self):
         res = super().serialize()
@@ -67,3 +91,15 @@ class Block(Node):
         self.__logger.debug(f"Deserialized block {self.__class__.__name__}: {res}")
 
         return res
+
+
+class EvaluationError(Exception):
+    pass
+
+
+class MissInputError(EvaluationError):
+    pass
+
+
+class RedundantInputError(EvaluationError):
+    pass

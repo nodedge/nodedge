@@ -5,7 +5,7 @@ from nodedge.utils import dumpException
 
 
 class Node(Serializable):
-    def __init__(self, scene, title="Undefined node", inputs=[], outputs=[]):
+    def __init__(self, scene, title="Undefined node", inputSockets=[], outputSockets=[]):
         super().__init__()
         self._title = title
         self.scene = scene
@@ -19,9 +19,9 @@ class Node(Serializable):
         self.scene.addNode(self)
         self.scene.graphicsScene.addItem(self.graphicsNode)
 
-        self.inputs = []
-        self.outputs = []
-        self.initSockets(inputs, outputs)
+        self.inputSockets = []
+        self.outputSockets = []
+        self.initSockets(inputSockets, outputSockets)
 
         # Evaluation attributes
         self._isDirty = False
@@ -44,10 +44,10 @@ class Node(Serializable):
         # Reset existing sockets.
         if reset:
             if hasattr(self, "inputs") and hasattr(self, "outputs"):
-                for socket in self.inputs+self.outputs:
+                for socket in self.inputSockets + self.outputSockets:
                     self.scene.graphicsScene.removeItem(socket.graphicsSocket)
-                self.inputs = []
-                self.outputs = []
+                self.inputSockets = []
+                self.outputSockets = []
 
         # Create new sockets.
         for ind, inp in enumerate(inputs):
@@ -58,7 +58,7 @@ class Node(Serializable):
                             allowsMultiEdges=self._inputAllowsMultiEdges,
                             countOnThisNodeSide=len(inputs),
                             isInput=True)
-            self.inputs.append(socket)
+            self.inputSockets.append(socket)
 
         for ind, out in enumerate(outputs):
             socket = Socket(node=self,
@@ -68,10 +68,10 @@ class Node(Serializable):
                             allowsMultiEdges=self._outputAllowsMultiEdges,
                             countOnThisNodeSide=len(outputs),
                             isInput=False)
-            self.outputs.append(socket)
+            self.outputSockets.append(socket)
 
     def __str__(self):
-        return f"0x{hex(id(self))[-4:]} Node({self.title}, {self.inputs}, {self.outputs})"
+        return f"0x{hex(id(self))[-4:]} Node({self.title}, {self.inputSockets}, {self.outputSockets})"
 
     def onEdgeConnectionChanged(self, newEdge):
         self.__logger.debug(f"{newEdge}")
@@ -128,7 +128,7 @@ class Node(Serializable):
         return [x, y]
 
     def updateConnectedEdges(self):
-        for socket in self.inputs + self.outputs:
+        for socket in self.inputSockets + self.outputSockets:
             for edge in socket.edges:
                 self.__logger.debug("Updating socket edges.")
                 edge.updatePos()
@@ -138,7 +138,7 @@ class Node(Serializable):
     def remove(self):
         self.__logger.debug(f"Removing {self}")
         self.__logger.debug("Removing all edges connected to the node.")
-        for socket in (self.inputs + self.outputs):
+        for socket in (self.inputSockets + self.outputSockets):
             socket.removeAllEdges()
         self.__logger.debug("Removing the graphical node.")
         self.scene.graphicsScene.removeItem(self.graphicsNode)
@@ -205,23 +205,60 @@ class Node(Serializable):
 
     # Traversing node functions
     def getChildrenNodes(self):
-        if not self.outputs:
+        if not self.outputSockets:
             return []
 
         otherNodes = []
-        for ix in range(len(self.outputs)):
-            for edge in self.outputs[ix].edges:
-                otherNode = edge.getOtherSocket(self.outputs[ix]).node
+        for ix in range(len(self.outputSockets)):
+            for edge in self.outputSockets[ix].edges:
+                otherNode = edge.getOtherSocket(self.outputSockets[ix]).node
                 otherNodes.append(otherNode)
 
         return otherNodes
 
+    def __IONodesAt(self, side, index):
+        IONodes = []
+        if side == "input":
+            socketList = self.inputSockets
+        elif side == "output":
+            socketList = self.outputSockets
+        else:
+            raise ValueError("Side is either \'input\' or \'output\'")
+
+        try:
+            socket = socketList[index]
+            for edge in socket.edges:
+                otherSocket = edge.getOtherSocket(socket)
+                IONodes.append(otherSocket.node)
+        except IndexError:
+            self.__logger.warning(f"Trying to get connected {side} node at #{index} "
+                                  f"but {self} has only {len(socketList)} outputs.")
+        except Exception as e:
+            dumpException(e)
+        finally:
+            return IONodes
+
+    def inputNodesAt(self, index):
+        return self.__IONodesAt("input", index)
+
+    def inputNodeAt(self, index):
+        try:
+            return self.inputNodesAt(index)[0]
+        except IndexError:
+            # Index Error has already been caught in inputNodesAt, do not log it again.
+            return None
+        except Exception as e:
+            dumpException(e)
+
+    def outputNodesAt(self, index):
+        return self.__IONodesAt("output", index)
+
     # Serialization functions
     def serialize(self):
         inputs, outputs = [], []
-        for socket in self.inputs:
+        for socket in self.inputSockets:
             inputs.append(socket.serialize())
-        for socket in self.outputs:
+        for socket in self.outputSockets:
             outputs.append(socket.serialize())
 
         return OrderedDict([("id",  self.id),
@@ -249,19 +286,19 @@ class Node(Serializable):
             numberOfInputs = len(data["inputs"])
             numberOfOutputs = len(data["outputs"])
 
-            self.inputs = []
+            self.inputSockets = []
             for socketData in data["inputs"]:
                 newSocket = Socket(node=self, index=socketData["index"], position=socketData["position"],
                                    socketType=socketData["socketType"], countOnThisNodeSide=numberOfInputs, isInput=True)
                 newSocket.deserialize(socketData, hashmap, restoreId)
-                self.inputs.append(newSocket)
+                self.inputSockets.append(newSocket)
 
-            self.outputs = []
+            self.outputSockets = []
             for socketData in data["outputs"]:
                 newSocket = Socket(node=self, index=socketData["index"], position=socketData["position"],
                                    socketType=socketData["socketType"], countOnThisNodeSide=numberOfOutputs, isInput=False)
                 newSocket.deserialize(socketData, hashmap, restoreId)
-                self.outputs.append(newSocket)
+                self.outputSockets.append(newSocket)
         except Exception as e:
             dumpException(e)
 

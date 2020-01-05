@@ -1,6 +1,7 @@
 from nodedge.scene import Scene, InvalidFile
 from nodedge.graphics_view import GraphicsView
 from nodedge.node import Node
+from nodedge.blocks.block import Block
 from nodedge.edge import *
 import os
 
@@ -39,16 +40,16 @@ class EditorWidget(QWidget):
         return name + ("*" if self.isModified() else "")
 
     def addNodes(self):
-        node1 = Node(self.scene, "Node 1", inputs=[1, 2, 3], outputs=[1])
-        node2 = Node(self.scene, "Node 2", inputs=[1, 2, 3], outputs=[1])
-        node3 = Node(self.scene, "Node 3", inputs=[1, 2, 3], outputs=[1])
+        node1 = Node(self.scene, "Node 1", inputSockets=[1, 2, 3], outputSockets=[1])
+        node2 = Node(self.scene, "Node 2", inputSockets=[1, 2, 3], outputSockets=[1])
+        node3 = Node(self.scene, "Node 3", inputSockets=[1, 2, 3], outputSockets=[1])
 
         node1.pos = (-350, -250)
         node2.pos = (-75, 100)
         node3.pos = (200, -75)
 
-        edge1 = Edge(self.scene, node1.outputs[0], node2.inputs[1], edgeType=EDGE_TYPE_BEZIER)
-        edge2 = Edge(self.scene, node2.outputs[0], node3.inputs[2], edgeType=EDGE_TYPE_BEZIER)
+        edge1 = Edge(self.scene, node1.outputSockets[0], node2.inputSockets[1], edgeType=EDGE_TYPE_BEZIER)
+        edge2 = Edge(self.scene, node2.outputSockets[0], node3.inputSockets[2], edgeType=EDGE_TYPE_BEZIER)
 
         self.scene.history.storeInitialStamp()
 
@@ -86,14 +87,18 @@ class EditorWidget(QWidget):
             # Don't store initial stamp because the file has still not been changed.
             self.scene.history.clear(storeInitialStamp=False)
             QApplication.restoreOverrideCursor()
+            self.evalNodes()
             return True
         except InvalidFile as e:
             self.__logger.warning(f"Error loading {filename}: {e}")
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, f"Error loading {os.path.basename(filename)}", str(e))
             return False
-        finally:
-            pass
+
+    def evalNodes(self):
+        for node in self.scene.nodes:
+            if isinstance(node, Block):
+                node.eval()
 
     def saveFile(self, filename=None):
         # When called with empty parameter, don't store the filename

@@ -1,4 +1,4 @@
-from nodedge.blocks.block import Block
+from nodedge.blocks.block import *
 from nodedge.blocks.block_config import registerNode, OP_NODE_ADD, BLOCKS_ICONS_PATH
 
 
@@ -9,3 +9,16 @@ class AddBlock(Block):
     operationTitle = "Add"
     contentLabel = "+"
     contentLabelObjectName = "BlockBackground"
+
+    def evalImplementation(self):
+        i0 = self.inputNodeAt(0)
+        i1 = self.inputNodeAt(1)
+
+        try:
+            result = i0.eval() + i1.eval()
+        except TypeError as e:
+            raise EvaluationError(e)
+
+        self.value = result
+
+        return self.value

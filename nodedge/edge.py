@@ -1,4 +1,5 @@
 from nodedge.graphics_edge import *
+from nodedge.utils import dumpException
 
 EDGE_TYPE_DIRECT = 1
 EDGE_TYPE_BEZIER = 2
@@ -107,6 +108,8 @@ class Edge(Serializable):
         self.startSocket = None
 
     def remove(self):
+        oldSockets = [self.startSocket, self.endSocket]
+
         self.__logger.debug(f"Removing {self} from all sockets.")
         self.removeFromSockets()
 
@@ -120,11 +123,24 @@ class Edge(Serializable):
         except ValueError as e:
             self.__logger.debug(e)
 
+        self.__logger.debug("Edge has been deleted.")
+
+        # Notify nodes from old sockets
+        try:
+            for socket in oldSockets:
+                if socket is not None and socket.node is not None:
+                    socket.node.onEdgeConnectionChanged(self)
+                    if socket.isInput:
+                        socket.node.onInputChanged(self)
+        except Exception as e:
+            dumpException(e)
+
     def serialize(self):
+
         return OrderedDict([("id",  self.id),
                             ("edgeType",  self.edgeType),
                             ("startSocket",  self.startSocket.id),
-                            ("endSocket",  self.endSocket.id),
+                            ("endSocket",  self.endSocket.id if self.endSocket is not None else None),
                             ])
 
     def deserialize(self, data, hashmap={}, restoreId=True):
