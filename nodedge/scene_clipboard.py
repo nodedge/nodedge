@@ -21,7 +21,7 @@ class SceneClipboard:
         for item in self.scene.graphicsScene.selectedItems():
             if hasattr(item, "node"):
                 serializedSelectedNodes.append(item.node.serialize())
-                for socket in item.node.inputs+item.node.outputs:
+                for socket in item.node.inputSockets+item.node.outputSockets:
                     selectedSocket[socket.id] = socket
             elif isinstance(item, GraphicsEdge):
                 selectedEdges.append(item.edge)
@@ -97,7 +97,7 @@ class SceneClipboard:
 
             # Reajust the new node position
             pos = newNode.pos
-            newNode.setPos(pos.x() + offsetX, pos.y() + offsetY)
+            newNode.pos = (pos.x() + offsetX, pos.y() + offsetY)
 
         # Create each edge
         if "edges" in data:
