@@ -17,30 +17,57 @@ setup_requirements = []
 
 test_requirements = []
 
+# print(find_packages(include=['tage'], exclude=["examples*", "tests*"]))
+
+KEYWORDS = [
+    'nodedge',
+    'editor',
+    'graphical-programming',
+    'simulation',
+    'physical-modeling',
+    'control-systems',
+    'dynamic-systems',
+    'python3',
+    'qt5',
+    'pyqt5',
+    'platform-indenpendent',
+    'windows',
+    'linux',
+    'macos'
+]
+
+CLASSIFIERS = [
+    'Development Status :: 2 - Pre-Alpha',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+    'Natural Language :: English',
+    'Programming Language :: Python :: 3.6',
+]
+
+PLATFORMS = [
+    "Windows",
+    "Linux",
+    "Mac OS-X",
+    "Unix"
+]
+
 setup(
-    author="Anthony De Bortoli",
-    author_email='admin@nodedge.io',
-    python_requires='>=3.8',
-    classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
-        'Natural Language :: English',
-        'Programming Language :: Python :: 3.8',
-    ],
-    description="Create nodedge!",
-    install_requires=requirements,
-    license="GNU General Public License v3",
-    long_description=readme + '\n\n' + history,
-    include_package_data=True,
-    keywords='Node editor',
     name='nodedge',
-    packages=find_packages(include=['nodedge*'], exclude=["examples*", "tests*"]),
-    package_data={'style': ['qss/*']},
+    keywords=KEYWORDS,
+    description="Graphical editor for physical modeling and simulation.",
+    url='https://www.nodedge.io',
+    version='0.2.0',
+    license="GNU General Public License v3",
+    author="Anthony De Bortoli",
+    author_email='anthony.debortoli@protonmail.com',
+    python_requires='>=3.6',
+    classifiers=CLASSIFIERS,
+    install_requires=requirements,
+    long_description=readme + '\n\n' + history,
+    platforms=PLATFORMS,
+    packages=find_packages(include="nodedge*", exclude=["tes"]),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/nodedge/nodedge',
-    version='0.1.0',
     zip_safe=False,
 )

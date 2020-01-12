@@ -51,4 +51,17 @@ def getClassFromOperationCode(operationCode):
     return BLOCKS[operationCode]
 
 # Register blocks
-from nodedge.blocks import *
+# from nodedge.blocks import *
+
+#
+# def print_classes():
+#     is_class_member = lambda member: inspect.isclass(member) and member.__module__ == __name__
+#     clsmembers = inspect.getmembers(sys.modules[__name__], is_class_member)
+#
+#
+# if __name__ == "__main__":
+#     import sys, inspect
+#
+#     print_classes()
+#
+#

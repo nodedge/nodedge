@@ -28,6 +28,7 @@ class DragListbox(QListWidget):
         self.addNodes()
 
     def addNodes(self):
+        # associateOperationCodeWithBlock(operationCode, blockClass)
 
         keys = list(BLOCKS.keys())
         keys.sort()

@@ -5,7 +5,10 @@ include LICENSE
 include README.rst
 include requirements.txt
 
+recursive-include nodedge/qss *
+recursive-include nodedge/resources *
 recursive-include tests *
+recursive-include examples *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
 

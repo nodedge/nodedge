@@ -7,7 +7,6 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
 from nodedge.editor_widget import EditorWidget
-from nodedge.utils import pp
 
 
 class EditorWindow(QMainWindow):
