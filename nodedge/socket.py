@@ -47,7 +47,8 @@ class Socket(Serializable):
         return ret
 
     def addEdge(self, edge=None):
-        self.edges.append(edge)
+        if edge not in self.edges:
+            self.edges.append(edge)
 
     def removeEdge(self, edgeToRemove):
         if edgeToRemove in self.edges:
