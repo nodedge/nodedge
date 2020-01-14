@@ -151,3 +151,4 @@ class Edge(Serializable):
         self.edgeType = data["edgeType"]
 
         return True
+

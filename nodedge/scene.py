@@ -148,6 +148,9 @@ class Scene(Serializable):
         while len(self.nodes) > 0:
             self.nodes[0].remove()
 
+        while len(self.edges) > 0:
+            self.edges[0].remove()
+
         self.isModified = False
 
     def saveToFile(self, filename):
