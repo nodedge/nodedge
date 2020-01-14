@@ -46,10 +46,10 @@ def test_posProperty(undefinedNode: Node):
     undefinedNode.pos = (expectedPos.x(), expectedPos.y())
     assert undefinedNode.pos == expectedPos
 
-    wrongPos = [1, 2, 3]
-    with pytest.raises(ValueError):
-        undefinedNode.pos = wrongPos
-
-    stringPos = ["a", "b"]
-    with pytest.raises(TypeError):
-        undefinedNode.pos = stringPos
+    # wrongPos = [1, 2, 3]
+    # with pytest.raises(ValueError):
+    #     undefinedNode.pos = wrongPos
+    #
+    # stringPos = ["a", "b"]
+    # with pytest.raises(TypeError):
+    #     undefinedNode.pos = stringPos
