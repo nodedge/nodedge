@@ -1,2 +1,6 @@
+black
+isort
+mypy
 pre-commit
+PyQt5-stubs==5.13.1.4
 wheel

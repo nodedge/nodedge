@@ -4,6 +4,16 @@ include HISTORY.rst
 include LICENSE
 include README.rst
 include requirements.txt
+exclude pyproject.toml
+include setup.py
+
+include .flake8
+include .isort.cfg
+include .pre-commit-config.yaml
+include requirements_dev.txt
+include requirements_docs.txt
+include requirements_tests.txt
+include tox.ini
 
 recursive-include nodedge/qss *
 recursive-include nodedge/resources *
@@ -13,3 +23,6 @@ recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
 
 recursive-include docs *.rst conf.py Makefile make.bat *.jpg *.png *.gif
+
+include *.txt
+recursive-include nodedge *.cfg

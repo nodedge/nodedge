@@ -2,6 +2,7 @@ import json
 import logging
 import os
 from collections import OrderedDict
+from typing import Callable
 
 from nodedge.edge import Edge
 from nodedge.graphics_scene import GraphicsScene
@@ -49,7 +50,7 @@ class Scene(Serializable):
         return self._isModified
 
     @isModified.setter
-    def isModified(self, value):
+    def isModified(self, value: bool):
         if not self.isModified and value:
             # Set it now, because it will be read during the next for loop.
             self._isModified = value
@@ -65,7 +66,7 @@ class Scene(Serializable):
         return self._lastSelectedItems
 
     @lastSelectedItems.setter
-    def lastSelectedItems(self, value):
+    def lastSelectedItems(self, value: bool):
         if value != self._lastSelectedItems:
             self._lastSelectedItems = value
 
@@ -102,7 +103,7 @@ class Scene(Serializable):
         for callback in self._itemsDeselectedListeners:
             callback()
 
-    def addHasBeenModifiedListener(self, callback):
+    def addHasBeenModifiedListener(self, callback: Callable[[None], None]):
         self._hasBeenModifiedListeners.append(callback)
 
     def addItemSelectedListener(self, callback):

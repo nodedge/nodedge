@@ -3,7 +3,6 @@ from collections import OrderedDict
 
 from nodedge.edge import Edge
 from nodedge.graphics_edge import GraphicsEdge
-from nodedge.node import Node
 
 
 class SceneClipboard:
@@ -53,7 +52,7 @@ class SceneClipboard:
 
         # Create data
         data = OrderedDict(
-            [("blocks", serializedSelectedNodes), ("edges", serializedEdgesToKeep),]
+            [("blocks", serializedSelectedNodes), ("edges", serializedEdgesToKeep)]
         )
 
         # If cut (aka delete) remove selected items

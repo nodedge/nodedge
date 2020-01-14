@@ -1,3 +1,5 @@
-pytest
+codecov
+flake8pytest
+pytest-cov
 pytest-qt
 tox

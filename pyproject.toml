@@ -1,3 +1,12 @@
+[build-system]
+requires = [ "setuptools >= 35.0.2", "wheel >= 0.29.0"]
+build-backend = "setuptools.build_meta"
+
+#[tool.tox]
+#legacy_tox_ini = """
+#
+#"""
+
 [tool.black]
 py36 = true
 include = '\.pyi?$'
@@ -17,3 +26,7 @@ exclude = '''
   | blib2to3
   | tests/data
 )/
+'''
+
+[tool.pytest]
+testpaths = 'tests'

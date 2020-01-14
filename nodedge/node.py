@@ -1,14 +1,22 @@
+from typing import Collection
+
 from PyQt5.QtCore import QPointF
 
+from nodedge.edge import Edge
 from nodedge.graphics_node import GraphicsNode
 from nodedge.node_content import NodeContent
 from nodedge.socket import *
+from nodedge.socket import Socket
 from nodedge.utils import dumpException
 
 
 class Node(Serializable):
     def __init__(
-        self, scene, title="Undefined node", inputSockets=[], outputSockets=[]
+        self,
+        scene: "Scene",
+        title: str = "Undefined node",
+        inputSockets: Collection[Socket] = (),
+        outputSockets: Collection[Socket] = (),
     ):
         super().__init__()
         self._title = title
@@ -43,7 +51,12 @@ class Node(Serializable):
         self._inputAllowsMultiEdges = False
         self._outputAllowsMultiEdges = True
 
-    def initSockets(self, inputs, outputs, reset=True):
+    def initSockets(
+        self,
+        inputs: Collection[Socket],
+        outputs: Collection[Socket],
+        reset: bool = True,
+    ):
         """"Create sockets for inputs and outputs"""
         # Reset existing sockets.
         if reset:
@@ -81,10 +94,10 @@ class Node(Serializable):
     def __str__(self):
         return f"0x{hex(id(self))[-4:]} Node({self.title}, {self.inputSockets}, {self.outputSockets})"
 
-    def onEdgeConnectionChanged(self, newEdge):
+    def onEdgeConnectionChanged(self, newEdge: Edge):
         self.__logger.debug(f"{newEdge}")
 
-    def onInputChanged(self, newEdge):
+    def onInputChanged(self, newEdge: Edge):
         self.__logger.debug(f"{newEdge}")
         self.isDirty = True
         self.markDescendantsDirty()
@@ -94,7 +107,7 @@ class Node(Serializable):
         return self._title
 
     @title.setter
-    def title(self, value):
+    def title(self, value: str):
         self._title = value
         self.graphicsNode.title = value
 
@@ -103,7 +116,7 @@ class Node(Serializable):
         return self.graphicsNode.pos()  # QPointF
 
     @pos.setter
-    def pos(self, pos):
+    def pos(self, pos: QPointF):
         if isinstance(pos, (list, tuple)):
             try:
                 x, y = pos
@@ -116,7 +129,31 @@ class Node(Serializable):
         elif isinstance(pos, QPointF):
             self.graphicsNode.setPos(pos)
 
-    def socketPos(self, index, position, countOnThisSide=1):
+    @property
+    def isDirty(self):
+        return self._isDirty
+
+    @isDirty.setter
+    def isDirty(self, value: bool):
+        if self._isDirty != value:
+            self._isDirty = value
+
+        if self._isDirty:
+            self.onMarkedDirty()
+
+    @property
+    def isInvalid(self):
+        return self._isInvalid
+
+    @isInvalid.setter
+    def isInvalid(self, value: bool):
+        if self._isInvalid != value:
+            self._isInvalid = value
+
+        if self._isInvalid:
+            self.onMarkedInvalid()
+
+    def socketPos(self, index: int, position: int, countOnThisSide: int = 1):
         x = (
             0
             if (position in (LEFT_TOP, LEFT_CENTER, LEFT_BOTTOM))
@@ -180,52 +217,26 @@ class Node(Serializable):
         self.__logger.debug("Removing the node from the scene.")
         self.scene.removeNode(self)
 
-    # Node evaluation functions
-
-    @property
-    def isDirty(self):
-        return self._isDirty
-
-    @isDirty.setter
-    def isDirty(self, value):
-        if self._isDirty != value:
-            self._isDirty = value
-
-        if self._isDirty:
-            self.onMarkedDirty()
-
     def onMarkedDirty(self):
         pass
 
-    def markChildrenDirty(self, newValue=True):
+    def markChildrenDirty(self, newValue: bool = True):
         for otherNode in self.getChildrenNodes():
             otherNode.isDirty = newValue
 
-    def markDescendantsDirty(self, newValue=True):
+    def markDescendantsDirty(self, newValue: bool = True):
         for otherNode in self.getChildrenNodes():
             otherNode.isDirty = newValue
             otherNode.markChildrenDirty(newValue)
 
-    @property
-    def isInvalid(self):
-        return self._isInvalid
-
-    @isInvalid.setter
-    def isInvalid(self, value):
-        if self._isInvalid != value:
-            self._isInvalid = value
-
-        if self._isInvalid:
-            self.onMarkedInvalid()
-
     def onMarkedInvalid(self):
         pass
 
-    def markChildrenInvalid(self, newValue=True):
+    def markChildrenInvalid(self, newValue: bool = True):
         for otherNode in self.getChildrenNodes():
             otherNode.isInvalid = newValue
 
-    def markDescendantsInvalid(self, newValue=True):
+    def markDescendantsInvalid(self, newValue: bool = True):
         for otherNode in self.getChildrenNodes():
             otherNode.isInvalid = newValue
             otherNode.markChildrenInvalid(newValue)
@@ -239,7 +250,6 @@ class Node(Serializable):
         for node in self.getChildrenNodes():
             node.eval()
 
-    # Traversing node functions
     def getChildrenNodes(self):
         if not self.outputSockets:
             return []
@@ -252,7 +262,7 @@ class Node(Serializable):
 
         return otherNodes
 
-    def __IONodesAt(self, side, index):
+    def __IONodesAt(self, side: str, index: int):
         IONodes = []
         if side == "input":
             socketList = self.inputSockets
@@ -276,10 +286,10 @@ class Node(Serializable):
         finally:
             return IONodes
 
-    def inputNodesAt(self, index):
+    def inputNodesAt(self, index: int):
         return self.__IONodesAt("input", index)
 
-    def inputNodeAt(self, index):
+    def inputNodeAt(self, index: int):
         try:
             return self.inputNodesAt(index)[0]
         except IndexError:
@@ -288,10 +298,9 @@ class Node(Serializable):
         except Exception as e:
             dumpException(e)
 
-    def outputNodesAt(self, index):
+    def outputNodesAt(self, index: int):
         return self.__IONodesAt("output", index)
 
-    # Serialization functions
     def serialize(self):
         inputs, outputs = [], []
         for socket in self.inputSockets:
