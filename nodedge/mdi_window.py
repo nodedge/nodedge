@@ -1,16 +1,16 @@
+import logging
 import os
 import typing
 
+from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
 
-from nodedge.editor_window import EditorWindow
-from nodedge.utils import loadStyleSheets, dumpException
-from nodedge.editor_widget import EditorWidget
-from nodedge.mdi_sub_window import MdiSubWindow
 from nodedge.drag_listbox import DragListbox
-import logging
+from nodedge.editor_widget import EditorWidget
+from nodedge.editor_window import EditorWindow
+from nodedge.mdi_sub_window import MdiSubWindow
+from nodedge.utils import dumpException, loadStyleSheets
 
 
 class MdiWindow(EditorWindow):
@@ -18,22 +18,32 @@ class MdiWindow(EditorWindow):
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
         super(MdiWindow, self).__init__()
-        
+
     @property
     def currentEditorWidget(self) -> EditorWidget:
         """ we're returning NodeEditorWidget here... """
         activeSubWindow = self.mdiArea.activeSubWindow()
-        if activeSubWindow and activeSubWindow.widget and isinstance(activeSubWindow.widget(), (EditorWidget)):
+        if (
+            activeSubWindow
+            and activeSubWindow.widget
+            and isinstance(activeSubWindow.widget(), (EditorWidget))
+        ):
             self.lastActiveEditorWidget = activeSubWindow.widget()
         return typing.cast(EditorWidget, self.lastActiveEditorWidget)
 
     def initUI(self):
         self.companyName = "Nodedge"
         self.productName = "Nodedge"
-        self.icon = QIcon(os.path.join(os.path.dirname(__file__), 'resources/favicon_red_white_bg.png'))
+        self.icon = QIcon(
+            os.path.join(
+                os.path.dirname(__file__), "resources/favicon_red_white_bg.png"
+            )
+        )
         self.setWindowIcon(self.icon)
 
-        self.styleSheetFilename = os.path.join(os.path.dirname(__file__), "qss/calculator.qss")
+        self.styleSheetFilename = os.path.join(
+            os.path.dirname(__file__), "qss/calculator.qss"
+        )
         loadStyleSheets(
             # os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),
             self.styleSheetFilename
@@ -61,7 +71,6 @@ class MdiWindow(EditorWindow):
         self.createStatusBar()
         self.updateMenus()
 
-
         self.readSettings()
 
         self.setWindowTitle(self.productName)
@@ -73,42 +82,69 @@ class MdiWindow(EditorWindow):
     def createActions(self):
         super().createActions()
 
-        self.closeAct = QAction("Cl&ose", self, statusTip="Close the active window",
-                                triggered=self.mdiArea.closeActiveSubWindow)
+        self.closeAct = QAction(
+            "Cl&ose",
+            self,
+            statusTip="Close the active window",
+            triggered=self.mdiArea.closeActiveSubWindow,
+        )
 
-        self.closeAllAct = QAction("Close &All", self,
-                                   statusTip="Close all the windows",
-                                   triggered=self.mdiArea.closeAllSubWindows)
+        self.closeAllAct = QAction(
+            "Close &All",
+            self,
+            statusTip="Close all the windows",
+            triggered=self.mdiArea.closeAllSubWindows,
+        )
 
-        self.tileAct = QAction("&Tile", self, statusTip="Tile the windows",
-                               triggered=self.mdiArea.tileSubWindows)
+        self.tileAct = QAction(
+            "&Tile",
+            self,
+            statusTip="Tile the windows",
+            triggered=self.mdiArea.tileSubWindows,
+        )
 
-        self.cascadeAct = QAction("&Cascade", self,
-                                  statusTip="Cascade the windows",
-                                  triggered=self.mdiArea.cascadeSubWindows)
+        self.cascadeAct = QAction(
+            "&Cascade",
+            self,
+            statusTip="Cascade the windows",
+            triggered=self.mdiArea.cascadeSubWindows,
+        )
 
-        self.nextAct = QAction("Ne&xt", self, shortcut=QKeySequence.NextChild,
-                               statusTip="Move the focus to the next window",
-                               triggered=self.mdiArea.activateNextSubWindow)
+        self.nextAct = QAction(
+            "Ne&xt",
+            self,
+            shortcut=QKeySequence.NextChild,
+            statusTip="Move the focus to the next window",
+            triggered=self.mdiArea.activateNextSubWindow,
+        )
 
-        self.previousAct = QAction("Pre&vious", self,
-                                   shortcut=QKeySequence.PreviousChild,
-                                   statusTip="Move the focus to the previous window",
-                                   triggered=self.mdiArea.activatePreviousSubWindow)
+        self.previousAct = QAction(
+            "Pre&vious",
+            self,
+            shortcut=QKeySequence.PreviousChild,
+            statusTip="Move the focus to the previous window",
+            triggered=self.mdiArea.activatePreviousSubWindow,
+        )
 
-        self.nodeToolbarAct = QAction("&Node toolbar", self,
-                                      shortcut="ctrl+alt+n",
-                                      statusTip="Enable/Disable the node toolbar",
-                                      triggered=self.onNodesToolbarTriggered)
+        self.nodeToolbarAct = QAction(
+            "&Node toolbar",
+            self,
+            shortcut="ctrl+alt+n",
+            statusTip="Enable/Disable the node toolbar",
+            triggered=self.onNodesToolbarTriggered,
+        )
         self.nodeToolbarAct.setCheckable(True)
         self.nodeToolbarAct.setChecked(self.nodesDock.isVisible())
 
         self.separatorAct = QAction(self)
         self.separatorAct.setSeparator(True)
 
-        self.aboutAct = QAction("&About", self,
-                                statusTip="Show the application's About box",
-                                triggered=self.about)
+        self.aboutAct = QAction(
+            "&About",
+            self,
+            statusTip="Show the application's About box",
+            triggered=self.about,
+        )
 
     def createToolBars(self):
         self.fileToolBar = self.addToolBar("File")
@@ -175,7 +211,7 @@ class MdiWindow(EditorWindow):
 
             text = "%d %s" % (i + 1, child.userFriendlyFilename)
             if i < 9:
-                text = '&' + text
+                text = "&" + text
 
             action = self.windowMenu.addAction(text)
             action.setCheckable(True)
@@ -188,7 +224,7 @@ class MdiWindow(EditorWindow):
             # self.__logger.debug("Update edit menu")
 
             active = self.currentEditorWidget
-            hasMdiChild = (active is not None)
+            hasMdiChild = active is not None
 
             self.pasteAct.setEnabled(hasMdiChild)
 
@@ -258,7 +294,9 @@ class MdiWindow(EditorWindow):
 
     def openFile(self, filenames):
         if isinstance(filenames, bool) or filenames is None:
-            filenames, filter = QFileDialog.getOpenFileNames(parent=self, caption="Open graph from file")
+            filenames, filter = QFileDialog.getOpenFileNames(
+                parent=self, caption="Open graph from file"
+            )
         else:
             # If only one file is given as input, convert the string in list to let the next for loop work properly.
             if isinstance(filenames, str):
@@ -285,10 +323,13 @@ class MdiWindow(EditorWindow):
                         editor.close()
 
     def about(self):
-        QMessageBox.about(self, "About Nodedge calculator",
-                "\"Your assumptions are your windows on the world. \n"
-                "Scrub them off every once in a while, or the light won't come in.\" \n "
-                "Isaac Asimov.")
+        QMessageBox.about(
+            self,
+            "About Nodedge calculator",
+            '"Your assumptions are your windows on the world. \n'
+            "Scrub them off every once in a while, or the light won't come in.\" \n "
+            "Isaac Asimov.",
+        )
 
     def onNodesToolbarTriggered(self):
         self.__logger.debug("")

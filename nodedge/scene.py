@@ -1,14 +1,14 @@
 import json
 import logging
 import os
-
 from collections import OrderedDict
-from nodedge.serializable import Serializable
-from nodedge.node import Node
+
 from nodedge.edge import Edge
-from nodedge.scene_history import SceneHistory
-from nodedge.scene_clipboard import SceneClipboard
 from nodedge.graphics_scene import GraphicsScene
+from nodedge.node import Node
+from nodedge.scene_clipboard import SceneClipboard
+from nodedge.scene_history import SceneHistory
+from nodedge.serializable import Serializable
 from nodedge.utils import dumpException
 
 
@@ -168,7 +168,9 @@ class Scene(Serializable):
                 self.deserialize(data)
                 self.isModified = False
             except json.JSONDecodeError:
-                raise InvalidFile(f"{os.path.basename(filename)} is not a valid JSON file")
+                raise InvalidFile(
+                    f"{os.path.basename(filename)} is not a valid JSON file"
+                )
             except Exception as e:
                 dumpException(e)
 
@@ -180,12 +182,15 @@ class Scene(Serializable):
         for edge in self.edges:
             edges.append(edge.serialize())
 
-        return OrderedDict([("id",  self.id),
-                            ("sceneWidth", self.sceneWidth),
-                            ("sceneHeight", self.sceneHeight),
-                            ("blocks", nodes),
-                            ("edges", edges)
-                            ])
+        return OrderedDict(
+            [
+                ("id", self.id),
+                ("sceneWidth", self.sceneWidth),
+                ("sceneHeight", self.sceneHeight),
+                ("blocks", nodes),
+                ("edges", edges),
+            ]
+        )
 
     def deserialize(self, data, hashmap={}, restoreId=True):
         self.__logger.debug(f"Deserializing data: {data}")
@@ -198,7 +203,9 @@ class Scene(Serializable):
 
         # Create blocks
         for nodeData in data["blocks"]:
-            self.getNodeClassFromData(nodeData)(self).deserialize(nodeData, hashmap, restoreId)
+            self.getNodeClassFromData(nodeData)(self).deserialize(
+                nodeData, hashmap, restoreId
+            )
 
         # Create edges
         for edgeData in data["edges"]:

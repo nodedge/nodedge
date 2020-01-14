@@ -1,12 +1,14 @@
+import inspect
 import os
 import sys
-import inspect
-from PyQt5.QtWidgets import *
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
+from PyQt5.QtWidgets import *
 
 from nodedge.editor_window import EditorWindow
 from nodedge.utils import loadStyleSheet
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))  # noqa: E402
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

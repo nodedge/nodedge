@@ -1,10 +1,9 @@
 import pytest
+from PyQt5.QtWidgets import QGraphicsView, QMainWindow
 
-from PyQt5.QtWidgets import QMainWindow, QGraphicsView
-
+from nodedge.edge import Edge
 from nodedge.editor_widget import EditorWidget
 from nodedge.node import Node
-from nodedge.edge import Edge
 
 
 @pytest.fixture
@@ -18,8 +17,8 @@ def emptyScene(qtbot):
 
 @pytest.fixture
 def filledScene(emptyScene):
-    node = Node(emptyScene)
-    edge = Edge(emptyScene)
+    node = Node(emptyScene)  # noqa: F841
+    edge = Edge(emptyScene)  # noqa: F841
 
     return emptyScene
 
@@ -29,7 +28,7 @@ def test_emptySceneIsNotModifiedYet(emptyScene):
 
 
 def test_sceneHasView(qtbot):
-    window = QMainWindow()
+    window = QMainWindow()  # noqa: F841
     editor = EditorWidget()
     qtbot.addWidget(editor)
 
@@ -58,7 +57,7 @@ def test_emptySceneAddAndRemoveEdge(emptyScene):
     assert emptyScene.edges == []
 
 
-def test_sceneClear(filledScene):
+def test_clear(filledScene):
     assert len(filledScene.nodes) > 0
     filledScene.clear()
     assert filledScene.nodes == []
@@ -66,14 +65,14 @@ def test_sceneClear(filledScene):
     assert filledScene.isModified is False
 
 
-def test_sceneAddHasBeenModifiedListener(emptyScene):
+def test_addHasBeenModifiedListener(emptyScene):
     assert len(emptyScene._hasBeenModifiedListeners) == 0
     emptyScene.addHasBeenModifiedListener(Node)
     assert len(emptyScene._hasBeenModifiedListeners) > 0
 
 
-def test_sceneAddDropListener(qtbot):
-    window = QMainWindow()
+def test_addDropListener(qtbot):
+    window = QMainWindow()  # noqa: F841
     editor = EditorWidget()
     qtbot.addWidget(editor)
     scene = editor.scene
@@ -83,8 +82,8 @@ def test_sceneAddDropListener(qtbot):
     assert len(scene.view._dropListeners) > 0
 
 
-def test_sceneAddItemsDeselectedListeners(qtbot):
-    window = QMainWindow()
+def test_addItemsDeselectedListeners(qtbot):
+    window = QMainWindow()  # noqa: F841
     editor = EditorWidget()
     qtbot.addWidget(editor)
     scene = editor.scene
@@ -94,8 +93,8 @@ def test_sceneAddItemsDeselectedListeners(qtbot):
     assert len(scene._itemsDeselectedListeners) > 0
 
 
-def test_sceneAddItemSelectedListeners(qtbot):
-    window = QMainWindow()
+def test_addItemSelectedListeners(qtbot):
+    window = QMainWindow()  # noqa: F841
     editor = EditorWidget()
     qtbot.addWidget(editor)
     scene = editor.scene
@@ -103,3 +102,13 @@ def test_sceneAddItemSelectedListeners(qtbot):
     assert len(scene._itemSelectedListeners) == 0
     scene.addItemSelectedListener(Node)
     assert len(scene._itemSelectedListeners) > 0
+
+
+def test_resetLastSelectedStates(filledScene):
+    filledScene.nodes[0].graphicsNode.selectedState = True
+    filledScene.edges[0].graphicsEdge.selectedState = True
+
+    filledScene.resetLastSelectedStates()
+
+    assert filledScene.nodes[0].graphicsNode.selectedState is False
+    assert filledScene.edges[0].graphicsEdge.selectedState is False

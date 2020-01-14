@@ -1,7 +1,7 @@
 from nodedge.blocks.block import Block
-from nodedge.blocks.block_config import registerNode, OP_NODE_INPUT, BLOCKS_ICONS_PATH
-from nodedge.blocks.input_block_content import InputBlockContent
+from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, OP_NODE_INPUT, registerNode
 from nodedge.blocks.graphics_block import GraphicsBlock
+from nodedge.blocks.input_block_content import InputBlockContent
 
 
 @registerNode(OP_NODE_INPUT)

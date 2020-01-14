@@ -1,8 +1,9 @@
 import logging
 from collections import OrderedDict
+
+from nodedge.edge import Edge
 from nodedge.graphics_edge import GraphicsEdge
 from nodedge.node import Node
-from nodedge.edge import Edge
 
 
 class SceneClipboard:
@@ -21,7 +22,7 @@ class SceneClipboard:
         for item in self.scene.graphicsScene.selectedItems():
             if hasattr(item, "node"):
                 serializedSelectedNodes.append(item.node.serialize())
-                for socket in item.node.inputSockets+item.node.outputSockets:
+                for socket in item.node.inputSockets + item.node.outputSockets:
                     selectedSocket[socket.id] = socket
             elif isinstance(item, GraphicsEdge):
                 selectedEdges.append(item.edge)
@@ -33,7 +34,10 @@ class SceneClipboard:
         # Remove all edges which are not connected to a node in our list
         edgesToRemove = []
         for edge in selectedEdges:
-            if edge.startSocket.id in selectedSocket and edge.endSocket.id in selectedSocket:
+            if (
+                edge.startSocket.id in selectedSocket
+                and edge.endSocket.id in selectedSocket
+            ):
                 pass
             else:
                 self.__logger.debug(f"Edge: {edge} is not connected with both sides")
@@ -48,10 +52,9 @@ class SceneClipboard:
             serializedEdgesToKeep.append(edge.serialize())
 
         # Create data
-        data = OrderedDict([
-            ("blocks", serializedSelectedNodes),
-            ("edges", serializedEdgesToKeep),
-        ])
+        data = OrderedDict(
+            [("blocks", serializedSelectedNodes), ("edges", serializedEdgesToKeep),]
+        )
 
         # If cut (aka delete) remove selected items
         if delete:

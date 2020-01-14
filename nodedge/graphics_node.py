@@ -1,7 +1,8 @@
 import logging
-from PyQt5.QtWidgets import *
+
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 
 
 class GraphicsNode(QGraphicsItem):
@@ -54,11 +55,11 @@ class GraphicsNode(QGraphicsItem):
     def initSizes(self):
         self.width = 180
         self.height = 240
-        self.edgeRoundness = 5.
-        self.edgePadding = 10.
-        self.titleHeight = 24.
-        self.titleHorizontalPadding = 4.
-        self.titleVerticalPadding = 4.
+        self.edgeRoundness = 5.0
+        self.edgePadding = 10.0
+        self.titleHeight = 24.0
+        self.titleHorizontalPadding = 4.0
+        self.titleVerticalPadding = 4.0
 
     def initTitle(self):
         self.titleItem = QGraphicsTextItem(self)
@@ -72,27 +73,34 @@ class GraphicsNode(QGraphicsItem):
 
     def initContent(self):
         self.graphicsContent = QGraphicsProxyWidget(self)
-        self.content.setGeometry(self.edgePadding, self.titleHeight + self.edgePadding,
-                                 self.width - 2 * self.edgePadding, self.height
-                                 - 2 * self.edgePadding - self.titleHeight)
+        self.content.setGeometry(
+            self.edgePadding,
+            self.titleHeight + self.edgePadding,
+            self.width - 2 * self.edgePadding,
+            self.height - 2 * self.edgePadding - self.titleHeight,
+        )
         self.graphicsContent.setWidget(self.content)
 
     def boundingRect(self):
-        return QRectF(0, 0,
-                      self.width,
-                      self.height).normalized()
+        return QRectF(0, 0, self.width, self.height).normalized()
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
 
         # title
         pathTitle = QPainterPath()
         pathTitle.setFillRule(Qt.WindingFill)
-        pathTitle.addRoundedRect(0, 0, self.width, self.titleHeight, self.edgeRoundness, self.edgeRoundness)
-        maxTopRect = max(self.titleHeight - self.edgeRoundness, self.titleHeight/2.)
-        maxHeightRect = min(self.edgeRoundness, self.titleHeight/2.)
+        pathTitle.addRoundedRect(
+            0, 0, self.width, self.titleHeight, self.edgeRoundness, self.edgeRoundness
+        )
+        maxTopRect = max(self.titleHeight - self.edgeRoundness, self.titleHeight / 2.0)
+        maxHeightRect = min(self.edgeRoundness, self.titleHeight / 2.0)
         pathTitle.addRect(0, maxTopRect, self.edgeRoundness, maxHeightRect)
-        pathTitle.addRect(self.width - self.edgeRoundness, maxTopRect,
-                          self.edgeRoundness, maxHeightRect)
+        pathTitle.addRect(
+            self.width - self.edgeRoundness,
+            maxTopRect,
+            self.edgeRoundness,
+            maxHeightRect,
+        )
 
         painter.setPen(Qt.NoPen)
         painter.setBrush(self._brushTitle)
@@ -101,21 +109,31 @@ class GraphicsNode(QGraphicsItem):
         # content
         pathContent = QPainterPath()
         pathContent.setFillRule(Qt.WindingFill)
-        pathContent.addRoundedRect(0, self.titleHeight,
-                                   self.width, self.height - self.titleHeight,
-                                   self.edgeRoundness, self.edgeRoundness)
-        maxHeightRect = min(self.edgeRoundness, self.height/2)
-        pathContent.addRect(0, self.titleHeight,
-                            self.edgeRoundness, maxHeightRect)
-        pathContent.addRect(self.width - self.edgeRoundness, self.titleHeight,
-                            self.edgeRoundness, maxHeightRect)
+        pathContent.addRoundedRect(
+            0,
+            self.titleHeight,
+            self.width,
+            self.height - self.titleHeight,
+            self.edgeRoundness,
+            self.edgeRoundness,
+        )
+        maxHeightRect = min(self.edgeRoundness, self.height / 2)
+        pathContent.addRect(0, self.titleHeight, self.edgeRoundness, maxHeightRect)
+        pathContent.addRect(
+            self.width - self.edgeRoundness,
+            self.titleHeight,
+            self.edgeRoundness,
+            maxHeightRect,
+        )
         painter.setPen(Qt.NoPen)
         painter.setBrush(self._brushBackground)
         painter.drawPath(pathContent.simplified())
 
         # outline
         pathOutline = QPainterPath()
-        pathOutline.addRoundedRect(0, 0, self.width, self.height, self.edgeRoundness, self.edgeRoundness)
+        pathOutline.addRoundedRect(
+            0, 0, self.width, self.height, self.edgeRoundness, self.edgeRoundness
+        )
         painter.setPen(self._penDefault if not self.isSelected() else self._penSelected)
         painter.setBrush(Qt.NoBrush)
         painter.drawPath(pathOutline.simplified())
@@ -123,7 +141,7 @@ class GraphicsNode(QGraphicsItem):
     def mouseMoveEvent(self, event):
         super().mouseMoveEvent(event)
 
-        #TODO: Optimize this condition. Just update the selected blocks.
+        # TODO: Optimize this condition. Just update the selected blocks.
         for node in self.scene().scene.nodes:
             if node.graphicsNode.isSelected():
                 node.updateConnectedEdges()
@@ -149,7 +167,10 @@ class GraphicsNode(QGraphicsItem):
 
         # Handle when node was clicked on
         isSelected = self.isSelected()
-        if self._lastSelectedState != isSelected or self.node.scene.lastSelectedItems != self.node.scene.selectedItems:
+        if (
+            self._lastSelectedState != isSelected
+            or self.node.scene.lastSelectedItems != self.node.scene.selectedItems
+        ):
             self.node.scene.resetLastSelectedStates()
             self._lastSelectedState = isSelected
             self.onSelected()

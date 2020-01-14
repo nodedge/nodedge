@@ -1,8 +1,9 @@
-from PyQt5.QtWidgets import *
+import logging
+import math
+
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-import math
-import logging
+from PyQt5.QtWidgets import *
 
 
 class GraphicsScene(QGraphicsScene):
@@ -35,7 +36,7 @@ class GraphicsScene(QGraphicsScene):
 
         self.setBackgroundBrush(self._color_background)
 
-    def dragMoveEvent(self, event: 'QGraphicsSceneDragDropEvent') -> None:
+    def dragMoveEvent(self, event: "QGraphicsSceneDragDropEvent") -> None:
         # Drag events won't be allowed until dragMoveEvent is overridden.
         pass
 
@@ -76,4 +77,3 @@ class GraphicsScene(QGraphicsScene):
 
         painter.setPen(self._pen_dark)
         painter.drawLines(*lines_dark)
-

@@ -6,7 +6,9 @@ EDGE_TYPE_BEZIER = 2
 
 
 class Edge(Serializable):
-    def __init__(self, scene, startSocket=None, endSocket=None, edgeType=EDGE_TYPE_BEZIER):
+    def __init__(
+        self, scene, startSocket=None, endSocket=None, edgeType=EDGE_TYPE_BEZIER
+    ):
         super().__init__()
 
         self.__logger = logging.getLogger(__file__)
@@ -24,9 +26,11 @@ class Edge(Serializable):
         self.scene.addEdge(self)
 
     def __str__(self):
-        return f"0x{hex(id(self))[-4:]} Edge(0x{hex(id(self.startSocket))[-4:]}, " \
-               f"0x{hex(id(self.endSocket))[-4:]}, " \
-               f"{self.edgeType})"
+        return (
+            f"0x{hex(id(self))[-4:]} Edge(0x{hex(id(self.startSocket))[-4:]}, "
+            f"0x{hex(id(self.endSocket))[-4:]}, "
+            f"{self.edgeType})"
+        )
 
     @property
     def startSocket(self):
@@ -34,7 +38,7 @@ class Edge(Serializable):
 
     @startSocket.setter
     def startSocket(self, value):
-        #If the edge was assigned to another socket before, remove the edge from the socket.
+        # If the edge was assigned to another socket before, remove the edge from the socket.
         if self._startSocket is not None:
             self._startSocket.removeEdge(self)
         # Assign new start socket.
@@ -49,7 +53,7 @@ class Edge(Serializable):
 
     @endSocket.setter
     def endSocket(self, value):
-        #If the edge was assigned to another socket before, remove the edge from the socket.
+        # If the edge was assigned to another socket before, remove the edge from the socket.
         if self._endSocket is not None:
             self._endSocket.removeEdge(self)
         # Assign new end socket.
@@ -137,11 +141,17 @@ class Edge(Serializable):
 
     def serialize(self):
 
-        return OrderedDict([("id",  self.id),
-                            ("edgeType",  self.edgeType),
-                            ("startSocket",  self.startSocket.id),
-                            ("endSocket",  self.endSocket.id if self.endSocket is not None else None),
-                            ])
+        return OrderedDict(
+            [
+                ("id", self.id),
+                ("edgeType", self.edgeType),
+                ("startSocket", self.startSocket.id),
+                (
+                    "endSocket",
+                    self.endSocket.id if self.endSocket is not None else None,
+                ),
+            ]
+        )
 
     def deserialize(self, data, hashmap={}, restoreId=True):
         if restoreId:
@@ -151,4 +161,3 @@ class Edge(Serializable):
         self.edgeType = data["edgeType"]
 
         return True
-

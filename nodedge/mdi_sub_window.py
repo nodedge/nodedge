@@ -4,11 +4,11 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from nodedge.editor_widget import EditorWidget
 from nodedge.blocks.block_config import *
+from nodedge.edge import EDGE_TYPE_BEZIER, EDGE_TYPE_DIRECT
+from nodedge.editor_widget import EditorWidget
 from nodedge.node import Node
 from nodedge.utils import dumpException
-from nodedge.edge import EDGE_TYPE_BEZIER, EDGE_TYPE_DIRECT
 
 
 class MdiSubWindow(EditorWidget):
@@ -18,7 +18,7 @@ class MdiSubWindow(EditorWidget):
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
 
-        self.__contextLogger = logging.getLogger(__file__+"#Context")
+        self.__contextLogger = logging.getLogger(__file__ + "#Context")
         self.__contextLogger.setLevel(logging.DEBUG)
 
         self._closeEventListeners = []
@@ -42,7 +42,9 @@ class MdiSubWindow(EditorWidget):
 
         for key in keys:
             node = BLOCKS[key]
-            self.nodeActions[node.operationCode] = QAction(QIcon(node.icon), node.operationTitle)
+            self.nodeActions[node.operationCode] = QAction(
+                QIcon(node.icon), node.operationTitle
+            )
             self.nodeActions[node.operationCode].setData(node.operationCode)
 
     def initNodesContextMenu(self):
@@ -69,7 +71,9 @@ class MdiSubWindow(EditorWidget):
 
     def onDragEnter(self, event):
         if not event.mimeData().hasFormat(LISTBOX_MIMETYPE):
-            self.__logger.warning(f"Dragging denied: Wrong Mime format ({event.mimeData().formats()})")
+            self.__logger.warning(
+                f"Dragging denied: Wrong Mime format ({event.mimeData().formats()})"
+            )
             event.setAccepted(False)
             return
 
@@ -78,7 +82,9 @@ class MdiSubWindow(EditorWidget):
     def onDrop(self, event):
         if not event.mimeData().hasFormat(LISTBOX_MIMETYPE):
             event.ignore()
-            self.__logger.warning(f"Dropping denied: Wrong Mime format ({event.mimeData().formats()})")
+            self.__logger.warning(
+                f"Dropping denied: Wrong Mime format ({event.mimeData().formats()})"
+            )
             return
 
         eventData = event.mimeData().data(LISTBOX_MIMETYPE)
@@ -91,7 +97,9 @@ class MdiSubWindow(EditorWidget):
         mousePos = event.pos()
         scenePos = self.scene.view.mapToScene(mousePos)
 
-        self.__logger.debug(f"Received text ({text}) and code ({operationCode}) at pos ({scenePos})")
+        self.__logger.debug(
+            f"Received text ({text}) and code ({operationCode}) at pos ({scenePos})"
+        )
 
         # FIXME: [WIP] Nodes should not be created this way.
         # node = Block(self.scene, text, operationCode)

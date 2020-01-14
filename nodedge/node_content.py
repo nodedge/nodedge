@@ -1,8 +1,8 @@
 from collections import OrderedDict
 
-from PyQt5.QtWidgets import *
 from PyQt5 import QtGui
 from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 
 from nodedge.serializable import Serializable
 
@@ -26,9 +26,7 @@ class NodeContent(QWidget, Serializable):
         self.node.scene.view.editingFlag = value
 
     def serialize(self):
-        return OrderedDict([
-
-        ])
+        return OrderedDict([])
 
     def deserialize(self, data, hashmap={}, restoreId=False):
         return True

@@ -1,4 +1,5 @@
 import logging
+
 from nodedge.graphics_edge import GraphicsEdge
 from nodedge.utils import dumpException
 
@@ -26,7 +27,9 @@ class SceneHistory:
             self.scene.history.storeInitialStamp()
 
     def __str__(self):
-        dlog = f"History [{self.currentStep} / {len(self.stack)}, max. {self._maxLength}]"
+        dlog = (
+            f"History [{self.currentStep} / {len(self.stack)}, max. {self._maxLength}]"
+        )
         for ind, value in enumerate(self.stack):
             dlog += f"\n|||| {ind}: {value['desc']}"
 
@@ -60,16 +63,18 @@ class SceneHistory:
             self.scene.isModified = True
 
     def store(self, desc, sceneIsModified=True):
-        self.__logger.debug(f"Storing \'{desc}\' in history with current step: {self.currentStep} / {len(self.stack)} "
-                            f"(max. {self._maxLength})")
+        self.__logger.debug(
+            f"Storing '{desc}' in history with current step: {self.currentStep} / {len(self.stack)} "
+            f"(max. {self._maxLength})"
+        )
         stamp = self._createStamp(desc)
 
         # If the current step is not at the end of the stack.
         if self.canRedo:
-            self.stack = self.stack[0:self.currentStep+1]
+            self.stack = self.stack[0 : self.currentStep + 1]
 
         # If history is outside of limits
-        if self.currentStep+1 >= self._maxLength:
+        if self.currentStep + 1 >= self._maxLength:
             self.currentStep -= 1
             self.stack.pop(0)
 
@@ -84,8 +89,10 @@ class SceneHistory:
             callback()
 
     def restore(self):
-        self.__logger.debug(f"Restoring history with current step: {self.currentStep} / {len(self.stack)} "
-                            f"(max. {self._maxLength})")
+        self.__logger.debug(
+            f"Restoring history with current step: {self.currentStep} / {len(self.stack)} "
+            f"(max. {self._maxLength})"
+        )
 
         self._restoreStamp(self.stack[self.currentStep])
 
@@ -93,10 +100,7 @@ class SceneHistory:
             callback()
 
     def _createStamp(self, desc):
-        selectedObjects = {
-            "blocks": [],
-            "edges": []
-        }
+        selectedObjects = {"blocks": [], "edges": []}
 
         for item in self.scene.graphicsScene.selectedItems():
             if hasattr(item, "node"):
@@ -107,7 +111,7 @@ class SceneHistory:
         stamp = {
             "desc": desc,
             "snapshot": self.scene.serialize(),
-            "selection": selectedObjects
+            "selection": selectedObjects,
         }
 
         return stamp

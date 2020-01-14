@@ -1,9 +1,10 @@
-from nodedge.scene import Scene, InvalidFile
-from nodedge.graphics_view import GraphicsView
-from nodedge.node import Node
+import os
+
 from nodedge.blocks.block import Block
 from nodedge.edge import *
-import os
+from nodedge.graphics_view import GraphicsView
+from nodedge.node import Node
+from nodedge.scene import InvalidFile, Scene
 
 
 class EditorWidget(QWidget):
@@ -48,8 +49,18 @@ class EditorWidget(QWidget):
         node2.pos = (-75, 100)
         node3.pos = (200, -75)
 
-        edge1 = Edge(self.scene, node1.outputSockets[0], node2.inputSockets[1], edgeType=EDGE_TYPE_BEZIER)
-        edge2 = Edge(self.scene, node2.outputSockets[0], node3.inputSockets[2], edgeType=EDGE_TYPE_BEZIER)
+        edge1 = Edge(  # noqa: F841
+            self.scene,
+            node1.outputSockets[0],
+            node2.inputSockets[1],
+            edgeType=EDGE_TYPE_BEZIER,
+        )
+        edge2 = Edge(  # noqa: F841
+            self.scene,
+            node2.outputSockets[0],
+            node3.inputSockets[2],
+            edgeType=EDGE_TYPE_BEZIER,
+        )
 
         self.scene.history.storeInitialStamp()
 
@@ -92,7 +103,9 @@ class EditorWidget(QWidget):
         except InvalidFile as e:
             self.__logger.warning(f"Error loading {filename}: {e}")
             QApplication.restoreOverrideCursor()
-            QMessageBox.warning(self, f"Error loading {os.path.basename(filename)}", str(e))
+            QMessageBox.warning(
+                self, f"Error loading {os.path.basename(filename)}", str(e)
+            )
             return False
 
     def evalNodes(self):
@@ -109,4 +122,3 @@ class EditorWidget(QWidget):
         QApplication.restoreOverrideCursor()
 
         return True
-

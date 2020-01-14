@@ -1,7 +1,7 @@
 from nodedge.blocks.block import Block, EvaluationError
-from nodedge.blocks.block_config import registerNode, OP_NODE_OUTPUT, BLOCKS_ICONS_PATH
-from nodedge.blocks.output_block_content import OutputBlockContent
+from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, OP_NODE_OUTPUT, registerNode
 from nodedge.blocks.graphics_block import GraphicsBlock
+from nodedge.blocks.output_block_content import OutputBlockContent
 
 
 @registerNode(OP_NODE_OUTPUT)
@@ -25,7 +25,9 @@ class OutputBlock(Block):
         # TODO: Investigate if eval is really wanted here.
         inputResult = inputNode.eval()
         if inputResult is None:
-            raise EvaluationError(f"The result of the input {inputNode} evaluation is None.")
+            raise EvaluationError(
+                f"The result of the input {inputNode} evaluation is None."
+            )
 
         self.content.label.setText(f"{inputResult}")
 

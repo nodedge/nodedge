@@ -3,8 +3,8 @@ import logging
 import os
 import typing
 
-from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 
 from nodedge.editor_widget import EditorWidget
 
@@ -13,8 +13,10 @@ class EditorWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        logging.basicConfig(format="%(asctime)s|%(levelname).4s|%(filename)10s|%(lineno).3s|"
-                                   "%(message)s|%(funcName)s".format("%Y/%m/%d %H:%M:%S"))
+        logging.basicConfig(
+            format="%(asctime)s|%(levelname).4s|%(filename)10s|%(lineno).3s|"
+            "%(message)s|%(funcName)s".format("%Y/%m/%d %H:%M:%S")
+        )
 
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
@@ -62,40 +64,84 @@ class EditorWindow(QMainWindow):
 
     # noinspection PyArgumentList
     def createActions(self):
-        self.newAct: QAction = QAction("&New", self,
-                                       shortcut="Ctrl+N", statusTip="Create new Nodedge",
-                                       triggered=self.newFile)
+        self.newAct: QAction = QAction(
+            "&New",
+            self,
+            shortcut="Ctrl+N",
+            statusTip="Create new Nodedge",
+            triggered=self.newFile,
+        )
 
-        self.openAct = QAction("&Open", self,
-                               shortcut="Ctrl+O", statusTip="Open file",
-                               triggered=self.openFile)
-        self.saveAct = QAction("&Save", self,
-                               shortcut="Ctrl+S", statusTip="Save file",
-                               triggered=self.saveFile)
-        self.saveAsAct = QAction("Save &As", self,
-                                 shortcut="Ctrl+Shift+S", statusTip="Save file as...",
-                                 triggered=self.saveFileAs)
-        self.quitAct = QAction("&Quit", self,
-                               shortcut="Ctrl+Q", statusTip="Exit application",
-                               triggered=self.close)
-        self.undoAct = QAction("&Undo", self,
-                               shortcut="Ctrl+Z", statusTip="Undo last operation",
-                               triggered=self.undo)
-        self.redoAct = QAction("&Redo", self,
-                               shortcut="Ctrl+Shift+Z", statusTip="Redo last operation",
-                               triggered=self.redo)
-        self.cutAct = QAction("C&ut", self,
-                              shortcut="Ctrl+X", statusTip="Cut selected items",
-                              triggered=self.cut)
-        self.copyAct = QAction("&Copy", self,
-                               shortcut="Ctrl+C", statusTip="Copy selected items",
-                               triggered=self.copy)
-        self.pasteAct = QAction("&Paste", self,
-                                shortcut="Ctrl+V", statusTip="Paste selected items",
-                                triggered=self.paste)
-        self.deleteAct = QAction("&Delete", self,
-                                 shortcut="Del", statusTip="Delete selected items",
-                                 triggered=self.delete)
+        self.openAct = QAction(
+            "&Open",
+            self,
+            shortcut="Ctrl+O",
+            statusTip="Open file",
+            triggered=self.openFile,
+        )
+        self.saveAct = QAction(
+            "&Save",
+            self,
+            shortcut="Ctrl+S",
+            statusTip="Save file",
+            triggered=self.saveFile,
+        )
+        self.saveAsAct = QAction(
+            "Save &As",
+            self,
+            shortcut="Ctrl+Shift+S",
+            statusTip="Save file as...",
+            triggered=self.saveFileAs,
+        )
+        self.quitAct = QAction(
+            "&Quit",
+            self,
+            shortcut="Ctrl+Q",
+            statusTip="Exit application",
+            triggered=self.close,
+        )
+        self.undoAct = QAction(
+            "&Undo",
+            self,
+            shortcut="Ctrl+Z",
+            statusTip="Undo last operation",
+            triggered=self.undo,
+        )
+        self.redoAct = QAction(
+            "&Redo",
+            self,
+            shortcut="Ctrl+Shift+Z",
+            statusTip="Redo last operation",
+            triggered=self.redo,
+        )
+        self.cutAct = QAction(
+            "C&ut",
+            self,
+            shortcut="Ctrl+X",
+            statusTip="Cut selected items",
+            triggered=self.cut,
+        )
+        self.copyAct = QAction(
+            "&Copy",
+            self,
+            shortcut="Ctrl+C",
+            statusTip="Copy selected items",
+            triggered=self.copy,
+        )
+        self.pasteAct = QAction(
+            "&Paste",
+            self,
+            shortcut="Ctrl+V",
+            statusTip="Paste selected items",
+            triggered=self.paste,
+        )
+        self.deleteAct = QAction(
+            "&Delete",
+            self,
+            shortcut="Del",
+            statusTip="Delete selected items",
+            triggered=self.delete,
+        )
 
     def createMenus(self):
         self.fileMenu: QMenu = self.menuBar().addMenu("&File")
@@ -149,13 +195,17 @@ class EditorWindow(QMainWindow):
         self.__logger.debug("Opening graph")
         if self.maybeSave():
             if filename is None:
-                filename, filter = QFileDialog.getOpenFileName(parent=self, caption="Open graph from file")
+                filename, filter = QFileDialog.getOpenFileName(
+                    parent=self, caption="Open graph from file"
+                )
 
             if filename == "":
                 return
             if os.path.isfile(filename):
                 self.currentEditorWidget.loadFile(filename)
-                self.statusBar().showMessage(f"Successfully opened {os.path.basename(filename)}", 5000)
+                self.statusBar().showMessage(
+                    f"Successfully opened {os.path.basename(filename)}", 5000
+                )
 
                 self.updateTitle()
 
@@ -165,20 +215,26 @@ class EditorWindow(QMainWindow):
             return self.saveFileAs()
 
         self.currentEditorWidget.saveFile(self.currentEditorWidget.filename)
-        self.statusBar().showMessage(f"Successfully saved to {self.currentEditorWidget.shortName}", 5000)
+        self.statusBar().showMessage(
+            f"Successfully saved to {self.currentEditorWidget.shortName}", 5000
+        )
         self.updateTitle()
         self.currentEditorWidget.updateTitle()
         return True
 
     def saveFileAs(self):
         self.__logger.debug("Saving graph as...")
-        filename, filter = QFileDialog.getSaveFileName(parent=self, caption="Save graph to file")
+        filename, filter = QFileDialog.getSaveFileName(
+            parent=self, caption="Save graph to file"
+        )
 
         if filename == "":
             return False
 
         self.currentEditorWidget.saveFile(filename)
-        self.statusBar().showMessage(f"Successfully saved to {self.currentEditorWidget.shortName}", 5000)
+        self.statusBar().showMessage(
+            f"Successfully saved to {self.currentEditorWidget.shortName}", 5000
+        )
         self.updateTitle()
         return True
 
@@ -206,14 +262,18 @@ class EditorWindow(QMainWindow):
     def cut(self):
         self.__logger.debug("Cutting selected items")
         if self.currentEditorWidget:
-            data = self.currentEditorWidget.scene.clipboard.serializeSelected(delete=True)
+            data = self.currentEditorWidget.scene.clipboard.serializeSelected(
+                delete=True
+            )
             strData = json.dumps(data, indent=4)
             QApplication.instance().clipboard().setText(strData)
 
     def copy(self):
         self.__logger.debug("Copying selected items")
         if self.currentEditorWidget:
-            data = self.currentEditorWidget.scene.clipboard.serializeSelected(delete=False)
+            data = self.currentEditorWidget.scene.clipboard.serializeSelected(
+                delete=False
+            )
             strData = json.dumps(data, indent=4)
             self.__logger.debug(strData)
             QApplication.instance().clipboard().setText(strData)
@@ -238,9 +298,12 @@ class EditorWindow(QMainWindow):
         if not self.currentEditorWidget.isModified():
             return True
 
-        res = QMessageBox.warning(self, "Nodedge is about to close", "There are unsaved modifications. \n"
-                                                                     "Do you want to save your changes?",
-                                  QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
+        res = QMessageBox.warning(
+            self,
+            "Nodedge is about to close",
+            "There are unsaved modifications. \n" "Do you want to save your changes?",
+            QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel,
+        )
 
         if res == QMessageBox.Save:
             return self.saveFile()
@@ -251,12 +314,12 @@ class EditorWindow(QMainWindow):
 
     def readSettings(self):
         settings = QSettings(self.companyName, self.productName)
-        pos = settings.value('pos', QPoint(200, 200))
-        size = settings.value('size', QSize(400, 400))
+        pos = settings.value("pos", QPoint(200, 200))
+        size = settings.value("size", QSize(400, 400))
         self.move(pos)
         self.resize(size)
 
     def writeSettings(self):
         settings = QSettings(self.companyName, self.productName)
-        settings.setValue('pos', self.pos())
-        settings.setValue('size', self.size())
+        settings.setValue("pos", self.pos())
+        settings.setValue("size", self.size())

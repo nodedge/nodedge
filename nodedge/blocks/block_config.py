@@ -9,8 +9,7 @@ OP_NODE_SUBTRACT = 4
 OP_NODE_MULTIPLY = 5
 OP_NODE_DIVIDE = 6
 
-BLOCKS = {
-}
+BLOCKS = {}
 
 BLOCKS_ICONS_PATH = f"{os.path.dirname(__file__)}/../resources/node_icons"
 
@@ -32,8 +31,10 @@ class OperationCodeNotRegistered(BlockConfigException):
 
 def associateOperationCodeWithBlock(operationCode, referenceClass):
     if operationCode in BLOCKS:
-        raise InvalidNodeRegistration(f"Duplicite node registration of {operationCode}. "
-                                      f"{BLOCKS[operationCode]} already registered.")
+        raise InvalidNodeRegistration(
+            f"Duplicite node registration of {operationCode}. "
+            f"{BLOCKS[operationCode]} already registered."
+        )
     BLOCKS[operationCode] = referenceClass
 
 
@@ -49,6 +50,7 @@ def getClassFromOperationCode(operationCode):
     if operationCode not in BLOCKS:
         raise OperationCodeNotRegistered(f"{operationCode} is not registered yet.")
     return BLOCKS[operationCode]
+
 
 # Register blocks
 # from nodedge.blocks import *

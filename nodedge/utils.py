@@ -1,8 +1,9 @@
-import traceback
 import logging
+import traceback
+from pprint import PrettyPrinter
+
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-from pprint import PrettyPrinter
 
 pp = PrettyPrinter(indent=4).pprint
 
@@ -21,7 +22,7 @@ def loadStyleSheet(fileName):
 
 
 def loadStyleSheets(*args):
-    res = ''
+    res = ""
     for arg in args:
         file = QFile(arg)
         file.open(QFile.ReadOnly or QFile.Text)

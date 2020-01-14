@@ -1,3 +1,5 @@
+from PyQt5.QtCore import QPointF
+
 from nodedge.graphics_node import GraphicsNode
 from nodedge.node_content import NodeContent
 from nodedge.socket import *
@@ -5,7 +7,9 @@ from nodedge.utils import dumpException
 
 
 class Node(Serializable):
-    def __init__(self, scene, title="Undefined node", inputSockets=[], outputSockets=[]):
+    def __init__(
+        self, scene, title="Undefined node", inputSockets=[], outputSockets=[]
+    ):
         super().__init__()
         self._title = title
         self.scene = scene
@@ -51,23 +55,27 @@ class Node(Serializable):
 
         # Create new sockets.
         for ind, inp in enumerate(inputs):
-            socket = Socket(node=self,
-                            index=ind,
-                            position=self._inputSocketPosition,
-                            socketType=inp,
-                            allowsMultiEdges=self._inputAllowsMultiEdges,
-                            countOnThisNodeSide=len(inputs),
-                            isInput=True)
+            socket = Socket(
+                node=self,
+                index=ind,
+                position=self._inputSocketPosition,
+                socketType=inp,
+                allowsMultiEdges=self._inputAllowsMultiEdges,
+                countOnThisNodeSide=len(inputs),
+                isInput=True,
+            )
             self.inputSockets.append(socket)
 
         for ind, out in enumerate(outputs):
-            socket = Socket(node=self,
-                            index=ind,
-                            position=self._outputSocketPosition,
-                            socketType=out,
-                            allowsMultiEdges=self._outputAllowsMultiEdges,
-                            countOnThisNodeSide=len(outputs),
-                            isInput=False)
+            socket = Socket(
+                node=self,
+                index=ind,
+                position=self._outputSocketPosition,
+                socketType=out,
+                allowsMultiEdges=self._outputAllowsMultiEdges,
+                countOnThisNodeSide=len(outputs),
+                isInput=False,
+            )
             self.outputSockets.append(socket)
 
     def __str__(self):
@@ -82,7 +90,9 @@ class Node(Serializable):
         self.markDescendantsDirty()
 
     @property
-    def title(self): return self._title
+    def title(self):
+        return self._title
+
     @title.setter
     def title(self, value):
         self._title = value
@@ -90,38 +100,62 @@ class Node(Serializable):
 
     @property
     def pos(self):
-        return self.graphicsNode.pos() # QPointF
+        return self.graphicsNode.pos()  # QPointF
+
     @pos.setter
     def pos(self, pos):
-        try:
-            x, y = pos
-        except ValueError:
-            raise ValueError("Pass an iterable with two numbers.")
-        self.graphicsNode.setPos(x, y)
+        if isinstance(pos, (list, tuple)):
+            try:
+                x, y = pos
+                self.graphicsNode.setPos(x, y)
+
+            except ValueError:
+                raise ValueError("Pass an iterable with two numbers.")
+            except TypeError:
+                raise TypeError("Pass an iterable with two numbers.")
+        elif isinstance(pos, QPointF):
+            self.graphicsNode.setPos(pos)
 
     def socketPos(self, index, position, countOnThisSide=1):
-        x = 0 if (position in (LEFT_TOP, LEFT_CENTER, LEFT_BOTTOM)) else self.graphicsNode.width
+        x = (
+            0
+            if (position in (LEFT_TOP, LEFT_CENTER, LEFT_BOTTOM))
+            else self.graphicsNode.width
+        )
 
         if position in (LEFT_BOTTOM, RIGHT_BOTTOM):
-            y = self.graphicsNode.height - self.graphicsNode.edgeRoundness - self.graphicsNode.titleVerticalPadding \
+            y = (
+                self.graphicsNode.height
+                - self.graphicsNode.edgeRoundness
+                - self.graphicsNode.titleVerticalPadding
                 - index * self._socketSpacing
+            )
         elif position in (LEFT_CENTER, RIGHT_CENTER):
             numberOfSockets = countOnThisSide
             nodeHeight = self.graphicsNode.height
-            topOffset = self.graphicsNode.titleHeight + 2 * self.graphicsNode.titleVerticalPadding
+            topOffset = (
+                self.graphicsNode.titleHeight
+                + 2 * self.graphicsNode.titleVerticalPadding
+            )
             availableHeight = nodeHeight - topOffset
 
-            totalHeightofAllSockets = numberOfSockets * self._socketSpacing
+            # TODO: use total height of all sockets
+            # totalHeightofAllSockets = numberOfSockets * self._socketSpacing
 
-            newTop = availableHeight - totalHeightofAllSockets
+            # TODO: use newTop in node
+            # newTop = availableHeight - totalHeightofAllSockets
 
             y = topOffset + availableHeight / 2.0 + (index - 0.5) * self._socketSpacing
             if numberOfSockets > 1:
                 y -= self._socketSpacing * (numberOfSockets - 1) / 2
 
         elif position in (LEFT_TOP, RIGHT_TOP):
-            y = self.graphicsNode.titleHeight + self.graphicsNode.titleVerticalPadding \
-                + self.graphicsNode.edgeRoundness + index * self._socketSpacing
+            y = (
+                self.graphicsNode.titleHeight
+                + self.graphicsNode.titleVerticalPadding
+                + self.graphicsNode.edgeRoundness
+                + index * self._socketSpacing
+            )
         else:
             y = 0
 
@@ -138,7 +172,7 @@ class Node(Serializable):
     def remove(self):
         self.__logger.debug(f"Removing {self}")
         self.__logger.debug("Removing all edges connected to the node.")
-        for socket in (self.inputSockets + self.outputSockets):
+        for socket in self.inputSockets + self.outputSockets:
             socket.removeAllEdges()
         self.__logger.debug("Removing the graphical node.")
         self.scene.graphicsScene.removeItem(self.graphicsNode)
@@ -151,6 +185,7 @@ class Node(Serializable):
     @property
     def isDirty(self):
         return self._isDirty
+
     @isDirty.setter
     def isDirty(self, value):
         if self._isDirty != value:
@@ -174,6 +209,7 @@ class Node(Serializable):
     @property
     def isInvalid(self):
         return self._isInvalid
+
     @isInvalid.setter
     def isInvalid(self, value):
         if self._isInvalid != value:
@@ -223,7 +259,7 @@ class Node(Serializable):
         elif side == "output":
             socketList = self.outputSockets
         else:
-            raise ValueError("Side is either \'input\' or \'output\'")
+            raise ValueError("Side is either 'input' or 'output'")
 
         try:
             socket = socketList[index]
@@ -231,8 +267,10 @@ class Node(Serializable):
                 otherSocket = edge.getOtherSocket(socket)
                 IONodes.append(otherSocket.node)
         except IndexError:
-            self.__logger.warning(f"Trying to get connected {side} node at #{index} "
-                                  f"but {self} has only {len(socketList)} outputs.")
+            self.__logger.warning(
+                f"Trying to get connected {side} node at #{index} "
+                f"but {self} has only {len(socketList)} outputs."
+            )
         except Exception as e:
             dumpException(e)
         finally:
@@ -261,15 +299,17 @@ class Node(Serializable):
         for socket in self.outputSockets:
             outputs.append(socket.serialize())
 
-        return OrderedDict([("id",  self.id),
-                            ("title", self.title),
-                            ("posX", self.graphicsNode.scenePos().x()),
-                            ("posY", self.graphicsNode.scenePos().y()),
-                            ("inputs", inputs),
-                            ("outputs", outputs),
-                            ("content", self.content.serialize()),
-
-                            ])
+        return OrderedDict(
+            [
+                ("id", self.id),
+                ("title", self.title),
+                ("posX", self.graphicsNode.scenePos().x()),
+                ("posY", self.graphicsNode.scenePos().y()),
+                ("inputs", inputs),
+                ("outputs", outputs),
+                ("content", self.content.serialize()),
+            ]
+        )
 
     def deserialize(self, data, hashmap={}, restoreId=True):
         try:
@@ -280,23 +320,39 @@ class Node(Serializable):
             self.pos = (data["posX"], data["posY"])
             self.title = data["title"]
 
-            data["inputs"].sort(key=lambda socket: socket["index"]+socket["position"]*1000)
-            data["outputs"].sort(key=lambda socket: socket["index"]+socket["position"]*1000)
+            data["inputs"].sort(
+                key=lambda socket: socket["index"] + socket["position"] * 1000
+            )
+            data["outputs"].sort(
+                key=lambda socket: socket["index"] + socket["position"] * 1000
+            )
 
             numberOfInputs = len(data["inputs"])
             numberOfOutputs = len(data["outputs"])
 
             self.inputSockets = []
             for socketData in data["inputs"]:
-                newSocket = Socket(node=self, index=socketData["index"], position=socketData["position"],
-                                   socketType=socketData["socketType"], countOnThisNodeSide=numberOfInputs, isInput=True)
+                newSocket = Socket(
+                    node=self,
+                    index=socketData["index"],
+                    position=socketData["position"],
+                    socketType=socketData["socketType"],
+                    countOnThisNodeSide=numberOfInputs,
+                    isInput=True,
+                )
                 newSocket.deserialize(socketData, hashmap, restoreId)
                 self.inputSockets.append(newSocket)
 
             self.outputSockets = []
             for socketData in data["outputs"]:
-                newSocket = Socket(node=self, index=socketData["index"], position=socketData["position"],
-                                   socketType=socketData["socketType"], countOnThisNodeSide=numberOfOutputs, isInput=False)
+                newSocket = Socket(
+                    node=self,
+                    index=socketData["index"],
+                    position=socketData["position"],
+                    socketType=socketData["socketType"],
+                    countOnThisNodeSide=numberOfOutputs,
+                    isInput=False,
+                )
                 newSocket.deserialize(socketData, hashmap, restoreId)
                 self.outputSockets.append(newSocket)
         except Exception as e:

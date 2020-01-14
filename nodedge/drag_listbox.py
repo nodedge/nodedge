@@ -1,12 +1,12 @@
 import logging
 import os
 
-from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from nodedge.utils import dumpException
 from nodedge.blocks.block_config import *
+from nodedge.utils import dumpException
 
 
 class DragListbox(QListWidget):
@@ -46,13 +46,15 @@ class DragListbox(QListWidget):
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
 
         item.setData(Qt.UserRole, pixmap)
-        item.setData(Qt.UserRole+1, operationCode)
+        item.setData(Qt.UserRole + 1, operationCode)
 
     def startDrag(self, *args, **kvargs) -> None:
         try:
             item = self.currentItem()
-            operationCode = item.data(Qt.UserRole+1)
-            self.__logger.debug(f"Dragging text ({item.text()}) and code ({operationCode})")
+            operationCode = item.data(Qt.UserRole + 1)
+            self.__logger.debug(
+                f"Dragging text ({item.text()}) and code ({operationCode})"
+            )
             pixmap = QPixmap(item.data(Qt.UserRole))
 
             itemData = QByteArray()
@@ -66,7 +68,7 @@ class DragListbox(QListWidget):
 
             drag = QDrag(self)
             drag.setMimeData(mimeData)
-            drag.setHotSpot(QPoint(pixmap.width()/2, pixmap.height()/2))
+            drag.setHotSpot(QPoint(pixmap.width() / 2, pixmap.height() / 2))
             drag.setPixmap(pixmap)
 
             drag.exec_(Qt.MoveAction)

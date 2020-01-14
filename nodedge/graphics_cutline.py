@@ -1,7 +1,8 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
 import typing
+
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 
 
 class GraphicsCutline(QGraphicsItem):
@@ -10,7 +11,7 @@ class GraphicsCutline(QGraphicsItem):
 
         self.linePoints = []
         self._pen = QPen(Qt.gray)
-        self._pen.setWidth(2.)
+        self._pen.setWidth(2.0)
         self._pen.setDashPattern([3, 3])
 
         self.setZValue(2)
@@ -19,8 +20,6 @@ class GraphicsCutline(QGraphicsItem):
         return self.shape().boundingRect()
 
     def shape(self):
-        poly = QPolygonF(self.linePoints)
-
         if len(self.linePoints) > 1:
             path = QPainterPath(self.linePoints[0])
             for point in self.linePoints[1:]:
@@ -31,8 +30,12 @@ class GraphicsCutline(QGraphicsItem):
 
         return path
 
-
-    def paint(self, painter: QPainter, option: 'QStyleOptionGraphicsItem', widget: typing.Optional[QWidget] = None) -> None:
+    def paint(
+        self,
+        painter: QPainter,
+        option: "QStyleOptionGraphicsItem",
+        widget: typing.Optional[QWidget] = None,
+    ) -> None:
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setBrush(Qt.NoBrush)
         painter.setPen(self._pen)

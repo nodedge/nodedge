@@ -1,8 +1,8 @@
 import logging
 
-from nodedge.node import Node
 from nodedge.blocks.block_content import BlockContent
 from nodedge.blocks.graphics_block import GraphicsBlock
+from nodedge.node import Node
 from nodedge.socket import LEFT_CENTER, RIGHT_CENTER
 from nodedge.utils import dumpException
 
@@ -15,7 +15,9 @@ class Block(Node):
     contentLabelObjectName = "blockBackground"
 
     def __init__(self, scene, inputSockets=(2, 2), outputSockets=(1,)):
-        super().__init__(scene, self.__class__.operationTitle, inputSockets, outputSockets)
+        super().__init__(
+            scene, self.__class__.operationTitle, inputSockets, outputSockets
+        )
 
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
@@ -44,12 +46,16 @@ class Block(Node):
             inputNodes = self.inputNodesAt(index)
             inputNodesLength = len(inputNodes)
             if inputNodesLength > 1:
-                raise RedundantInputError(f"{inputNodesLength} inputs connected to input socket #{index}.")
+                raise RedundantInputError(
+                    f"{inputNodesLength} inputs connected to input socket #{index}."
+                )
             if inputNodesLength == 0:
                 raise MissInputError(f"No input connected to input socket #{index}.")
 
     def evalImplementation(self):
-        raise NotImplementedError(f"evalImplementation has not been overridden by {self.__class__.__name__}")
+        raise NotImplementedError(
+            f"evalImplementation has not been overridden by {self.__class__.__name__}"
+        )
 
     def eval(self):
         if not self.isDirty and not self.isInvalid:

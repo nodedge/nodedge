@@ -1,5 +1,9 @@
 from nodedge.blocks.block import *
-from nodedge.blocks.block_config import registerNode, OP_NODE_SUBTRACT, BLOCKS_ICONS_PATH
+from nodedge.blocks.block_config import (
+    BLOCKS_ICONS_PATH,
+    OP_NODE_SUBTRACT,
+    registerNode,
+)
 
 
 @registerNode(OP_NODE_SUBTRACT)

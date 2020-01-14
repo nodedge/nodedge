@@ -2,7 +2,6 @@ from nodedge.edge import *
 from nodedge.graphics_cutline import GraphicsCutline
 from nodedge.utils import dumpException
 
-
 MODE_NOOP = 1
 MODE_EDGE_DRAG = 2
 MODE_EDGE_CUT = 3
@@ -56,10 +55,12 @@ class GraphicsView(QGraphicsView):
         return rep
 
     def initUI(self):
-        self.setRenderHint(QPainter.Antialiasing or
-                           QPainter.HighQualityAntialiasing or
-                           QPainter.TextAntialiasing or
-                           QPainter.SmoothPixmapTransform)
+        self.setRenderHint(
+            QPainter.Antialiasing
+            or QPainter.HighQualityAntialiasing
+            or QPainter.TextAntialiasing
+            or QPainter.SmoothPixmapTransform
+        )
         self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
 
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -114,14 +115,19 @@ class GraphicsView(QGraphicsView):
 
         self.lastLMBClickScenePos = self.mapToScene(event.pos())
 
-        self.__logger.debug("LMB "+self.debugModifiers(event)+f"{item}")
+        self.__logger.debug("LMB " + self.debugModifiers(event) + f"{item}")
 
         if hasattr(item, "node") or isinstance(item, GraphicsEdge) or item is None:
             if event.modifiers() & Qt.ShiftModifier:
                 event.ignore()
-                fakeEvent = QMouseEvent(QEvent.MouseButtonPress, event.localPos(), event.screenPos(),
-                                        Qt.LeftButton, event.buttons() | Qt.LeftButton,
-                                        event.modifiers() | Qt.ControlModifier)
+                fakeEvent = QMouseEvent(
+                    QEvent.MouseButtonPress,
+                    event.localPos(),
+                    event.screenPos(),
+                    Qt.LeftButton,
+                    event.buttons() | Qt.LeftButton,
+                    event.modifiers() | Qt.ControlModifier,
+                )
                 super().mousePressEvent(fakeEvent)
                 return
 
@@ -141,8 +147,14 @@ class GraphicsView(QGraphicsView):
         if item is None:
             if event.modifiers() & Qt.ControlModifier:
                 self.mode = MODE_EDGE_CUT
-                fakeEvent = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
-                                        Qt.LeftButton, Qt.NoButton, event.modifiers())
+                fakeEvent = QMouseEvent(
+                    QEvent.MouseButtonRelease,
+                    event.localPos(),
+                    event.screenPos(),
+                    Qt.LeftButton,
+                    Qt.NoButton,
+                    event.modifiers(),
+                )
                 super().mouseReleaseEvent(fakeEvent)
                 QApplication.setOverrideCursor(Qt.CrossCursor)
                 return
@@ -157,9 +169,14 @@ class GraphicsView(QGraphicsView):
         if hasattr(item, "node") or isinstance(item, GraphicsEdge) or item is None:
             if event.modifiers() & Qt.ShiftModifier:
                 event.ignore()
-                fakeEvent = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
-                                        Qt.LeftButton, Qt.NoButton,
-                                        event.modifiers() | Qt.ControlModifier)
+                fakeEvent = QMouseEvent(
+                    event.type(),
+                    event.localPos(),
+                    event.screenPos(),
+                    Qt.LeftButton,
+                    Qt.NoButton,
+                    event.modifiers() | Qt.ControlModifier,
+                )
                 super().mouseReleaseEvent(fakeEvent)
                 return
 
@@ -197,25 +214,47 @@ class GraphicsView(QGraphicsView):
         if item is None:
             self.__logger.info(self)
         elif type(item) is GraphicsSocket:
-            self.__logger.info(f"\n||||{item.socket} connected to \n||||{item.socket.edges}")
+            self.__logger.info(
+                f"\n||||{item.socket} connected to \n||||{item.socket.edges}"
+            )
         elif type(item) in [GraphicsEdgeDirect, GraphicsEdgeBezier]:
             log = f"\n||||{item.edge} connects"
-            log += f"\n||||{item.edge.startSocket.node} \n||||{item.edge.endSocket.node}"
+            log += (
+                f"\n||||{item.edge.startSocket.node} \n||||{item.edge.endSocket.node}"
+            )
 
             self.__logger.info(log)
 
         # Faking event to enable mouse dragging the scene
-        release_event = QMouseEvent(QEvent.MouseButtonRelease, event.localPos(), event.screenPos(),
-                                    Qt.LeftButton, Qt.NoButton, event.modifiers())
+        release_event = QMouseEvent(
+            QEvent.MouseButtonRelease,
+            event.localPos(),
+            event.screenPos(),
+            Qt.LeftButton,
+            Qt.NoButton,
+            event.modifiers(),
+        )
         super().mouseReleaseEvent(release_event)
         self.setDragMode(QGraphicsView.ScrollHandDrag)
-        fake_event = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
-                                 Qt.LeftButton, event.buttons() | Qt.LeftButton, event.modifiers())
+        fake_event = QMouseEvent(
+            event.type(),
+            event.localPos(),
+            event.screenPos(),
+            Qt.LeftButton,
+            event.buttons() | Qt.LeftButton,
+            event.modifiers(),
+        )
         super().mousePressEvent(fake_event)
 
     def middleMouseButtonRelease(self, event):
-        fake_event = QMouseEvent(event.type(), event.localPos(), event.screenPos(),
-                                 Qt.LeftButton, event.buttons() & -Qt.LeftButton, event.modifiers())
+        fake_event = QMouseEvent(
+            event.type(),
+            event.localPos(),
+            event.screenPos(),
+            Qt.LeftButton,
+            event.buttons() & -Qt.LeftButton,
+            event.modifiers(),
+        )
         super().mouseReleaseEvent(fake_event)
         self.setDragMode(QGraphicsView.RubberBandDrag)
 
@@ -229,7 +268,9 @@ class GraphicsView(QGraphicsView):
         try:
             self.__logger.info("Assign socket.")
             self.dragStartSocket = item.socket
-            self.dragEdge = Edge(self.graphicsScene.scene, item.socket, edgeType=EDGE_TYPE_BEZIER)
+            self.dragEdge = Edge(
+                self.graphicsScene.scene, item.socket, edgeType=EDGE_TYPE_BEZIER
+            )
         except Exception as e:
             dumpException(e)
 
@@ -254,11 +295,18 @@ class GraphicsView(QGraphicsView):
                     if not item.socket.allowsMultiEdges:
                         item.socket.removeAllEdges()
 
-                    newEdge = Edge(self.graphicsScene.scene, self.dragStartSocket, item.socket, edgeType=EDGE_TYPE_BEZIER)
+                    newEdge = Edge(
+                        self.graphicsScene.scene,
+                        self.dragStartSocket,
+                        item.socket,
+                        edgeType=EDGE_TYPE_BEZIER,
+                    )
                     item.socket.addEdge(newEdge)
-                    self.__logger.debug(f"New edge created: {newEdge} connecting"
-                                        f"\n|||| {newEdge.startSocket} to"
-                                        f"\n |||| {newEdge.endSocket}")
+                    self.__logger.debug(
+                        f"New edge created: {newEdge} connecting"
+                        f"\n|||| {newEdge.startSocket} to"
+                        f"\n |||| {newEdge.endSocket}"
+                    )
 
                     for socket in [self.dragStartSocket, item.socket]:
                         socket.node.onEdgeConnectionChanged(newEdge)
@@ -266,7 +314,9 @@ class GraphicsView(QGraphicsView):
                         if socket.isInput:
                             socket.node.onInputChanged(newEdge)
 
-                    self.graphicsScene.scene.history.store("Create a new edge by dragging")
+                    self.graphicsScene.scene.history.store(
+                        "Create a new edge by dragging"
+                    )
                     self.__logger.info("Socket assigned.")
                     return True
         except Exception as e:
@@ -287,7 +337,9 @@ class GraphicsView(QGraphicsView):
             self.cutline.update()
 
         self.lastSceneMousePos = self.mapToScene(event.pos())
-        self.scenePosChanged.emit(int(self.lastSceneMousePos.x()), (self.lastSceneMousePos.y()))
+        self.scenePosChanged.emit(
+            int(self.lastSceneMousePos.x()), (self.lastSceneMousePos.y())
+        )
 
         super().mouseMoveEvent(event)
 
@@ -320,7 +372,7 @@ class GraphicsView(QGraphicsView):
 
     def wheelEvent(self, event):
         # Compute zoom factor
-        zoomOutFactor = 1. / self.zoomInFactor
+        zoomOutFactor = 1.0 / self.zoomInFactor
 
         # Compute zoom
         if event.angleDelta().y() > 0:
@@ -343,9 +395,9 @@ class GraphicsView(QGraphicsView):
             self.scale(zoomFactor, zoomFactor)
 
     def cutIntersectingEdges(self):
-        for ix in range(len(self.cutline.linePoints)-1):
+        for ix in range(len(self.cutline.linePoints) - 1):
             p1 = self.cutline.linePoints[ix]
-            p2 = self.cutline.linePoints[ix+1]
+            p2 = self.cutline.linePoints[ix + 1]
 
             for edge in self.graphicsScene.scene.edges:
                 if edge.graphicsEdge.intersectsWith(p1, p2):
@@ -375,8 +427,10 @@ class GraphicsView(QGraphicsView):
         edgeStartDragThresholdSquared = self.edgeStartDragThreshold ** 2
         distSceneSquared = distScene.x() * distScene.x() + distScene.y() * distScene.y()
         if distSceneSquared < edgeStartDragThresholdSquared:
-            self.__logger.debug(f"Squared distance between new and last LMB click: "
-                                f"{distSceneSquared} < {edgeStartDragThresholdSquared}")
+            self.__logger.debug(
+                f"Squared distance between new and last LMB click: "
+                f"{distSceneSquared} < {edgeStartDragThresholdSquared}"
+            )
             return False
         else:
             return True
@@ -390,6 +444,3 @@ class GraphicsView(QGraphicsView):
         if event.modifiers() & Qt.AltModifier:
             dlog += "ALT "
         return dlog
-
-
-

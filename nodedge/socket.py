@@ -1,9 +1,8 @@
 import logging
 from collections import OrderedDict
 
-from nodedge.serializable import Serializable
 from nodedge.graphics_socket import GraphicsSocket
-
+from nodedge.serializable import Serializable
 
 LEFT_TOP = 1
 LEFT_CENTER = 2
@@ -14,8 +13,16 @@ RIGHT_BOTTOM = 6
 
 
 class Socket(Serializable):
-    def __init__(self, node, index=0, position=LEFT_TOP, socketType=1,
-                 allowsMultiEdges=True, countOnThisNodeSide=1, isInput=False):
+    def __init__(
+        self,
+        node,
+        index=0,
+        position=LEFT_TOP,
+        socketType=1,
+        allowsMultiEdges=True,
+        countOnThisNodeSide=1,
+        isInput=False,
+    ):
         super().__init__()
         self.node = node
         self.index = index
@@ -38,11 +45,15 @@ class Socket(Serializable):
         return f"0x{hex(id(self))[-4:]} Socket({self.index}, {self.position}, {self.socketType}, {self.allowsMultiEdges})"
 
     def updateSocketPos(self):
-        self.graphicsSocket.setPos(*self.node.socketPos(self.index, self.position, self.countOnThisNodeSide))
+        self.graphicsSocket.setPos(
+            *self.node.socketPos(self.index, self.position, self.countOnThisNodeSide)
+        )
 
     def socketPos(self):
         ret = self.node.socketPos(self.index, self.position, self.countOnThisNodeSide)
-        self.__logger.debug(f"getSocketPos: {self.index}, {self.position}, {self.node}, {ret}")
+        self.__logger.debug(
+            f"getSocketPos: {self.index}, {self.position}, {self.node}, {ret}"
+        )
 
         return ret
 
@@ -70,12 +81,15 @@ class Socket(Serializable):
             edge.remove()
 
     def serialize(self):
-        return OrderedDict([("id",  self.id),
-                            ("index",  self.index),
-                            ("allowsMultiEdges", self.allowsMultiEdges),
-                            ("position",  self.position),
-                            ("socketType",  self.socketType)
-                            ])
+        return OrderedDict(
+            [
+                ("id", self.id),
+                ("index", self.index),
+                ("allowsMultiEdges", self.allowsMultiEdges),
+                ("position", self.position),
+                ("socketType", self.socketType),
+            ]
+        )
 
     def deserialize(self, data, hashmap={}, restoreId=True):
         if restoreId:

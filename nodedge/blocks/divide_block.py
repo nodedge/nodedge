@@ -1,5 +1,5 @@
 from nodedge.blocks.block import *
-from nodedge.blocks.block_config import registerNode, OP_NODE_DIVIDE, BLOCKS_ICONS_PATH
+from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, OP_NODE_DIVIDE, registerNode
 
 
 @registerNode(OP_NODE_DIVIDE)
@@ -18,7 +18,7 @@ class DivideBlock(Block):
             result = i0.eval() / i1.eval()
         except TypeError as e:
             raise EvaluationError(e)
-        except ZeroDivisionError as e:
+        except ZeroDivisionError:
             raise EvaluationError("Division by 0 is not possible.")
 
         self.value = result
