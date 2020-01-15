@@ -1,8 +1,27 @@
+addons:
+  apt:
+    packages:
+    - x11-utils
+    - libxkbcommon-x11-0
+services: xvfb
 dist: xenial
+
 language: python
 branches:
   only:
     - master
+
+sudo: required
+
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -y xvfb herbstluftwm
+
+install:
+  - "export DISPLAY=:99.0"
+  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX +render -noreset"
+  - sleep 3
+  - pip install tox
 
 matrix:
   include:
@@ -10,17 +29,20 @@ matrix:
       env: TOXENV=flake8
     - python: 3.8
       env: TOXENV=black
-    - python: 3.8
-      env: TOXENV=mypy
     - python: 3.6
       env: TOXENV=py36
     - python: 3.7
       env: TOXENV=py37
     - python: 3.8
       env: TOXENV=py38
+    - python: 3.6
+      env: TOXENV=codecov
+    - python: 3.6
+      env: TOXENV=check_packaging
 
-install:
-  - pip install tox
+before_script:
+  - "herbstluftwm &"
+  - sleep 1
 
 script:
-  - tox
+  - QT_DEBUG_PLUGINS=1 tox
