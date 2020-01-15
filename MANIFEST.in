@@ -6,6 +6,10 @@ include README.rst
 include requirements.txt
 exclude pyproject.toml
 include setup.py
+include Pipfile
+include Pipfile.lock
+include readthedocs.yml
+
 
 include .flake8
 include .isort.cfg

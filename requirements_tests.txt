@@ -1,7 +1,8 @@
+black
 codecov
 flake8
+pre-commit
 pytest
 pytest-cov
 pytest-qt
 tox
-pre-commit

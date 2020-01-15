@@ -20,11 +20,7 @@ matrix:
       env: TOXENV=py38
 
 install:
-  - pip install -r requirements.txt
-  - pip install -r tests/requirements.txt
+  - pip install tox
 
 script:
   - tox
-  - pytest --cov-report term
-after_success:
-  - codecov
