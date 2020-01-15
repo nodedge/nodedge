@@ -24,10 +24,10 @@ matrix:
       env: TOXENV=py38
 
 install:
-  - pip install tox
+  - pip install tox pytest
 
 script:
   - tox
-  - pytest  --cov-report term --cov=nodedge
+  - pytest --cov-report term
 after_success:
   - codecov
