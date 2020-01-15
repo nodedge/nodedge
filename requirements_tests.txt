@@ -1,5 +1,7 @@
 codecov
-flake8pytest
+flake8
+pytest
 pytest-cov
 pytest-qt
 tox
+pre-commit
