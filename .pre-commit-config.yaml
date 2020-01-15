@@ -38,3 +38,4 @@ repos:
         language: system
         types: [python]
         stages: [push]
+        pass_filenames: false
