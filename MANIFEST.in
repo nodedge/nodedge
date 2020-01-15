@@ -18,6 +18,8 @@ include requirements_dev.txt
 include requirements_docs.txt
 include requirements_tests.txt
 include tox.ini
+include setup.cfg
+include .coveragerc
 
 recursive-include nodedge/qss *
 recursive-include nodedge/resources *

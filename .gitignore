@@ -6,6 +6,8 @@
 *.pkl
 *.python-version
 *.tar*
+.coverage
+coverage.xml
 
 venv/
 venv36/

@@ -1,17 +1,20 @@
+os: linux
+dist: xenial
+cache: pip
+
 addons:
   apt:
     packages:
     - x11-utils
     - libxkbcommon-x11-0
+
 services: xvfb
-dist: xenial
 
 language: python
 branches:
   only:
     - master
 
-sudo: required
 
 before_install:
   - sudo apt-get update
@@ -23,7 +26,7 @@ install:
   - sleep 3
   - pip install tox
 
-matrix:
+jobs:
   include:
     - python: 3.8
       env: TOXENV=flake8
@@ -36,7 +39,7 @@ matrix:
     - python: 3.8
       env: TOXENV=py38
     - python: 3.6
-      env: TOXENV=codecov
+      env: TOXENV=coverage
     - python: 3.6
       env: TOXENV=check_packaging
 

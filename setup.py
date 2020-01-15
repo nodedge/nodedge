@@ -13,9 +13,9 @@ with open("HISTORY.rst") as history_file:
 with open("requirements.txt") as requirements_file:
     requirements = requirements_file.read()
 
-setup_requirements = []
+setup_requirements = ["pytest-runner"]
 
-test_requirements = []
+test_requirements = ["pytest"]
 
 # print(find_packages(include=['tage'], exclude=["examples*", "tests*"]))
 
@@ -61,7 +61,7 @@ setup(
     long_description=readme + "\n\n" + history + "\n",
     long_description_content_type="text/x-rst",
     platforms=PLATFORMS,
-    packages=find_packages(include="nodedge*", exclude=["tes"]),
+    packages=find_packages(include="nodedge*", exclude=["tests"]),
     setup_requires=setup_requirements,
     test_suite="tests",
     tests_require=test_requirements,

@@ -95,6 +95,7 @@ class Node(Serializable):
         return f"0x{hex(id(self))[-4:]} Node({self.title}, {self.inputSockets}, {self.outputSockets})"
 
     def onEdgeConnectionChanged(self, newEdge: Edge):
+
         self.__logger.debug(f"{newEdge}")
 
     def onInputChanged(self, newEdge: Edge):
