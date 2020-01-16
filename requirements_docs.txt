@@ -1,2 +1,3 @@
 sphinx
+sphinx-autodoc-types>=2.1.1
 sphinx_rtd_theme

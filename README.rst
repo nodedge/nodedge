@@ -4,12 +4,18 @@ Nodedge
 Graphical editor for physical modeling and simulation.
 https://www.nodedge.io
 
+.. image:: https://badge.fury.io/py/nodedge.svg
+    :target: https://badge.fury.io/py/nodedge
+
+.. image:: https://img.shields.io/pypi/pyversions/nodedge
+    :alt: PyPI - Python Version
+
 .. image:: https://img.shields.io/badge/license-GPL3.0-blue.svg?style=flat
    :target: https://choosealicense.com/licenses/gpl-3.0/
    :alt: License
 
 .. image:: https://travis-ci.org/nodedge/nodedge.svg?branch=master
-   :target: https://travis-ci.org/don4get/hummingbird
+   :target: https://travis-ci.org/nodedge/nodedge
    :alt: Test Status
 
 .. image:: https://codecov.io/gh/nodedge/nodedge/branch/master/graph/badge.svg

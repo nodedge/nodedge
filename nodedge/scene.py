@@ -106,16 +106,16 @@ class Scene(Serializable):
     def addHasBeenModifiedListener(self, callback: Callable[[None], None]):
         self._hasBeenModifiedListeners.append(callback)
 
-    def addItemSelectedListener(self, callback):
+    def addItemSelectedListener(self, callback: Callable[[None], None]):
         self._itemSelectedListeners.append(callback)
 
-    def addItemsDeselectedListener(self, callback):
+    def addItemsDeselectedListener(self, callback: Callable[[None], None]):
         self._itemsDeselectedListeners.append(callback)
 
-    def addDragEnterListener(self, callback):
+    def addDragEnterListener(self, callback: Callable[[None], None]):
         self.view.addDragEnterListener(callback)
 
-    def addDropListener(self, callback):
+    def addDropListener(self, callback: Callable[[None], None]):
         self.view.addDropListener(callback)
 
     def resetLastSelectedStates(self):
