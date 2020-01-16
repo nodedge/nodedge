@@ -1,5 +1,5 @@
 import logging
-import os
+from typing import Optional
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -14,12 +14,12 @@ class DragListbox(QListWidget):
         super().__init__(parent)
 
         self.__logger = logging.getLogger(__name__)
-        self.__logger.setLevel(logging.DEBUG)
+        self.__logger.setLevel(logging.INFO)
 
         self.initUI()
 
     def initUI(self):
-        self.iconSize = QSize(32, 32)
+        self.iconSize: QSize = QSize(32, 32)
         self.setIconSize(self.iconSize)
 
         self.setSelectionMode(QAbstractItemView.SingleSelection)
@@ -37,7 +37,7 @@ class DragListbox(QListWidget):
             node = getClassFromOperationCode(key)
             self.addNode(node.operationTitle, node.icon, node.operationCode)
 
-    def addNode(self, name, iconPath=None, operationCode=0):
+    def addNode(self, name, iconPath: Optional[str] = None, operationCode: int = 0):
         item = QListWidgetItem(name, self)
         pixmap = QPixmap(iconPath) if iconPath else "."
         item.setIcon(QIcon(pixmap))

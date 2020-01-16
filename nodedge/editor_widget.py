@@ -41,9 +41,15 @@ class EditorWidget(QWidget):
         return name + ("*" if self.isModified() else "")
 
     def addNodes(self):
-        node1 = Node(self.scene, "Node 1", inputSockets=[1, 2, 3], outputSockets=[1])
-        node2 = Node(self.scene, "Node 2", inputSockets=[1, 2, 3], outputSockets=[1])
-        node3 = Node(self.scene, "Node 3", inputSockets=[1, 2, 3], outputSockets=[1])
+        node1 = Node(
+            self.scene, "Node 1", inputSocketTypes=[1, 2, 3], outputSocketTypes=[1]
+        )
+        node2 = Node(
+            self.scene, "Node 2", inputSocketTypes=[1, 2, 3], outputSocketTypes=[1]
+        )
+        node3 = Node(
+            self.scene, "Node 3", inputSocketTypes=[1, 2, 3], outputSocketTypes=[1]
+        )
 
         node1.pos = (-350, -250)
         node2.pos = (-75, 100)

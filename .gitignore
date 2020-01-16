@@ -8,6 +8,8 @@
 *.tar*
 .coverage
 coverage.xml
+htmlcov/
+.eggs/
 
 venv/
 venv36/

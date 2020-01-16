@@ -1,3 +1,5 @@
+from typing import NoReturn, Optional
+
 from nodedge.graphics_edge import *
 from nodedge.utils import dumpException
 
@@ -7,7 +9,11 @@ EDGE_TYPE_BEZIER = 2
 
 class Edge(Serializable):
     def __init__(
-        self, scene, startSocket=None, endSocket=None, edgeType=EDGE_TYPE_BEZIER
+        self,
+        scene: "Scene",
+        startSocket: Optional[Socket] = None,
+        endSocket: Optional[Socket] = None,
+        edgeType: int = EDGE_TYPE_BEZIER,
     ):
         super().__init__()
 
@@ -15,13 +21,13 @@ class Edge(Serializable):
         self.__logger.setLevel(logging.INFO)
 
         # Default initialization
-        self._startSocket = None
-        self._endSocket = None
+        self._startSocket: Optional[Socket] = None
+        self._endSocket: Optional[Socket] = None
 
-        self.scene = scene
-        self.startSocket = startSocket
-        self.endSocket = endSocket
-        self.edgeType = edgeType
+        self.scene: "Scene" = scene
+        self.startSocket: Socket = startSocket
+        self.endSocket: Socket = endSocket
+        self.edgeType: int = edgeType
 
         self.scene.addEdge(self)
 
@@ -33,11 +39,11 @@ class Edge(Serializable):
         )
 
     @property
-    def startSocket(self):
+    def startSocket(self) -> Socket:
         return self._startSocket
 
     @startSocket.setter
-    def startSocket(self, value):
+    def startSocket(self, value: Socket) -> NoReturn:
         # If the edge was assigned to another socket before, remove the edge from the socket.
         if self._startSocket is not None:
             self._startSocket.removeEdge(self)
@@ -48,11 +54,11 @@ class Edge(Serializable):
             self.startSocket.addEdge(self)
 
     @property
-    def endSocket(self):
+    def endSocket(self) -> Socket:
         return self._endSocket
 
     @endSocket.setter
-    def endSocket(self, value):
+    def endSocket(self, value: Socket) -> NoReturn:
         # If the edge was assigned to another socket before, remove the edge from the socket.
         if self._endSocket is not None:
             self._endSocket.removeEdge(self)
@@ -63,11 +69,11 @@ class Edge(Serializable):
             self.endSocket.addEdge(self)
 
     @property
-    def edgeType(self):
+    def edgeType(self) -> int:
         return self._edgeType
 
     @edgeType.setter
-    def edgeType(self, value):
+    def edgeType(self, value: int) -> NoReturn:
         if hasattr(self, "graphicsEdge") and self.graphicsEdge is not None:
             self.scene.graphicsScene.removeItem(self.graphicsEdge)
 
@@ -75,17 +81,14 @@ class Edge(Serializable):
 
         if self.edgeType == EDGE_TYPE_DIRECT:
             self.graphicsEdge = GraphicsEdgeDirect(self)
-        elif self.edgeType == EDGE_TYPE_BEZIER:
-            self.graphicsEdge = GraphicsEdgeBezier(self)
         else:
             self.graphicsEdge = GraphicsEdgeBezier(self)
-
         self.scene.graphicsScene.addItem(self.graphicsEdge)
 
         if self.startSocket is not None:
             self.updatePos()
 
-    def updatePos(self):
+    def updatePos(self) -> NoReturn:
         startPos = self.startSocket.socketPos()
         startPos[0] += self.startSocket.node.graphicsNode.pos().x()
         startPos[1] += self.startSocket.node.graphicsNode.pos().y()
@@ -103,7 +106,7 @@ class Edge(Serializable):
         self.__logger.debug(f"End socket: {self.endSocket}")
         self.graphicsEdge.update()
 
-    def getOtherSocket(self, knownSocket):
+    def getOtherSocket(self, knownSocket: "Socket"):
         return self.startSocket if knownSocket == self.endSocket else self.endSocket
 
     def removeFromSockets(self):

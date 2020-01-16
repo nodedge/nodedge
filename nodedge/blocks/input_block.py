@@ -12,8 +12,8 @@ class InputBlock(Block):
     contentLabel = "In"
     contentLabelObjectName = "InputBlockContent"
 
-    def __init__(self, scene, inputSockets=(2, 2), outputSockets=(1,)):
-        super().__init__(scene, inputSockets=[], outputSockets=(1,))
+    def __init__(self, scene, inputSocketTypes=(2, 2), outputSocketTypes=(1,)):
+        super().__init__(scene, inputSocketTypes=[], outputSocketTypes=(1,))
 
         self.eval()
 

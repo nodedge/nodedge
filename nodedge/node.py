@@ -1,4 +1,4 @@
-from typing import Collection
+from typing import Collection, List, NoReturn, Optional
 
 from PyQt5.QtCore import QPointF
 
@@ -15,15 +15,15 @@ class Node(Serializable):
         self,
         scene: "Scene",
         title: str = "Undefined node",
-        inputSockets: Collection[Socket] = (),
-        outputSockets: Collection[Socket] = (),
+        inputSocketTypes: Collection[int] = (),
+        outputSocketTypes: Collection[int] = (),
     ):
         super().__init__()
-        self._title = title
-        self.scene = scene
+        self._title: str = title
+        self.scene: "Scene" = scene
 
         self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.DEBUG)
+        self.__logger.setLevel(logging.INFO)
 
         self.initInnerClasses()
         self.initSettings()
@@ -31,40 +31,35 @@ class Node(Serializable):
         self.scene.addNode(self)
         self.scene.graphicsScene.addItem(self.graphicsNode)
 
-        self.inputSockets = []
-        self.outputSockets = []
-        self.initSockets(inputSockets, outputSockets)
+        self.inputSockets: List[Socket] = []
+        self.outputSockets: List[Socket] = []
+        self.initSockets(inputSocketTypes, outputSocketTypes)
 
         # Evaluation attributes
-        self._isDirty = False
-        self._isInvalid = False
+        self._isDirty: bool = False
+        self._isInvalid: bool = False
 
-    def initInnerClasses(self):
-        self.content = NodeContent(self)
-        self.graphicsNode = GraphicsNode(self)
+    def initInnerClasses(self) -> NoReturn:
+        self.content: NodeContent = NodeContent(self)
+        self.graphicsNode: GraphicsNode = GraphicsNode(self)
 
-    def initSettings(self):
-        self.title = self._title
-        self._socketSpacing = 22
-        self._inputSocketPosition = LEFT_TOP
-        self._outputSocketPosition = RIGHT_BOTTOM
-        self._inputAllowsMultiEdges = False
-        self._outputAllowsMultiEdges = True
+    def initSettings(self) -> NoReturn:
+        self.title: str = self._title
+        self._socketSpacing: int = 22
+        self._inputSocketPosition: int = LEFT_TOP
+        self._outputSocketPosition: int = RIGHT_BOTTOM
+        self._inputAllowsMultiEdges: bool = False
+        self._outputAllowsMultiEdges: bool = True
 
     def initSockets(
-        self,
-        inputs: Collection[Socket],
-        outputs: Collection[Socket],
-        reset: bool = True,
-    ):
+        self, inputs: Collection[int], outputs: Collection[int], reset: bool = True,
+    ) -> NoReturn:
         """"Create sockets for inputs and outputs"""
-        # Reset existing sockets.
-        if reset:
-            if hasattr(self, "inputs") and hasattr(self, "outputs"):
-                for socket in self.inputSockets + self.outputSockets:
-                    self.scene.graphicsScene.removeItem(socket.graphicsSocket)
-                self.inputSockets = []
-                self.outputSockets = []
+        if reset and hasattr(self, "inputs") and hasattr(self, "outputs"):
+            for socket in self.inputSockets + self.outputSockets:
+                self.scene.graphicsScene.removeItem(socket.graphicsSocket)
+            self.inputSockets: List[Socket] = []
+            self.outputSockets: List[Socket] = []
 
         # Create new sockets.
         for ind, inp in enumerate(inputs):
@@ -94,8 +89,7 @@ class Node(Serializable):
     def __str__(self):
         return f"0x{hex(id(self))[-4:]} Node({self.title}, {self.inputSockets}, {self.outputSockets})"
 
-    def onEdgeConnectionChanged(self, newEdge: Edge):
-
+    def onEdgeConnectionChanged(self, newEdge: Edge) -> NoReturn:
         self.__logger.debug(f"{newEdge}")
 
     def onInputChanged(self, newEdge: Edge):
@@ -104,11 +98,11 @@ class Node(Serializable):
         self.markDescendantsDirty()
 
     @property
-    def title(self):
+    def title(self) -> str:
         return self._title
 
     @title.setter
-    def title(self, value: str):
+    def title(self, value: str) -> NoReturn:
         self._title = value
         self.graphicsNode.title = value
 
@@ -154,28 +148,30 @@ class Node(Serializable):
         if self._isInvalid:
             self.onMarkedInvalid()
 
-    def socketPos(self, index: int, position: int, countOnThisSide: int = 1):
-        x = (
+    def socketPos(
+        self, index: int, position: int, countOnThisSide: int = 1
+    ) -> Collection[float]:
+        x: int = (
             0
             if (position in (LEFT_TOP, LEFT_CENTER, LEFT_BOTTOM))
             else self.graphicsNode.width
         )
 
         if position in (LEFT_BOTTOM, RIGHT_BOTTOM):
-            y = (
+            y: float = (
                 self.graphicsNode.height
                 - self.graphicsNode.edgeRoundness
                 - self.graphicsNode.titleVerticalPadding
                 - index * self._socketSpacing
             )
         elif position in (LEFT_CENTER, RIGHT_CENTER):
-            numberOfSockets = countOnThisSide
-            nodeHeight = self.graphicsNode.height
-            topOffset = (
+            numberOfSockets: int = countOnThisSide
+            nodeHeight: float = self.graphicsNode.height
+            topOffset: float = (
                 self.graphicsNode.titleHeight
                 + 2 * self.graphicsNode.titleVerticalPadding
             )
-            availableHeight = nodeHeight - topOffset
+            availableHeight: float = nodeHeight - topOffset
 
             # TODO: use total height of all sockets
             # totalHeightofAllSockets = numberOfSockets * self._socketSpacing
@@ -221,49 +217,50 @@ class Node(Serializable):
     def onMarkedDirty(self):
         pass
 
-    def markChildrenDirty(self, newValue: bool = True):
+    def markChildrenDirty(self, newValue: bool = True) -> NoReturn:
         for otherNode in self.getChildrenNodes():
             otherNode.isDirty = newValue
 
-    def markDescendantsDirty(self, newValue: bool = True):
+    def markDescendantsDirty(self, newValue: bool = True) -> NoReturn:
         for otherNode in self.getChildrenNodes():
             otherNode.isDirty = newValue
             otherNode.markChildrenDirty(newValue)
 
-    def onMarkedInvalid(self):
+    def onMarkedInvalid(self) -> NoReturn:
         pass
 
-    def markChildrenInvalid(self, newValue: bool = True):
+    def markChildrenInvalid(self, newValue: bool = True) -> NoReturn:
         for otherNode in self.getChildrenNodes():
             otherNode.isInvalid = newValue
 
-    def markDescendantsInvalid(self, newValue: bool = True):
+    def markDescendantsInvalid(self, newValue: bool = True) -> NoReturn:
         for otherNode in self.getChildrenNodes():
             otherNode.isInvalid = newValue
             otherNode.markChildrenInvalid(newValue)
 
-    def eval(self):
+    def eval(self) -> float:
         self.isDirty = False
         self.isInvalid = False
         return 0
 
-    def evalChildren(self):
+    def evalChildren(self) -> NoReturn:
         for node in self.getChildrenNodes():
+            # TODO: Investigate if we want to evaluate all the children of the child
             node.eval()
 
-    def getChildrenNodes(self):
+    def getChildrenNodes(self) -> List["Node"]:
         if not self.outputSockets:
             return []
 
         otherNodes = []
-        for ix in range(len(self.outputSockets)):
-            for edge in self.outputSockets[ix].edges:
-                otherNode = edge.getOtherSocket(self.outputSockets[ix]).node
+        for outputSocket in self.outputSockets:
+            for edge in outputSocket.edges:
+                otherNode = edge.getOtherSocket(outputSocket).node
                 otherNodes.append(otherNode)
 
         return otherNodes
 
-    def __IONodesAt(self, side: str, index: int):
+    def __IONodesAt(self, side: str, index: int) -> List["Node"]:
         IONodes = []
         if side == "input":
             socketList = self.inputSockets
@@ -287,10 +284,10 @@ class Node(Serializable):
         finally:
             return IONodes
 
-    def inputNodesAt(self, index: int):
+    def inputNodesAt(self, index: int) -> List["Node"]:
         return self.__IONodesAt("input", index)
 
-    def inputNodeAt(self, index: int):
+    def inputNodeAt(self, index: int) -> Optional["Node"]:
         try:
             return self.inputNodesAt(index)[0]
         except IndexError:
@@ -299,10 +296,10 @@ class Node(Serializable):
         except Exception as e:
             dumpException(e)
 
-    def outputNodesAt(self, index: int):
+    def outputNodesAt(self, index: int) -> List["Node"]:
         return self.__IONodesAt("output", index)
 
-    def serialize(self):
+    def serialize(self) -> OrderedDict:
         inputs, outputs = [], []
         for socket in self.inputSockets:
             inputs.append(socket.serialize())
@@ -321,7 +318,7 @@ class Node(Serializable):
             ]
         )
 
-    def deserialize(self, data, hashmap={}, restoreId=True):
+    def deserialize(self, data, hashmap={}, restoreId=True) -> bool:
         try:
             if restoreId:
                 self.id = data["id"]

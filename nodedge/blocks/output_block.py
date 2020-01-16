@@ -12,8 +12,8 @@ class OutputBlock(Block):
     contentLabel = "Out"
     contentLabelObjectName = "OutputBlockContent"
 
-    def __init__(self, scene, inputSockets=(2, 2), outputSockets=(1,)):
-        super().__init__(scene, inputSockets=(1,), outputSockets=[])
+    def __init__(self, scene, inputSocketTypes=(2, 2), outputSocketTypes=(1,)):
+        super().__init__(scene, inputSocketTypes=(1,), outputSocketTypes=[])
 
     def initInnerClasses(self):
         self.content = OutputBlockContent(self)

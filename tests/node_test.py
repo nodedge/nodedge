@@ -2,8 +2,10 @@ import pytest
 from PyQt5.QtCore import QPointF
 from PyQt5.QtWidgets import QMainWindow
 
+from nodedge.edge import Edge
 from nodedge.editor_widget import EditorWidget
 from nodedge.node import Node
+from nodedge.scene import Scene
 
 
 @pytest.fixture
@@ -16,8 +18,24 @@ def emptyScene(qtbot):
 
 
 @pytest.fixture
-def undefinedNode(emptyScene) -> Node:
+def undefinedNode(emptyScene: Scene) -> Node:
     node = Node(emptyScene)  # noqa: F841
+
+    return emptyScene.nodes[0]
+
+
+@pytest.fixture
+def connectedNode(emptyScene: Scene) -> Node:
+    node1 = Node(emptyScene, outputSocketTypes=[1])
+    node2 = Node(emptyScene, inputSocketTypes=[1], outputSocketTypes=[1])
+    node3 = Node(emptyScene, inputSocketTypes=[1])
+
+    edge12 = Edge(
+        emptyScene, node1.outputSockets[0], node2.inputSockets[0]
+    )  # noqa: F841
+    edge23 = Edge(
+        emptyScene, node2.outputSockets[0], node3.inputSockets[0]
+    )  # noqa: F841
 
     return emptyScene.nodes[0]
 
@@ -85,3 +103,119 @@ def test_markIsInvalid(undefinedNode: Node):
     expectedValue = True
     undefinedNode.isInvalid = expectedValue
     assert undefinedNode.isInvalid == expectedValue
+
+
+def test_socketPos(undefinedNode: Node):
+    a = undefinedNode.socketPos(0, 0, 1)
+    assert a == [180, 0]
+
+
+def test_remove(undefinedNode: Node):
+    scene = undefinedNode.scene
+    undefinedNode.remove()
+
+    assert scene.nodes == []
+    assert undefinedNode.graphicsNode is None
+
+
+def test_markChildrenDirty(connectedNode: Node):
+    childNode = connectedNode.getChildrenNodes()[0]
+    grandChildNode = childNode.getChildrenNodes()[0]
+    assert childNode.isDirty is False
+    connectedNode.markChildrenDirty(True)
+    assert childNode.isDirty is True
+    assert grandChildNode.isDirty is False
+
+
+def test_markDescendantsDirty(connectedNode: Node):
+    childNode = connectedNode.getChildrenNodes()[0]
+    grandChildNode = childNode.getChildrenNodes()[0]
+    assert childNode.isDirty is False
+    connectedNode.markDescendantsDirty(True)
+    assert childNode.isDirty is True
+    assert grandChildNode.isDirty is True
+
+
+def test_markChildrenInvalid(connectedNode: Node):
+    childNode = connectedNode.getChildrenNodes()[0]
+    grandChildNode = childNode.getChildrenNodes()[0]
+    assert childNode.isInvalid is False
+    connectedNode.markChildrenInvalid(True)
+    assert childNode.isInvalid is True
+    assert grandChildNode.isInvalid is False
+
+
+def test_markDescendantsInvalid(connectedNode: Node):
+    childNode = connectedNode.getChildrenNodes()[0]
+    grandChildNode = childNode.getChildrenNodes()[0]
+    assert childNode.isInvalid is False
+    connectedNode.markDescendantsInvalid(True)
+    assert childNode.isInvalid is True
+    assert grandChildNode.isInvalid is True
+
+
+def test_eval(undefinedNode: Node):
+    undefinedNode.isDirty = True
+    undefinedNode.isInvalid = True
+
+    undefinedNode.eval()
+
+    assert undefinedNode.isDirty is False
+    assert undefinedNode.isInvalid is False
+
+
+def test_evalChildren(connectedNode: Node):
+    connectedNode.markDescendantsDirty(True)
+    connectedNode.markDescendantsInvalid(True)
+
+    connectedNode.evalChildren()
+
+    childNode = connectedNode.getChildrenNodes()[0]
+    grandChildNode = childNode.getChildrenNodes()[0]
+    assert childNode.isDirty is False
+    assert childNode.isInvalid is False
+    assert grandChildNode.isDirty is True
+    assert grandChildNode.isInvalid is True
+
+
+def test_getChildrenNodes(emptyScene):
+    node1 = Node(emptyScene, outputSocketTypes=[1])
+    node2 = Node(emptyScene, inputSocketTypes=[1], outputSocketTypes=[1])
+    node3 = Node(emptyScene, inputSocketTypes=[1])
+
+    edge12 = Edge(
+        emptyScene, node1.outputSockets[0], node2.inputSockets[0]
+    )  # noqa: F841
+    edge23 = Edge(
+        emptyScene, node2.outputSockets[0], node3.inputSockets[0]
+    )  # noqa: F841
+
+    assert node1.getChildrenNodes() == [node2]
+    node2.remove()
+    assert node1.getChildrenNodes() == []
+
+
+def test_inputNodeAt(connectedNode: Node):
+    childNode = connectedNode.getChildrenNodes()[0]
+
+    assert childNode.inputNodeAt(0) == connectedNode
+
+    connectedNode.remove()
+
+    assert childNode.inputNodeAt(0) is None
+
+
+def test_outputNodesAt(connectedNode: Node):
+    scene = connectedNode.scene
+    childNode = connectedNode.getChildrenNodes()[0]
+    grandChildNode = childNode.getChildrenNodes()[0]
+
+    edge = Edge(scene, connectedNode.outputSockets[0], grandChildNode.inputSockets[0])
+
+    assert connectedNode.outputNodesAt(0) == [childNode, grandChildNode]
+    childNode.remove()
+    assert (
+        edge.getOtherSocket(connectedNode.outputSockets[0])
+        == grandChildNode.inputSockets[0]
+    )
+    assert connectedNode.outputNodesAt(0) == [grandChildNode]

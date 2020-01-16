@@ -15,13 +15,13 @@ RIGHT_BOTTOM = 6
 class Socket(Serializable):
     def __init__(
         self,
-        node,
-        index=0,
-        position=LEFT_TOP,
-        socketType=1,
-        allowsMultiEdges=True,
-        countOnThisNodeSide=1,
-        isInput=False,
+        node: "Node",  # noqa: F821
+        index: int = 0,
+        position: int = LEFT_TOP,
+        socketType: int = 1,
+        allowsMultiEdges: bool = True,
+        countOnThisNodeSide: int = 1,
+        isInput: bool = False,
     ):
         super().__init__()
         self.node = node

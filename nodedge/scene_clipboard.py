@@ -10,7 +10,7 @@ class SceneClipboard:
         self.scene = scene
 
         self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.DEBUG)
+        self.__logger.setLevel(logging.INFO)
 
     def serializeSelected(self, delete=False):
         self.__logger.debug("Copying to clipboard")
@@ -34,22 +34,16 @@ class SceneClipboard:
         edgesToRemove = []
         for edge in selectedEdges:
             if (
-                edge.startSocket.id in selectedSocket
-                and edge.endSocket.id in selectedSocket
+                edge.startSocket.id not in selectedSocket
+                or edge.endSocket.id not in selectedSocket
             ):
-                pass
-            else:
                 self.__logger.debug(f"Edge: {edge} is not connected with both sides")
                 edgesToRemove.append(edge)
 
         for edge in edgesToRemove:
             selectedEdges.remove(edge)
 
-        # Make final list of edges
-        serializedEdgesToKeep = []
-        for edge in selectedEdges:
-            serializedEdgesToKeep.append(edge.serialize())
-
+        serializedEdgesToKeep = [edge.serialize() for edge in selectedEdges]
         # Create data
         data = OrderedDict(
             [("blocks", serializedSelectedNodes), ("edges", serializedEdgesToKeep)]

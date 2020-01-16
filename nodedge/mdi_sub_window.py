@@ -19,7 +19,7 @@ class MdiSubWindow(EditorWidget):
         self.__logger.setLevel(logging.INFO)
 
         self.__contextLogger = logging.getLogger(__file__ + "#Context")
-        self.__contextLogger.setLevel(logging.DEBUG)
+        self.__contextLogger.setLevel(logging.INFO)
 
         self._closeEventListeners = []
 

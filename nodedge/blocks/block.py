@@ -14,9 +14,9 @@ class Block(Node):
     contentLabel = ""
     contentLabelObjectName = "blockBackground"
 
-    def __init__(self, scene, inputSockets=(2, 2), outputSockets=(1,)):
+    def __init__(self, scene, inputSocketTypes=(2, 2), outputSocketTypes=(1,)):
         super().__init__(
-            scene, self.__class__.operationTitle, inputSockets, outputSockets
+            scene, self.__class__.operationTitle, inputSocketTypes, outputSocketTypes
         )
 
         self.__logger = logging.getLogger(__file__)
