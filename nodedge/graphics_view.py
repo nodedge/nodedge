@@ -27,6 +27,8 @@ class GraphicsView(QGraphicsView):
         self.zoomRange = [0, 10]
         self.zoom = 10
 
+        self.lastSceneMousePos = QPointF()
+
         self.mode = MODE_NOOP
         self.lastLMBClickScenePos = None
         self.edgeStartDragThreshold = 10

@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QGraphicsView, QMainWindow
 from nodedge.edge import Edge
 from nodedge.editor_widget import EditorWidget
 from nodedge.node import Node
+from nodedge.scene import Scene
 
 
 @pytest.fixture
@@ -17,8 +18,8 @@ def emptyScene(qtbot):
 
 @pytest.fixture
 def filledScene(emptyScene):
-    node = Node(emptyScene)  # noqa: F841
-    edge = Edge(emptyScene)  # noqa: F841
+    node = Node(emptyScene, "", [1], [1])  # noqa: F841
+    edge = Edge(emptyScene, node.inputSockets[0], node.outputSockets[0])  # noqa: F841
 
     return emptyScene
 
@@ -112,3 +113,34 @@ def test_resetLastSelectedStates(filledScene):
 
     assert filledScene.nodes[0].graphicsNode.selectedState is False
     assert filledScene.edges[0].graphicsEdge.selectedState is False
+
+
+def test_serializeSelected(qtbot):
+    window = QMainWindow()
+    editor = EditorWidget(window)
+    qtbot.addWidget(editor)
+    scene = editor.scene
+    node = Node(scene, "", [1], [1])  # noqa: F841
+    edge = Edge(scene, node.inputSockets[0], node.outputSockets[0])  # noqa: F841
+
+    graphicsEdge = edge.graphicsEdge
+    graphicsEdge.setSelected(True)
+    graphicsNode = node.graphicsNode
+    graphicsNode.setSelected(True)
+    assert set(scene.graphicsScene.selectedItems()) <= {graphicsEdge, graphicsNode}
+
+    expectedTitle = "A great title"
+    node.title = expectedTitle
+    data = scene.clipboard.serializeSelected()
+
+    scene.clear()
+    assert scene.nodes == []
+    assert scene.edges == []
+
+    scene.clipboard.deserialize(data)
+
+    deserializedNode: Node = scene.nodes[0]
+    assert deserializedNode.title == expectedTitle
+    deserializedEdge: Edge = scene.edges[0]
+    assert deserializedEdge.startSocket == deserializedNode.inputSockets[0]
+    assert deserializedEdge.endSocket == deserializedNode.outputSockets[0]
