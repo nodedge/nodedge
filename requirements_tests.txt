@@ -4,6 +4,7 @@ flake8
 pre-commit
 pytest
 pytest-cov
+pytest-mock
 pytest-qt
 pytest-xvfb
 tox

@@ -238,7 +238,7 @@ class MdiWindow(EditorWindow):
         except Exception as e:
             dumpException(e)
 
-    def createMdiSubWindow(self, childWidget=None):
+    def _createMdiSubWindow(self, childWidget=None):
         editor = childWidget if childWidget is not None else MdiSubWindow()
         subWindow = self.mdiArea.addSubWindow(editor)
 
@@ -286,7 +286,7 @@ class MdiWindow(EditorWindow):
             event.accept()
 
     def newFile(self):
-        subWindow = self.createMdiSubWindow()
+        subWindow = self._createMdiSubWindow()
         typing.cast(EditorWidget, subWindow.widget()).addNodes()
         subWindow.show()
 
@@ -316,7 +316,7 @@ class MdiWindow(EditorWindow):
                         self.__logger.debug("Loading success")
                         self.statusBar().showMessage(f"File {filename} loaded.", 5000)
                         editor.updateTitle()
-                        subWindow = self.createMdiSubWindow(editor)
+                        subWindow = self._createMdiSubWindow(editor)
                         subWindow.show()
                     else:
                         self.__logger.debug("Loading fail")
