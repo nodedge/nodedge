@@ -198,3 +198,6 @@ class MdiSubWindow(EditorWidget):
             selected.edgeType = EDGE_TYPE_BEZIER
         if selected and action == directAct:
             selected.edgeType = EDGE_TYPE_DIRECT
+
+    def mouseReleaseEvent(self, ev):
+        super().mouseReleaseEvent(ev)

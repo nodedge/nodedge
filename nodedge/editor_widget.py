@@ -128,3 +128,7 @@ class EditorWidget(QWidget):
         QApplication.restoreOverrideCursor()
 
         return True
+
+    def mouseReleaseEvent(self, ev):
+        self.view.mouseReleaseEvent(ev)
+        super().mouseReleaseEvent(ev)

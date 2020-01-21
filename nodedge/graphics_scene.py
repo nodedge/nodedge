@@ -77,3 +77,14 @@ class GraphicsScene(QGraphicsScene):
 
         painter.setPen(self._pen_dark)
         painter.drawLines(*lines_dark)
+
+    def mouseReleaseEvent(self, e: QGraphicsSceneMouseEvent):
+        item = self.itemAt(e.scenePos(), QTransform())
+
+        if item is not None:
+            item.setSelected(True)
+        else:
+            for item in self.selectedItems():
+                item.setSelected(False)
+
+        super().mouseReleaseEvent(e)

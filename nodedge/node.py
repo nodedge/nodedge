@@ -1,6 +1,6 @@
 from typing import Collection, List, NoReturn, Optional
 
-from PyQt5.QtCore import QPointF
+from PyQt5.QtCore import QPoint, QPointF
 
 from nodedge.edge import Edge
 from nodedge.graphics_node import GraphicsNode
@@ -121,7 +121,7 @@ class Node(Serializable):
                 raise ValueError("Pass an iterable with two numbers.")
             except TypeError:
                 raise TypeError("Pass an iterable with two numbers.")
-        elif isinstance(pos, QPointF):
+        elif isinstance(pos, QPointF) or isinstance(pos, QPoint):
             self.graphicsNode.setPos(pos)
 
     @property

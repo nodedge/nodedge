@@ -1,8 +1,11 @@
 import pytest
+from PyQt5.QtCore import QPoint, Qt
 from PyQt5.QtWidgets import QGraphicsView, QMainWindow
+from pytestqt.qtbot import QtBot
 
 from nodedge.edge import Edge
 from nodedge.editor_widget import EditorWidget
+from nodedge.mdi_window import MdiWindow
 from nodedge.node import Node
 from nodedge.scene import Scene
 
@@ -11,6 +14,7 @@ from nodedge.scene import Scene
 def emptyScene(qtbot):
     window = QMainWindow()
     editor = EditorWidget(window)
+    window.show()
     qtbot.addWidget(editor)
 
     return editor.scene
@@ -144,3 +148,61 @@ def test_serializeSelected(qtbot):
     deserializedEdge: Edge = scene.edges[0]
     assert deserializedEdge.startSocket == deserializedNode.inputSockets[0]
     assert deserializedEdge.endSocket == deserializedNode.outputSockets[0]
+
+
+def test_itemAt(qtbot: QtBot):
+    window = QMainWindow()
+    editor = EditorWidget(window)
+    qtbot.addWidget(editor)
+    scene = editor.scene
+    node = Node(scene, "", [1], [1])  # noqa: F841
+    pos = QPoint(10, 10)
+    node.pos = pos
+    edge = Edge(scene, node.inputSockets[0], node.outputSockets[0])  # noqa: F841
+
+    pos = pos
+    assert scene.itemAt(pos) == scene.nodes[0].graphicsNode
+
+
+def test_onSelectedItems(qtbot: QtBot):
+    window = MdiWindow()
+    window.show()
+
+    subWindow = window.newFile()
+    scene = subWindow.widget().scene
+    scene.clear()
+    subWindow.show()
+    node = Node(scene, "", [1], [1])  # noqa: F841
+    pos = QPoint(10, 10)
+    node.pos = pos
+
+    edge = Edge(scene, node.inputSockets[0], node.outputSockets[0])  # noqa: F841
+
+    window.setActiveSubWindow(subWindow)
+
+    # qtbot.mouseMove(subWindow, pos)
+
+    pos2 = subWindow.widget().scene.view.mapToScene(QPoint(-10, -10))
+    pos3 = subWindow.widget().scene.view.mapToScene(QPoint(10, 10))
+    subWindow.widget().scene.view.show()
+
+    subWindow.widget().scene.graphicsScene.setFocus(Qt.ActiveWindowFocusReason)
+    qtbot.mouseClick(
+        subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos2.x()), int(-pos2.y()))
+    )
+
+    assert scene.selectedItems == [node.graphicsNode]
+    assert scene.lastSelectedItems == []
+
+    qtbot.mouseClick(
+        subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos3.x()), int(-pos3.y()))
+    )
+    assert scene.selectedItems == []
+    assert scene.lastSelectedItems == []
+
+    subWindow.widget().scene.view.rubberBandDraggingRectangle = True
+    qtbot.mouseClick(
+        subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos2.x()), int(-pos2.y()))
+    )
+    assert scene.selectedItems == [node.graphicsNode]
+    assert scene.lastSelectedItems == [node.graphicsNode]
