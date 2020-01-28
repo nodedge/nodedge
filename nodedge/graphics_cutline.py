@@ -1,16 +1,16 @@
-import typing
+from typing import List, Optional
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QPointF, QRectF, Qt
+from PyQt5.QtGui import QPainter, QPainterPath, QPen, QPolygonF
+from PyQt5.QtWidgets import QGraphicsItem, QStyleOptionGraphicsItem, QWidget
 
 
 class GraphicsCutline(QGraphicsItem):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.linePoints = []
-        self._pen = QPen(Qt.gray)
+        self.linePoints: List[QPointF] = []
+        self._pen: QPen = QPen(Qt.gray)
         self._pen.setWidth(2.0)
         self._pen.setDashPattern([3, 3])
 
@@ -33,8 +33,8 @@ class GraphicsCutline(QGraphicsItem):
     def paint(
         self,
         painter: QPainter,
-        option: "QStyleOptionGraphicsItem",
-        widget: typing.Optional[QWidget] = None,
+        option: QStyleOptionGraphicsItem,
+        widget: Optional[QWidget] = None,
     ) -> None:
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setBrush(Qt.NoBrush)

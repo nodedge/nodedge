@@ -1,19 +1,26 @@
-from typing import NoReturn, Optional
+import logging
+from collections import OrderedDict
+from enum import IntEnum
+from typing import Optional
 
-from nodedge.graphics_edge import *
+from nodedge.graphics_edge import GraphicsEdge, GraphicsEdgeBezier, GraphicsEdgeDirect
+from nodedge.serializable import Serializable
+from nodedge.socket import Socket
 from nodedge.utils import dumpException
 
-EDGE_TYPE_DIRECT = 1
-EDGE_TYPE_BEZIER = 2
+
+class EdgeType(IntEnum):
+    DIRECT = 1
+    BEZIER = 2
 
 
 class Edge(Serializable):
     def __init__(
         self,
-        scene: "Scene",
+        scene: "Scene",  # type: ignore
         startSocket: Optional[Socket] = None,
         endSocket: Optional[Socket] = None,
-        edgeType: int = EDGE_TYPE_BEZIER,
+        edgeType: EdgeType = EdgeType.BEZIER,
     ):
         super().__init__()
 
@@ -24,10 +31,11 @@ class Edge(Serializable):
         self._startSocket: Optional[Socket] = None
         self._endSocket: Optional[Socket] = None
 
-        self.scene: "Scene" = scene
+        self.scene: "Scene" = scene  # type: ignore
         self.startSocket: Socket = startSocket
         self.endSocket: Socket = endSocket
-        self.edgeType: int = edgeType
+        self._edgeType: EdgeType = edgeType
+        self.edgeType: EdgeType = edgeType
 
         self.scene.addEdge(self)
 
@@ -39,11 +47,11 @@ class Edge(Serializable):
         )
 
     @property
-    def startSocket(self) -> Socket:
+    def startSocket(self) -> Optional[Socket]:
         return self._startSocket
 
     @startSocket.setter
-    def startSocket(self, value: Socket) -> NoReturn:
+    def startSocket(self, value: Socket) -> None:
         # If the edge was assigned to another socket before, remove the edge from the socket.
         if self._startSocket is not None:
             self._startSocket.removeEdge(self)
@@ -54,11 +62,11 @@ class Edge(Serializable):
             self.startSocket.addEdge(self)
 
     @property
-    def endSocket(self) -> Socket:
+    def endSocket(self) -> Optional[Socket]:
         return self._endSocket
 
     @endSocket.setter
-    def endSocket(self, value: Socket) -> NoReturn:
+    def endSocket(self, value: Socket) -> None:
         # If the edge was assigned to another socket before, remove the edge from the socket.
         if self._endSocket is not None:
             self._endSocket.removeEdge(self)
@@ -73,14 +81,14 @@ class Edge(Serializable):
         return self._edgeType
 
     @edgeType.setter
-    def edgeType(self, value: int) -> NoReturn:
+    def edgeType(self, value: EdgeType) -> None:
         if hasattr(self, "graphicsEdge") and self.graphicsEdge is not None:
             self.scene.graphicsScene.removeItem(self.graphicsEdge)
 
         self._edgeType = value
 
-        if self.edgeType == EDGE_TYPE_DIRECT:
-            self.graphicsEdge = GraphicsEdgeDirect(self)
+        if self.edgeType == EdgeType.DIRECT:
+            self.graphicsEdge: Optional[GraphicsEdge] = GraphicsEdgeDirect(self)
         else:
             self.graphicsEdge = GraphicsEdgeBezier(self)
         self.scene.graphicsScene.addItem(self.graphicsEdge)
@@ -88,7 +96,7 @@ class Edge(Serializable):
         if self.startSocket is not None:
             self.updatePos()
 
-    def updatePos(self) -> NoReturn:
+    def updatePos(self) -> None:
         startPos = self.startSocket.socketPos()
         startPos[0] += self.startSocket.node.graphicsNode.pos().x()
         startPos[1] += self.startSocket.node.graphicsNode.pos().y()
@@ -120,7 +128,7 @@ class Edge(Serializable):
         self.__logger.debug(f"Removing {self} from all sockets.")
         self.removeFromSockets()
 
-        self.__logger.debug(f"Removing Graphical eddge: {self.graphicsEdge}")
+        self.__logger.debug(f"Removing Graphical edge: {self.graphicsEdge}")
         self.scene.graphicsScene.removeItem(self.graphicsEdge)
         self.graphicsEdge = None
 
@@ -156,7 +164,9 @@ class Edge(Serializable):
             ]
         )
 
-    def deserialize(self, data, hashmap={}, restoreId=True):
+    def deserialize(self, data, hashmap=None, restoreId=True):
+        if hashmap is None:
+            hashmap = {}
         if restoreId:
             self.id = data["id"]
         self.startSocket = hashmap[data["startSocket"]]

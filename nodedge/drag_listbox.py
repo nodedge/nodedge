@@ -1,9 +1,17 @@
 import logging
 from typing import Optional
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import (
+    QByteArray,
+    QDataStream,
+    QIODevice,
+    QMimeData,
+    QPoint,
+    QSize,
+    Qt,
+)
+from PyQt5.QtGui import QDrag, QIcon, QPixmap
+from PyQt5.QtWidgets import QAbstractItemView, QListWidget, QListWidgetItem
 
 from nodedge.blocks.block_config import *
 from nodedge.utils import dumpException
@@ -18,6 +26,7 @@ class DragListbox(QListWidget):
 
         self.initUI()
 
+    # noinspection PyAttributeOutsideInit
     def initUI(self):
         self.iconSize: QSize = QSize(32, 32)
         self.setIconSize(self.iconSize)
@@ -43,7 +52,7 @@ class DragListbox(QListWidget):
         item.setIcon(QIcon(pixmap))
         item.setSizeHint(self.iconSize)
 
-        item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
+        item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)  # type: ignore
 
         item.setData(Qt.UserRole, pixmap)
         item.setData(Qt.UserRole + 1, operationCode)
@@ -59,7 +68,7 @@ class DragListbox(QListWidget):
 
             itemData = QByteArray()
             dataStream = QDataStream(itemData, QIODevice.WriteOnly)
-            dataStream << pixmap
+            dataStream << pixmap  # type: ignore # left operand works fine with QDataStream
             dataStream.writeInt(operationCode)
             dataStream.writeQString(item.text())
 
@@ -68,7 +77,7 @@ class DragListbox(QListWidget):
 
             drag = QDrag(self)
             drag.setMimeData(mimeData)
-            drag.setHotSpot(QPoint(pixmap.width() / 2, pixmap.height() / 2))
+            drag.setHotSpot(QPoint(pixmap.width() // 2, pixmap.height() // 2))
             drag.setPixmap(pixmap)
 
             drag.exec_(Qt.MoveAction)

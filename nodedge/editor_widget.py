@@ -1,7 +1,12 @@
+import logging
 import os
+from typing import Optional
+
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QMessageBox, QVBoxLayout, QWidget
 
 from nodedge.blocks.block import Block
-from nodedge.edge import *
+from nodedge.edge import Edge, EdgeType
 from nodedge.graphics_view import GraphicsView
 from nodedge.node import Node
 from nodedge.scene import InvalidFile, Scene
@@ -14,17 +19,18 @@ class EditorWidget(QWidget):
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
 
-        self.filename = None
+        self.filename: Optional[str] = None
 
         self.initUI()
 
+    # noinspection PyAttributeOutsideInit
     def initUI(self):
-        self.layout = QVBoxLayout()
+        self.layout: QVBoxLayout = QVBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.layout)
 
-        self.scene = Scene()
-        self.view = GraphicsView(self.scene.graphicsScene, self)
+        self.scene: Scene = Scene()
+        self.view: GraphicsView = GraphicsView(self.scene.graphicsScene, self)
         self.layout.addWidget(self.view)
 
     def hasName(self):
@@ -55,17 +61,17 @@ class EditorWidget(QWidget):
         node2.pos = (-75, 100)
         node3.pos = (200, -75)
 
-        edge1 = Edge(  # noqa: F841
+        Edge(  # noqa: F841
             self.scene,
             node1.outputSockets[0],
             node2.inputSockets[1],
-            edgeType=EDGE_TYPE_BEZIER,
+            edgeType=EdgeType.BEZIER,
         )
-        edge2 = Edge(  # noqa: F841
+        Edge(  # noqa: F841
             self.scene,
             node2.outputSockets[0],
             node3.inputSockets[2],
-            edgeType=EDGE_TYPE_BEZIER,
+            edgeType=EdgeType.BEZIER,
         )
 
         self.scene.history.storeInitialStamp()

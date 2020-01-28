@@ -10,6 +10,7 @@
 coverage.xml
 htmlcov/
 .eggs/
+.mypy_cache
 
 venv/
 venv36/

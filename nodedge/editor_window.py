@@ -3,8 +3,16 @@ import logging
 import os
 import typing
 
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QPoint, QSettings, QSize
+from PyQt5.QtWidgets import (
+    QAction,
+    QApplication,
+    QFileDialog,
+    QLabel,
+    QMainWindow,
+    QMenu,
+    QMessageBox,
+)
 
 from nodedge.editor_widget import EditorWidget
 
@@ -14,7 +22,7 @@ class EditorWindow(QMainWindow):
         super().__init__(parent)
 
         logging.basicConfig(
-            format="%(asctime)s|%(levelname).4s|%(filename)10s|%(lineno).3s|"
+            format="%(asctime)s|%(levelname).4s|%(filename)10s|%(lineno).3s|"  # type: ignore
             "%(message)s|%(funcName)s".format("%Y/%m/%d %H:%M:%S")
         )
 
@@ -164,16 +172,16 @@ class EditorWindow(QMainWindow):
         self.editMenu.addAction(self.deleteAct)
 
     def updateTitle(self):
-        title = "Create Nodedge"
         if self.currentEditorWidget:
-            if not self.currentEditorWidget.hasName():
+            title = "Create Nodedge"
+            if self.currentEditorWidget.hasName():
+                title += f" with {self.currentEditorWidget.userFriendlyFilename}"
+
+            else:
                 title += "!"
 
                 if self.currentEditorWidget.isModified():
                     title += "*"
-            else:
-                title += f" with {self.currentEditorWidget.userFriendlyFilename}"
-
             self.setWindowTitle(title)
 
             self.currentEditorWidget.updateTitle()

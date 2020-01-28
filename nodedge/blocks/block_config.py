@@ -1,4 +1,7 @@
 import os
+from typing import Dict, TypeVar
+
+from nodedge.blocks.block import Block
 
 LISTBOX_MIMETYPE = "application/x-item"
 
@@ -9,7 +12,8 @@ OP_NODE_SUBTRACT = 4
 OP_NODE_MULTIPLY = 5
 OP_NODE_DIVIDE = 6
 
-BLOCKS = {}
+# BlockType = TypeVar("BlockType", bound=Block)
+BLOCKS: Dict[int, type] = {}
 
 BLOCKS_ICONS_PATH = f"{os.path.dirname(__file__)}/../resources/node_icons"
 

@@ -3,7 +3,7 @@ import logging
 from nodedge.blocks.block_content import BlockContent
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.node import Node
-from nodedge.socket import LEFT_CENTER, RIGHT_CENTER
+from nodedge.socket import SocketPosition
 from nodedge.utils import dumpException
 
 
@@ -33,8 +33,8 @@ class Block(Node):
 
     def initSettings(self):
         super().initSettings()
-        self._inputSocketPosition = LEFT_CENTER
-        self._outputSocketPosition = RIGHT_CENTER
+        self._inputSocketPosition = SocketPosition.LEFT_CENTER
+        self._outputSocketPosition = SocketPosition.RIGHT_CENTER
 
     def onInputChanged(self, newEdge):
         self.__logger.debug(f"New edge: {newEdge}")
@@ -91,8 +91,9 @@ class Block(Node):
         res["operationCode"] = self.__class__.operationCode
         return res
 
-    def deserialize(self, data, hashmap={}, restoreId=True):
-        # self.__logger.debug(f"Deserializing block {self.__class__.__name__}")
+    def deserialize(self, data, hashmap=None, restoreId=True):
+        if hashmap is None:
+            hashmap = {}
         res = super().deserialize(data, hashmap, restoreId)
         self.__logger.debug(f"Deserialized block {self.__class__.__name__}: {res}")
 

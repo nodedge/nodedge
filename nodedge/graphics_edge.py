@@ -1,10 +1,11 @@
+import logging
 import math
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QPointF, Qt
+from PyQt5.QtGui import QColor, QPainterPath, QPen
+from PyQt5.QtWidgets import QGraphicsItem, QGraphicsPathItem, QGraphicsSceneMouseEvent
 
-from nodedge.socket import *
+from nodedge.socket import SocketPosition
 
 
 class GraphicsEdge(QGraphicsPathItem):
@@ -34,23 +35,24 @@ class GraphicsEdge(QGraphicsPathItem):
         self.initStyle()
         self.setFlag(QGraphicsItem.ItemIsSelectable)
 
+    # noinspection PyAttributeOutsideInit
     def initStyle(self):
-        self._color = QColor("#001000")
-        self._colorSelected = QColor("#00ff00")
+        self._color: QColor = QColor("#001000")
+        self._colorSelected: QColor = QColor("#00ff00")
 
-        self._pen = QPen(self._color)
+        self._pen: QPen = QPen(self._color)
         self._pen.setWidthF(2.0)
 
-        self._penSelected = QPen(self._colorSelected)
+        self._penSelected: QPen = QPen(self._colorSelected)
         self._penSelected.setWidthF(2.0)
 
-        self._penDragging = QPen(self._color)
+        self._penDragging: QPen = QPen(self._color)
         self._penDragging.setWidthF(2.0)
         self._penDragging.setStyle(Qt.DashLine)
 
         self.setZValue(-1)
 
-        self._controlPointRoundness = 100
+        self._controlPointRoundness: int = 100
 
     def setSource(self, x, y):
         self._posSource = [x, y]
@@ -65,7 +67,7 @@ class GraphicsEdge(QGraphicsPathItem):
         self.__logger.debug("")
         self.edge.scene.graphicsScene.itemSelected.emit()
 
-    def mouseReleaseEvent(self, event: "QGraphicsSceneMouseEvent") -> None:
+    def mouseReleaseEvent(self, event: QGraphicsSceneMouseEvent) -> None:
         super().mouseReleaseEvent(event)
         isSelected = self.isSelected()
         if self._lastSelectedState != isSelected:
@@ -120,8 +122,12 @@ class GraphicsEdgeBezier(GraphicsEdge):
         if self.edge.startSocket is not None:
             sspos = self.edge.startSocket.position
 
-            if (s[0] > d[0] and sspos in [RIGHT_TOP, RIGHT_BOTTOM]) or (
-                s[0] < d[0] and sspos in [LEFT_BOTTOM, LEFT_TOP]
+            if (
+                s[0] > d[0]
+                and sspos in [SocketPosition.RIGHT_TOP, SocketPosition.RIGHT_BOTTOM]
+            ) or (
+                s[0] < d[0]
+                and sspos in [SocketPosition.LEFT_BOTTOM, SocketPosition.LEFT_TOP]
             ):
                 cpx_d *= -1
                 cpx_s *= -1

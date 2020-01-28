@@ -6,6 +6,7 @@ from nodedge.utils import dumpException
 
 
 class InputBlockContent(NodeContent):
+    # noinspection PyAttributeOutsideInit
     def initUI(self):
         self.edit = QLineEdit("1", self)
         self.edit.setAlignment(Qt.AlignRight)
@@ -16,7 +17,9 @@ class InputBlockContent(NodeContent):
         res["value"] = self.edit.text()
         return res
 
-    def deserialize(self, data, hashmap={}, restoreId=False):
+    def deserialize(self, data, hashmap=None, restoreId=False):
+        if hashmap is None:
+            hashmap = {}
         res = super().deserialize(data, hashmap, restoreId)
         try:
             value = data["value"]

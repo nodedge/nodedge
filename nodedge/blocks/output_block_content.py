@@ -5,7 +5,8 @@ from nodedge.node_content import NodeContent
 
 
 class OutputBlockContent(NodeContent):
+    # noinspection PyAttributeOutsideInit
     def initUI(self):
-        self.label = QLabel("42", self)
+        self.label: QLabel = QLabel("42", self)
         self.label.setAlignment(Qt.AlignLeft)
         self.label.setObjectName(self.node.contentLabelObjectName)

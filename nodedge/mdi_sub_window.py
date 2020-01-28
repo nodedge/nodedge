@@ -1,11 +1,15 @@
 import logging
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QDataStream, QIODevice, Qt
+from PyQt5.QtGui import QCloseEvent, QIcon, QPixmap
+from PyQt5.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 
-from nodedge.blocks.block_config import *
-from nodedge.edge import EDGE_TYPE_BEZIER, EDGE_TYPE_DIRECT
+from nodedge.blocks.block_config import (
+    BLOCKS,
+    LISTBOX_MIMETYPE,
+    getClassFromOperationCode,
+)
+from nodedge.edge import EdgeType
 from nodedge.editor_widget import EditorWidget
 from nodedge.node import Node
 from nodedge.utils import dumpException
@@ -195,9 +199,9 @@ class MdiSubWindow(EditorWidget):
             selected = item.edge
 
         if selected and action == bezierAct:
-            selected.edgeType = EDGE_TYPE_BEZIER
+            selected.edgeType = EdgeType.BEZIER
         if selected and action == directAct:
-            selected.edgeType = EDGE_TYPE_DIRECT
+            selected.edgeType = EdgeType.DIRECT
 
     def mouseReleaseEvent(self, ev):
         super().mouseReleaseEvent(ev)

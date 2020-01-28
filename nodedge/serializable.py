@@ -5,5 +5,7 @@ class Serializable:
     def serialize(self):
         raise NotImplementedError()
 
-    def deserialize(self, data, hashmap={}, restoreId=True):
+    def deserialize(self, data, hashmap=None, restoreId=True):
+        if hashmap is None:
+            hashmap = {}
         raise NotImplementedError()

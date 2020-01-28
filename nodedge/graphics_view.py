@@ -1,10 +1,23 @@
-from nodedge.edge import *
+import logging
+from enum import IntEnum
+from typing import List, Optional
+
+from PyQt5.QtCore import QEvent, QPointF, Qt, pyqtSignal
+from PyQt5.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QMouseEvent, QPainter
+from PyQt5.QtWidgets import QApplication, QGraphicsView
+
+from nodedge.edge import Edge, EdgeType
 from nodedge.graphics_cutline import GraphicsCutline
+from nodedge.graphics_edge import GraphicsEdge, GraphicsEdgeBezier, GraphicsEdgeDirect
+from nodedge.graphics_scene import GraphicsScene
+from nodedge.graphics_socket import GraphicsSocket
 from nodedge.utils import dumpException
 
-MODE_NOOP = 1
-MODE_EDGE_DRAG = 2
-MODE_EDGE_CUT = 3
+
+class DragMode(IntEnum):
+    NOOP = 1
+    EDGE_DRAG = 2
+    EDGE_CUT = 3
 
 
 class GraphicsView(QGraphicsView):
@@ -16,21 +29,21 @@ class GraphicsView(QGraphicsView):
         self.__logger = logging.getLogger(__name__)
         self.__logger.setLevel(logging.INFO)
 
-        self.graphicsScene = graphicsScene
+        self.graphicsScene: GraphicsScene = graphicsScene
         self.initUI()
 
         self.setScene(self.graphicsScene)
 
-        self.zoomInFactor = 1.75
-        self.zoomClamp = True
-        self.zoomStep = 1
-        self.zoomRange = [0, 10]
-        self.zoom = 10
+        self.zoomInFactor: float = 1.75
+        self.zoomClamp: bool = True
+        self.zoomStep: int = 1
+        self.zoomRange: List[int] = [0, 10]
+        self.zoom: float = 10
 
-        self.lastSceneMousePos = QPointF()
+        self.lastSceneMousePos: QPointF = QPointF()
 
-        self.mode = MODE_NOOP
-        self.lastLMBClickScenePos = None
+        self.mode: DragMode = DragMode.NOOP
+        self.lastLMBClickScenePos: Optional[QPointF] = None
         self.edgeStartDragThreshold = 10
         self.editingFlag = False
         self.rubberBandDraggingRectangle = False
@@ -134,13 +147,13 @@ class GraphicsView(QGraphicsView):
             super().mousePressEvent(fakeEvent)
             return
 
-        if type(item) is GraphicsSocket and self.mode == MODE_NOOP:
-            self.mode = MODE_EDGE_DRAG
+        if type(item) is GraphicsSocket and self.mode == DragMode.NOOP:
+            self.mode = DragMode.EDGE_DRAG
             self.__logger.debug(f"Drag mode: {self.mode}")
             self.dragEdgeStart(item)
             return
 
-        if self.mode == MODE_EDGE_DRAG:
+        if self.mode == DragMode.EDGE_DRAG:
             ret = self.dragEdgeEnd(item)
             if ret:
                 self.__logger.debug("")
@@ -148,7 +161,7 @@ class GraphicsView(QGraphicsView):
 
         if item is None:
             if event.modifiers() & Qt.ControlModifier:
-                self.mode = MODE_EDGE_CUT
+                self.mode = DragMode.EDGE_CUT
                 fakeEvent = QMouseEvent(
                     QEvent.MouseButtonRelease,
                     event.localPos(),
@@ -183,19 +196,20 @@ class GraphicsView(QGraphicsView):
             super().mouseReleaseEvent(fakeEvent)
             return
 
-        if self.mode == MODE_EDGE_DRAG and self.distanceBetweenClickAndReleaseIsOff(
-            event
+        if (
+            self.mode == DragMode.EDGE_DRAG
+            and self.distanceBetweenClickAndReleaseIsOff(event)
         ):
             ret = self.dragEdgeEnd(item)
             if ret:
                 return
 
-        if self.mode == MODE_EDGE_CUT:
+        if self.mode == DragMode.EDGE_CUT:
             self.cutIntersectingEdges()
             self.cutline.linePoints = []
             self.cutline.update()
             QApplication.setOverrideCursor(Qt.ArrowCursor)
-            self.mode = MODE_NOOP
+            self.mode = DragMode.NOOP
             return
 
         super().mouseReleaseEvent(event)
@@ -272,7 +286,7 @@ class GraphicsView(QGraphicsView):
             self.__logger.info("Assign socket.")
             self.dragStartSocket = item.socket
             self.dragEdge = Edge(
-                self.graphicsScene.scene, item.socket, edgeType=EDGE_TYPE_BEZIER
+                self.graphicsScene.scene, item.socket, edgeType=EdgeType.BEZIER
             )
         except Exception as e:
             dumpException(e)
@@ -282,7 +296,7 @@ class GraphicsView(QGraphicsView):
         :param item: selected QItem
         :return: True if we skip the rest of the code. False otherwise.
         """
-        self.mode = MODE_NOOP
+        self.mode = DragMode.NOOP
         self.__logger.debug(f"Drag mode: {self.mode}")
 
         self.dragEdge.remove()
@@ -301,7 +315,7 @@ class GraphicsView(QGraphicsView):
                     self.graphicsScene.scene,
                     self.dragStartSocket,
                     item.socket,
-                    edgeType=EDGE_TYPE_BEZIER,
+                    edgeType=EdgeType.BEZIER,
                 )
                 item.socket.addEdge(newEdge)
                 self.__logger.debug(
@@ -326,12 +340,12 @@ class GraphicsView(QGraphicsView):
         return False
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
-        if self.mode == MODE_EDGE_DRAG:
+        if self.mode == DragMode.EDGE_DRAG:
             pos = self.mapToScene(event.pos())
             self.dragEdge.graphicsEdge.setDestination(pos.x(), pos.y())
             self.dragEdge.graphicsEdge.update()
 
-        if self.mode == MODE_EDGE_CUT:
+        if self.mode == DragMode.EDGE_CUT:
             pos = self.mapToScene(event.pos())
             self.cutline.linePoints.append(pos)
             self.cutline.update()

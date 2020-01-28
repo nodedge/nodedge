@@ -1,8 +1,8 @@
 import logging
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QRectF, Qt
+from PyQt5.QtGui import QBrush, QColor, QFont, QPainterPath, QPen
+from PyQt5.QtWidgets import QGraphicsItem, QGraphicsProxyWidget, QGraphicsTextItem
 
 
 class GraphicsNode(QGraphicsItem):
@@ -44,23 +44,26 @@ class GraphicsNode(QGraphicsItem):
         self.setFlag(QGraphicsItem.ItemIsSelectable)
         self.setFlag(QGraphicsItem.ItemIsMovable)
 
+    # noinspection PyAttributeOutsideInit
     def initStyle(self):
-        self._titleColor = Qt.white
-        self._titleFont = QFont("Ubuntu", 10)
-        self._penDefault = QPen(QColor("#7F000000"))
-        self._penSelected = QPen(QColor("#FFFFA637"))
-        self._brushTitle = QBrush(QColor("#FF313131"))
-        self._brushBackground = QBrush(QColor("#E3212121"))
+        self._titleColor: int = Qt.white
+        self._titleFont: QFont = QFont("Ubuntu", 10)
+        self._penDefault: QPen = QPen(QColor("#7F000000"))
+        self._penSelected: QPen = QPen(QColor("#FFFFA637"))
+        self._brushTitle: QBrush = QBrush(QColor("#FF313131"))
+        self._brushBackground: QBrush = QBrush(QColor("#E3212121"))
 
+    # noinspection PyAttributeOutsideInit
     def initSizes(self):
-        self.width = 180
-        self.height = 240
-        self.edgeRoundness = 5.0
-        self.edgePadding = 10.0
-        self.titleHeight = 24.0
-        self.titleHorizontalPadding = 4.0
-        self.titleVerticalPadding = 4.0
+        self.width: int = 180
+        self.height: int = 240
+        self.edgeRoundness: float = 5.0
+        self.edgePadding: float = 10.0
+        self.titleHeight: float = 24.0
+        self.titleHorizontalPadding: float = 4.0
+        self.titleVerticalPadding: float = 4.0
 
+    # noinspection PyAttributeOutsideInit
     def initTitle(self):
         self.titleItem = QGraphicsTextItem(self)
         self.titleItem.setDefaultTextColor(self._titleColor)
@@ -71,6 +74,7 @@ class GraphicsNode(QGraphicsItem):
 
         self.title = self.node.title
 
+    # noinspection PyAttributeOutsideInit
     def initContent(self):
         self.graphicsContent = QGraphicsProxyWidget(self)
         self.content.setGeometry(

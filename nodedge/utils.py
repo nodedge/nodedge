@@ -2,8 +2,8 @@ import logging
 import traceback
 from pprint import PrettyPrinter
 
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QFile
+from PyQt5.QtWidgets import QApplication
 
 pp = PrettyPrinter(indent=4).pprint
 

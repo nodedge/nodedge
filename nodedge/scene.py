@@ -70,6 +70,7 @@ class Scene(Serializable):
         if value != self._lastSelectedItems:
             self._lastSelectedItems = value
 
+    # noinspection PyAttributeOutsideInit
     def initUI(self):
         self.graphicsScene = GraphicsScene(self)
         self.graphicsScene.setScene(self.sceneWidth, self.sceneHeight)
@@ -193,7 +194,9 @@ class Scene(Serializable):
             ]
         )
 
-    def deserialize(self, data, hashmap={}, restoreId=True):
+    def deserialize(self, data, hashmap=None, restoreId=True):
+        if hashmap is None:
+            hashmap = {}
         self.__logger.debug(f"Deserializing data: {data}")
         self.clear()
 

@@ -2,9 +2,17 @@ import logging
 import os
 import typing
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QSignalMapper, Qt
+from PyQt5.QtGui import QIcon, QKeySequence
+from PyQt5.QtWidgets import (
+    QAction,
+    QDockWidget,
+    QFileDialog,
+    QMdiArea,
+    QMenu,
+    QMessageBox,
+    QWidget,
+)
 
 from nodedge.drag_listbox import DragListbox
 from nodedge.editor_widget import EditorWidget
@@ -31,6 +39,7 @@ class MdiWindow(EditorWindow):
             self.lastActiveEditorWidget = activeSubWindow.widget()
         return typing.cast(EditorWidget, self.lastActiveEditorWidget)
 
+    # noinspection PyAttributeOutsideInit
     def initUI(self):
         self.companyName = "Nodedge"
         self.productName = "Nodedge"
