@@ -1,7 +1,7 @@
 import logging
 import math
 
-from PyQt5.QtCore import QLine, pyqtSignal
+from PyQt5.QtCore import QLine, Qt, pyqtSignal
 from PyQt5.QtGui import QColor, QPen, QTransform
 from PyQt5.QtWidgets import (
     QGraphicsScene,
@@ -18,7 +18,7 @@ class GraphicsScene(QGraphicsScene):
         super().__init__(parent)
 
         self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.INFO)
+        self.__logger.setLevel(logging.DEBUG)
 
         self.scene = scene
 
@@ -82,13 +82,29 @@ class GraphicsScene(QGraphicsScene):
         painter.setPen(self._pen_dark)
         painter.drawLines(*lines_dark)
 
+    def mousePressEvent(self, e: QGraphicsSceneMouseEvent) -> None:
+        item = self.itemAt(e.scenePos(), QTransform())
+
+        if (
+            item is not None
+            and item not in self.selectedItems()
+            and item.parentItem() not in self.selectedItems()
+            and not e.modifiers() & Qt.ShiftModifier
+        ):
+            self.__logger.debug(f"Pressed item: {item}")
+            self.__logger.debug(f"Pressed parent item: {item.parentItem()}")
+            self.__logger.debug(
+                f"Selected items in graphics scene: {self.selectedItems()}"
+            )
+            for item in self.selectedItems():
+                item.setSelected(False)
+
+        super().mousePressEvent(e)
+
     def mouseReleaseEvent(self, e: QGraphicsSceneMouseEvent):
         item = self.itemAt(e.scenePos(), QTransform())
 
         if item is not None:
             item.setSelected(True)
-        else:
-            for item in self.selectedItems():
-                item.setSelected(False)
 
         super().mouseReleaseEvent(e)

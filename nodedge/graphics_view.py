@@ -24,7 +24,7 @@ class GraphicsView(QGraphicsView):
     scenePosChanged = pyqtSignal(int, int)
 
     def __init__(self, graphicsScene, parent=None):
-        super().__init__(parent)
+        super().__init__(graphicsScene)
 
         self.__logger = logging.getLogger(__name__)
         self.__logger.setLevel(logging.INFO)
@@ -125,65 +125,63 @@ class GraphicsView(QGraphicsView):
             super().mouseReleaseEvent(event)
 
     def leftMouseButtonPress(self, event):
+        try:
+            item = self.getItemAtClick(event)
 
-        item = self.getItemAtClick(event)
+            self.lastLMBClickScenePos = self.mapToScene(event.pos())
 
-        self.lastLMBClickScenePos = self.mapToScene(event.pos())
+            self.__logger.debug("LMB " + self.debugModifiers(event) + f"{item}")
 
-        self.__logger.debug("LMB " + self.debugModifiers(event) + f"{item}")
-
-        if (
-            hasattr(item, "node") or isinstance(item, GraphicsEdge) or item is None
-        ) and event.modifiers() & Qt.ShiftModifier:
-            event.ignore()
-            fakeEvent = QMouseEvent(
-                QEvent.MouseButtonPress,
-                event.localPos(),
-                event.screenPos(),
-                Qt.LeftButton,
-                event.buttons() | Qt.LeftButton,
-                event.modifiers() | Qt.ControlModifier,
-            )
-            super().mousePressEvent(fakeEvent)
-            return
-
-        if type(item) is GraphicsSocket and self.mode == DragMode.NOOP:
-            self.mode = DragMode.EDGE_DRAG
-            self.__logger.debug(f"Drag mode: {self.mode}")
-            self.dragEdgeStart(item)
-            return
-
-        if self.mode == DragMode.EDGE_DRAG:
-            ret = self.dragEdgeEnd(item)
-            if ret:
-                self.__logger.debug("")
-                return
-
-        if item is None:
-            if event.modifiers() & Qt.ControlModifier:
-                self.mode = DragMode.EDGE_CUT
+            if event.modifiers() & Qt.ShiftModifier:
+                event.ignore()
                 fakeEvent = QMouseEvent(
-                    QEvent.MouseButtonRelease,
+                    QEvent.MouseButtonPress,
                     event.localPos(),
                     event.screenPos(),
                     Qt.LeftButton,
-                    Qt.NoButton,
-                    event.modifiers(),
+                    event.buttons() | Qt.LeftButton,
+                    event.modifiers() | Qt.ControlModifier,
                 )
-                super().mouseReleaseEvent(fakeEvent)
-                QApplication.setOverrideCursor(Qt.CrossCursor)
+                super().mousePressEvent(fakeEvent)
                 return
-            else:
-                self.rubberBandDraggingRectangle = True
 
-        super().mousePressEvent(event)
+            if type(item) is GraphicsSocket and self.mode == DragMode.NOOP:
+                self.mode = DragMode.EDGE_DRAG
+                self.__logger.debug(f"Drag mode: {self.mode}")
+                self.dragEdgeStart(item)
+                return
+
+            if self.mode == DragMode.EDGE_DRAG:
+                ret = self.dragEdgeEnd(item)
+                if ret:
+                    self.__logger.debug("")
+                    return
+
+            if item is None:
+                if event.modifiers() & Qt.ControlModifier:
+                    self.mode = DragMode.EDGE_CUT
+                    fakeEvent = QMouseEvent(
+                        QEvent.MouseButtonRelease,
+                        event.localPos(),
+                        event.screenPos(),
+                        Qt.LeftButton,
+                        Qt.NoButton,
+                        event.modifiers(),
+                    )
+                    super().mouseReleaseEvent(fakeEvent)
+                    QApplication.setOverrideCursor(Qt.CrossCursor)
+                    return
+                else:
+                    self.rubberBandDraggingRectangle = True
+
+            super().mousePressEvent(event)
+        except Exception as e:
+            dumpException(e)
 
     def leftMouseButtonRelease(self, event):
         item = self.getItemAtClick(event)
 
-        if (
-            hasattr(item, "node") or isinstance(item, GraphicsEdge) or item is None
-        ) and event.modifiers() & Qt.ShiftModifier:
+        if event.modifiers() & Qt.ShiftModifier:
             event.ignore()
             fakeEvent = QMouseEvent(
                 event.type(),
@@ -212,7 +210,6 @@ class GraphicsView(QGraphicsView):
             self.mode = DragMode.NOOP
             return
 
-        super().mouseReleaseEvent(event)
         if self.rubberBandDraggingRectangle:
             self.rubberBandDraggingRectangle = False
             # self.graphicsScene.scene.history.store("Change selection", sceneIsModified=False)
@@ -223,6 +220,8 @@ class GraphicsView(QGraphicsView):
             if selectedItems != self.graphicsScene.scene.lastSelectedItems:
                 self.graphicsScene.itemSelected.emit()
             return
+
+        super().mouseReleaseEvent(event)
 
     def middleMouseButtonPress(self, event):
         # Debug logging
@@ -283,7 +282,7 @@ class GraphicsView(QGraphicsView):
 
     def dragEdgeStart(self, item):
         try:
-            self.__logger.info("Assign socket.")
+            self.__logger.debug("Assign socket.")
             self.dragStartSocket = item.socket
             self.dragEdge = Edge(
                 self.graphicsScene.scene, item.socket, edgeType=EdgeType.BEZIER
@@ -331,7 +330,7 @@ class GraphicsView(QGraphicsView):
                         socket.node.onInputChanged(newEdge)
 
                 self.graphicsScene.scene.history.store("Create a new edge by dragging")
-                self.__logger.info("Socket assigned.")
+                self.__logger.debug("Socket assigned.")
                 return True
         except Exception as e:
             dumpException(e)

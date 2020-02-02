@@ -1,5 +1,6 @@
 import pytest
 from PyQt5.QtCore import QPoint, Qt
+from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QGraphicsView, QMainWindow
 from pytestqt.qtbot import QtBot
 
@@ -180,29 +181,36 @@ def test_onSelectedItems(qtbot: QtBot):
 
     window.setActiveSubWindow(subWindow)
 
-    # qtbot.mouseMove(subWindow, pos)
-
     pos2 = subWindow.widget().scene.view.mapToScene(QPoint(-10, -10))
     pos3 = subWindow.widget().scene.view.mapToScene(QPoint(10, 10))
     subWindow.widget().scene.view.show()
 
-    subWindow.widget().scene.graphicsScene.setFocus(Qt.ActiveWindowFocusReason)
-    qtbot.mouseClick(
+    # subWindow.widget().scene.graphicsScene.setFocus(Qt.ActiveWindowFocusReason)
+    QTest.mousePress(
+        subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos2.x()), int(-pos2.y()))
+    )
+    QTest.mouseRelease(
         subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos2.x()), int(-pos2.y()))
     )
 
     assert scene.selectedItems == [node.graphicsNode]
     assert scene.lastSelectedItems == []
 
-    qtbot.mouseClick(
+    qtbot.mousePress(
+        subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos3.x()), int(-pos3.y()))
+    )
+    qtbot.mouseRelease(
         subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos3.x()), int(-pos3.y()))
     )
     assert scene.selectedItems == []
     assert scene.lastSelectedItems == []
 
     subWindow.widget().scene.view.rubberBandDraggingRectangle = True
-    qtbot.mouseClick(
+    qtbot.mousePress(
+        subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos2.x()), int(-pos2.y()))
+    )
+    qtbot.mouseRelease(
         subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos2.x()), int(-pos2.y()))
     )
     assert scene.selectedItems == [node.graphicsNode]
-    assert scene.lastSelectedItems == [node.graphicsNode]
+    assert scene.lastSelectedItems == []

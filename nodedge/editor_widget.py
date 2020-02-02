@@ -138,3 +138,7 @@ class EditorWidget(QWidget):
     def mouseReleaseEvent(self, ev):
         self.view.mouseReleaseEvent(ev)
         super().mouseReleaseEvent(ev)
+
+    def mousePressEvent(self, ev):
+        self.view.mousePressEvent(ev)
+        super().mousePressEvent(ev)
