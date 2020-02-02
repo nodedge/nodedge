@@ -2,7 +2,7 @@ import json
 import logging
 import os
 from collections import OrderedDict
-from typing import Callable
+from typing import Callable, List
 
 from nodedge.edge import Edge
 from nodedge.graphics_scene import GraphicsScene
@@ -16,8 +16,8 @@ from nodedge.utils import dumpException
 class Scene(Serializable):
     def __init__(self):
         super().__init__()
-        self.nodes = []
-        self.edges = []
+        self.nodes: List[Node] = []
+        self.edges: List[Edge] = []
 
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)

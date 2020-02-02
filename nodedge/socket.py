@@ -1,7 +1,7 @@
 import logging
 from collections import OrderedDict
 from enum import IntEnum
-from typing import List, Optional
+from typing import List, Optional, cast
 
 from nodedge.graphics_socket import GraphicsSocket
 from nodedge.serializable import Serializable
@@ -62,7 +62,7 @@ class Socket(Serializable):
             f"getSocketPos: {self.index}, {self.position}, {self.node}, {ret}"
         )
 
-        return ret
+        return cast(List, ret)
 
     # noinspection PyUnresolvedReferences
     def addEdge(self, edge: Optional["Edge"] = None) -> None:  # type: ignore # noqa: F821
@@ -74,7 +74,7 @@ class Socket(Serializable):
         if edgeToRemove in self.edges:
             self.edges.remove(edgeToRemove)
         else:
-            self.__logger.warning(f"Trying to remove {edgeToRemove} from {self}.")
+            self.__logger.debug(f"Trying to remove {edgeToRemove} from {self}.")
 
     def determineAllowsMultiEdges(self, data):
         if "allowsMultiEdges" in data:

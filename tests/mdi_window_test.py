@@ -1,8 +1,5 @@
-import time
-
 import pytest
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtWidgets import QMessageBox
 from pytestqt.qtbot import QtBot
 
 from nodedge.mdi_window import MdiWindow
@@ -10,9 +7,7 @@ from nodedge.mdi_window import MdiWindow
 
 @pytest.fixture
 def emptyMdiWindow(qtbot: QtBot):
-    window = MdiWindow()
-
-    return window
+    return MdiWindow()
 
 
 @pytest.fixture

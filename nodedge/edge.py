@@ -97,22 +97,27 @@ class Edge(Serializable):
             self.updatePos()
 
     def updatePos(self) -> None:
-        startPos = self.startSocket.socketPos()
-        startPos[0] += self.startSocket.node.graphicsNode.pos().x()
-        startPos[1] += self.startSocket.node.graphicsNode.pos().y()
-        self.graphicsEdge.setSource(*startPos)
+        if self.startSocket is not None:
+            startPos = self.startSocket.socketPos()
+            startPos[0] += self.startSocket.node.graphicsNode.pos().x()
+            startPos[1] += self.startSocket.node.graphicsNode.pos().y()
+            if self.graphicsEdge is not None:
+                self.graphicsEdge.setSource(*startPos)
         # TODO: simplify terminology: end -> destination | start -> source
         if self.endSocket is not None:
             endPos = self.endSocket.socketPos()
             endPos[0] += self.endSocket.node.graphicsNode.pos().x()
             endPos[1] += self.endSocket.node.graphicsNode.pos().y()
-            self.graphicsEdge.setDestination(*endPos)
+            if self.graphicsEdge is not None:
+                self.graphicsEdge.setDestination(*endPos)
         else:
-            self.graphicsEdge.setDestination(*startPos)
+            if self.graphicsEdge is not None:
+                self.graphicsEdge.setDestination(*startPos)
 
         self.__logger.debug(f"Start socket: {self.startSocket}")
         self.__logger.debug(f"End socket: {self.endSocket}")
-        self.graphicsEdge.update()
+        if self.graphicsEdge is not None:
+            self.graphicsEdge.update()
 
     def getOtherSocket(self, knownSocket: "Socket"):
         return self.startSocket if knownSocket == self.endSocket else self.endSocket

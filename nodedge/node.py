@@ -1,6 +1,6 @@
 import logging
 from collections import OrderedDict
-from typing import Collection, List, Optional
+from typing import Collection, List, Optional, Tuple, TypeVar
 
 from PyQt5.QtCore import QPoint, QPointF
 
@@ -10,6 +10,8 @@ from nodedge.node_content import NodeContent
 from nodedge.serializable import Serializable
 from nodedge.socket import Socket, SocketPosition
 from nodedge.utils import dumpException
+
+Pos = TypeVar("Pos", List, Tuple, QPoint, QPointF)
 
 
 class Node(Serializable):
@@ -115,7 +117,7 @@ class Node(Serializable):
         return self.graphicsNode.pos()  # QPointF
 
     @pos.setter
-    def pos(self, pos: QPointF):
+    def pos(self, pos: Pos):
         if isinstance(pos, (list, tuple)):
             try:
                 x, y = pos
@@ -125,7 +127,7 @@ class Node(Serializable):
                 raise ValueError("Pass an iterable with two numbers.")
             except TypeError:
                 raise TypeError("Pass an iterable with two numbers.")
-        elif isinstance(pos, QPointF) or isinstance(pos, QPoint):
+        elif isinstance(pos, QPointF):
             self.graphicsNode.setPos(pos)
 
     @property
@@ -382,4 +384,4 @@ class Node(Serializable):
 
         res = self.content.deserialize(data["content"], hashmap)
 
-        return True & res
+        return bool(True & res)

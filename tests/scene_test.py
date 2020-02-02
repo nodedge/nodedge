@@ -1,6 +1,5 @@
 import pytest
 from PyQt5.QtCore import QPoint, Qt
-from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QGraphicsView, QMainWindow
 from pytestqt.qtbot import QtBot
 
@@ -8,7 +7,6 @@ from nodedge.edge import Edge
 from nodedge.editor_widget import EditorWidget
 from nodedge.mdi_window import MdiWindow
 from nodedge.node import Node
-from nodedge.scene import Scene
 
 
 @pytest.fixture
@@ -71,12 +69,14 @@ def test_clear(filledScene):
     assert filledScene.isModified is False
 
 
+# noinspection PyProtectedMember
 def test_addHasBeenModifiedListener(emptyScene):
     assert len(emptyScene._hasBeenModifiedListeners) == 0
     emptyScene.addHasBeenModifiedListener(Node)
     assert len(emptyScene._hasBeenModifiedListeners) > 0
 
 
+# noinspection PyProtectedMember
 def test_addDropListener(qtbot):
     window = QMainWindow()  # noqa: F841
     editor = EditorWidget()
@@ -88,6 +88,7 @@ def test_addDropListener(qtbot):
     assert len(scene.view._dropListeners) > 0
 
 
+# noinspection PyProtectedMember
 def test_addItemsDeselectedListeners(qtbot):
     window = QMainWindow()  # noqa: F841
     editor = EditorWidget()
@@ -99,6 +100,7 @@ def test_addItemsDeselectedListeners(qtbot):
     assert len(scene._itemsDeselectedListeners) > 0
 
 
+# noinspection PyProtectedMember
 def test_addItemSelectedListeners(qtbot):
     window = QMainWindow()  # noqa: F841
     editor = EditorWidget()
@@ -162,7 +164,7 @@ def test_itemAt(qtbot: QtBot):
     edge = Edge(scene, node.inputSockets[0], node.outputSockets[0])  # noqa: F841
 
     pos = pos
-    assert scene.itemAt(pos) == scene.nodes[0].graphicsNode
+    assert scene.itemAt(pos).parentItem() == scene.nodes[0].graphicsNode
 
 
 def test_onSelectedItems(qtbot: QtBot):
@@ -186,15 +188,15 @@ def test_onSelectedItems(qtbot: QtBot):
     subWindow.widget().scene.view.show()
 
     # subWindow.widget().scene.graphicsScene.setFocus(Qt.ActiveWindowFocusReason)
-    QTest.mousePress(
+    qtbot.mousePress(
         subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos2.x()), int(-pos2.y()))
     )
-    QTest.mouseRelease(
+    qtbot.mouseRelease(
         subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos2.x()), int(-pos2.y()))
     )
 
     assert scene.selectedItems == [node.graphicsNode]
-    assert scene.lastSelectedItems == []
+    assert scene.lastSelectedItems == [node.graphicsNode]
 
     qtbot.mousePress(
         subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos3.x()), int(-pos3.y()))
@@ -213,4 +215,4 @@ def test_onSelectedItems(qtbot: QtBot):
         subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos2.x()), int(-pos2.y()))
     )
     assert scene.selectedItems == [node.graphicsNode]
-    assert scene.lastSelectedItems == []
+    assert scene.lastSelectedItems == [node.graphicsNode]

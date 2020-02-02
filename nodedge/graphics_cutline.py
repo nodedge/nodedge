@@ -1,11 +1,11 @@
-from typing import List, Optional
+from typing import List, Optional, cast
 
 from PyQt5.QtCore import QPointF, QRectF, Qt
 from PyQt5.QtGui import QPainter, QPainterPath, QPen, QPolygonF
 from PyQt5.QtWidgets import QGraphicsItem, QStyleOptionGraphicsItem, QWidget
 
 
-class GraphicsCutline(QGraphicsItem):
+class GraphicsCutLine(QGraphicsItem):
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -17,7 +17,7 @@ class GraphicsCutline(QGraphicsItem):
         self.setZValue(2)
 
     def boundingRect(self) -> QRectF:
-        return self.shape().boundingRect()
+        return cast(QRectF, self.shape().boundingRect())
 
     def shape(self):
         if len(self.linePoints) > 1:

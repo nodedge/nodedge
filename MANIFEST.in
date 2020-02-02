@@ -9,7 +9,7 @@ include setup.py
 include Pipfile
 include Pipfile.lock
 include readthedocs.yml
-
+include mypy.ini
 
 include .flake8
 include .isort.cfg

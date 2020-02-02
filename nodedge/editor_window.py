@@ -42,7 +42,7 @@ class EditorWindow(QMainWindow):
     def currentEditorWidget(self) -> EditorWidget:
         centralWidget = self.centralWidget()
         if isinstance(centralWidget, EditorWidget):
-            return typing.cast(EditorWidget, centralWidget)
+            return centralWidget
         else:
             raise TypeError("Central widget is not an editor widget")
 

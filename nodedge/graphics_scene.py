@@ -1,9 +1,11 @@
 import logging
 import math
+from typing import Optional
 
 from PyQt5.QtCore import QLine, Qt, pyqtSignal
 from PyQt5.QtGui import QColor, QPen, QTransform
 from PyQt5.QtWidgets import (
+    QGraphicsItem,
     QGraphicsScene,
     QGraphicsSceneDragDropEvent,
     QGraphicsSceneMouseEvent,
@@ -18,7 +20,7 @@ class GraphicsScene(QGraphicsScene):
         super().__init__(parent)
 
         self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.DEBUG)
+        self.__logger.setLevel(logging.INFO)
 
         self.scene = scene
 
@@ -83,13 +85,13 @@ class GraphicsScene(QGraphicsScene):
         painter.drawLines(*lines_dark)
 
     def mousePressEvent(self, e: QGraphicsSceneMouseEvent) -> None:
-        item = self.itemAt(e.scenePos(), QTransform())
+        item: Optional[QGraphicsItem] = self.itemAt(e.scenePos(), QTransform())
 
         if (
             item is not None
             and item not in self.selectedItems()
             and item.parentItem() not in self.selectedItems()
-            and not e.modifiers() & Qt.ShiftModifier
+            and not e.modifiers() & Qt.ShiftModifier  # type: ignore
         ):
             self.__logger.debug(f"Pressed item: {item}")
             self.__logger.debug(f"Pressed parent item: {item.parentItem()}")

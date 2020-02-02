@@ -7,7 +7,7 @@ from PyQt5.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QMouseEvent, QPa
 from PyQt5.QtWidgets import QApplication, QGraphicsView
 
 from nodedge.edge import Edge, EdgeType
-from nodedge.graphics_cutline import GraphicsCutline
+from nodedge.graphics_cutline import GraphicsCutLine
 from nodedge.graphics_edge import GraphicsEdge, GraphicsEdgeBezier, GraphicsEdgeDirect
 from nodedge.graphics_scene import GraphicsScene
 from nodedge.graphics_socket import GraphicsSocket
@@ -50,7 +50,7 @@ class GraphicsView(QGraphicsView):
 
         self.dragEdge: (Edge, None) = None
 
-        self.cutline = GraphicsCutline()
+        self.cutline = GraphicsCutLine()
         self.graphicsScene.addItem(self.cutline)
 
         self._dragEnterListeners = []
