@@ -19,6 +19,10 @@ from nodedge.utils import dumpException
 
 class DragListbox(QListWidget):
     def __init__(self, parent=None):
+        """
+
+        :param parent:
+        """
         super().__init__(parent)
 
         self.__logger = logging.getLogger(__name__)
