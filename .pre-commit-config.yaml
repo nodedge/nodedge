@@ -17,25 +17,33 @@ repos:
       - id: black
         language_version: python3.6
         stages: [commit]
-  -   repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: v2.0.0
-      hooks:
-        - id: check-json
-          stages: [commit]
-        - id: check-added-large-files
-          stages: [commit]
-        - id: check-yaml
-          stages: [commit]
-        - id: name-tests-test
-          stages: [commit]
-        - id: requirements-txt-fixer
-          stages: [commit]
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.0.0
+    hooks:
+      - id: check-json
+        stages: [commit]
+      - id: check-added-large-files
+        stages: [commit]
+      - id: check-yaml
+        stages: [commit]
+      - id: name-tests-test
+        stages: [commit]
+      - id: requirements-txt-fixer
+        stages: [commit]
   - repo: local
     hooks:
       - id: tests
         name: run tests
-        entry: python -m pytest ./tests/
+        entry: tox -e py36
         language: system
         types: [python]
         stages: [push]
         pass_filenames: false
+      - id: packaging
+        name: run checks on packaging
+        entry: tox -e packaging
+        language: system
+        types: [python]
+        stages: [push]
+        pass_filenames: false
+

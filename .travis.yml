@@ -43,7 +43,7 @@ jobs:
     - python: 3.6
       env: TOXENV=coverage
     - python: 3.6
-      env: TOXENV=check_packaging
+      env: TOXENV=packaging
 
 before_script:
   - "herbstluftwm &"
