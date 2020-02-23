@@ -4,6 +4,8 @@ import os
 from collections import OrderedDict
 from typing import Callable, List
 
+from PyQt5.QtGui import QDragEnterEvent, QDropEvent
+
 from nodedge.edge import Edge
 from nodedge.graphics_scene import GraphicsScene
 from nodedge.node import Node
@@ -113,10 +115,10 @@ class Scene(Serializable):
     def addItemsDeselectedListener(self, callback: Callable[[None], None]):
         self._itemsDeselectedListeners.append(callback)
 
-    def addDragEnterListener(self, callback: Callable[[None], None]):
+    def addDragEnterListener(self, callback: Callable[[QDragEnterEvent], None]):
         self.view.addDragEnterListener(callback)
 
-    def addDropListener(self, callback: Callable[[None], None]):
+    def addDropListener(self, callback: Callable[[QDropEvent], None]):
         self.view.addDropListener(callback)
 
     def resetLastSelectedStates(self):

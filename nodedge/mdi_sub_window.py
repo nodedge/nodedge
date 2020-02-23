@@ -1,7 +1,7 @@
 import logging
 
 from PyQt5.QtCore import QDataStream, QIODevice, Qt
-from PyQt5.QtGui import QCloseEvent, QIcon, QPixmap
+from PyQt5.QtGui import QCloseEvent, QDragEnterEvent, QDropEvent, QIcon, QPixmap
 from PyQt5.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 
 from nodedge.blocks.block_config import (
@@ -11,6 +11,7 @@ from nodedge.blocks.block_config import (
 )
 from nodedge.edge import EdgeType
 from nodedge.editor_widget import EditorWidget
+from nodedge.graphics_view import DragMode
 from nodedge.node import Node
 from nodedge.utils import dumpException
 
@@ -30,6 +31,8 @@ class MdiSubWindow(EditorWidget):
         self.setAttribute(Qt.WA_DeleteOnClose)
 
         self.scene.addHasBeenModifiedListener(self.updateTitle)
+        # self.scene.history.addHistoryStoredListener(self.onHistoryStored)
+        self.scene.history.addHistoryRestoredListener(self.evalNodes)
         self.scene.addDragEnterListener(self.onDragEnter)
         self.scene.addDropListener(self.onDrop)
         self.scene.setNodeClassSelector(self.getNodeClassFromData)
@@ -73,7 +76,7 @@ class MdiSubWindow(EditorWidget):
             callback(self, event)
         self.__logger.debug("Everything done in after close event")
 
-    def onDragEnter(self, event):
+    def onDragEnter(self, event: QDragEnterEvent):
         if not event.mimeData().hasFormat(LISTBOX_MIMETYPE):
             self.__logger.warning(
                 f"Dragging denied: Wrong Mime format ({event.mimeData().formats()})"
@@ -83,7 +86,7 @@ class MdiSubWindow(EditorWidget):
 
         event.acceptProposedAction()
 
-    def onDrop(self, event):
+    def onDrop(self, event: QDropEvent):
         if not event.mimeData().hasFormat(LISTBOX_MIMETYPE):
             event.ignore()
             self.__logger.warning(
@@ -183,8 +186,19 @@ class MdiSubWindow(EditorWidget):
         if action is not None:
             newNode = getClassFromOperationCode(action.data())(self.scene)
             scenePos = self.scene.view.mapToScene(event.pos())
-            newNode.setPos(scenePos.x(), scenePos.y())
+            newNode.pos = scenePos
             self.__contextLogger.debug(f"New node: {newNode}")
+
+            if self.scene.view.mode == DragMode.EDGE_DRAG:
+                self.scene.view.dragEdgeEnd(newNode.inputSockets[0].graphicsSocket)
+
+                newNode.isSelected = True
+                # newNode.inputSockets[0].edges[-1].isSelected = True
+
+            else:
+                self.scene.history.store(
+                    f"Created new node: {newNode.__class__.__name__}"
+                )
 
     def handleEdgeContextMenu(self, event):
         contextMenu = QMenu()

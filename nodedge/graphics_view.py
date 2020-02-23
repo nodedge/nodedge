@@ -1,6 +1,6 @@
 import logging
 from enum import IntEnum
-from typing import List, Optional
+from typing import Callable, List, Optional
 
 from PyQt5.QtCore import QEvent, QPointF, Qt, pyqtSignal
 from PyQt5.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QMouseEvent, QPainter
@@ -94,10 +94,10 @@ class GraphicsView(QGraphicsView):
         for callback in self._dropListeners:
             callback(event)
 
-    def addDragEnterListener(self, callback):
+    def addDragEnterListener(self, callback: Callable[[QDragEnterEvent], None]):
         self._dragEnterListeners.append(callback)
 
-    def addDropListener(self, callback):
+    def addDropListener(self, callback: Callable[[QDropEvent], None]):
         self._dropListeners.append(callback)
 
     def mousePressEvent(self, event):

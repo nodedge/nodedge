@@ -11,7 +11,10 @@ class SceneHistory:
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
 
+        # Listeners
         self._historyModifiedListeners = []
+        self._historyStoredListeners = []
+        self._historyRestoredListeners = []
 
         self._maxLength = maxLength
         self.currentStep = -1
@@ -19,6 +22,12 @@ class SceneHistory:
 
     def addHistoryModifiedListener(self, callback):
         self._historyModifiedListeners.append(callback)
+
+    def addHistoryStoredListener(self, callback):
+        self._historyStoredListeners.append(callback)
+
+    def addHistoryRestoredListener(self, callback):
+        self._historyRestoredListeners.append(callback)
 
     def clear(self, storeInitialStamp=True):
         self.currentStep = -1
@@ -88,6 +97,9 @@ class SceneHistory:
         for callback in self._historyModifiedListeners:
             callback()
 
+        for callback in self._historyStoredListeners:
+            callback()
+
     def restore(self):
         self.__logger.debug(
             f"Restoring history with current step: {self.currentStep} / {len(self.stack)} "
@@ -97,6 +109,9 @@ class SceneHistory:
         self._restoreStamp(self.stack[self.currentStep])
 
         for callback in self._historyModifiedListeners:
+            callback()
+
+        for callback in self._historyRestoredListeners:
             callback()
 
     def _createStamp(self, desc):

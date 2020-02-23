@@ -96,6 +96,17 @@ class Edge(Serializable):
         if self.startSocket is not None:
             self.updatePos()
 
+    @property
+    def isSelected(self):
+        return self.graphicsEdge.isSelected()
+
+    @isSelected.setter
+    def isSelected(self, value: bool):
+        self.graphicsEdge.setSelected(value)
+        self.graphicsEdge._lastSelectedState = value
+        if value is True:
+            self.graphicsEdge.onSelected()
+
     def updatePos(self) -> None:
         if self.startSocket is not None:
             startPos = self.startSocket.socketPos()

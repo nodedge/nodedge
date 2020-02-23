@@ -154,6 +154,17 @@ class Node(Serializable):
         if self._isInvalid:
             self.onMarkedInvalid()
 
+    @property
+    def isSelected(self):
+        return self.graphicsNode.isSelected()
+
+    @isSelected.setter
+    def isSelected(self, value: bool):
+        self.graphicsNode.setSelected(value)
+        self.graphicsNode._lastSelectedState = value
+        if value is True:
+            self.graphicsNode.onSelected()
+
     def socketPos(
         self, index: int, position: int, countOnThisSide: int = 1
     ) -> List[float]:
