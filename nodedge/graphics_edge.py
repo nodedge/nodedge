@@ -3,7 +3,12 @@ import math
 
 from PyQt5.QtCore import QPointF, Qt
 from PyQt5.QtGui import QColor, QPainterPath, QPen
-from PyQt5.QtWidgets import QGraphicsItem, QGraphicsPathItem, QGraphicsSceneMouseEvent
+from PyQt5.QtWidgets import (
+    QGraphicsItem,
+    QGraphicsPathItem,
+    QGraphicsSceneHoverEvent,
+    QGraphicsSceneMouseEvent,
+)
 
 from nodedge.socket import SocketPosition
 
@@ -20,6 +25,7 @@ class GraphicsEdge(QGraphicsPathItem):
         self._posDestination = [200, 100]
 
         self._lastSelectedState = False
+        self.hovered = False
 
         self.initUI()
 
@@ -33,22 +39,27 @@ class GraphicsEdge(QGraphicsPathItem):
 
     def initUI(self):
         self.initStyle()
+        self.setAcceptHoverEvents(True)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
 
     # noinspection PyAttributeOutsideInit
     def initStyle(self):
         self._color: QColor = QColor("#001000")
         self._colorSelected: QColor = QColor("#00ff00")
+        self._colorHovered: QColor = QColor("#FF37A6FF")
 
         self._pen: QPen = QPen(self._color)
-        self._pen.setWidthF(2.0)
+        self._pen.setWidthF(3.0)
 
         self._penSelected: QPen = QPen(self._colorSelected)
-        self._penSelected.setWidthF(2.0)
+        self._penSelected.setWidthF(3.0)
 
         self._penDragging: QPen = QPen(self._color)
-        self._penDragging.setWidthF(2.0)
+        self._penDragging.setWidthF(3.0)
         self._penDragging.setStyle(Qt.DashLine)
+
+        self._penHovered: QPen = QPen(self._colorHovered)
+        self._penHovered.setWidthF(5.0)
 
         self.setZValue(-1)
 
@@ -75,18 +86,31 @@ class GraphicsEdge(QGraphicsPathItem):
             self._lastSelectedState = isSelected
             self.onSelected()
 
+    def hoverEnterEvent(self, event: QGraphicsSceneHoverEvent) -> None:
+        self.hovered = True
+        self.update()
+
+    def hoverLeaveEvent(self, event: QGraphicsSceneHoverEvent) -> None:
+        self.hovered = False
+        self.update()
+
     def shape(self):
         return self.calcPath()
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         self.setPath(self.calcPath())
 
+        painter.setBrush(Qt.NoBrush)
+
+        if self.hovered and self.edge.endSocket is not None:
+            painter.setPen(self._penHovered)
+            painter.drawPath(self.path())
+
         if self.edge.endSocket is None:
             painter.setPen(self._penDragging)
         else:
             painter.setPen(self._pen if not self.isSelected() else self._penSelected)
 
-        painter.setBrush(Qt.NoBrush)
         painter.drawPath(self.path())
 
     def calcPath(self):

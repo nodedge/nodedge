@@ -2,7 +2,12 @@ import logging
 
 from PyQt5.QtCore import QRectF, Qt
 from PyQt5.QtGui import QBrush, QColor, QFont, QPainterPath, QPen
-from PyQt5.QtWidgets import QGraphicsItem, QGraphicsProxyWidget, QGraphicsTextItem
+from PyQt5.QtWidgets import (
+    QGraphicsItem,
+    QGraphicsProxyWidget,
+    QGraphicsSceneHoverEvent,
+    QGraphicsTextItem,
+)
 
 
 class GraphicsNode(QGraphicsItem):
@@ -17,6 +22,7 @@ class GraphicsNode(QGraphicsItem):
         self.initUI()
         self._wasMoved = False
         self._lastSelectedState = False
+        self.hovered = False
 
     @property
     def title(self):
@@ -41,15 +47,25 @@ class GraphicsNode(QGraphicsItem):
         self.initTitle()
         self.initContent()
 
+        self.setAcceptHoverEvents(True)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
         self.setFlag(QGraphicsItem.ItemIsMovable)
 
     # noinspection PyAttributeOutsideInit
     def initStyle(self):
-        self._titleColor: int = Qt.white
+        self._titleColor: QColor = Qt.white
+        self._colorHovered: QColor = QColor("#FF37A6FF")
+
         self._titleFont: QFont = QFont("Ubuntu", 10)
+
         self._penDefault: QPen = QPen(QColor("#7F000000"))
+        self._penDefault.setWidthF(2.0)
         self._penSelected: QPen = QPen(QColor("#FFFFA637"))
+        self._penSelected.setWidthF(2.0)
+
+        self._penHovered: QPen = QPen(self._colorHovered)
+        self._penHovered.setWidthF(3.0)
+
         self._brushTitle: QBrush = QBrush(QColor("#FF313131"))
         self._brushBackground: QBrush = QBrush(QColor("#E3212121"))
 
@@ -138,8 +154,13 @@ class GraphicsNode(QGraphicsItem):
         pathOutline.addRoundedRect(
             0, 0, self.width, self.height, self.edgeRoundness, self.edgeRoundness
         )
-        painter.setPen(self._penDefault if not self.isSelected() else self._penSelected)
         painter.setBrush(Qt.NoBrush)
+
+        if self.hovered:
+            painter.setPen(self._penHovered)
+            painter.drawPath(pathOutline.simplified())
+
+        painter.setPen(self._penDefault if not self.isSelected() else self._penSelected)
         painter.drawPath(pathOutline.simplified())
 
     def mouseMoveEvent(self, event):
@@ -178,6 +199,14 @@ class GraphicsNode(QGraphicsItem):
             self.node.scene.resetLastSelectedStates()
             self._lastSelectedState = isSelected
             self.onSelected()
+
+    def hoverEnterEvent(self, event: QGraphicsSceneHoverEvent) -> None:
+        self.hovered = True
+        self.update()
+
+    def hoverLeaveEvent(self, event: QGraphicsSceneHoverEvent) -> None:
+        self.hovered = False
+        self.update()
 
     def onSelected(self):
         self.__logger.debug("")
