@@ -39,6 +39,13 @@ repos:
         types: [python]
         stages: [push]
         pass_filenames: false
+      - id: typing
+        name: run typing checks
+        entry: tox -e type
+        language: system
+        types: [python]
+        stages: [commit]
+        pass_filenames: false
       - id: packaging
         name: run checks on packaging
         entry: tox -e packaging

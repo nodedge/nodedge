@@ -1,5 +1,4 @@
 import pytest
-import pytest_mock
 from PyQt5.QtWidgets import QMessageBox
 from pytestqt.qtbot import QtBot
 

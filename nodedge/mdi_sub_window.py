@@ -97,7 +97,8 @@ class MdiSubWindow(EditorWidget):
         eventData = event.mimeData().data(LISTBOX_MIMETYPE)
         dataStream = QDataStream(eventData, QIODevice.ReadOnly)
         pixmap = QPixmap()
-        dataStream >> pixmap
+
+        dataStream >> pixmap  # type: ignore
         operationCode = dataStream.readInt()
         text = dataStream.readQString()
 

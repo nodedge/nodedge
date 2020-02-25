@@ -88,7 +88,7 @@ class Edge(Serializable):
         self._edgeType = value
 
         if self.edgeType == EdgeType.DIRECT:
-            self.graphicsEdge: Optional[GraphicsEdge] = GraphicsEdgeDirect(self)
+            self.graphicsEdge: GraphicsEdge = GraphicsEdgeDirect(self)
         else:
             self.graphicsEdge = GraphicsEdgeBezier(self)
         self.scene.graphicsScene.addItem(self.graphicsEdge)
