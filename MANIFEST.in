@@ -28,8 +28,8 @@ recursive-include examples *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
 
-recursive-include doc *.rst conf.py Makefile make.bat *.jpg *.png *.gif
-recursive-exclude doc/build *
+recursive-include docs *.md *.rst *.py Makefile make.bat *.jpg *.png *.gif
+recursive-exclude docs/build *
 
 include *.txt
 recursive-include nodedge *.cfg
