@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+A module containing all code for working with Clipboard
+"""
+
 import logging
 from collections import OrderedDict
 
@@ -6,6 +11,10 @@ from nodedge.graphics_edge import GraphicsEdge
 
 
 class SceneClipboard:
+    """
+    Class contains all the code for serialization/deserialization from Clipboard
+    """
+
     def __init__(self, scene):
         self.scene = scene
 
@@ -13,6 +22,13 @@ class SceneClipboard:
         self.__logger.setLevel(logging.INFO)
 
     def serializeSelected(self, delete=False):
+        """
+        Serializes selected items in the Scene into ``OrderedDict``
+
+        :param delete: True if you want to delete selected items after serialization. Usefull for Cut operation
+        :type delete: ``bool``
+        :return: Serialized data of current selection in Nodedge :class:`~nodedge.scene.Scene`
+        """
         self.__logger.debug("Copying to clipboard")
 
         serializedSelectedNodes, selectedEdges, selectedSocket = [], [], {}
@@ -58,6 +74,12 @@ class SceneClipboard:
         return data
 
     def deserialize(self, data):
+        """
+        Deserializes data from Clipboard.
+
+        :param data: ``dict`` data for deserialization to the :class:`Nodedge.node_scene.Scene`.
+        :type data: ``dict``
+        """
         hashmap = {}
 
         # Calculate mouse scene position

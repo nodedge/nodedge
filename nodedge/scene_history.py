@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+A module containing all code for working with History (Undo/Redo)
+"""
+
 import logging
 
 from nodedge.graphics_edge import GraphicsEdge
@@ -5,7 +10,19 @@ from nodedge.utils import dumpException
 
 
 class SceneHistory:
-    def __init__(self, scene, maxLength=32):
+    """Class contains all the code for undo/redo operations"""
+
+    def __init__(self, scene: "Scene", maxLength: int = 32):
+        """
+        :param scene: Reference to the :class:`~nodedge.scene.Scene`
+        :type scene: :class:`~nodedge.scene.Scene`
+
+        :Instance Attributes:
+
+        - **scene** - reference to the :class:`~nodedge.scene.Scene`
+        - **history_limit** - number of history steps that can be stored
+        """
+
         self.scene = scene
 
         self.__logger = logging.getLogger(__file__)
@@ -21,15 +38,31 @@ class SceneHistory:
         self.stack = []
 
     def addHistoryModifiedListener(self, callback):
+        """
+        Register callback for `HistoryModified` event
+
+        :param callback: callback function
+        """
         self._historyModifiedListeners.append(callback)
 
     def addHistoryStoredListener(self, callback):
+        """
+        Register callback for `HistoryStored` event
+
+        :param callback: callback function
+        """
         self._historyStoredListeners.append(callback)
 
     def addHistoryRestoredListener(self, callback):
+        """
+        Register callback for `HistoryRestored` event
+
+        :param callback: callback function
+        """
         self._historyRestoredListeners.append(callback)
 
     def clear(self, storeInitialStamp=True):
+        """Reset the history stack"""
         self.currentStep = -1
         self.stack = []
         if storeInitialStamp:
@@ -45,17 +78,28 @@ class SceneHistory:
         return dlog
 
     def storeInitialStamp(self):
+        """Helper function usually used when new or open file requested"""
         self.store("Initial history stamp")
 
     @property
     def canUndo(self):
+        """Return ``True`` if Undo is available for current `History Stack`
+
+        :rtype: ``bool``
+        """
         return self.currentStep > 0
 
     @property
     def canRedo(self):
+        """
+        Return ``True`` if Redo is available for current `History Stack`
+
+        :rtype: ``bool``
+        """
         return self.currentStep + 1 < len(self.stack)
 
     def undo(self):
+        """Undo operation"""
         self.__logger.debug("Undo")
 
         if self.canUndo:
@@ -64,6 +108,7 @@ class SceneHistory:
             self.scene.isModified = True
 
     def redo(self):
+        """Redo operation"""
         self.__logger.debug("Redo")
 
         if self.canRedo:
@@ -72,6 +117,20 @@ class SceneHistory:
             self.scene.isModified = True
 
     def store(self, desc, sceneIsModified=True):
+        """
+        Store History Stamp into History Stack
+
+        :param desc: Description of current History Stamp
+        :type desc: ``str``
+        :param setModified: if ``True`` marks :class:`~nodedge.scene.Scene` with `has_been_modified`
+        :type setModified: ``bool``
+
+        Triggers:
+
+        - `History Modified`
+        - `History Stored`
+        """
+
         self.__logger.debug(
             f"Storing '{desc}' in history with current step: {self.currentStep} / {len(self.stack)} "
             f"(max. {self._maxLength})"
@@ -101,6 +160,15 @@ class SceneHistory:
             callback()
 
     def restore(self):
+        """
+        Restore `History Stamp` from `History stack`.
+
+        Triggers:
+
+        - `History Modified` event
+        - `History Restored` event
+        """
+
         self.__logger.debug(
             f"Restoring history with current step: {self.currentStep} / {len(self.stack)} "
             f"(max. {self._maxLength})"
@@ -115,6 +183,13 @@ class SceneHistory:
             callback()
 
     def _createStamp(self, desc):
+        """
+        Create History Stamp. Internally serialize whole scene and current selection
+
+        :param desc: Descriptive label for the History Stamp
+        :return: History stamp serializing state of `Scene` and current selection
+        :rtype: ``dict``
+        """
         selectedObjects = {"blocks": [], "edges": []}
 
         for item in self.scene.graphicsScene.selectedItems():
@@ -132,6 +207,12 @@ class SceneHistory:
         return stamp
 
     def _restoreStamp(self, stamp):
+        """
+        Restore History Stamp to current `Scene` with selection of items included
+
+        :param history_stamp: History Stamp to restore
+        :type history_stamp: ``dict``
+        """
         self.__logger.debug(f"Restoring stamp: {stamp['selection']}")
 
         try:

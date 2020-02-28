@@ -15,10 +15,13 @@ Nodedge is a free and open-source software for graphical programming. Try it out
 .. toctree::
    :maxdepth: 2
 
-   intro
-   conventions
-   api
-   examples
+   rst/intro
+   rst/conventions
+   rst/nodedge
+   rst/examples
+   rst/evaluation
+   rst/events
+   rst/serialization
 
 * :ref:`genindex`
 

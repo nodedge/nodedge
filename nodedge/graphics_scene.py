@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+A module containing Graphic representation of :class:`~nodedge.scene.Scene`
+"""
+
 import logging
 import math
 from typing import Optional
@@ -9,27 +14,43 @@ from PyQt5.QtWidgets import (
     QGraphicsScene,
     QGraphicsSceneDragDropEvent,
     QGraphicsSceneMouseEvent,
+    QWidget,
 )
 
 
 class GraphicsScene(QGraphicsScene):
+    """Class representing Graphic of :class:`~nodedge.scene.Scene`"""
+
+    #: pyqtSignal emitted when some item is selected in the `Scene`
     itemSelected = pyqtSignal()
+    #: pyqtSignal emitted when items are deselected in the `Scene`
     itemsDeselected = pyqtSignal()
 
-    def __init__(self, scene, parent=None):
+    def __init__(self, scene: "Scene", parent: Optional[QWidget] = None):
+        """
+        :param scene: reference to the :class:`~nodedge.scene.Scene`
+        :type scene: :class:`~nodedge.scene.Scene`
+        :param parent: parent widget
+        :type parent: QWidget
+        """
+
         super().__init__(parent)
 
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
 
         self.scene = scene
+        self.initUI()
 
-        # Settings
-        self.grid_size = 20
-        self.grid_squares = 5
-        self.scene_width = 64000
-        self.scene_height = 64000
+    def initUI(self):
+        """Set up this ``QGraphicsScene``"""
+        self.initSizes()
+        self.initStyle()
+        self.setBackgroundBrush(self._color_background)
 
+    # noinspection PyAttributeOutsideInit
+    def initStyle(self):
+        """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
         self._color_background = QColor("#ffffff")
         self._color_light = QColor("#ffffff")
         self._color_dark = QColor("#ffffff")
@@ -40,16 +61,24 @@ class GraphicsScene(QGraphicsScene):
         self._pen_dark = QPen(self._color_dark)
         self._pen_dark.setWidth(2)
 
-        self.setBackgroundBrush(self._color_background)
+    # noinspection PyAttributeOutsideInit
+    def initSizes(self):
+        """Set up internal attributes like `width`, `height`, etc."""
+        self.grid_size = 20
+        self.grid_squares = 5
+        self.scene_width = 64000
+        self.scene_height = 64000
 
     def dragMoveEvent(self, event: QGraphicsSceneDragDropEvent) -> None:
-        # Drag events won't be allowed until dragMoveEvent is overridden.
+        """Overriden Qt's dragMoveEvent to enable Qt's Drag Events"""
         pass
 
     def setScene(self, width, height):
+        """Set `width` and `height` of the `Graphics Scene`"""
         self.setSceneRect(-width // 2, -height // 2, width, height)
 
     def drawBackground(self, painter, rectangle):
+        """Draw background scene grid"""
         super().drawBackground(painter, rectangle)
 
         # Create the background grid

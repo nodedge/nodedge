@@ -29,7 +29,7 @@ class MdiWindow(EditorWindow):
 
     @property
     def currentEditorWidget(self) -> EditorWidget:
-        """ we're returning NodeEditorWidget here... """
+        """ we're returning NodedgeWidget here... """
         activeSubWindow = self.mdiArea.activeSubWindow()
         if (
             activeSubWindow
@@ -237,10 +237,10 @@ class MdiWindow(EditorWindow):
 
             self.pasteAct.setEnabled(hasMdiChild)
 
-            hasSelection = hasMdiChild and active.hasSelectedItems()
+            hasSelection = hasMdiChild and active.hasSelectedItems
             self.cutAct.setEnabled(hasSelection)
-            self.copyAct.setEnabled(hasMdiChild and active.hasSelectedItems())
-            self.deleteAct.setEnabled(hasMdiChild and active.hasSelectedItems())
+            self.copyAct.setEnabled(hasMdiChild and active.hasSelectedItems)
+            self.deleteAct.setEnabled(hasMdiChild and active.hasSelectedItems)
 
             self.undoAct.setEnabled(hasMdiChild and active.canUndo)
             self.redoAct.setEnabled(hasMdiChild and active.canRedo)

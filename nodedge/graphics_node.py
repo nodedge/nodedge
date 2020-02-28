@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+A module containing Graphics representation of :class:`~nodedge.node.Node`
+"""
+
 import logging
 
 from PyQt5.QtCore import QRectF, Qt
@@ -11,7 +16,20 @@ from PyQt5.QtWidgets import (
 
 
 class GraphicsNode(QGraphicsItem):
+    """Class describing Graphics representation of :class:`~nodedge.node.Node`"""
+
     def __init__(self, node, parent=None):
+        """
+        :param node: reference to :class:`~nodedge.node.Node`
+        :type node: :class:`~nodedge.node.Node`
+        :param parent: parent widget
+        :type parent: QWidget
+
+        :Instance Attributes:
+
+            - **node** - reference to :class:`~nodedge.node.Node`
+            - **content** - reference to `Node Content`
+        """
         super().__init__(parent)
         self.node = node
         self.content = self.node.content
@@ -26,6 +44,12 @@ class GraphicsNode(QGraphicsItem):
 
     @property
     def title(self):
+        """title of this `Node`
+
+        :getter: current Graphics Node title
+        :setter: stores and make visible the new title
+        :type: str
+        """
         return self._title
 
     @title.setter
@@ -41,7 +65,8 @@ class GraphicsNode(QGraphicsItem):
     def selectedState(self, value):
         self._lastSelectedState = value
 
-    def initUI(self):
+    def initUI(self) -> None:
+        """Set up this ``QGraphicsItem``"""
         self.initSizes()
         self.initStyle()
         self.initTitle()
@@ -52,7 +77,8 @@ class GraphicsNode(QGraphicsItem):
         self.setFlag(QGraphicsItem.ItemIsMovable)
 
     # noinspection PyAttributeOutsideInit
-    def initStyle(self):
+    def initStyle(self) -> None:
+        """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
         self._titleColor: QColor = Qt.white
         self._colorHovered: QColor = QColor("#FF37A6FF")
 
@@ -70,7 +96,8 @@ class GraphicsNode(QGraphicsItem):
         self._brushBackground: QBrush = QBrush(QColor("#E3212121"))
 
     # noinspection PyAttributeOutsideInit
-    def initSizes(self):
+    def initSizes(self) -> None:
+        """Set up internal attributes like `width`, `height`, etc."""
         self.width: int = 180
         self.height: int = 240
         self.edgeRoundness: float = 5.0
@@ -80,7 +107,8 @@ class GraphicsNode(QGraphicsItem):
         self.titleVerticalPadding: float = 4.0
 
     # noinspection PyAttributeOutsideInit
-    def initTitle(self):
+    def initTitle(self) -> None:
+        """Set up the title Graphics representation: font, color, position, etc."""
         self.titleItem = QGraphicsTextItem(self)
         self.titleItem.setDefaultTextColor(self._titleColor)
         self.titleItem.setFont(self._titleFont)
@@ -91,7 +119,8 @@ class GraphicsNode(QGraphicsItem):
         self.title = self.node.title
 
     # noinspection PyAttributeOutsideInit
-    def initContent(self):
+    def initContent(self) -> None:
+        """Set up the `grContent` - ``QGraphicsProxyWidget`` to have a container for `Graphics Content`"""
         self.graphicsContent = QGraphicsProxyWidget(self)
         self.content.setGeometry(
             self.edgePadding,
@@ -102,10 +131,11 @@ class GraphicsNode(QGraphicsItem):
         self.graphicsContent.setWidget(self.content)
 
     def boundingRect(self):
+        """Defining Qt' bounding rectangle"""
         return QRectF(0, 0, self.width, self.height).normalized()
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
-
+        """Painting the rounded rectanglar `Node`"""
         # title
         pathTitle = QPainterPath()
         pathTitle.setFillRule(Qt.WindingFill)
@@ -164,6 +194,7 @@ class GraphicsNode(QGraphicsItem):
         painter.drawPath(pathOutline.simplified())
 
     def mouseMoveEvent(self, event):
+        """Overridden event to detect that we moved with this Node"""
         super().mouseMoveEvent(event)
 
         # TODO: Optimize this condition. Just update the selected blocks.
@@ -174,6 +205,7 @@ class GraphicsNode(QGraphicsItem):
         self._wasMoved = True
 
     def mouseReleaseEvent(self, event):
+        """Overridden event to handle when we moved, selected or deselected this `Node``"""
         super().mouseReleaseEvent(event)
 
         # Handle when node moved
@@ -201,13 +233,15 @@ class GraphicsNode(QGraphicsItem):
             self.onSelected()
 
     def hoverEnterEvent(self, event: QGraphicsSceneHoverEvent) -> None:
+        """Handle hover effect"""
         self.hovered = True
         self.update()
 
     def hoverLeaveEvent(self, event: QGraphicsSceneHoverEvent) -> None:
+        """Handle hover effect"""
         self.hovered = False
         self.update()
 
     def onSelected(self):
-        self.__logger.debug("")
+        """Our event handling when the node was selected"""
         self.node.scene.graphicsScene.itemSelected.emit()

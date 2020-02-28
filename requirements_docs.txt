@@ -1,4 +1,4 @@
-sphinx
+recommonmarksphinx
 sphinx-autodoc-typehints
 sphinx-autodoc-types>=2.1.1
-sphinx_rtd_theme
+-e git+https://github.com/readthedocs/sphinx_rtd_theme#egg=sphinx-rtd-theme

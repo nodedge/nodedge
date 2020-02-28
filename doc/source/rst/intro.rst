@@ -34,8 +34,7 @@ To install in your default python interpreter, use::
 Getting started
 ===============
 
-There are two different ways to use the package.  For the default interface
-described in :ref:`api`, simply import the control package as follows::
+There are two different ways to use the package.  For the default interface, simply import the control package as follows::
 
     >>> import nodedge
 

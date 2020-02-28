@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+Edge Module containing :class:`~nodedge.edge.Edge` and :class:`~nodedge.edge.EdgeType` class.
+"""
+
 import logging
 from collections import OrderedDict
 from enum import IntEnum
@@ -10,11 +15,23 @@ from nodedge.utils import dumpException
 
 
 class EdgeType(IntEnum):
-    DIRECT = 1
-    BEZIER = 2
+    """
+    Edge Type Constants
+    """
+
+    DIRECT = 1  #:
+    BEZIER = 2  #:
 
 
 class Edge(Serializable):
+    """
+    Edge class.
+
+    The edge is the component connecting two nodes.
+
+    [NODE 1]------EDGE------[NODE 2]
+    """
+
     def __init__(
         self,
         scene: "Scene",  # type: ignore
@@ -22,6 +39,22 @@ class Edge(Serializable):
         endSocket: Optional[Socket] = None,
         edgeType: EdgeType = EdgeType.BEZIER,
     ):
+        """
+        :param scene: Reference to the scene
+        :type scene: :class:`~nodedge.scene.Scene`
+        :param startSocket: Reference to the starting socket
+        :type startSocket: :class:`~nodedge.socket.Socket`
+        :param  endSocket: Reference to the End socket or ``None``
+        :type endSocket: :class:`~nodedge.socket.Socket` | ``None``
+        :param edgeType: Constant determining type of edge.
+        :type edgeType: :class:`~nodedge.edge.EdgeType`
+
+        :Instance Attributes:
+
+            - **scene** - reference to the :class:`~nodedge.scene.Scene`
+            - **graphicsEdge** - Instance of :class:`~nodedge.graphics_edge.GraphicsEdge` subclass handling graphical representation in the ``QGraphicsScene``.
+        """
+
         super().__init__()
 
         self.__logger = logging.getLogger(__file__)
@@ -40,6 +73,11 @@ class Edge(Serializable):
         self.scene.addEdge(self)
 
     def __str__(self):
+        """
+
+        :return: Edge(hex id, start socket hex id, end socket hex id, edge type)
+        :rtype: ``string``
+        """
         return (
             f"0x{hex(id(self))[-4:]} Edge(0x{hex(id(self.startSocket))[-4:]}, "
             f"0x{hex(id(self.endSocket))[-4:]}, "
@@ -48,6 +86,13 @@ class Edge(Serializable):
 
     @property
     def startSocket(self) -> Optional[Socket]:
+        """
+        Start socket
+
+        :getter: Return start :class:`~nodedge.socket.Socket`.
+        :setter: Set start :class:`~nodedge.socket.Socket` safely.
+        :type: :class:`~nodedge.socket.Socket`
+        """
         return self._startSocket
 
     @startSocket.setter
@@ -63,6 +108,13 @@ class Edge(Serializable):
 
     @property
     def endSocket(self) -> Optional[Socket]:
+        """
+        End socket
+
+        :getter: Return end :class:`~nodedge.socket.Socket` or ``None`` if not set.
+        :setter: Set end :class:`~nodedge.socket.Socket` safely.
+        :type: :class:`~nodedge.socket.Socket` or ``None``
+        """
         return self._endSocket
 
     @endSocket.setter
@@ -78,6 +130,15 @@ class Edge(Serializable):
 
     @property
     def edgeType(self) -> int:
+        """
+        Edge type
+
+        :getter: Get edge type constant for current ``Edge``.
+        :setter: Set new edge type. On background, create new :class:`~nodedge.graphics_edge.GraphicsEdge`
+            child class if necessary, add this ``QGraphicsPathItem`` to the ``QGraphicsScene`` and update edge sockets
+            positions.
+        :type: :class:`~nodedge.edge.EdgeTyoe`
+        """
         return self._edgeType
 
     @edgeType.setter
@@ -98,6 +159,15 @@ class Edge(Serializable):
 
     @property
     def isSelected(self):
+        """
+        Property defining whether the edge is selected or not.
+
+        :getter: Get selection state of the edge.
+        :setter: Provide the safe selecting/deselecting operation. In the background it takes care about the flags,
+            notifications and storing history for undo/redo.
+
+        :type: ``bool``
+        """
         return self.graphicsEdge.isSelected()
 
     @isSelected.setter
@@ -108,6 +178,11 @@ class Edge(Serializable):
             self.graphicsEdge.onSelected()
 
     def updatePos(self) -> None:
+        """
+        Update the internal :class:`~nodedge.graphics_edge.GraphicsEdge` positions according to the
+        start and end :class:`~nodedge.socket.Socket`
+        """
+
         if self.startSocket is not None:
             startPos = self.startSocket.socketPos()
             startPos[0] += self.startSocket.node.graphicsNode.pos().x()
@@ -131,14 +206,39 @@ class Edge(Serializable):
             self.graphicsEdge.update()
 
     def getOtherSocket(self, knownSocket: "Socket"):
+        """
+        Return the opposite socket on this `Edge`.
+
+        :param knownSocket: Provide known :class:`~nodedge.socket.Socket` to be able to determine the opposite one
+        :type knownSocket: :class:`~nodedge.socket.Socket`
+        :return: The opposite socket on this ``Edge``, eventually ``None``
+        :rtype: :class:`~nodedge.socket.Socket` or ``None``
+        """
+
         return self.startSocket if knownSocket == self.endSocket else self.endSocket
 
     def removeFromSockets(self):
+        """
+        Set start and end :class:`~nodedge.socket.Socket` to ``None``
+        """
+
         # TODO: Is it meaningful?
         self.endSocket = None
         self.startSocket = None
 
     def remove(self):
+        """
+        Safely remove this `Edge`.
+
+        Remove :class:`~nodedge.graphics_edge.GraphicsEdge` from the ``QGraphicsScene`` and it's reference to all other
+        graphical elements.
+        Notify previously connected :class:`~nodedge.node.Node` (s) about this event.
+
+        Triggered Node Slots:
+        - :py:meth:`~nodedge.node.Node.onEdgeConnectionChanged`
+        - :py:meth:`~nodedge.node.Node.onInputChanged`
+        """
+
         oldSockets = [self.startSocket, self.endSocket]
 
         self.__logger.debug(f"Removing {self} from all sockets.")
@@ -167,7 +267,6 @@ class Edge(Serializable):
             dumpException(e)
 
     def serialize(self):
-
         return OrderedDict(
             [
                 ("id", self.id),

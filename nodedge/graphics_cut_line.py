@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+Graphics cut line module containing :class:`~nodedge.graphics_cut_line.GraphicsCutLine` class.
+"""
+
 from typing import List, Optional, cast
 
 from PyQt5.QtCore import QPointF, QRectF, Qt
@@ -6,7 +11,16 @@ from PyQt5.QtWidgets import QGraphicsItem, QStyleOptionGraphicsItem, QWidget
 
 
 class GraphicsCutLine(QGraphicsItem):
+    """:class:`~nodedge.graphics_cut_line.GraphicsCutLine` class
+
+    Cutting Line used for cutting multiple `Edges` with one stroke"""
+
     def __init__(self, parent=None):
+        """
+        :param parent: parent widget
+        :type parent: ``QWidget``
+        """
+
         super().__init__(parent)
 
         self.linePoints: List[QPointF] = []
@@ -17,9 +31,19 @@ class GraphicsCutLine(QGraphicsItem):
         self.setZValue(2)
 
     def boundingRect(self) -> QRectF:
+        """
+        Defining Qt' bounding rectangle
+        """
         return cast(QRectF, self.shape().boundingRect())
 
-    def shape(self):
+    def shape(self) -> QPainterPath:
+        """
+        Calculate the ``QPainterPath`` object from list of line points.
+
+        :return: shape function returning ``QPainterPath`` representation of Cutting Line
+        :rtype: ``QPainterPath``
+        """
+
         if len(self.linePoints) > 1:
             path = QPainterPath(self.linePoints[0])
             for point in self.linePoints[1:]:
@@ -36,6 +60,9 @@ class GraphicsCutLine(QGraphicsItem):
         option: QStyleOptionGraphicsItem,
         widget: Optional[QWidget] = None,
     ) -> None:
+        """
+        Paint the cut line
+        """
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setBrush(Qt.NoBrush)
         painter.setPen(self._pen)
