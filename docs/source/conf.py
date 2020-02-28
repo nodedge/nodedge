@@ -56,9 +56,6 @@ github_doc_root = "https://github.com/rtfd/recommonmark/tree/master/doc/"
 
 
 source_suffix = [".rst", ".md"]
-source_parsers = {
-    ".md": "CommonMarkParser",
-}
 
 
 def setup(app):

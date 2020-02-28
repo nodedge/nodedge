@@ -1,5 +1,5 @@
-nodedge.blocks
-==============
+nodedge.blocks package
+======================
 
 Submodules
 ----------
@@ -18,3 +18,11 @@ Submodules
    nodedge.blocks.output_block
    nodedge.blocks.output_block_content
    nodedge.blocks.subtract_block
+
+Module contents
+---------------
+
+.. automodule:: nodedge.blocks
+   :members:
+   :undoc-members:
+   :show-inheritance:

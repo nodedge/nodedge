@@ -1,5 +1,5 @@
-nodedge.graphics\_socket module
-===============================
+nodedge.graphics\_socket
+========================
 
 .. automodule:: nodedge.graphics_socket
    :members:

@@ -1,5 +1,5 @@
-nodedge.graphics\_view module
-=============================
+nodedge.graphics\_view
+======================
 
 .. automodule:: nodedge.graphics_view
    :members:

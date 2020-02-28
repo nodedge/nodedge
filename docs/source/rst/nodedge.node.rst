@@ -1,5 +1,5 @@
-nodedge.node module
-===================
+nodedge.node
+============
 
 .. automodule:: nodedge.node
    :members:

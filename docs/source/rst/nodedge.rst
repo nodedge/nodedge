@@ -1,15 +1,15 @@
-Nodedge API
-===========
+nodedge package
+===============
 
-Blocks
-------
+Subpackages
+-----------
 
 .. toctree::
 
    nodedge.blocks
 
-Core
-----
+Submodules
+----------
 
 .. toctree::
 
@@ -33,3 +33,11 @@ Core
    nodedge.serializable
    nodedge.socket
    nodedge.utils
+
+Module contents
+---------------
+
+.. automodule:: nodedge
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,5 +1,5 @@
-nodedge.mdi\_window module
-==========================
+nodedge.mdi\_window
+===================
 
 .. automodule:: nodedge.mdi_window
    :members:

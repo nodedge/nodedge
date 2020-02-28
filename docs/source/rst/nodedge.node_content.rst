@@ -1,5 +1,5 @@
-nodedge.node\_content module
-============================
+nodedge.node\_content
+=====================
 
 .. automodule:: nodedge.node_content
    :members:

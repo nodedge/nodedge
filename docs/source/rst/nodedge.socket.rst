@@ -1,5 +1,5 @@
-nodedge.socket module
-=====================
+nodedge.socket
+==============
 
 .. automodule:: nodedge.socket
    :members:

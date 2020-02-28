@@ -1,5 +1,5 @@
-nodedge.scene module
-====================
+nodedge.scene
+=============
 
 .. automodule:: nodedge.scene
    :members:

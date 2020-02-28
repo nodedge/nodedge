@@ -1,5 +1,5 @@
-nodedge.graphics\_edge module
-=============================
+nodedge.graphics\_edge
+======================
 
 .. automodule:: nodedge.graphics_edge
    :members:

@@ -29,6 +29,7 @@ recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
 
 recursive-include docs *.md *.rst *.py Makefile make.bat *.jpg *.png *.gif
+recursive-include docs/source/_templates *
 recursive-exclude docs/build *
 
 include *.txt

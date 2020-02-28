@@ -1,5 +1,5 @@
-nodedge.serializable module
-===========================
+nodedge.serializable
+====================
 
 .. automodule:: nodedge.serializable
    :members:

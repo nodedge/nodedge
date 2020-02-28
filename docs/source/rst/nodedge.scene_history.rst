@@ -1,5 +1,5 @@
-nodedge.scene\_history module
-=============================
+nodedge.scene\_history
+======================
 
 .. automodule:: nodedge.scene_history
    :members:

@@ -1,5 +1,5 @@
-nodedge.scene\_clipboard module
-===============================
+nodedge.scene\_clipboard
+========================
 
 .. automodule:: nodedge.scene_clipboard
    :members:
