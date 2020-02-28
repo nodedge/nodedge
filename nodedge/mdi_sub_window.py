@@ -33,6 +33,7 @@ class MdiSubWindow(EditorWidget):
         self.scene.addHasBeenModifiedListener(self.updateTitle)
         # self.scene.history.addHistoryStoredListener(self.onHistoryStored)
         self.scene.history.addHistoryRestoredListener(self.evalNodes)
+        self.scene.history.addHistoryRestoredListener(self.updateTitle)
         self.scene.addDragEnterListener(self.onDragEnter)
         self.scene.addDropListener(self.onDrop)
         self.scene.setNodeClassSelector(self.getNodeClassFromData)

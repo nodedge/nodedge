@@ -6,13 +6,12 @@ Editor window module containing :class:`~nodedge.editor_window.EditorWindow` cla
 import json
 import logging
 import os
-from typing import Optional
+from typing import Optional, cast
 
 from PyQt5.QtCore import QPoint, QSettings, QSize
-from PyQt5.QtGui import QCloseEvent
+from PyQt5.QtGui import QClipboard, QCloseEvent, QGuiApplication
 from PyQt5.QtWidgets import (
     QAction,
-    QApplication,
     QFileDialog,
     QLabel,
     QMainWindow,
@@ -55,7 +54,14 @@ class EditorWindow(QMainWindow):
         self.companyName = "Nodedge"
         self.productName = "Editor"
 
-        QApplication.instance().clipboard().dataChanged.connect(self.onClipboardChanged)
+        self.instance: QGuiApplication = cast(
+            QGuiApplication, QGuiApplication.instance()
+        )
+        self.clipboard: QClipboard = self.instance.clipboard()
+
+        # Pycharm does not recognise resolve connect method so the inspection is disabled.
+        # noinspection PyUnresolvedReferences
+        self.clipboard.dataChanged.connect(self.onClipboardChanged)  # type: ignore
 
         self.lastActiveEditorWidget = None
 
@@ -118,84 +124,60 @@ class EditorWindow(QMainWindow):
         """
         Create basic `File` and `Edit` actions.
         """
-        self.newAct: QAction = QAction(
-            "&New",
-            self,
-            shortcut="Ctrl+N",
-            statusTip="Create new Nodedge",
-            triggered=self.newFile,
-        )
+        self.newAct: QAction = QAction("&New", self)
+        self.newAct.setShortcut("Ctrl+N")
+        self.newAct.setStatusTip("Create new Nodedge graph")
+        self.newAct.triggered.connect(self.newFile)
 
-        self.openAct = QAction(
-            "&Open",
-            self,
-            shortcut="Ctrl+O",
-            statusTip="Open file",
-            triggered=self.openFile,
-        )
-        self.saveAct = QAction(
-            "&Save",
-            self,
-            shortcut="Ctrl+S",
-            statusTip="Save file",
-            triggered=self.saveFile,
-        )
-        self.saveAsAct = QAction(
-            "Save &As",
-            self,
-            shortcut="Ctrl+Shift+S",
-            statusTip="Save file as...",
-            triggered=self.saveFileAs,
-        )
-        self.quitAct = QAction(
-            "&Quit",
-            self,
-            shortcut="Ctrl+Q",
-            statusTip="Exit application",
-            triggered=self.close,
-        )
-        self.undoAct = QAction(
-            "&Undo",
-            self,
-            shortcut="Ctrl+Z",
-            statusTip="Undo last operation",
-            triggered=self.undo,
-        )
-        self.redoAct = QAction(
-            "&Redo",
-            self,
-            shortcut="Ctrl+Shift+Z",
-            statusTip="Redo last operation",
-            triggered=self.redo,
-        )
-        self.cutAct = QAction(
-            "C&ut",
-            self,
-            shortcut="Ctrl+X",
-            statusTip="Cut selected items",
-            triggered=self.cut,
-        )
-        self.copyAct = QAction(
-            "&Copy",
-            self,
-            shortcut="Ctrl+C",
-            statusTip="Copy selected items",
-            triggered=self.copy,
-        )
-        self.pasteAct = QAction(
-            "&Paste",
-            self,
-            shortcut="Ctrl+V",
-            statusTip="Paste selected items",
-            triggered=self.paste,
-        )
-        self.deleteAct = QAction(
-            "&Delete",
-            self,
-            shortcut="Del",
-            statusTip="Delete selected items",
-            triggered=self.delete,
-        )
+        self.openAct = QAction("&Open", self)
+        self.openAct.setShortcut("Ctrl+O")
+        self.openAct.setStatusTip("Open file")
+        self.openAct.triggered.connect(self.openFile)
+
+        self.saveAct = QAction("&Save", self)
+        self.saveAct.setShortcut("Ctrl+S")
+        self.saveAct.setStatusTip("Save file")
+        self.saveAct.triggered.connect(self.saveFile)
+
+        self.saveAsAct = QAction("Save &As", self)
+        self.saveAsAct.setShortcut("Ctrl+Shift+S")
+        self.saveAsAct.setStatusTip("Save file as...")
+        self.saveAsAct.triggered.connect(self.saveFileAs)
+
+        self.quitAct = QAction("&Quit", self)
+        self.quitAct.setShortcut("Ctrl+Q")
+        self.quitAct.setStatusTip("Exit application")
+        self.quitAct.triggered.connect(self.quit)
+
+        self.undoAct = QAction("&Undo", self)
+        self.undoAct.setShortcut("Ctrl+Z")
+        self.undoAct.setStatusTip("Undo last operation")
+        self.undoAct.triggered.connect(self.undo)
+
+        self.redoAct = QAction("&Redo", self)
+        self.redoAct.setShortcut("Ctrl+Shift+Z")
+        self.redoAct.setStatusTip("Redo last operation")
+        self.redoAct.triggered.connect(self.redo)
+
+        self.cutAct = QAction("C&ut", self)
+        self.cutAct.setShortcut("Ctrl+X")
+        self.cutAct.setStatusTip("Cut selected items")
+        self.cutAct.triggered.connect(self.cut)
+
+        self.copyAct = QAction("&Copy", self)
+        self.copyAct.setShortcut("Ctrl+C")
+        self.copyAct.setStatusTip("Copy selected items")
+        self.copyAct.triggered.connect(self.copy)
+
+        self.pasteAct = QAction("&Paste", self)
+        self.pasteAct.setShortcut("Ctrl+V")
+        self.pasteAct.setStatusTip("Paste selected items")
+        self.pasteAct.triggered.connect(self.paste)
+
+        self.deleteAct = QAction("&Delete", self)
+        self.deleteAct.setShortcut("Del")
+        self.deleteAct.setStatusTip("Delete selected items")
+        self.deleteAct.triggered.connect(self.delete)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
     def createMenus(self) -> None:
@@ -240,8 +222,7 @@ class EditorWindow(QMainWindow):
             self.currentEditorWidget.updateTitle()
 
     def onClipboardChanged(self) -> None:
-        clipboard = QApplication.instance().clipboard()
-        self.__logger.debug(f"Clipboard changed: {clipboard.text()}")
+        self.__logger.debug(f"Clipboard changed: {self.clipboard.text()}")
 
     def OnScenePosChanged(self, x: float, y: float):
         """
@@ -277,7 +258,7 @@ class EditorWindow(QMainWindow):
         self.__logger.debug("Opening graph")
         if self.maybeSave():
             if filename is None:
-                filename, filter = QFileDialog.getOpenFileName(
+                filename, _ = QFileDialog.getOpenFileName(
                     parent=self, caption="Open graph from file"
                 )
 
@@ -297,7 +278,7 @@ class EditorWindow(QMainWindow):
         """
         self.__logger.debug("Saving graph")
         if not self.currentEditorWidget.hasName:
-            return self.saveFileAs()
+            self.saveFileAs()
 
         self.currentEditorWidget.saveFile(self.currentEditorWidget.filename)
         self.statusBar().showMessage(
@@ -305,7 +286,6 @@ class EditorWindow(QMainWindow):
         )
         self.updateTitle()
         self.currentEditorWidget.updateTitle()
-        return True
 
     def saveFileAs(self):
         """
@@ -313,19 +293,18 @@ class EditorWindow(QMainWindow):
         ``QFileDialog``.
         """
         self.__logger.debug("Saving graph as...")
-        filename, filter = QFileDialog.getSaveFileName(
+        filename, _ = QFileDialog.getSaveFileName(
             parent=self, caption="Save graph to file"
         )
 
         if filename == "":
-            return False
+            return
 
         self.currentEditorWidget.saveFile(filename)
         self.statusBar().showMessage(
             f"Successfully saved to {self.currentEditorWidget.shortName}", 5000
         )
         self.updateTitle()
-        return True
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """
@@ -337,6 +316,9 @@ class EditorWindow(QMainWindow):
             event.accept()
         else:
             event.ignore()
+
+    def quit(self):
+        self.close()
 
     def undo(self) -> None:
         """
@@ -372,7 +354,7 @@ class EditorWindow(QMainWindow):
                 delete=True
             )
             strData = json.dumps(data, indent=4)
-            QApplication.instance().clipboard().setText(strData)
+            self.clipboard.setText(strData)
 
     def copy(self) -> None:
         """
@@ -385,7 +367,7 @@ class EditorWindow(QMainWindow):
             )
             strData = json.dumps(data, indent=4)
             self.__logger.debug(strData)
-            QApplication.instance().clipboard().setText(strData)
+            self.clipboard.setText(strData)
 
     def paste(self):
         """
@@ -393,7 +375,7 @@ class EditorWindow(QMainWindow):
         """
         self.__logger.debug("Pasting saved items in clipboard")
         if self.currentEditorWidget:
-            rawData = QApplication.instance().clipboard().text()
+            rawData = self.clipboard.text()
             try:
                 data = json.loads(rawData)
             except ValueError as e:
@@ -410,7 +392,8 @@ class EditorWindow(QMainWindow):
         """
         If current :class:`~nodedge.scene.Scene` is modified, ask a dialog to save the changes.
 
-        :return: ``True`` if the action calling this method is allowed to continue. ``False`` if we should cancel operation.
+        :return: ``True`` if the action calling this method is allowed to continue.
+                 ``False`` if we should cancel operation.
         :rtype: ``bool``
         """
 

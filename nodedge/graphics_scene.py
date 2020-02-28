@@ -26,7 +26,7 @@ class GraphicsScene(QGraphicsScene):
     #: pyqtSignal emitted when items are deselected in the `Scene`
     itemsDeselected = pyqtSignal()
 
-    def __init__(self, scene: "Scene", parent: Optional[QWidget] = None):
+    def __init__(self, scene: "Scene", parent: Optional[QWidget] = None) -> None:  # type: ignore
         """
         :param scene: reference to the :class:`~nodedge.scene.Scene`
         :type scene: :class:`~nodedge.scene.Scene`

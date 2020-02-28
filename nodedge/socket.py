@@ -171,7 +171,7 @@ class Socket(Serializable):
         )
 
     def deserialize(
-        self, data: dict, hashmap: dict = {}, restoreId: bool = True
+        self, data: dict, hashmap: Optional[dict] = None, restoreId: bool = True
     ) -> bool:
         if hashmap is None:
             hashmap = {}

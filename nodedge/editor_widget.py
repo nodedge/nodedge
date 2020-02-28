@@ -47,7 +47,7 @@ class EditorWidget(QWidget):
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
 
-        self.filename: Optional[str] = None
+        self.filename: str = ""
 
         self.initUI()
 
@@ -96,7 +96,7 @@ class EditorWidget(QWidget):
         :rtype: ``str``
         """
         name = os.path.basename(self.filename) if self.hasName else "New graph"
-        # TODO: Add * hasBeenModified here
+
         return name + ("*" if self.isModified else "")
 
     @property
@@ -114,7 +114,7 @@ class EditorWidget(QWidget):
 
         :rtype: ``bool``
         """
-        return self.scene.history.canUndo
+        return self.scene.history.canUndo is True
 
     @property
     def canRedo(self) -> bool:
@@ -122,7 +122,7 @@ class EditorWidget(QWidget):
         :getter: Return whether the history contains cancelled operations or not.
         :rtype: ``bool``
         """
-        return self.scene.history.canRedo
+        return self.scene.history.canRedo is True
 
     @property
     def selectedItems(self) -> List[QGraphicsItem]:
@@ -153,22 +153,24 @@ class EditorWidget(QWidget):
         Clear the scene and history, and reset filename.
         """
         self.scene.clear()
-        self.filename = None
+        self.filename = ""
         self.scene.history.clear()
 
-    def loadFile(self, filename: str) -> None:
+    def loadFile(self, filename: str) -> bool:
         """
         Load serialized graph from JSON file.
 
         :param filename: file to load
         :type filename: ``str``
+        :return: Operation success
+        :rtype: ``bool``
         """
         QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
             self.scene.loadFromFile(filename)
             self.filename = filename
             # Don't store initial stamp because the file has still not been changed.
-            self.scene.history.clear(storeInitialStamp=False)
+            self.scene.history.clear(storeInitialStamp=True)
             QApplication.restoreOverrideCursor()
             self.evalNodes()
             return True
@@ -180,13 +182,15 @@ class EditorWidget(QWidget):
             )
             return False
 
-    def saveFile(self, filename: Optional[str] = None):
+    def saveFile(self, filename: Optional[str] = None) -> bool:
         """
         Save serialized graph to JSON file.
         When called with empty parameter, the filename is unchanged.
 
         :param filename: file to store the graph
         :type filename: ``str`` | ``None``
+        :return: Operation success
+        :rtype: ``bool``
         """
         if filename is not None:
             self.filename = filename

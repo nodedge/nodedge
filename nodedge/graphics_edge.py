@@ -5,7 +5,7 @@ A module containing Graphics representation of Edge
 
 import logging
 import math
-from typing import Optional
+from typing import List, Optional
 
 from PyQt5.QtCore import QPointF, Qt
 from PyQt5.QtGui import QColor, QPainterPath, QPen
@@ -23,7 +23,7 @@ from nodedge.socket import SocketPosition
 class GraphicsEdge(QGraphicsPathItem):
     """Base class for Graphics Edge"""
 
-    def __init__(self, edge: "Edge", parent: Optional[QWidget] = None):
+    def __init__(self, edge: "Edge", parent: Optional[QGraphicsItem] = None):  # type: ignore
         """
         :param edge: reference to :class:`~nodedge.edge.Edge`
         :type edge: :class:`~nodedge.edge.Edge`
@@ -43,8 +43,8 @@ class GraphicsEdge(QGraphicsPathItem):
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
 
-        self._posSource = [0, 0]
-        self._posDestination = [200, 100]
+        self._posSource: List[float] = [0, 0]
+        self._posDestination: List[float] = [200, 100]
 
         self._lastSelectedState = False
         self.hovered = False

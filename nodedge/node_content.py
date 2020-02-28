@@ -16,7 +16,7 @@ class NodeContent(QWidget, Serializable):
     """Base class for representation of the Node's graphics content. This class also provides layout
     for other widgets inside of a :py:class:`~nodedge.node.Node`"""
 
-    def __init__(self, node: "Node", parent: Optional[QWidget] = None):
+    def __init__(self, node: "Node", parent: Optional[QWidget] = None):  # type: ignore
         """
         :param node: reference to the :py:class:`~nodedge.node.Node`
         :type node: :py:class:`~nodedge.node.Node`
@@ -73,7 +73,7 @@ class NodeContent(QWidget, Serializable):
         return OrderedDict([])
 
     def deserialize(
-        self, data: dict, hashmap: dict = None, restoreId: bool = False
+        self, data: dict, hashmap: Optional[dict] = None, restoreId: bool = False
     ) -> bool:
         """ Default deserialize method.
 

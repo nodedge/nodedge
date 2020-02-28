@@ -7,9 +7,10 @@ import json
 import logging
 import os
 from collections import OrderedDict
-from typing import Callable, List
+from typing import Callable, List, Optional, cast
 
 from PyQt5.QtGui import QDragEnterEvent, QDropEvent
+from PyQt5.QtWidgets import QGraphicsItem
 
 from nodedge.edge import Edge
 from nodedge.graphics_scene import GraphicsScene
@@ -47,7 +48,7 @@ class Scene(Serializable):
         self.history = SceneHistory(self)
         self.clipboard = SceneClipboard(self)
 
-        self._isModified = False
+        self._isModified: bool = False
         self.isModified = False
 
         self._lastSelectedItems = []
@@ -65,7 +66,7 @@ class Scene(Serializable):
         self.graphicsScene.itemsDeselected.connect(self.onItemsDeselected)
 
     @property
-    def isModified(self):
+    def isModified(self) -> bool:
         """
         Has this `Scene` been modified?
 
@@ -104,14 +105,15 @@ class Scene(Serializable):
         self.graphicsScene.setScene(self.sceneWidth, self.sceneHeight)
 
     @property
-    def selectedItems(self):
+    def selectedItems(self) -> List[QGraphicsItem]:
         """
         Returns currently selected Graphics Items
 
         :return: list of ``QGraphicsItems``
         :rtype: list[QGraphicsItem]
         """
-        return self.graphicsScene.selectedItems()
+
+        return cast(List[QGraphicsItem], self.graphicsScene.selectedItems())
 
     @property
     def view(self):
@@ -145,7 +147,7 @@ class Scene(Serializable):
         for callback in self._itemsDeselectedListeners:
             callback()
 
-    def addHasBeenModifiedListener(self, callback: Callable[[None], None]):
+    def addHasBeenModifiedListener(self, callback: Callable[[], None]):
         """
         Register callback for `Has Been Modified` event
 
@@ -153,7 +155,7 @@ class Scene(Serializable):
         """
         self._hasBeenModifiedListeners.append(callback)
 
-    def addItemSelectedListener(self, callback: Callable[[None], None]):
+    def addItemSelectedListener(self, callback: Callable[[], None]):
         """
         Register callback for `Item Selected` event
 
@@ -161,7 +163,7 @@ class Scene(Serializable):
         """
         self._itemSelectedListeners.append(callback)
 
-    def addItemsDeselectedListener(self, callback: Callable[[None], None]):
+    def addItemsDeselectedListener(self, callback: Callable[[], None]):
         """
         Register callback for `Items Deselected` event
 
@@ -223,7 +225,7 @@ class Scene(Serializable):
     def removeEdge(self, edgeToRemove: Edge):
         """Remove :class:`~nodedge.edge.Edge` from this `Scene`
 
-        :param edge: :class:`~nodedge.edge.Edge` to be remove from this `Scene`
+        :param edgeToRemove: :class:`~nodedge.edge.Edge` to be remove from this `Scene`
         :return: :class:`~nodedge.edge.Edge`
         """
         if edgeToRemove in self.edges:
@@ -294,17 +296,15 @@ class Scene(Serializable):
         )
 
     def deserialize(
-        self, data: dict, hashmap: dict = None, restoreId: bool = True
+        self, data: dict, hashmap: Optional[dict] = None, restoreId: bool = True
     ) -> bool:
         if hashmap is None:
             hashmap = {}
-        self.__logger.debug(f"Deserializing data: {data}")
+        self.__logger.debug(f"Deserialize data: {data}")
         self.clear()
 
         if restoreId:
             self.id = data["id"]
-
-        hashmap = {}
 
         # Create blocks
         for nodeData in data["blocks"]:
@@ -331,11 +331,12 @@ class Scene(Serializable):
 
     def setNodeClassSelector(self, classSelectingFunction):
         """
-        Set the function which decides what `Node` class to instantiate when deserializating `Scene`.
+        Set the function which decides what `Node` class to instantiate during `Scene` deserialization.
         If not set, we will always instantiate :class:`~nodedge.node.Node` for each `Node` in the `Scene`
 
-        :param class_selecting_function: function which returns `Node` class type (not instance) from `Node` serialized ``dict`` data
-        :type class_selecting_function: ``function``
+        :param classSelectingFunction: function which returns `Node` class type (not instance)
+                                       from `Node` serialized ``dict`` data
+        :type classSelectingFunction: ``function``
         :return: Class Type of `Node` to be instantiated during deserialization
         :rtype: `Node` class type
         """

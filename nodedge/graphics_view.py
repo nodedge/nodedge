@@ -5,14 +5,14 @@ A module containing `Graphics View` for Nodedge
 
 import logging
 from enum import IntEnum
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, cast
 
 from PyQt5.QtCore import QEvent, QPointF, Qt, pyqtSignal
 from PyQt5.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QMouseEvent, QPainter
 from PyQt5.QtWidgets import QApplication, QGraphicsItem, QGraphicsView
 
 from nodedge.edge import Edge, EdgeType
-from nodedge.graphics_cutline import GraphicsCutLine
+from nodedge.graphics_cut_line import GraphicsCutLine
 from nodedge.graphics_edge import GraphicsEdge, GraphicsEdgeBezier, GraphicsEdgeDirect
 from nodedge.graphics_scene import GraphicsScene
 from nodedge.graphics_socket import GraphicsSocket
@@ -356,7 +356,11 @@ class GraphicsView(QGraphicsView):
         self.dragEdge = None
 
         try:
-            if type(item) is GraphicsSocket and item.socket != self.dragStartSocket:
+            if (
+                type(item) is GraphicsSocket
+                and cast(GraphicsSocket, item).socket != self.dragStartSocket
+            ):
+                item = cast(GraphicsSocket, item)
 
                 if not self.dragStartSocket.allowsMultiEdges:
                     self.dragStartSocket.removeAllEdges()

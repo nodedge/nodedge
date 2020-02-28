@@ -34,7 +34,7 @@ class GraphicsCutLine(QGraphicsItem):
         """
         Defining Qt' bounding rectangle
         """
-        return cast(QRectF, self.shape().boundingRect())
+        return self.shape().boundingRect()
 
     def shape(self) -> QPainterPath:
         """

@@ -79,7 +79,7 @@ class GraphicsNode(QGraphicsItem):
     # noinspection PyAttributeOutsideInit
     def initStyle(self) -> None:
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
-        self._titleColor: QColor = Qt.white
+        self._titleColor: QColor = QColor(Qt.white)
         self._colorHovered: QColor = QColor("#FF37A6FF")
 
         self._titleFont: QFont = QFont("Ubuntu", 10)
@@ -114,7 +114,7 @@ class GraphicsNode(QGraphicsItem):
         self.titleItem.setFont(self._titleFont)
         self.titleItem.setPos(self.titleHorizontalPadding, 0)
         self.titleItem.setTextWidth(self.width - 2 * self.titleHorizontalPadding)
-        self.titleItem.node = self.node
+        self.titleItem.node = self.node  # type: ignore
 
         self.title = self.node.title
 

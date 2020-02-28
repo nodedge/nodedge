@@ -12,7 +12,7 @@ from nodedge.utils import dumpException
 class SceneHistory:
     """Class contains all the code for undo/redo operations"""
 
-    def __init__(self, scene: "Scene", maxLength: int = 32):
+    def __init__(self, scene: "Scene", maxLength: int = 32) -> None:  # type: ignore # noqa: F821
         """
         :param scene: Reference to the :class:`~nodedge.scene.Scene`
         :type scene: :class:`~nodedge.scene.Scene`
@@ -26,16 +26,16 @@ class SceneHistory:
         self.scene = scene
 
         self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.INFO)
+        self.__logger.setLevel(logging.DEBUG)
 
         # Listeners
-        self._historyModifiedListeners = []
-        self._historyStoredListeners = []
-        self._historyRestoredListeners = []
+        self._historyModifiedListeners: list = []
+        self._historyStoredListeners: list = []
+        self._historyRestoredListeners: list = []
 
         self._maxLength = maxLength
         self.currentStep = -1
-        self.stack = []
+        self.stack: list = []
 
     def addHistoryModifiedListener(self, callback):
         """
@@ -79,10 +79,10 @@ class SceneHistory:
 
     def storeInitialStamp(self):
         """Helper function usually used when new or open file requested"""
-        self.store("Initial history stamp")
+        self.store("Initial history stamp", sceneIsModified=False)
 
     @property
-    def canUndo(self):
+    def canUndo(self) -> bool:
         """Return ``True`` if Undo is available for current `History Stack`
 
         :rtype: ``bool``
@@ -90,7 +90,7 @@ class SceneHistory:
         return self.currentStep > 0
 
     @property
-    def canRedo(self):
+    def canRedo(self) -> bool:
         """
         Return ``True`` if Redo is available for current `History Stack`
 
@@ -105,7 +105,6 @@ class SceneHistory:
         if self.canUndo:
             self.currentStep -= 1
             self.restore()
-            self.scene.isModified = True
 
     def redo(self):
         """Redo operation"""
@@ -122,8 +121,8 @@ class SceneHistory:
 
         :param desc: Description of current History Stamp
         :type desc: ``str``
-        :param setModified: if ``True`` marks :class:`~nodedge.scene.Scene` with `has_been_modified`
-        :type setModified: ``bool``
+        :param sceneIsModified: if ``True`` marks :class:`~nodedge.scene.Scene` with `has_been_modified`
+        :type sceneIsModified: ``bool``
 
         Triggers:
 
@@ -210,8 +209,8 @@ class SceneHistory:
         """
         Restore History Stamp to current `Scene` with selection of items included
 
-        :param history_stamp: History Stamp to restore
-        :type history_stamp: ``dict``
+        :param stamp: History Stamp to restore
+        :type stamp: ``dict``
         """
         self.__logger.debug(f"Restoring stamp: {stamp['selection']}")
 
