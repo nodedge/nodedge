@@ -16,7 +16,7 @@ htmlcov/
 venv/
 venv36/
 .idea/
-doc/build/
+docs/build/
 dist/
 build/
 _template/
