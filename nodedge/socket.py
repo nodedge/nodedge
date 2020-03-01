@@ -90,9 +90,10 @@ class Socket(Serializable):
         """Helper function to set `Graphics Socket` position. Exact socket position is calculated
                 inside :class:`~nodedge.node.Node`."""
 
-        self.graphicsSocket.setPos(
-            *self.node.socketPos(self.index, self.position, self.countOnThisNodeSide)
+        socketPos = self.node.socketPos(
+            self.index, self.position, self.countOnThisNodeSide
         )
+        self.graphicsSocket.setPos(socketPos)
 
     def socketPos(self) -> List[float]:
         """

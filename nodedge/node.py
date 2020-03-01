@@ -249,9 +249,7 @@ class Node(Serializable):
         if value is True:
             self.graphicsNode.onSelected()
 
-    def socketPos(
-        self, index: int, position: int, countOnThisSide: int = 1
-    ) -> List[float]:
+    def socketPos(self, index: int, position: int, countOnThisSide: int = 1) -> QPointF:
         """
         Get the relative `x, y` position of a :class:`~nodedge.socket.Socket`. This is used for placing
         the `Graphics Sockets` on `Graphics Node`.
@@ -263,7 +261,7 @@ class Node(Serializable):
         :param countOnThisSide: Total number of Sockets on this `Socket Position`
         :type countOnThisSide: ``int``
         :return: Position of described Socket on the `Node`
-        :rtype: ``x, y``
+        :rtype: ``QPointF``
         """
         x: int = (
             0
@@ -314,7 +312,7 @@ class Node(Serializable):
         else:
             y = 0
 
-        return [x, y]
+        return QPointF(x, y)
 
     def updateConnectedEdges(self):
         """Recalculate (Refresh) positions of all connected `Edges`. Used for updating Graphics Edges"""

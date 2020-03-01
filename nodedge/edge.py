@@ -184,23 +184,24 @@ class Edge(Serializable):
         """
 
         if self.sourceSocket is not None:
-            sourcePos = self.sourceSocket.socketPos()
-            sourcePos[0] += self.sourceSocket.node.graphicsNode.pos().x()
-            sourcePos[1] += self.sourceSocket.node.graphicsNode.pos().y()
+            sourcePos = (
+                self.sourceSocket.socketPos()
+                + self.sourceSocket.node.graphicsNode.pos()
+            )
             if self.graphicsEdge is not None:
                 self.graphicsEdge.sourcePos = sourcePos
         # TODO: simplify terminology: end -> destination | start -> source
 
         if self.destinationSocket is not None:
-            destinationPos = self.destinationSocket.socketPos()
-            destinationPos[0] += self.destinationSocket.node.graphicsNode.pos().x()
-            destinationPos[1] += self.destinationSocket.node.graphicsNode.pos().y()
+            destinationPos = (
+                self.destinationSocket.socketPos()
+                + self.destinationSocket.node.graphicsNode.pos()
+            )
             if self.graphicsEdge is not None:
                 self.graphicsEdge.destinationPos = destinationPos
         else:
             if self.graphicsEdge is not None:
-                if sourcePos is not None:
-                    self.graphicsEdge.destinationPos = sourcePos
+                self.graphicsEdge.destinationPos = sourcePos
 
         self.__logger.debug(f"Start socket: {self.sourceSocket}")
         self.__logger.debug(f"End socket: {self.destinationSocket}")

@@ -46,8 +46,8 @@ class GraphicsEdge(QGraphicsPathItem):
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
 
-        self._sourcePos: List[float] = [0, 0]
-        self._destinationPos: List[float] = [200, 100]
+        self._sourcePos: QPointF = QPointF(0.0, 0.0)
+        self._destinationPos: QPointF = QPointF(200.0, 200.0)
 
         self._lastSelectedState: bool = False
         self.hovered: bool = False
@@ -74,12 +74,12 @@ class GraphicsEdge(QGraphicsPathItem):
 
         :getter: Return the edge's source position.
         :setter: Set the edge's source position.
-        :type: ``List[float]``
+        :type: ``QPointF``
         """
         return self._sourcePos
 
     @sourcePos.setter
-    def sourcePos(self, value):
+    def sourcePos(self, value: QPointF):
         self._sourcePos = value
 
     @property
@@ -88,12 +88,12 @@ class GraphicsEdge(QGraphicsPathItem):
 
         :getter: Return the edge's destination position.
         :setter: Set the edge's destination position.
-        :type: ``List[float]``
+        :type: ``QPointF``
         """
         return self._destinationPos
 
     @destinationPos.setter
-    def destinationPos(self, value):
+    def destinationPos(self, value: QPointF):
         self._destinationPos = value
 
     def initUI(self):
@@ -129,16 +129,6 @@ class GraphicsEdge(QGraphicsPathItem):
         self.setZValue(-1)
 
         self._controlPointRoundness: float = 100.0  #: Bezier control point distance on the line
-
-    def setDestination(self, x: float, y: float) -> None:
-        """ Set destination point of the edge.
-
-        :param x: x position
-        :type x: ``float``
-        :param y: y position
-        :type y: ``float``
-        """
-        self._destinationPos = [x, y]
 
     def boundingRect(self):
         """
@@ -259,8 +249,8 @@ class GraphicsEdgeDirect(GraphicsEdge):
         :returns: The computed path
         :rtype: ``QPainterPath``
         """
-        path = QPainterPath(QPointF(self._sourcePos[0], self._sourcePos[1]))
-        path.lineTo(self._destinationPos[0], self._destinationPos[1])
+        path = QPainterPath(self._sourcePos)
+        path.lineTo(self._destinationPos)
         return path
 
 
@@ -278,9 +268,12 @@ class GraphicsEdgeBezier(GraphicsEdge):
         :returns: The computed path
         :rtype: ``QPainterPath``
         """
-        s = self._sourcePos
-        d = self._destinationPos
-        dist = (d[0] - s[0]) * 0.5
+        sx = self._sourcePos.x()
+        sy = self._sourcePos.y()
+        dx = self._destinationPos.x()
+        dy = self._destinationPos.y()
+
+        dist = (dx - sx) * 0.5
 
         cpx_s: float = dist
         cpx_d: float = -dist
@@ -291,16 +284,16 @@ class GraphicsEdgeBezier(GraphicsEdge):
             sspos = self.edge.sourceSocket.position
 
             if (
-                s[0] > d[0]
+                sx > dx
                 and sspos in [SocketPosition.RIGHT_TOP, SocketPosition.RIGHT_BOTTOM]
             ) or (
-                s[0] < d[0]
+                sx < dx
                 and sspos in [SocketPosition.LEFT_BOTTOM, SocketPosition.LEFT_TOP]
             ):
                 cpx_d *= -1.0
                 cpx_s *= -1.0
 
-                verticalDistance = s[1] - d[1]
+                verticalDistance = sx - dx
                 cpy_d = (
                     verticalDistance
                     / (1e-4 + (math.fabs(verticalDistance)))
@@ -308,13 +301,13 @@ class GraphicsEdgeBezier(GraphicsEdge):
                 )
                 cpy_s = -cpy_d
 
-        path = QPainterPath(QPointF(self._sourcePos[0], self._sourcePos[1]))
+        path = QPainterPath(self._sourcePos)
         path.cubicTo(
-            s[0] + cpx_s,
-            s[1] + cpy_s,
-            d[0] + cpx_d,
-            d[1] + cpy_d,
-            self._destinationPos[0],
-            self._destinationPos[1],
+            sx + cpx_s,
+            sy + cpy_s,
+            dx + cpx_d,
+            dy + cpy_d,
+            self._destinationPos.x(),
+            self._destinationPos.y(),
         )
         return path
