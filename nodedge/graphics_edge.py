@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-A module containing Graphics representation of Edge
+Graphics edge module containing :class:`~nodedge.graphics_edge.GraphicsEdge` class.
 """
 
 import logging
@@ -21,7 +21,10 @@ from nodedge.socket import SocketPosition
 
 
 class GraphicsEdge(QGraphicsPathItem):
-    """Base class for Graphics Edge"""
+    """:class:`~nodedge.graphics_edge.GraphicsEdge` class
+
+    The edge is the component connecting two nodes.
+    """
 
     def __init__(self, edge: "Edge", parent: Optional[QGraphicsItem] = None):  # type: ignore
         """
@@ -33,8 +36,8 @@ class GraphicsEdge(QGraphicsPathItem):
         :Instance attributes:
 
             - **edge** - reference to :class:`~nodedge.edge.Edge`
-            - **posSource** - ``[x, y]`` source position in the `Scene`
-            - **posDestination** - ``[x, y]`` destination position in the `Scene`
+            - **sourcePos** - ``[x, y]`` source position in the :class:`~nodedge.scene.Scene`
+            - **destinationPos** - ``[x, y]`` destination position in the :class:`~nodedge.scene.Scene`
         """
 
         super().__init__(parent)
@@ -43,31 +46,69 @@ class GraphicsEdge(QGraphicsPathItem):
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
 
-        self._posSource: List[float] = [0, 0]
-        self._posDestination: List[float] = [200, 100]
+        self._sourcePos: List[float] = [0, 0]
+        self._destinationPos: List[float] = [200, 100]
 
-        self._lastSelectedState = False
-        self.hovered = False
+        self._lastSelectedState: bool = False
+        self.hovered: bool = False
 
         self.initUI()
 
     @property
     def selectedState(self):
+        """
+
+        :getter: Return whether the edge is is selected or not.
+        :setter: Set the selection state of the edge.
+        :type: ``bool``
+        """
         return self._lastSelectedState
 
     @selectedState.setter
     def selectedState(self, value):
         self._lastSelectedState = value
 
+    @property
+    def sourcePos(self):
+        """
+
+        :getter: Return the edge's source position.
+        :setter: Set the edge's source position.
+        :type: ``List[float]``
+        """
+        return self._sourcePos
+
+    @sourcePos.setter
+    def sourcePos(self, value):
+        self._sourcePos = value
+
+    @property
+    def destinationPos(self):
+        """
+
+        :getter: Return the edge's destination position.
+        :setter: Set the edge's destination position.
+        :type: ``List[float]``
+        """
+        return self._destinationPos
+
+    @destinationPos.setter
+    def destinationPos(self, value):
+        self._destinationPos = value
+
     def initUI(self):
-        """Set up this ``QGraphicsPathItem``"""
+        """
+        Set up this ``QGraphicsPathItem``
+        """
         self.initStyle()
         self.setAcceptHoverEvents(True)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
 
     # noinspection PyAttributeOutsideInit
     def initStyle(self):
-        """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
+        """
+        Initialize ``QObject`` like ``QColor``, ``QPen`` and ``QBrush``
+        """
         self._color: QColor = QColor("#001000")
         self._colorSelected: QColor = QColor("#00ff00")
         self._colorHovered: QColor = QColor("#FF37A6FF")
@@ -87,38 +128,37 @@ class GraphicsEdge(QGraphicsPathItem):
 
         self.setZValue(-1)
 
-        self._controlPointRoundness: int = 100  #: Bezier control point distance on the line
+        self._controlPointRoundness: float = 100.0  #: Bezier control point distance on the line
 
-    def setSource(self, x: float, y: float) -> None:
-        """ Set source point
+    def setDestination(self, x: float, y: float) -> None:
+        """ Set destination point of the edge.
 
         :param x: x position
         :type x: ``float``
         :param y: y position
         :type y: ``float``
-        :return:
         """
-        self._posSource = [x, y]
-
-    def setDestination(self, x: float, y: float) -> None:
-        """ Set destination point
-
-        :param x:
-        :param y:
-        :return:
-        """
-        self._posDestination = [x, y]
+        self._destinationPos = [x, y]
 
     def boundingRect(self):
-        """Defining Qt' bounding rectangle"""
+        """
+        Define Qt' bounding rectangle
+        """
         return self.shape().boundingRect()
 
     def onSelected(self):
-        """Our event handling when the node was selected"""
+        """
+        Slot called when the edge has just been selected.
+        """
         self.edge.scene.graphicsScene.itemSelected.emit()
 
     def mouseReleaseEvent(self, event: QGraphicsSceneMouseEvent) -> None:
-        """Overriden Qt's method to handle selecting and deselecting this `Graphics Edge`"""
+        """
+        Overridden Qt's slot to handle mouse release on the edge.
+
+        :param event: Qt's mouse release event
+        :type event: ``QGraphicsSceneMouseEvent``
+        """
         super().mouseReleaseEvent(event)
         isSelected = self.isSelected()
         if self._lastSelectedState != isSelected:
@@ -127,36 +167,50 @@ class GraphicsEdge(QGraphicsPathItem):
             self.onSelected()
 
     def hoverEnterEvent(self, event: QGraphicsSceneHoverEvent) -> None:
-        """Handle hover effect"""
+        """
+        Overridden Qt's slot to handle mouse hovering on the edge.
+
+        :param event: Qt's mouse hover event
+        :type event: ``QGraphicsSceneHoverEvent``
+        """
         self.hovered = True
         self.update()
 
     def hoverLeaveEvent(self, event: QGraphicsSceneHoverEvent) -> None:
-        """Handle hover effect"""
+        """
+        Overridden Qt's slot to handle mouse hovering's end on the edge.
+
+        :param event: Qt's mouse hover event
+        :type event: ``QGraphicsSceneHoverEvent``
+        """
         self.hovered = False
         self.update()
 
     def shape(self) -> QPainterPath:
-        """Returns ``QPainterPath`` representation of this `Edge`
+        """Returns ``QPainterPath`` representation of the edge.
 
-        :return: path representation
+        :return: graphical path
         :rtype: ``QPainterPath``
         """
 
         return self.calcPath()
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
-        """Qt's overriden method to paint this Graphics Edge.
-        Path calculated in :func:`~nodedge.graphics_edge.QDMGraphicsEdge.calcPath` method"""
+        """
+        Qt's overridden method to paint the edge.
+
+        .. note::
+            The path is calculated in :func:`~nodedge.graphics_edge.GraphicsEdge.calcPath` method
+        """
         self.setPath(self.calcPath())
 
         painter.setBrush(Qt.NoBrush)
 
-        if self.hovered and self.edge.endSocket is not None:
+        if self.hovered and self.edge.destinationSocket is not None:
             painter.setPen(self._penHovered)
             painter.drawPath(self.path())
 
-        if self.edge.endSocket is None:
+        if self.edge.destinationSocket is None:
             painter.setPen(self._penDragging)
         else:
             painter.setPen(self._pen if not self.isSelected() else self._penSelected)
@@ -164,21 +218,26 @@ class GraphicsEdge(QGraphicsPathItem):
         painter.drawPath(self.path())
 
     def calcPath(self) -> QPainterPath:
-        """Will handle drawing QPainterPath from Point A to B
+        """Compute the graphical path between :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
+        `~nodedge.graphics_edge.GraphicsEdge.destinationPos`.
 
-        :returns: ``QPainterPath`` of the edge connecting `source` and `destination`
+        .. warning::
+            This method needs to be overridden.
+
+        :returns: The computed path
         :rtype: ``QPainterPath``
         """
         raise NotImplementedError("This method needs to be overridden in a child class")
 
     def intersectsWith(self, p1: QPointF, p2: QPointF) -> bool:
-        """Does this Graphics Edge intersect with line between point A and point B ?
+        """
+        Compute if the edge's path intersects with line between points given as argument.
 
-        :param p1: point A
+        :param p1: first point
         :type p1: ``QPointF``
-        :param p2: point B
+        :param p2: second point
         :type p2: ``QPointF``
-        :return: ``True`` if this `Graphics Edge` intersects
+        :return: ``True`` if this edge's path intersects with the line between p1 and p2
         :rtype: ``bool``
         """
         cutpath = QPainterPath(p1)
@@ -188,39 +247,48 @@ class GraphicsEdge(QGraphicsPathItem):
 
 
 class GraphicsEdgeDirect(GraphicsEdge):
-    """Direct line connection Graphics Edge"""
+    """
+    Graphics Edge Direct class, with straight line path between :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos`
+    and :attr:`~nodedge.graphics_edge.GraphicsEdge.destinationPos`
+    """
 
-    def calcPath(self):
-        """Calculate the Direct line connection
+    def calcPath(self) -> QPainterPath:
+        """Compute a straight line path between :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
+        `~nodedge.graphics_edge.GraphicsEdge.destinationPos`.
 
-        :returns: ``QPainterPath`` of the direct line
+        :returns: The computed path
         :rtype: ``QPainterPath``
         """
-        path = QPainterPath(QPointF(self._posSource[0], self._posSource[1]))
-        path.lineTo(self._posDestination[0], self._posDestination[1])
+        path = QPainterPath(QPointF(self._sourcePos[0], self._sourcePos[1]))
+        path.lineTo(self._destinationPos[0], self._destinationPos[1])
         return path
 
 
 class GraphicsEdgeBezier(GraphicsEdge):
-    """Cubic line connection Graphics Edge"""
+    """
+    Graphics Edge Bezier class, with Bezier line path between :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos`
+    and :attr:`~nodedge.graphics_edge.GraphicsEdge.destinationPos`
+    """
 
-    def calcPath(self):
-        """Calculate the cubic Bezier line connection with 2 control points
+    def calcPath(self) -> QPainterPath:
+        """
+        Compute a Bezier curve path between :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
+        :attr:`~nodedge.graphics_edge.GraphicsEdge.destinationPos`.
 
-        :returns: ``QPainterPath`` of the cubic Bezier line
+        :returns: The computed path
         :rtype: ``QPainterPath``
         """
-        s = self._posSource
-        d = self._posDestination
+        s = self._sourcePos
+        d = self._destinationPos
         dist = (d[0] - s[0]) * 0.5
 
-        cpx_s = dist
-        cpx_d = -dist
-        cpy_s = 0
-        cpy_d = 0
+        cpx_s: float = dist
+        cpx_d: float = -dist
+        cpy_s: float = 0
+        cpy_d: float = 0
 
-        if self.edge.startSocket is not None:
-            sspos = self.edge.startSocket.position
+        if self.edge.sourceSocket is not None:
+            sspos = self.edge.sourceSocket.position
 
             if (
                 s[0] > d[0]
@@ -229,8 +297,8 @@ class GraphicsEdgeBezier(GraphicsEdge):
                 s[0] < d[0]
                 and sspos in [SocketPosition.LEFT_BOTTOM, SocketPosition.LEFT_TOP]
             ):
-                cpx_d *= -1
-                cpx_s *= -1
+                cpx_d *= -1.0
+                cpx_s *= -1.0
 
                 verticalDistance = s[1] - d[1]
                 cpy_d = (
@@ -240,13 +308,13 @@ class GraphicsEdgeBezier(GraphicsEdge):
                 )
                 cpy_s = -cpy_d
 
-        path = QPainterPath(QPointF(self._posSource[0], self._posSource[1]))
+        path = QPainterPath(QPointF(self._sourcePos[0], self._sourcePos[1]))
         path.cubicTo(
             s[0] + cpx_s,
             s[1] + cpy_s,
             d[0] + cpx_d,
             d[1] + cpy_d,
-            self._posDestination[0],
-            self._posDestination[1],
+            self._destinationPos[0],
+            self._destinationPos[1],
         )
         return path

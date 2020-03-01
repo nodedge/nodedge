@@ -61,12 +61,12 @@ class Edge(Serializable):
         self.__logger.setLevel(logging.INFO)
 
         # Default initialization
-        self._startSocket: Optional[Socket] = None
-        self._endSocket: Optional[Socket] = None
+        self._sourceSocket: Optional[Socket] = None
+        self._destinationSocket: Optional[Socket] = None
 
         self.scene: "Scene" = scene  # type: ignore
-        self.startSocket: Socket = startSocket
-        self.endSocket: Socket = endSocket
+        self.sourceSocket: Socket = startSocket
+        self.destinationSocket: Socket = endSocket
         self._edgeType: EdgeType = edgeType
         self.edgeType: EdgeType = edgeType
 
@@ -79,54 +79,54 @@ class Edge(Serializable):
         :rtype: ``string``
         """
         return (
-            f"0x{hex(id(self))[-4:]} Edge(0x{hex(id(self.startSocket))[-4:]}, "
-            f"0x{hex(id(self.endSocket))[-4:]}, "
+            f"0x{hex(id(self))[-4:]} Edge(0x{hex(id(self.sourceSocket))[-4:]}, "
+            f"0x{hex(id(self.destinationSocket))[-4:]}, "
             f"{self.edgeType})"
         )
 
     @property
-    def startSocket(self) -> Optional[Socket]:
+    def sourceSocket(self) -> Optional[Socket]:
         """
         Start socket
 
-        :getter: Return start :class:`~nodedge.socket.Socket`.
-        :setter: Set start :class:`~nodedge.socket.Socket` safely.
+        :getter: Return source :class:`~nodedge.socket.Socket`.
+        :setter: Set source :class:`~nodedge.socket.Socket` safely.
         :type: :class:`~nodedge.socket.Socket`
         """
-        return self._startSocket
+        return self._sourceSocket
 
-    @startSocket.setter
-    def startSocket(self, value: Socket) -> None:
+    @sourceSocket.setter
+    def sourceSocket(self, value: Socket) -> None:
         # If the edge was assigned to another socket before, remove the edge from the socket.
-        if self._startSocket is not None:
-            self._startSocket.removeEdge(self)
+        if self._sourceSocket is not None:
+            self._sourceSocket.removeEdge(self)
         # Assign new start socket.
-        self._startSocket = value
+        self._sourceSocket = value
         # Add edge to the socket class.
-        if self.startSocket is not None:
-            self.startSocket.addEdge(self)
+        if self.sourceSocket is not None:
+            self.sourceSocket.addEdge(self)
 
     @property
-    def endSocket(self) -> Optional[Socket]:
+    def destinationSocket(self) -> Optional[Socket]:
         """
         End socket
 
-        :getter: Return end :class:`~nodedge.socket.Socket` or ``None`` if not set.
-        :setter: Set end :class:`~nodedge.socket.Socket` safely.
+        :getter: Return destination :class:`~nodedge.socket.Socket` or ``None`` if not set.
+        :setter: Set destination :class:`~nodedge.socket.Socket` safely.
         :type: :class:`~nodedge.socket.Socket` or ``None``
         """
-        return self._endSocket
+        return self._destinationSocket
 
-    @endSocket.setter
-    def endSocket(self, value: Socket) -> None:
+    @destinationSocket.setter
+    def destinationSocket(self, value: Socket) -> None:
         # If the edge was assigned to another socket before, remove the edge from the socket.
-        if self._endSocket is not None:
-            self._endSocket.removeEdge(self)
+        if self._destinationSocket is not None:
+            self._destinationSocket.removeEdge(self)
         # Assign new end socket.
-        self._endSocket = value
+        self._destinationSocket = value
         # Add edge to the socket class.
-        if self.endSocket is not None:
-            self.endSocket.addEdge(self)
+        if self.destinationSocket is not None:
+            self.destinationSocket.addEdge(self)
 
     @property
     def edgeType(self) -> int:
@@ -154,7 +154,7 @@ class Edge(Serializable):
             self.graphicsEdge = GraphicsEdgeBezier(self)
         self.scene.graphicsScene.addItem(self.graphicsEdge)
 
-        if self.startSocket is not None:
+        if self.sourceSocket is not None:
             self.updatePos()
 
     @property
@@ -183,25 +183,27 @@ class Edge(Serializable):
         start and end :class:`~nodedge.socket.Socket`
         """
 
-        if self.startSocket is not None:
-            startPos = self.startSocket.socketPos()
-            startPos[0] += self.startSocket.node.graphicsNode.pos().x()
-            startPos[1] += self.startSocket.node.graphicsNode.pos().y()
+        if self.sourceSocket is not None:
+            sourcePos = self.sourceSocket.socketPos()
+            sourcePos[0] += self.sourceSocket.node.graphicsNode.pos().x()
+            sourcePos[1] += self.sourceSocket.node.graphicsNode.pos().y()
             if self.graphicsEdge is not None:
-                self.graphicsEdge.setSource(*startPos)
+                self.graphicsEdge.sourcePos = sourcePos
         # TODO: simplify terminology: end -> destination | start -> source
-        if self.endSocket is not None:
-            endPos = self.endSocket.socketPos()
-            endPos[0] += self.endSocket.node.graphicsNode.pos().x()
-            endPos[1] += self.endSocket.node.graphicsNode.pos().y()
+
+        if self.destinationSocket is not None:
+            destinationPos = self.destinationSocket.socketPos()
+            destinationPos[0] += self.destinationSocket.node.graphicsNode.pos().x()
+            destinationPos[1] += self.destinationSocket.node.graphicsNode.pos().y()
             if self.graphicsEdge is not None:
-                self.graphicsEdge.setDestination(*endPos)
+                self.graphicsEdge.destinationPos = destinationPos
         else:
             if self.graphicsEdge is not None:
-                self.graphicsEdge.setDestination(*startPos)
+                if sourcePos is not None:
+                    self.graphicsEdge.destinationPos = sourcePos
 
-        self.__logger.debug(f"Start socket: {self.startSocket}")
-        self.__logger.debug(f"End socket: {self.endSocket}")
+        self.__logger.debug(f"Start socket: {self.sourceSocket}")
+        self.__logger.debug(f"End socket: {self.destinationSocket}")
         if self.graphicsEdge is not None:
             self.graphicsEdge.update()
 
@@ -215,7 +217,11 @@ class Edge(Serializable):
         :rtype: :class:`~nodedge.socket.Socket` or ``None``
         """
 
-        return self.startSocket if knownSocket == self.endSocket else self.endSocket
+        return (
+            self.sourceSocket
+            if knownSocket == self.destinationSocket
+            else self.destinationSocket
+        )
 
     def removeFromSockets(self):
         """
@@ -223,8 +229,8 @@ class Edge(Serializable):
         """
 
         # TODO: Is it meaningful?
-        self.endSocket = None
-        self.startSocket = None
+        self.destinationSocket = None
+        self.sourceSocket = None
 
     def remove(self):
         """
@@ -239,7 +245,7 @@ class Edge(Serializable):
         - :py:meth:`~nodedge.node.Node.onInputChanged`
         """
 
-        oldSockets = [self.startSocket, self.endSocket]
+        oldSockets = [self.sourceSocket, self.destinationSocket]
 
         self.__logger.debug(f"Removing {self} from all sockets.")
         self.removeFromSockets()
@@ -271,10 +277,12 @@ class Edge(Serializable):
             [
                 ("id", self.id),
                 ("edgeType", self.edgeType),
-                ("startSocket", self.startSocket.id),
+                ("sourceSocket", self.sourceSocket.id),
                 (
-                    "endSocket",
-                    self.endSocket.id if self.endSocket is not None else None,
+                    "destinationSocket",
+                    self.destinationSocket.id
+                    if self.destinationSocket is not None
+                    else None,
                 ),
             ]
         )
@@ -284,8 +292,8 @@ class Edge(Serializable):
             hashmap = {}
         if restoreId:
             self.id = data["id"]
-        self.startSocket = hashmap[data["startSocket"]]
-        self.endSocket = hashmap[data["endSocket"]]
+        self.sourceSocket = hashmap[data["sourceSocket"]]
+        self.destinationSocket = hashmap[data["destinationSocket"]]
         self.edgeType = data["edgeType"]
 
         return True

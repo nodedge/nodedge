@@ -26,7 +26,7 @@ class DragListbox(QListWidget):
     """
     Drag listbox class.
 
-    The listbox contains the declaration of all the available blocks.
+    The listbox contains the declaration of all the available nodes.
     """
 
     def __init__(self, parent: Optional[QWidget] = None):
@@ -57,6 +57,9 @@ class DragListbox(QListWidget):
         self.addNodes()
 
     def addNodes(self) -> None:
+        """
+        Add available :class:`~nodedge.node.Node`s in the listbox.
+        """
         # associateOperationCodeWithBlock(operationCode, blockClass)
 
         keys = list(BLOCKS.keys())
@@ -67,6 +70,9 @@ class DragListbox(QListWidget):
             self.addNode(node.operationTitle, node.icon, node.operationCode)
 
     def addNode(self, name, iconPath: Optional[str] = None, operationCode: int = 0):
+        """
+        Add a :class:`~nodedge.node.Node` in the listbox.
+        """
         item = QListWidgetItem(name, self)
         pixmap = QPixmap(iconPath) if iconPath else "."
         item.setIcon(QIcon(pixmap))
@@ -77,7 +83,10 @@ class DragListbox(QListWidget):
         item.setData(Qt.UserRole, pixmap)
         item.setData(Qt.UserRole + 1, operationCode)
 
-    def startDrag(self, *args, **kvargs) -> None:
+    def startDrag(self, *args, **kwargs) -> None:
+        """
+        Serialize data when a user start dragging a node from the list, to be able to instantiate it later.
+        """
         try:
             item = self.currentItem()
             operationCode = item.data(Qt.UserRole + 1)

@@ -149,8 +149,8 @@ def test_serializeSelected(qtbot):
     deserializedNode: Node = scene.nodes[0]
     assert deserializedNode.title == expectedTitle
     deserializedEdge: Edge = scene.edges[0]
-    assert deserializedEdge.startSocket == deserializedNode.inputSockets[0]
-    assert deserializedEdge.endSocket == deserializedNode.outputSockets[0]
+    assert deserializedEdge.sourceSocket == deserializedNode.inputSockets[0]
+    assert deserializedEdge.destinationSocket == deserializedNode.outputSockets[0]
 
 
 def test_itemAt(qtbot: QtBot):

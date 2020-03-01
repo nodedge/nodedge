@@ -170,7 +170,7 @@ class GraphicsView(QGraphicsView):
             super().mouseReleaseEvent(event)
 
     def leftMouseButtonPress(self, event):
-        """When Left  mouse button was pressed"""
+        """Slot called when the left mouse button was pressed"""
         try:
             item = self.getItemAtClick(event)
 
@@ -283,9 +283,7 @@ class GraphicsView(QGraphicsView):
             )
         elif type(item) in [GraphicsEdgeDirect, GraphicsEdgeBezier]:
             log = f"\n||||{item.edge} connects"
-            log += (
-                f"\n||||{item.edge.startSocket.node} \n||||{item.edge.endSocket.node}"
-            )
+            log += f"\n||||{item.edge.sourceSocket.node} \n||||{item.edge.destinationSocket.node}"
 
             self.__logger.info(log)
 
@@ -377,8 +375,8 @@ class GraphicsView(QGraphicsView):
                 item.socket.addEdge(newEdge)
                 self.__logger.debug(
                     f"New edge created: {newEdge} connecting"
-                    f"\n|||| {newEdge.startSocket} to"
-                    f"\n |||| {newEdge.endSocket}"
+                    f"\n|||| {newEdge.sourceSocket} to"
+                    f"\n |||| {newEdge.destinationSocket}"
                 )
 
                 for socket in [self.dragStartSocket, item.socket]:

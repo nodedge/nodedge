@@ -35,16 +35,16 @@ class Node(Serializable):
         :type scene: :class:`~nodedge.scene.Scene`
         :param title: Node Title shown in Scene
         :type title: str
-        :param inputs: list of :class:`~nodedge.socket.Socket` types from which the `Sockets` will be auto created
-        :param outputs: list of :class:`~nodedge.socket.Socket` types from which the `Sockets` will be auto created
+        :param inputSocketTypes: list of :class:`~nodedge.socket.Socket` types from which the `Sockets` will be auto created
+        :param inputSocketTypes: list of :class:`~nodedge.socket.Socket` types from which the `Sockets` will be auto created
 
         :Instance Attributes:
 
             - **scene** - reference to the :class:`~nodedge.scene.Scene`
             - **grNode** - Instance of :class:`~nodedge.graphics_node.QDMGraphicsNode` handling graphical representation in the ``QGraphicsScene``. Automatically created in constructor
             - **content** - Instance of :class:`~nodedge.graphics_content.QDMGraphicsContent` which is child of ``QWidget`` representing container for all inner widgets inside of the Node. Automatically created in constructor
-            - **inputs** - list containin Input :class:`~nodedge.socket.Socket` instances
-            - **outputs** - list containin Output :class:`~nodedge.socket.Socket` instances
+            - **inputs** - list containing Input :class:`~nodedge.socket.Socket` instances
+            - **outputs** - list containing Output :class:`~nodedge.socket.Socket` instances
         """
 
         super().__init__()
@@ -73,7 +73,7 @@ class Node(Serializable):
 
     # noinspection PyAttributeOutsideInit
     def initInnerClasses(self) -> None:
-        """Sets up graphics Node (PyQt) and Content Widget"""
+        """Sets up graphics node and content widget"""
         self.content: NodeContent = NodeContent(self)
         self.graphicsNode: GraphicsNode = GraphicsNode(self)
 
@@ -135,8 +135,8 @@ class Node(Serializable):
         """
         Event handling that any connection (`Edge`) has changed. Currently not used...
 
-        :param new_edge: reference to the changed :class:`~nodedge.edge.Edge`
-        :type new_edge: :class:`~nodedge.edge.Edge`
+        :param newEdge: reference to the changed :class:`~nodedge.edge.Edge`
+        :type newEdge: :class:`~nodedge.edge.Edge`
         """
         self.__logger.debug(f"{newEdge}")
 
@@ -228,8 +228,8 @@ class Node(Serializable):
     def isInvalid(self, value: bool):
         """Mark this `Node` as `Invalid`. See :ref:`evaluation` for more
 
-        :param new_value: ``True`` if this `Node` should be `Invalid`. ``False`` if you want to make this `Node` valid
-        :type new_value: ``bool``
+        :param value: ``True`` if this `Node` should be `Invalid`. ``False`` if you want to make this `Node` valid
+        :type value: ``bool``
         """
         if self._isInvalid != value:
             self._isInvalid = value
@@ -260,8 +260,8 @@ class Node(Serializable):
         :type index: ``int``
         :param position: `Socket Position Constant` describing where the Socket is located.
         :type position: :class:`~nodedge.socket.SocketPosition`
-        :param num_out_of: Total number of Sockets on this `Socket Position`
-        :type num_out_of: ``int``
+        :param countOnThisSide: Total number of Sockets on this `Socket Position`
+        :type countOnThisSide: ``int``
         :return: Position of described Socket on the `Node`
         :rtype: ``x, y``
         """

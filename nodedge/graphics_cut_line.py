@@ -32,7 +32,7 @@ class GraphicsCutLine(QGraphicsItem):
 
     def boundingRect(self) -> QRectF:
         """
-        Defining Qt' bounding rectangle
+        Define Qt' bounding rectangle
         """
         return self.shape().boundingRect()
 
