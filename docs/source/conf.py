@@ -18,7 +18,6 @@ from recommonmark.parser import CommonMarkParser
 from recommonmark.transform import AutoStructify
 
 sys.path.insert(0, os.path.abspath("../.."))
-sys.path.insert(0, os.path.abspath("rst"))
 
 
 # -- Project information -----------------------------------------------------
@@ -46,8 +45,8 @@ extensions = [
     "sphinx_rtd_theme",
 ]
 
+master_doc = "index"
 autosectionlabel_prefix_document = True
-
 autodoc_member_order = "bysource"
 autoclass_content = "both"
 

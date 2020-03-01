@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Edge Module containing :class:`~nodedge.edge.Edge` and :class:`~nodedge.edge.EdgeType` class.
+Edge module containing :class:`~nodedge.edge.Edge` and :class:`~nodedge.edge.EdgeType` class.
 """
 
 import logging

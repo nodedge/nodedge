@@ -39,7 +39,8 @@ class Socket(Serializable):
         :type node: :class:`~nodedge.node.Node`
         :param index: Current index of this socket in the position
         :type index: ``int``
-        :param position: Socket position. See :ref:`socket-position-constants`
+        :param position: Socket position
+        :type position: :class:`~nodedge.socket.SocketPosition`
         :param socket_type: Constant defining type(color) of this socket
         :param multi_edges: Can this socket have multiple `Edges` connected?
         :type multi_edges: ``bool``
@@ -53,7 +54,7 @@ class Socket(Serializable):
             - **node** - reference to the :class:`~nodedge.node.Node` containing this `Socket`
             - **edges** - list of `Edges` connected to this `Socket`
             - **grSocket** - reference to the :class:`~nodedge.graphics_socket.QDMGraphicsSocket`
-            - **position** - Socket position. See :ref:`socket-position-constants`
+            - **position** - Socket position. See :class:`~nodedge.socket.SocketPosition`
             - **index** - Current index of this socket in the position
             - **socket_type** - Constant defining type(color) of this socket
             - **count_on_this_node_side** - number of sockets on this position

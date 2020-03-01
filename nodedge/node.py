@@ -3,6 +3,7 @@
 A module containing Nodedge's class for representing `Node`.
 """
 
+
 import logging
 from collections import OrderedDict
 from typing import Collection, List, Optional, Tuple, TypeVar
@@ -257,8 +258,8 @@ class Node(Serializable):
 
         :param index: Order number of the Socket. (0, 1, 2, ...)
         :type index: ``int``
-        :param position: `Socket Position Constant` describing where the Socket is located. See :ref:`socket-position-constants`
-        :type position: ``int``
+        :param position: `Socket Position Constant` describing where the Socket is located.
+        :type position: :class:`~nodedge.socket.SocketPosition`
         :param num_out_of: Total number of Sockets on this `Socket Position`
         :type num_out_of: ``int``
         :return: Position of described Socket on the `Node`

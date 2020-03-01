@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+Drag listbox module containing :class:`~nodedge.drag_listbox.DragListbox` class.
+"""
+
 import logging
 from typing import Optional
 
@@ -11,17 +16,24 @@ from PyQt5.QtCore import (
     Qt,
 )
 from PyQt5.QtGui import QDrag, QIcon, QPixmap
-from PyQt5.QtWidgets import QAbstractItemView, QListWidget, QListWidgetItem
+from PyQt5.QtWidgets import QAbstractItemView, QListWidget, QListWidgetItem, QWidget
 
 from nodedge.blocks.block_config import *
 from nodedge.utils import dumpException
 
 
 class DragListbox(QListWidget):
-    def __init__(self, parent=None):
+    """
+    Drag listbox class.
+
+    The listbox contains the declaration of all the available blocks.
+    """
+
+    def __init__(self, parent: Optional[QWidget] = None):
         """
 
-        :param parent:
+        :param parent: Qt's widget parent
+        :type parent: ``QWidget`` | ``None``
         """
         super().__init__(parent)
 
@@ -31,16 +43,20 @@ class DragListbox(QListWidget):
         self.initUI()
 
     # noinspection PyAttributeOutsideInit
-    def initUI(self):
-        self.iconSize: QSize = QSize(32, 32)
-        self.setIconSize(self.iconSize)
+    def initUI(self) -> None:
+        """
+        Set up this :class:`~nodedge.drag_listbox.DragListbox` with its icon and :class:`~nodedge.node.Node`.
+        """
+
+        self.iconsSize: QSize = QSize(32, 32)
+        self.setIconSize(self.iconsSize)
 
         self.setSelectionMode(QAbstractItemView.SingleSelection)
         self.setDragEnabled(True)
 
         self.addNodes()
 
-    def addNodes(self):
+    def addNodes(self) -> None:
         # associateOperationCodeWithBlock(operationCode, blockClass)
 
         keys = list(BLOCKS.keys())
@@ -54,7 +70,7 @@ class DragListbox(QListWidget):
         item = QListWidgetItem(name, self)
         pixmap = QPixmap(iconPath) if iconPath else "."
         item.setIcon(QIcon(pixmap))
-        item.setSizeHint(self.iconSize)
+        item.setSizeHint(self.iconsSize)
 
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)  # type: ignore
 
