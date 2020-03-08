@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Scene module
+Scene module containing :class:`~nodedge.scene.Scene`.
 """
 
 import json
@@ -22,7 +22,7 @@ from nodedge.utils import dumpException
 
 
 class Scene(Serializable):
-    """`Scene` class"""
+    """:class:`~nodedge.scene.Scene` class"""
 
     def __init__(self):
         """

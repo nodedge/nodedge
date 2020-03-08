@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-Graphics edge module containing :class:`~nodedge.graphics_edge.GraphicsEdge` class.
+Graphics edge module containing :class:`~nodedge.graphics_edge.GraphicsEdge`,
+:class:`~nodedge.graphics_edge.GraphicsEdgeDirect` and
+:class:`~nodedge.graphics_edge.GraphicsEdgeBezier` classes.
 """
 
 import logging
 import math
-from typing import List, Optional
+from typing import Optional
 
 from PyQt5.QtCore import QPointF, Qt
 from PyQt5.QtGui import QColor, QPainterPath, QPen
@@ -23,21 +25,15 @@ from nodedge.socket import SocketLocation
 class GraphicsEdge(QGraphicsPathItem):
     """:class:`~nodedge.graphics_edge.GraphicsEdge` class
 
-    The edge is the component connecting two nodes.
+    The graphics edge is the graphical representation of the :class:`~nodedge.edge.Edge`.
     """
 
-    def __init__(self, edge: "Edge", parent: Optional[QGraphicsItem] = None):  # type: ignore
+    def __init__(self, edge: "Edge", parent: Optional[QGraphicsItem] = None) -> None:  # type: ignore
         """
         :param edge: reference to :class:`~nodedge.edge.Edge`
         :type edge: :class:`~nodedge.edge.Edge`
         :param parent: parent widget
-        :type parent: ``QWidget``
-
-        :Instance attributes:
-
-            - **edge** - reference to :class:`~nodedge.edge.Edge`
-            - **sourcePos** - ``[x, y]`` source position in the :class:`~nodedge.scene.Scene`
-            - **destinationPos** - ``[x, y]`` destination position in the :class:`~nodedge.scene.Scene`
+        :type parent: ``Optional[QGraphicsItem]``
         """
 
         super().__init__(parent)

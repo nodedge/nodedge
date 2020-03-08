@@ -13,7 +13,6 @@ Submodules
 
 .. toctree::
 
-   nodedge.drag_listbox
    nodedge.edge
    nodedge.editor_widget
    nodedge.editor_window
@@ -23,10 +22,11 @@ Submodules
    nodedge.graphics_scene
    nodedge.graphics_socket
    nodedge.graphics_view
-   nodedge.mdi_sub_window
+   nodedge.mdi_widget
    nodedge.mdi_window
    nodedge.node
    nodedge.node_content
+   nodedge.node_list_widget
    nodedge.scene
    nodedge.scene_clipboard
    nodedge.scene_history

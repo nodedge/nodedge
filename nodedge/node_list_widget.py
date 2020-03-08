@@ -58,7 +58,7 @@ class NodeListWidget(QListWidget):
 
     def addNodes(self) -> None:
         """
-        Add available :class:`~nodedge.node.Node`s in the list widget.
+        Add available :class:`~nodedge.node.Node` s in the list widget.
         """
         # associateOperationCodeWithBlock(operationCode, blockClass)
 

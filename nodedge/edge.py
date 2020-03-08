@@ -74,7 +74,6 @@ class Edge(Serializable):
 
     def __str__(self):
         """
-
         :return: Edge(hex id, start socket hex id, end socket hex id, edge type)
         :rtype: ``string``
         """
@@ -87,7 +86,7 @@ class Edge(Serializable):
     @property
     def sourceSocket(self) -> Optional[Socket]:
         """
-        Start socket
+        Source socket
 
         :getter: Return source :class:`~nodedge.socket.Socket`.
         :setter: Set source :class:`~nodedge.socket.Socket` safely.
@@ -109,7 +108,7 @@ class Edge(Serializable):
     @property
     def destinationSocket(self) -> Optional[Socket]:
         """
-        End socket
+        Destination socket
 
         :getter: Return destination :class:`~nodedge.socket.Socket` or ``None`` if not set.
         :setter: Set destination :class:`~nodedge.socket.Socket` safely.

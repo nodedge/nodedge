@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-A module containing Graphic representation of :class:`~nodedge.scene.Scene`
+Graphics scene module containing :class:`~nodedge.graphics_scene.GraphicsScene` class.
 """
 
 import logging
@@ -19,7 +19,9 @@ from PyQt5.QtWidgets import (
 
 
 class GraphicsScene(QGraphicsScene):
-    """Class representing Graphic of :class:`~nodedge.scene.Scene`"""
+    """:class:`~nodedge.scene.Scene` class
+
+    The graphics scene contains the background grid."""
 
     #: pyqtSignal emitted when some item is selected in the `Scene`
     itemSelected = pyqtSignal()
@@ -63,22 +65,22 @@ class GraphicsScene(QGraphicsScene):
 
     # noinspection PyAttributeOutsideInit
     def initSizes(self):
-        """Set up internal attributes like `width`, `height`, etc."""
+        """Set up internal attributes like `grid_size`, `scene_width` and `scene_height`."""
         self.grid_size = 20
         self.grid_squares = 5
         self.scene_width = 64000
         self.scene_height = 64000
 
-    def dragMoveEvent(self, event: QGraphicsSceneDragDropEvent) -> None:
-        """overridden Qt's dragMoveEvent to enable Qt's Drag Events"""
-        pass
-
     def setScene(self, width, height):
-        """Set `width` and `height` of the `Graphics Scene`"""
+        """
+        Set `width` and `height` of the graphics scene.
+        """
         self.setSceneRect(-width // 2, -height // 2, width, height)
 
     def drawBackground(self, painter, rectangle):
-        """Draw background scene grid"""
+        """
+        Draw background scene grid.
+        """
         super().drawBackground(painter, rectangle)
 
         # Create the background grid
@@ -113,14 +115,29 @@ class GraphicsScene(QGraphicsScene):
         painter.setPen(self._pen_dark)
         painter.drawLines(*lines_dark)
 
-    def mousePressEvent(self, e: QGraphicsSceneMouseEvent) -> None:
-        item: Optional[QGraphicsItem] = self.itemAt(e.scenePos(), QTransform())
+    def dragMoveEvent(self, event: QGraphicsSceneDragDropEvent) -> None:
+        """
+        Handle Qt's mouse's drag move event.
+
+        :param event: Mouse release event
+        :type event: ``QGraphicsSceneDragDropEvent``
+        """
+        pass
+
+    def mousePressEvent(self, event: QGraphicsSceneMouseEvent) -> None:
+        """
+        Handle Qt's mouse's button press event.
+
+        :param event: Mouse release event
+        :type event: ``QGraphicsSceneMouseEvent``
+        """
+        item: Optional[QGraphicsItem] = self.itemAt(event.scenePos(), QTransform())
 
         if (
             item is not None
             and item not in self.selectedItems()
             and item.parentItem() not in self.selectedItems()
-            and not e.modifiers() & Qt.ShiftModifier  # type: ignore
+            and not event.modifiers() & Qt.ShiftModifier  # type: ignore
         ):
             self.__logger.debug(f"Pressed item: {item}")
             self.__logger.debug(f"Pressed parent item: {item.parentItem()}")
@@ -130,12 +147,18 @@ class GraphicsScene(QGraphicsScene):
             for item in self.selectedItems():
                 item.setSelected(False)
 
-        super().mousePressEvent(e)
+        super().mousePressEvent(event)
 
-    def mouseReleaseEvent(self, e: QGraphicsSceneMouseEvent):
-        item = self.itemAt(e.scenePos(), QTransform())
+    def mouseReleaseEvent(self, event: QGraphicsSceneMouseEvent):
+        """
+        Handle Qt's mouse's button release event.
+
+        :param event: Mouse release event
+        :type event: ``QGraphicsSceneMouseEvent``
+        """
+        item = self.itemAt(event.scenePos(), QTransform())
 
         if item is not None:
             item.setSelected(True)
 
-        super().mouseReleaseEvent(e)
+        super().mouseReleaseEvent(event)

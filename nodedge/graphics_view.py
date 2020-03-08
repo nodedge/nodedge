@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-A module containing `Graphics View` for Nodedge
+Graphics View module containing :class:`~nodedge.graphics_view.GraphicsView`
+and :class:`~nodedge.graphics_view.DragMode` classes.
 """
 
 import logging
@@ -9,7 +10,7 @@ from typing import Callable, List, Optional, cast
 
 from PyQt5.QtCore import QEvent, QPointF, Qt, pyqtSignal
 from PyQt5.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QMouseEvent, QPainter
-from PyQt5.QtWidgets import QApplication, QGraphicsItem, QGraphicsView
+from PyQt5.QtWidgets import QApplication, QGraphicsItem, QGraphicsView, QWidget
 
 from nodedge.edge import Edge, EdgeType
 from nodedge.graphics_cut_line import GraphicsCutLine
@@ -20,6 +21,10 @@ from nodedge.utils import dumpException
 
 
 class DragMode(IntEnum):
+    """
+    :class:`~nodedge.graphics_view.DragMode` class.
+    """
+
     NOOP = 1  #: Mode representing ready state
     EDGE_DRAG = 2  #: Mode representing when we drag edge state
     EDGE_CUT = 3  #: Mode representing when we draw a cutting edge
@@ -30,31 +35,19 @@ EDGE_START_DRAG_THRESHOLD = 10
 
 
 class GraphicsView(QGraphicsView):
-    """Class representing Nodedge's `Graphics View`"""
+    """:class:`~nodedge.graphics_view.GraphicsView` class."""
 
     #: pyqtSignal emitted when cursor position on the `Scene` has changed
     scenePosChanged = pyqtSignal(int, int)
 
-    def __init__(self, graphicsScene, parent=None):
+    def __init__(self, graphicsScene: GraphicsScene, parent: Optional[QWidget] = None):
         """
-        :param graphicsScene: reference to the :class:`~nodedge.graphics_scene.QDMGraphicsScene`
-        :type graphicsScene: :class:`~nodedge.graphics_scene.QDMGraphicsScene`
+        :param graphicsScene: reference to the :class:`~nodedge.graphics_scene.GraphicsScene`
+        :type graphicsScene: :class:`~nodedge.graphics_scene.GraphicsScene`
         :param parent: parent widget
-        :type parent: ``QWidget``
-
-        :Instance Attributes:
-
-        - **grScene** - reference to the :class:`~nodedge.graphics_scene.QDMGraphicsScene`
-        - **mode** - state of the `Graphics View`
-        - **zoomInFactor**- ``float`` - zoom step scaling, default 1.25
-        - **zoomClamp** - ``bool`` - do we clamp zooming or is it infinite?
-        - **zoom** - current zoom step
-        - **zoomStep** - ``int`` - the relative zoom step when zooming in/out
-        - **zoomRange** - ``[min, max]``
-
+        :type parent: ``Optional[QWidget]``
         """
-
-        super().__init__(graphicsScene)
+        super().__init__(graphicsScene, parent)
 
         self.__logger = logging.getLogger(__name__)
         self.__logger.setLevel(logging.INFO)
@@ -77,13 +70,13 @@ class GraphicsView(QGraphicsView):
         self.editingFlag = False
         self.rubberBandDraggingRectangle = False
 
-        self.dragEdge: (Edge, None) = None
+        self.dragEdge: Optional[Edge] = None
 
         self.cutline = GraphicsCutLine()
         self.graphicsScene.addItem(self.cutline)
 
-        self._dragEnterListeners = []
-        self._dropListeners = []
+        self._dragEnterListeners: List[Callable] = []
+        self._dropListeners: List[Callable] = []
 
     def __str__(self):
         rep = f"\n||||Scene:"
@@ -99,7 +92,9 @@ class GraphicsView(QGraphicsView):
         return rep
 
     def initUI(self):
-        """Set up this ``QGraphicsView``"""
+        """
+        Set up this :class:`~nodedge.graphics_view.GraphicsView`.
+        """
         self.setRenderHint(
             QPainter.Antialiasing
             or QPainter.HighQualityAntialiasing
@@ -117,34 +112,49 @@ class GraphicsView(QGraphicsView):
         self.setAcceptDrops(True)
 
     def dragEnterEvent(self, event: QDragEnterEvent) -> None:
-        """Trigger our registered `Drag Enter` events"""
+        """
+        Handle Qt's mouse's drag enter event.
+
+        Call all the listeners of that event.
+
+        :param event: Mouse drag enter event
+        :type event: ``QDragEnterEvent``
+        """
         for callback in self._dragEnterListeners:
             callback(event)
 
     def dropEvent(self, event: QDropEvent) -> None:
-        """Trigger our registered `Drop` events"""
+        """
+        Handle Qt's mouse's drop event.
+
+        Call all the listeners of that event.
+
+        :param event: Mouse drop event
+        :type event: ``QDropEvent``
+        """
         for callback in self._dropListeners:
             callback(event)
 
     def addDragEnterListener(self, callback: Callable[[QDragEnterEvent], None]):
         """
-        Register callback for `Drag Enter` event
+        Register callback for `Drag Enter` event.
 
         :param callback: callback function
         """
-
         self._dragEnterListeners.append(callback)
 
     def addDropListener(self, callback: Callable[[QDropEvent], None]):
         """
-        Register callback for `Drop` event
+        Register callback for `Drop` event.
 
         :param callback: callback function
         """
         self._dropListeners.append(callback)
 
-    def mousePressEvent(self, event):
-        """Dispatch Qt's mousePress event to corresponding function below"""
+    def mousePressEvent(self, event: QMouseEvent):
+        """
+        Dispatch Qt's `mousePressEvent` to corresponding function below.
+        """
         if event.button() == Qt.MiddleButton:
             self.middleMouseButtonPress(event)
         elif event.button() == Qt.LeftButton:
@@ -158,8 +168,10 @@ class GraphicsView(QGraphicsView):
         else:
             super().mousePressEvent(event)
 
-    def mouseReleaseEvent(self, event):
-        """Dispatch Qt's mouseRelease event to corresponding function below"""
+    def mouseReleaseEvent(self, event: QMouseEvent):
+        """
+        Dispatch Qt's mouseReleaseEvent to corresponding function below.
+        """
         if event.button() == Qt.MiddleButton:
             self.middleMouseButtonRelease(event)
         if event.button() == Qt.LeftButton:
@@ -169,8 +181,10 @@ class GraphicsView(QGraphicsView):
         else:
             super().mouseReleaseEvent(event)
 
-    def leftMouseButtonPress(self, event):
-        """Slot called when the left mouse button was pressed"""
+    def leftMouseButtonPress(self, event: QMouseEvent):
+        """
+        Handle when the left mouse button is pressed.
+        """
         try:
             item = self.getItemAtClick(event)
 
@@ -178,15 +192,15 @@ class GraphicsView(QGraphicsView):
 
             self.__logger.debug("LMB " + self.debugModifiers(event) + f"{item}")
 
-            if event.modifiers() & Qt.ShiftModifier:
+            if event.modifiers() & Qt.ShiftModifier:  # type: ignore
                 event.ignore()
-                fakeEvent = QMouseEvent(
+                fakeEvent = QMouseEvent(  # type: ignore
                     QEvent.MouseButtonPress,
                     event.localPos(),
                     event.screenPos(),
                     Qt.LeftButton,
-                    event.buttons() | Qt.LeftButton,
-                    event.modifiers() | Qt.ControlModifier,
+                    event.buttons() | Qt.LeftButton,  # type: ignore
+                    event.modifiers() | Qt.ControlModifier,  # type: ignore
                 )
                 super().mousePressEvent(fakeEvent)
                 return
@@ -204,7 +218,7 @@ class GraphicsView(QGraphicsView):
                     return
 
             if item is None:
-                if event.modifiers() & Qt.ControlModifier:
+                if event.modifiers() & Qt.ControlModifier:  # type: ignore
                     self.mode = DragMode.EDGE_CUT
                     fakeEvent = QMouseEvent(
                         QEvent.MouseButtonRelease,
@@ -224,19 +238,21 @@ class GraphicsView(QGraphicsView):
         except Exception as e:
             dumpException(e)
 
-    def leftMouseButtonRelease(self, event):
-        """When Left  mouse button was released"""
+    def leftMouseButtonRelease(self, event: QMouseEvent):
+        """
+        Handle when left mouse button is released.
+        """
         item = self.getItemAtClick(event)
 
-        if event.modifiers() & Qt.ShiftModifier:
+        if event.modifiers() & Qt.ShiftModifier:  # type: ignore
             event.ignore()
-            fakeEvent = QMouseEvent(
+            fakeEvent = QMouseEvent(  # type: ignore
                 event.type(),
                 event.localPos(),
                 event.screenPos(),
                 Qt.LeftButton,
                 Qt.NoButton,
-                event.modifiers() | Qt.ControlModifier,
+                event.modifiers() | Qt.ControlModifier,  # type: ignore
             )
             super().mouseReleaseEvent(fakeEvent)
             return
@@ -270,8 +286,10 @@ class GraphicsView(QGraphicsView):
 
         super().mouseReleaseEvent(event)
 
-    def middleMouseButtonPress(self, event):
-        """When Middle mouse button was pressed"""
+    def middleMouseButtonPress(self, event: QMouseEvent):
+        """
+        Handle when middle mouse button is pressed.
+        """
         # Debug logging
         item = self.getItemAtClick(event)
 
@@ -298,39 +316,47 @@ class GraphicsView(QGraphicsView):
         )
         super().mouseReleaseEvent(release_event)
         self.setDragMode(QGraphicsView.ScrollHandDrag)
-        fake_event = QMouseEvent(
+        fake_event = QMouseEvent(  # type: ignore
             event.type(),
             event.localPos(),
             event.screenPos(),
             Qt.LeftButton,
-            event.buttons() | Qt.LeftButton,
+            event.buttons() | Qt.LeftButton,  # type: ignore
             event.modifiers(),
         )
         super().mousePressEvent(fake_event)
 
-    def middleMouseButtonRelease(self, event):
-        """When Middle mouse button was released"""
-        fake_event = QMouseEvent(
+    def middleMouseButtonRelease(self, event: QMouseEvent):
+        """
+        Handle when middle mouse button is released.
+        """
+        fake_event = QMouseEvent(  # type: ignore
             event.type(),
             event.localPos(),
             event.screenPos(),
             Qt.LeftButton,
-            event.buttons() & -Qt.LeftButton,
+            event.buttons() & -Qt.LeftButton,  # type: ignore
             event.modifiers(),
         )
         super().mouseReleaseEvent(fake_event)
         self.setDragMode(QGraphicsView.RubberBandDrag)
 
-    def rightMouseButtonPress(self, event):
-        """When Right mouse button was pressed"""
+    def rightMouseButtonPress(self, event: QMouseEvent):
+        """
+        Handle when right mouse button was pressed
+        """
         super().mousePressEvent(event)
 
-    def rightMouseButtonRelease(self, event):
-        """When Right mouse button was release"""
+    def rightMouseButtonRelease(self, event: QMouseEvent):
+        """
+        Handle when right mouse button is released.
+        """
         super().mouseReleaseEvent(event)
 
     def dragEdgeStart(self, item):
-        """Code handling the start of dragging an `Edge` operation"""
+        """
+        Handle the start of dragging an :class:`~nodedge.edge.Edge` operation.
+        """
         try:
             self.__logger.debug("Assign socket.")
             self.dragStartSocket = item.socket
@@ -341,16 +367,21 @@ class GraphicsView(QGraphicsView):
             dumpException(e)
 
     def dragEdgeEnd(self, item: QGraphicsItem):
-        """Code handling the end of dragging an `Edge` operation. In this code return True if skip the
-        rest of the mouse event processing
+        """
+        Handle the end of dragging an :class:`~nodedge.edge.Edge` operation.
 
-        :param item: Item in the `Graphics Scene` where we ended dragging an `Edge`
+        :param item: Item in the `Graphics Scene` where we ended dragging an :class:`~nodedge.edge.Edge`
         :type item: ``QGraphicsItem``
+        :return: True is the operation is a success, false otherwise.
+        :rtype: ``bool``
         """
         self.mode = DragMode.NOOP
         self.__logger.debug(f"Drag mode: {self.mode}")
 
-        self.dragEdge.remove()
+        try:
+            self.dragEdge.remove()  # type: ignore
+        except:
+            self.__logger.warning("Impossible to remove dragEdge")
         self.dragEdge = None
 
         try:
@@ -395,11 +426,13 @@ class GraphicsView(QGraphicsView):
         return False
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
-        """overridden Qt's ``mouseMoveEvent`` handling Scene/View logic"""
+        """
+        Overridden Qt's ``mouseMoveEvent`` handling Scene/View logic
+        """
         if self.mode == DragMode.EDGE_DRAG:
             pos = self.mapToScene(event.pos())
-            self.dragEdge.graphicsEdge.destinationPos = pos
-            self.dragEdge.graphicsEdge.update()
+            self.dragEdge.graphicsEdge.destinationPos = pos  # type: ignore
+            self.dragEdge.graphicsEdge.update()  # type: ignore
 
         if self.mode == DragMode.EDGE_CUT:
             pos = self.mapToScene(event.pos())
@@ -415,17 +448,11 @@ class GraphicsView(QGraphicsView):
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         """
-            .. note::
-                This overridden Qt's method was used for handling key shortcuts, before we implemented propper
-                ``QWindow`` with Actions and Menu. Still the commented code serves as an example how to handle
-                key presses without Qt's framework for Actions and shortcuts. There can be also found an example
-                how to solve the problem when Node does contain Text/LineEdit and we press `Delete`
-                key (also serving to delete `Node`)
+        Handle key shortcuts, for example to display the scene's history in the console.
 
-            :param event: Qt's Key event
-            :type event: ``QKeyEvent``
-            :return:
-            """
+        :param event: Qt's Key event
+        :type event: ``QKeyEvent``
+        """
 
         # if event.key() == Qt.Key_Delete:
         #     if not self.editingFlag:
@@ -454,7 +481,10 @@ class GraphicsView(QGraphicsView):
             super().keyPressEvent(event)
 
     def wheelEvent(self, event):
-        """overridden Qt's ``wheelEvent``. This handles zooming"""
+        """
+        Overridden Qt's ``wheelEvent``.
+        This handles zooming.
+        """
         # Compute zoom factor
         zoomOutFactor = 1.0 / self.zoomInFactor
 
@@ -479,7 +509,10 @@ class GraphicsView(QGraphicsView):
             self.scale(zoomFactor, zoomFactor)
 
     def cutIntersectingEdges(self):
-        """Compare which `Edges` intersect with current `Cut line` and delete them safely"""
+        """
+        Compare which :class:`~nodedge.edge.Edge`s intersect with current
+        :class:`~nodedge.graphics_cut_line.GraphicsCutLine` and delete them safely.
+        """
         for ix in range(len(self.cutline.linePoints) - 1):
             p1 = self.cutline.linePoints[ix]
             p2 = self.cutline.linePoints[ix + 1]
@@ -491,7 +524,9 @@ class GraphicsView(QGraphicsView):
         self.graphicsScene.scene.history.store("Delete cut edges.")
 
     def deleteSelected(self):
-        """Shortcut for safe deleting every object selected in the `Scene`."""
+        """
+        Shortcut for safe deleting every object selected in the :class:`~nodedge.scene.Scene`.
+        """
         for item in self.graphicsScene.selectedItems():
             if isinstance(item, GraphicsEdge):
                 item.edge.remove()
@@ -500,23 +535,27 @@ class GraphicsView(QGraphicsView):
 
         self.graphicsScene.scene.history.store("Delete selected objects.")
 
-    def getItemAtClick(self, event):
-        """Return the object on which we've clicked/release mouse button
+    def getItemAtClick(self, event: QMouseEvent):
+        """
+        Return the object on which the user clicked/released the mouse button.
 
         :param event: Qt's mouse or key event
-        :type event: ``QEvent``
-        :return: ``QGraphicsItem`` which the mouse event happened or ``None``
+        :type event: ``QMouseEvent``
+        :return: Graphical item present at the clicked/released position.
+        :rtype: ``QGraphicsItem`` | ``None``
         """
         pos = event.pos()
         return self.itemAt(pos)
 
     def distanceBetweenClickAndReleaseIsOff(self, event):
-        """ Measures if we are too far from the last Mouse button click scene position.
-        This is used for detection if we release too far after we clicked on a `Socket`
+        """
+        Measure if we are too far from the last mouse button click scene position.
+        This is used for detection if the release is too far after the user clicked on a :class:`~nodedge.socket.Socket`
 
         :param event: Qt's mouse event
         :type event: ``QMouseEvent``
-        :return: ``True`` if we released too far from where we clicked before
+        :return: ``True`` if we released too far from where we clicked before, ``False`` otherwise.
+        :rtype: ``bool``
         """
         newLMBClickPos = self.mapToScene(event.pos())
         distScene = newLMBClickPos - self.lastLMBClickScenePos
@@ -532,7 +571,12 @@ class GraphicsView(QGraphicsView):
             return True
 
     def debugModifiers(self, event):
-        """Helper function get string if we hold Ctrl, Shift or Alt modifier keys"""
+        """
+        Get the name of the pressed modifier.
+
+        :return: "CTRL" / "SHIFT" / "ALT"
+        :rtype: ``str``
+        """
         dlog = ""
         if event.modifiers() & Qt.ShiftModifier:
             dlog += "SHIFT "

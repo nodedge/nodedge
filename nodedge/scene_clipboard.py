@@ -15,7 +15,7 @@ class SceneClipboard:
     Class contains all the code for serialization/deserialization from Clipboard
     """
 
-    def __init__(self, scene):
+    def __init__(self, scene: "Scene") -> None:  # type: ignore
         self.scene = scene
 
         self.__logger = logging.getLogger(__file__)

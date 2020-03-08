@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+"""
+Editor widget module containing :class:`~nodedge.editor_widget.EditorWidget` class.
+"""
 import logging
 
 from PyQt5.QtCore import QDataStream, QIODevice, Qt
@@ -17,6 +21,12 @@ from nodedge.utils import dumpException
 
 
 class MdiWidget(EditorWidget):
+    """
+    :class:`~nodedge.mdi_widget.MdiWidget` class
+
+    The mdi widget represents a subwindow of the :class:`~nodedge.mdi_window.MdiWindow`.
+    """
+
     def __init__(self):
         super().__init__()
 
