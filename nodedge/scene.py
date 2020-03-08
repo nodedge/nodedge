@@ -60,8 +60,8 @@ class Scene(Serializable):
         # Store callback for retrieving the nodes classes
         self.nodeClassSelector = None
 
-        self.initUI()
-
+        self.graphicsScene = GraphicsScene(self)
+        self.graphicsScene.setScene(self.sceneWidth, self.sceneHeight)
         self.graphicsScene.itemSelected.connect(self.onItemSelected)
         self.graphicsScene.itemsDeselected.connect(self.onItemsDeselected)
 
@@ -97,12 +97,6 @@ class Scene(Serializable):
     def lastSelectedItems(self, value: bool):
         if value != self._lastSelectedItems:
             self._lastSelectedItems = value
-
-    # noinspection PyAttributeOutsideInit
-    def initUI(self):
-        """Set up Graphics Scene Instance"""
-        self.graphicsScene = GraphicsScene(self)
-        self.graphicsScene.setScene(self.sceneWidth, self.sceneHeight)
 
     @property
     def selectedItems(self) -> List[QGraphicsItem]:

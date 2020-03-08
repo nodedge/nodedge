@@ -60,8 +60,8 @@ class EditorWidget(QWidget):
 
         self.layout: QVBoxLayout = QVBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(self.layout)
 
+        self.setLayout(self.layout)
         self.scene: Scene = Scene()
         self.view: GraphicsView = GraphicsView(self.scene.graphicsScene, self)
         self.layout.addWidget(self.view)

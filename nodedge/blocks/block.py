@@ -3,7 +3,7 @@ import logging
 from nodedge.blocks.block_content import BlockContent
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.node import Node
-from nodedge.socket import SocketPosition
+from nodedge.socket import SocketLocation
 from nodedge.utils import dumpException
 
 
@@ -33,8 +33,8 @@ class Block(Node):
 
     def initSettings(self):
         super().initSettings()
-        self._inputSocketPosition = SocketPosition.LEFT_CENTER
-        self._outputSocketPosition = SocketPosition.RIGHT_CENTER
+        self._inputSocketPosition = SocketLocation.LEFT_CENTER
+        self._outputSocketPosition = SocketLocation.RIGHT_CENTER
 
     def onInputChanged(self, newEdge):
         self.__logger.debug(f"New edge: {newEdge}")

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Drag listbox module containing :class:`~nodedge.drag_listbox.DragListbox` class.
+Node list widget module containing :class:`~nodedge.node_list_widget.NodeListWidget` class.
 """
 
 import logging
@@ -22,11 +22,11 @@ from nodedge.blocks.block_config import *
 from nodedge.utils import dumpException
 
 
-class DragListbox(QListWidget):
+class NodeListWidget(QListWidget):
     """
-    Drag listbox class.
+    Node list widget class.
 
-    The listbox contains the declaration of all the available nodes.
+    The list widget contains the declaration of all the available nodes.
     """
 
     def __init__(self, parent: Optional[QWidget] = None):
@@ -45,7 +45,7 @@ class DragListbox(QListWidget):
     # noinspection PyAttributeOutsideInit
     def initUI(self) -> None:
         """
-        Set up this :class:`~nodedge.drag_listbox.DragListbox` with its icon and :class:`~nodedge.node.Node`.
+        Set up this :class:`~nodedge.node_list_widget.NodeListWidget` with its icon and :class:`~nodedge.node.Node`.
         """
 
         self.iconsSize: QSize = QSize(32, 32)
@@ -58,7 +58,7 @@ class DragListbox(QListWidget):
 
     def addNodes(self) -> None:
         """
-        Add available :class:`~nodedge.node.Node`s in the listbox.
+        Add available :class:`~nodedge.node.Node`s in the list widget.
         """
         # associateOperationCodeWithBlock(operationCode, blockClass)
 
@@ -71,7 +71,7 @@ class DragListbox(QListWidget):
 
     def addNode(self, name, iconPath: Optional[str] = None, operationCode: int = 0):
         """
-        Add a :class:`~nodedge.node.Node` in the listbox.
+        Add a :class:`~nodedge.node.Node` in the list widget.
         """
         item = QListWidgetItem(name, self)
         pixmap = QPixmap(iconPath) if iconPath else "."
@@ -102,7 +102,7 @@ class DragListbox(QListWidget):
             dataStream.writeQString(item.text())
 
             mimeData = QMimeData()
-            mimeData.setData(LISTBOX_MIMETYPE, itemData)
+            mimeData.setData(NODELISTWIDGET_MIMETYPE, itemData)
 
             drag = QDrag(self)
             drag.setMimeData(mimeData)

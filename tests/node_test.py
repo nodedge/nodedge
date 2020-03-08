@@ -107,7 +107,7 @@ def test_markIsInvalid(undefinedNode: Node):
 
 def test_socketPos(undefinedNode: Node):
     a = undefinedNode.socketPos(0, 0, 1)
-    assert a == [180, 0]
+    assert a == QPointF(180, 0)
 
 
 def test_remove(undefinedNode: Node):

@@ -14,10 +14,10 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from nodedge.drag_listbox import DragListbox
 from nodedge.editor_widget import EditorWidget
 from nodedge.editor_window import EditorWindow
-from nodedge.mdi_sub_window import MdiSubWindow
+from nodedge.mdi_widget import MdiWidget
+from nodedge.node_list_widget import NodeListWidget
 from nodedge.utils import dumpException, loadStyleSheets
 
 
@@ -248,7 +248,7 @@ class MdiWindow(EditorWindow):
             dumpException(e)
 
     def _createMdiSubWindow(self, childWidget=None):
-        editor = childWidget if childWidget is not None else MdiSubWindow()
+        editor = childWidget if childWidget is not None else MdiWidget()
         subWindow = self.mdiArea.addSubWindow(editor)
 
         icon = QIcon(".")
@@ -278,7 +278,7 @@ class MdiWindow(EditorWindow):
             self.mdiArea.setActiveSubWindow(window)
 
     def createNodesDock(self):
-        self.nodesListWidget = DragListbox()
+        self.nodesListWidget = NodeListWidget()
 
         self.nodesDock = QDockWidget("Nodes")
         self.nodesDock.setWidget(self.nodesListWidget)
@@ -320,7 +320,7 @@ class MdiWindow(EditorWindow):
                     self.mdiArea.setActiveSubWindow(existingSubWindow)
                 else:
                     # Create a new subwindow and open the file
-                    editor = MdiSubWindow()
+                    editor = MdiWidget()
                     if editor.loadFile(filename):
                         self.__logger.debug("Loading success")
                         self.statusBar().showMessage(f"File {filename} loaded.", 5000)

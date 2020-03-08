@@ -5,7 +5,7 @@ Evaluation
 
 TL;DR: The evaluation system uses
 :func:`~nodedge.node.Node.eval` and
-:func:`~nodedge.node.Node.evalChildren`. ``eval`` is supposed to be overriden by your own
+:func:`~nodedge.node.Node.evalChildren`. ``eval`` is supposed to be overridden by your own
 implementation. The evaluation logic uses Flags for marking the `Nodes` to be `Dirty` and/or `Invalid`.
 
 Evaluation Functions
@@ -21,7 +21,7 @@ but only children of the current `Node`.
 
 By default the implementation of :func:`~nodedge.node.Node.eval` is "empty" and return 0. However
 it seems logical, that eval (if successfull) resets the `Node` not to be `Dirty` nor `Invalid`.
-This method is supposed to be overriden by your own implementation. As an example, you can check out
+This method is supposed to be overridden by your own implementation. As an example, you can check out
 the repository's ``examples/example_calculator`` to have an inspiration how to setup the
 `Node` evaluation on your own.
 

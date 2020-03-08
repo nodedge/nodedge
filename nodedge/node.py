@@ -14,7 +14,7 @@ from nodedge.edge import Edge
 from nodedge.graphics_node import GraphicsNode
 from nodedge.node_content import NodeContent
 from nodedge.serializable import Serializable
-from nodedge.socket import Socket, SocketPosition
+from nodedge.socket import Socket, SocketLocation
 from nodedge.utils import dumpException
 
 Pos = TypeVar("Pos", List, Tuple, QPoint, QPointF)
@@ -82,8 +82,8 @@ class Node(Serializable):
         """Initialize properties and socket information"""
         self.title: str = self._title
         self._socketSpacing: int = 22
-        self._inputSocketPosition: SocketPosition = SocketPosition.LEFT_TOP
-        self._outputSocketPosition: SocketPosition = SocketPosition.RIGHT_BOTTOM
+        self._inputSocketPosition: SocketLocation = SocketLocation.LEFT_TOP
+        self._outputSocketPosition: SocketLocation = SocketLocation.RIGHT_BOTTOM
         self._inputAllowsMultiEdges: bool = False
         self._outputAllowsMultiEdges: bool = True
 
@@ -111,7 +111,7 @@ class Node(Serializable):
             socket = Socket(
                 node=self,
                 index=ind,
-                position=self._inputSocketPosition,
+                location=self._inputSocketPosition,
                 socketType=inp,
                 allowsMultiEdges=self._inputAllowsMultiEdges,
                 countOnThisNodeSide=len(inputs),
@@ -123,7 +123,7 @@ class Node(Serializable):
             socket = Socket(
                 node=self,
                 index=ind,
-                position=self._outputSocketPosition,
+                location=self._outputSocketPosition,
                 socketType=out,
                 allowsMultiEdges=self._outputAllowsMultiEdges,
                 countOnThisNodeSide=len(outputs),
@@ -257,7 +257,7 @@ class Node(Serializable):
         :param index: Order number of the Socket. (0, 1, 2, ...)
         :type index: ``int``
         :param position: `Socket Position Constant` describing where the Socket is located.
-        :type position: :class:`~nodedge.socket.SocketPosition`
+        :type position: :class:`~nodedge.socket.SocketLocation`
         :param countOnThisSide: Total number of Sockets on this `Socket Position`
         :type countOnThisSide: ``int``
         :return: Position of described Socket on the `Node`
@@ -268,22 +268,22 @@ class Node(Serializable):
             if (
                 position
                 in (
-                    SocketPosition.LEFT_TOP,
-                    SocketPosition.LEFT_CENTER,
-                    SocketPosition.LEFT_BOTTOM,
+                    SocketLocation.LEFT_TOP,
+                    SocketLocation.LEFT_CENTER,
+                    SocketLocation.LEFT_BOTTOM,
                 )
             )
             else self.graphicsNode.width
         )
 
-        if position in (SocketPosition.LEFT_BOTTOM, SocketPosition.RIGHT_BOTTOM):
+        if position in (SocketLocation.LEFT_BOTTOM, SocketLocation.RIGHT_BOTTOM):
             y: float = (
                 self.graphicsNode.height
                 - self.graphicsNode.edgeRoundness
                 - self.graphicsNode.titleVerticalPadding
                 - index * self._socketSpacing
             )
-        elif position in (SocketPosition.LEFT_CENTER, SocketPosition.RIGHT_CENTER):
+        elif position in (SocketLocation.LEFT_CENTER, SocketLocation.RIGHT_CENTER):
             numberOfSockets: int = countOnThisSide
             nodeHeight: float = self.graphicsNode.height
             topOffset: float = (
@@ -302,7 +302,7 @@ class Node(Serializable):
             if numberOfSockets > 1:
                 y -= self._socketSpacing * (numberOfSockets - 1) / 2
 
-        elif position in (SocketPosition.LEFT_TOP, SocketPosition.RIGHT_TOP):
+        elif position in (SocketLocation.LEFT_TOP, SocketLocation.RIGHT_TOP):
             y = (
                 self.graphicsNode.titleHeight
                 + self.graphicsNode.titleVerticalPadding
@@ -339,7 +339,7 @@ class Node(Serializable):
         self.scene.removeNode(self)
 
     def onMarkedDirty(self):
-        """Called when this `Node` has been marked as `Dirty`. This method is supposed to be overriden"""
+        """Called when this `Node` has been marked as `Dirty`. This method is supposed to be overridden"""
         pass
 
     def markChildrenDirty(self, newValue: bool = True) -> None:
@@ -387,7 +387,7 @@ class Node(Serializable):
             otherNode.markChildrenInvalid(newValue)
 
     def eval(self) -> float:
-        """Evaluate this `Node`. This is supposed to be overriden. See :ref:`evaluation` for more"""
+        """Evaluate this `Node`. This is supposed to be overridden. See :ref:`evaluation` for more"""
         self.isDirty = False
         self.isInvalid = False
         return 0
@@ -527,7 +527,7 @@ class Node(Serializable):
                 newSocket = Socket(
                     node=self,
                     index=socketData["index"],
-                    position=socketData["position"],
+                    location=socketData["position"],
                     socketType=socketData["socketType"],
                     countOnThisNodeSide=numberOfInputs,
                     isInput=True,
@@ -540,7 +540,7 @@ class Node(Serializable):
                 newSocket = Socket(
                     node=self,
                     index=socketData["index"],
-                    position=socketData["position"],
+                    location=socketData["position"],
                     socketType=socketData["socketType"],
                     countOnThisNodeSide=numberOfOutputs,
                     isInput=False,

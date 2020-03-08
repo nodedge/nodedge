@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 
 from nodedge.blocks.block_config import (
     BLOCKS,
-    LISTBOX_MIMETYPE,
+    NODELISTWIDGET_MIMETYPE,
     getClassFromOperationCode,
 )
 from nodedge.edge import EdgeType
@@ -16,7 +16,7 @@ from nodedge.node import Node
 from nodedge.utils import dumpException
 
 
-class MdiSubWindow(EditorWidget):
+class MdiWidget(EditorWidget):
     def __init__(self):
         super().__init__()
 
@@ -78,7 +78,7 @@ class MdiSubWindow(EditorWidget):
         self.__logger.debug("Everything done in after close event")
 
     def onDragEnter(self, event: QDragEnterEvent):
-        if not event.mimeData().hasFormat(LISTBOX_MIMETYPE):
+        if not event.mimeData().hasFormat(NODELISTWIDGET_MIMETYPE):
             self.__logger.warning(
                 f"Dragging denied: Wrong Mime format ({event.mimeData().formats()})"
             )
@@ -88,14 +88,14 @@ class MdiSubWindow(EditorWidget):
         event.acceptProposedAction()
 
     def onDrop(self, event: QDropEvent):
-        if not event.mimeData().hasFormat(LISTBOX_MIMETYPE):
+        if not event.mimeData().hasFormat(NODELISTWIDGET_MIMETYPE):
             event.ignore()
             self.__logger.warning(
                 f"Dropping denied: Wrong Mime format ({event.mimeData().formats()})"
             )
             return
 
-        eventData = event.mimeData().data(LISTBOX_MIMETYPE)
+        eventData = event.mimeData().data(NODELISTWIDGET_MIMETYPE)
         dataStream = QDataStream(eventData, QIODevice.ReadOnly)
         pixmap = QPixmap()
 
@@ -217,7 +217,7 @@ class MdiSubWindow(EditorWidget):
         if selected and action == bezierAct:
             selected.edgeType = EdgeType.BEZIER
         if selected and action == directAct:
-            selected.edgeType = EdgeType.DIRECT
+            selected.edgeType = EdgeType.STRAIGHT
 
     def mouseReleaseEvent(self, ev):
         super().mouseReleaseEvent(ev)

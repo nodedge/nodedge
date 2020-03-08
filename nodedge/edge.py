@@ -19,7 +19,7 @@ class EdgeType(IntEnum):
     Edge Type Constants
     """
 
-    DIRECT = 1  #:
+    STRAIGHT = 1  #:
     BEZIER = 2  #:
 
 
@@ -148,7 +148,7 @@ class Edge(Serializable):
 
         self._edgeType = value
 
-        if self.edgeType == EdgeType.DIRECT:
+        if self.edgeType == EdgeType.STRAIGHT:
             self.graphicsEdge: GraphicsEdge = GraphicsEdgeDirect(self)
         else:
             self.graphicsEdge = GraphicsEdgeBezier(self)

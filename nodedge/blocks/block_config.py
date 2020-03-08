@@ -3,7 +3,7 @@ from typing import Dict, TypeVar
 
 from nodedge.blocks.block import Block
 
-LISTBOX_MIMETYPE = "application/x-item"
+NODELISTWIDGET_MIMETYPE = "application/x-item"
 
 OP_NODE_INPUT = 1
 OP_NODE_OUTPUT = 2

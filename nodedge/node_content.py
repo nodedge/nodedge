@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """A module containing base class for Node's content graphical representation. It also contains example of
-overriden Text Widget which can pass to it's parent notification about currently being modified."""
+overridden Text Widget which can pass to it's parent notification about currently being modified."""
 
 from collections import OrderedDict
 from typing import Optional, cast
@@ -55,7 +55,7 @@ class NodeContent(QWidget, Serializable):
         Helper function which sets editingFlag inside :py:class:`~nodedge.graphics_view.QDMGraphicsView` class.
 
         This is a helper function to handle keys inside nodes with ``QLineEdits`` or ``QTextEdits`` (you can
-        use overriden :py:class:`QDMTextEdit` class) and with QGraphicsView class method ``keyPressEvent``.
+        use overridden :py:class:`QDMTextEdit` class) and with QGraphicsView class method ``keyPressEvent``.
 
         :param value: new value for editing flag
         """
@@ -93,14 +93,14 @@ class AckTextEdit(QTextEdit):
     """
     .. note::
 
-        This class is example of ``QTextEdit`` modification to be able to handle `Delete` key with overriden
+        This class is example of ``QTextEdit`` modification to be able to handle `Delete` key with overridden
         Qt's ``keyPressEvent`` (when not using ``QActions`` in menu or toolbar)
 
-    Overriden ``QTextEdit`` which sends notification about being edited to parent's container :py:class:`QDMNodeContentWidget`
+    overridden ``QTextEdit`` which sends notification about being edited to parent's container :py:class:`QDMNodeContentWidget`
     """
 
     def focusInEvent(self, event: QFocusEvent) -> None:
-        """Example of overriden focusInEvent to mark start of editing
+        """Example of overridden focusInEvent to mark start of editing
 
         :param event: Qt's focus event
         :type event: QFocusEvent
@@ -111,7 +111,7 @@ class AckTextEdit(QTextEdit):
         super().focusInEvent(event)
 
     def focusOutEvent(self, event: QFocusEvent) -> None:
-        """Example of overriden focusOutEvent to mark end of editing
+        """Example of overridden focusOutEvent to mark end of editing
 
         :param event: Qt's focus event
         :type event: QFocusEvent

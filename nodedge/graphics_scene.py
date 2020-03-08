@@ -70,7 +70,7 @@ class GraphicsScene(QGraphicsScene):
         self.scene_height = 64000
 
     def dragMoveEvent(self, event: QGraphicsSceneDragDropEvent) -> None:
-        """Overriden Qt's dragMoveEvent to enable Qt's Drag Events"""
+        """overridden Qt's dragMoveEvent to enable Qt's Drag Events"""
         pass
 
     def setScene(self, width, height):

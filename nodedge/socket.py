@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-A module containing Nodedge's class for representing Socket and Socket Position Constants.
+A module containing Nodedge's class for representing Socket and Socket Location Constants.
 """
 
 import logging
@@ -12,7 +12,7 @@ from nodedge.graphics_socket import GraphicsSocket
 from nodedge.serializable import Serializable
 
 
-class SocketPosition(IntEnum):
+class SocketLocation(IntEnum):
     LEFT_TOP = 1  #:
     LEFT_CENTER = 2  #:
     LEFT_BOTTOM = 3  #:
@@ -28,7 +28,7 @@ class Socket(Serializable):
         self,
         node: "Node",  # type: ignore # noqa: F821
         index: int = 0,
-        position: int = SocketPosition.LEFT_TOP,
+        location: int = SocketLocation.LEFT_TOP,
         socketType: int = 1,
         allowsMultiEdges: bool = True,
         countOnThisNodeSide: int = 1,
@@ -39,15 +39,15 @@ class Socket(Serializable):
         :type node: :class:`~nodedge.node.Node`
         :param index: Current index of this socket in the position
         :type index: ``int``
-        :param position: Socket position
-        :type position: :class:`~nodedge.socket.SocketPosition`
-        :param socket_type: Constant defining type(color) of this socket
-        :param multi_edges: Can this socket have multiple `Edges` connected?
-        :type multi_edges: ``bool``
-        :param count_on_this_node_side: number of total sockets on this position
-        :type count_on_this_node_side: ``int``
-        :param is_input: Is this an input `Socket`?
-        :type is_input: ``bool``
+        :param location: Socket position
+        :type location: :class:`~nodedge.socket.SocketLocation`
+        :param socketType: Constant defining type(color) of this socket
+        :param allowsMultiEdges: Can this socket have multiple `Edges` connected?
+        :type allowsMultiEdges: ``bool``
+        :param countOnThisNodeSide: number of total sockets on this position
+        :type countOnThisNodeSide: ``int``
+        :param isInput: Is this an input `Socket`?
+        :type isInput: ``bool``
 
         :Instance Attributes:
 
@@ -57,7 +57,7 @@ class Socket(Serializable):
             - **position** - Socket position. See :class:`~nodedge.socket.SocketPosition`
             - **index** - Current index of this socket in the position
             - **socket_type** - Constant defining type(color) of this socket
-            - **count_on_this_node_side** - number of sockets on this position
+            - **count_on_this_node_side** - number of sockets on this side
             - **is_multi_edges** - ``True`` if `Socket` can contain multiple `Edges`
             - **is_input** - ``True`` if this socket serves for Input
             - **is_output** - ``True`` if this socket serves for Output
@@ -65,7 +65,7 @@ class Socket(Serializable):
         super().__init__()
         self.node: "Node" = node  # type: ignore # noqa: F821
         self.index: int = index
-        self.position: int = position
+        self.location: int = location
         self.countOnThisNodeSide: int = countOnThisNodeSide
         self.isInput: bool = isInput
 
@@ -83,7 +83,7 @@ class Socket(Serializable):
     def __repr__(self):
         return (
             f"0x{hex(id(self))[-4:]} Socket({self.index}, "
-            f"{self.position}, {self.socketType}, {self.allowsMultiEdges})"
+            f"{self.location}, {self.socketType}, {self.allowsMultiEdges})"
         )
 
     def updateSocketPos(self) -> None:
@@ -91,7 +91,7 @@ class Socket(Serializable):
                 inside :class:`~nodedge.node.Node`."""
 
         socketPos = self.node.socketPos(
-            self.index, self.position, self.countOnThisNodeSide
+            self.index, self.location, self.countOnThisNodeSide
         )
         self.graphicsSocket.setPos(socketPos)
 
@@ -102,9 +102,9 @@ class Socket(Serializable):
         :rtype: ``x, y`` position
         """
 
-        ret = self.node.socketPos(self.index, self.position, self.countOnThisNodeSide)
+        ret = self.node.socketPos(self.index, self.location, self.countOnThisNodeSide)
         self.__logger.debug(
-            f"getSocketPos: {self.index}, {self.position}, {self.node}, {ret}"
+            f"getSocketPos: {self.index}, {self.location}, {self.node}, {ret}"
         )
 
         return cast(List, ret)
@@ -149,8 +149,8 @@ class Socket(Serializable):
         else:
             # Probably older version of file, make right socket multi edged by default
             return data["position"] in (
-                SocketPosition.RIGHT_BOTTOM,
-                SocketPosition.RIGHT_TOP,
+                SocketLocation.RIGHT_BOTTOM,
+                SocketLocation.RIGHT_TOP,
             )
 
     # noinspection PyUnresolvedReferences
@@ -167,7 +167,7 @@ class Socket(Serializable):
                 ("id", self.id),
                 ("index", self.index),
                 ("allowsMultiEdges", self.allowsMultiEdges),
-                ("position", self.position),
+                ("position", self.location),
                 ("socketType", self.socketType),
             ]
         )

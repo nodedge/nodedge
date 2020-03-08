@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from nodedge.socket import SocketPosition
+from nodedge.socket import SocketLocation
 
 
 class GraphicsEdge(QGraphicsPathItem):
@@ -281,14 +281,14 @@ class GraphicsEdgeBezier(GraphicsEdge):
         cpy_d: float = 0
 
         if self.edge.sourceSocket is not None:
-            sspos = self.edge.sourceSocket.position
+            sspos = self.edge.sourceSocket.location
 
             if (
                 sx > dx
-                and sspos in [SocketPosition.RIGHT_TOP, SocketPosition.RIGHT_BOTTOM]
+                and sspos in [SocketLocation.RIGHT_TOP, SocketLocation.RIGHT_BOTTOM]
             ) or (
                 sx < dx
-                and sspos in [SocketPosition.LEFT_BOTTOM, SocketPosition.LEFT_TOP]
+                and sspos in [SocketLocation.LEFT_BOTTOM, SocketLocation.LEFT_TOP]
             ):
                 cpx_d *= -1.0
                 cpx_s *= -1.0

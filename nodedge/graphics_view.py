@@ -37,8 +37,8 @@ class GraphicsView(QGraphicsView):
 
     def __init__(self, graphicsScene, parent=None):
         """
-        :param grScene: reference to the :class:`~nodedge.graphics_scene.QDMGraphicsScene`
-        :type grScene: :class:`~nodedge.graphics_scene.QDMGraphicsScene`
+        :param graphicsScene: reference to the :class:`~nodedge.graphics_scene.QDMGraphicsScene`
+        :type graphicsScene: :class:`~nodedge.graphics_scene.QDMGraphicsScene`
         :param parent: parent widget
         :type parent: ``QWidget``
 
@@ -395,10 +395,10 @@ class GraphicsView(QGraphicsView):
         return False
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
-        """Overriden Qt's ``mouseMoveEvent`` handling Scene/View logic"""
+        """overridden Qt's ``mouseMoveEvent`` handling Scene/View logic"""
         if self.mode == DragMode.EDGE_DRAG:
             pos = self.mapToScene(event.pos())
-            self.dragEdge.graphicsEdge.setDestination(pos.x(), pos.y())
+            self.dragEdge.graphicsEdge.destinationPos = pos
             self.dragEdge.graphicsEdge.update()
 
         if self.mode == DragMode.EDGE_CUT:
@@ -416,7 +416,7 @@ class GraphicsView(QGraphicsView):
     def keyPressEvent(self, event: QKeyEvent) -> None:
         """
             .. note::
-                This overriden Qt's method was used for handling key shortcuts, before we implemented propper
+                This overridden Qt's method was used for handling key shortcuts, before we implemented propper
                 ``QWindow`` with Actions and Menu. Still the commented code serves as an example how to handle
                 key presses without Qt's framework for Actions and shortcuts. There can be also found an example
                 how to solve the problem when Node does contain Text/LineEdit and we press `Delete`
@@ -454,7 +454,7 @@ class GraphicsView(QGraphicsView):
             super().keyPressEvent(event)
 
     def wheelEvent(self, event):
-        """overriden Qt's ``wheelEvent``. This handles zooming"""
+        """overridden Qt's ``wheelEvent``. This handles zooming"""
         # Compute zoom factor
         zoomOutFactor = 1.0 / self.zoomInFactor
 
