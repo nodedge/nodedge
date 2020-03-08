@@ -146,6 +146,7 @@ class Scene(Serializable):
         Register callback for `Has Been Modified` event
 
         :param callback: callback function
+        :type callback: ``Callable[[], None]``
         """
         self._hasBeenModifiedListeners.append(callback)
 
@@ -154,6 +155,7 @@ class Scene(Serializable):
         Register callback for `Item Selected` event
 
         :param callback: callback function
+        :type callback: ``Callable[[], None]``
         """
         self._itemSelectedListeners.append(callback)
 
@@ -314,7 +316,7 @@ class Scene(Serializable):
     def getNodeClassFromData(self, data):
         """
         Takes `Node` serialized data and determines which `Node Class` to instantiate according the description
-        in the serialized Node
+        in the serialized Node.
 
         :param data: serialized `Node` object data
         :type data: ``dict``

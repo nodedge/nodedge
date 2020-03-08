@@ -2,7 +2,6 @@
 """
 Editor window module containing :class:`~nodedge.editor_window.EditorWindow` class.
 """
-
 import json
 import logging
 import os

@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+"""
+Multi Document Interface window module containing :class:`~nodedge.mdi_window.MdiWindow` class.
+"""
 import logging
 import os
 import typing
@@ -22,6 +26,12 @@ from nodedge.utils import dumpException, loadStyleSheets
 
 
 class MdiWindow(EditorWindow):
+    """
+    :class:`~nodedge.mdi_window.MdiWindow` class.
+
+    The mdi window is the main window of Nodedge.
+    """
+
     def __init__(self):
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
@@ -29,7 +39,15 @@ class MdiWindow(EditorWindow):
 
     @property
     def currentEditorWidget(self) -> EditorWidget:
-        """ we're returning NodedgeWidget here... """
+        """
+        Property representing the :class:`~nodedge.editor_widget.EditorWidget` of the active sub-window.
+
+        .. note::
+
+            This property cannot be set.
+
+        :type: :class:`~nodedge.editor_widget.EditorWidget`
+        """
         activeSubWindow = self.mdiArea.activeSubWindow()
         if (
             activeSubWindow
@@ -41,6 +59,11 @@ class MdiWindow(EditorWindow):
 
     # noinspection PyAttributeOutsideInit
     def initUI(self):
+        """
+        Set up this ``QMainWindow``.
+
+        Create the mdi area, actions and menus
+        """
         self.companyName = "Nodedge"
         self.productName = "Nodedge"
         self.icon = QIcon(
@@ -85,10 +108,16 @@ class MdiWindow(EditorWindow):
         self.setWindowTitle(self.productName)
 
     def createStatusBar(self):
+        """
+        Create the status bar describing Nodedge status and the mouse position.
+        """
         self.statusBar().showMessage("Ready")
 
     # noinspection PyArgumentList
     def createActions(self):
+        """
+        Create `File`, `Edit` and `About` actions.
+        """
         super().createActions()
 
         self.closeAct = QAction(
@@ -156,6 +185,9 @@ class MdiWindow(EditorWindow):
         )
 
     def createToolBars(self):
+        """
+        Create the `File` and `Edit` toolbar contaning few of their menu actions.
+        """
         self.fileToolBar = self.addToolBar("File")
         self.fileToolBar.addAction(self.newAct)
         self.fileToolBar.addAction(self.openAct)
@@ -167,36 +199,49 @@ class MdiWindow(EditorWindow):
         self.editToolBar.addAction(self.pasteAct)
 
     def createMenus(self):
+        """
+        Create `Window` and `Help` menus.
+
+        `Window` menu allows to navigate between the sub-windows.
+        `Help` menu allows to display know more about Nodedge.
+        """
         super().createMenus()
 
         self.windowMenu = self.menuBar().addMenu("&Window")
-        self.updateWindowMenu()
         self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
-
         self.helpMenu: QMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.aboutAct)
 
         self.editMenu.aboutToShow.connect(self.updateEditMenu)
 
     def updateMenus(self):
+        """
+        Update menus accordingly to the presence or not of sub-window in the editor,
+        enabling and disabling file manipulation actions, for example.
+        """
+
+        self.updateFileMenu()
+        self.updateEditMenu()
+        self.updateWindowMenu()
+
+    def updateFileMenu(self):
+        """
+        Update file menu.
+        """
         active = self.currentEditorWidget
         hasMdiChild = active is not None
-
         self.saveAct.setEnabled(hasMdiChild)
         self.saveAsAct.setEnabled(hasMdiChild)
         self.closeAct.setEnabled(hasMdiChild)
         self.closeAllAct.setEnabled(hasMdiChild)
-        self.tileAct.setEnabled(hasMdiChild)
-        self.cascadeAct.setEnabled(hasMdiChild)
-        self.nextAct.setEnabled(hasMdiChild)
-        self.previousAct.setEnabled(hasMdiChild)
-        self.separatorAct.setVisible(hasMdiChild)
-
-        self.updateEditMenu()
 
     def updateWindowMenu(self):
+        """
+        Update window menu.
+        """
+        active = self.currentEditorWidget
+        hasMdiChild = active is not None
         self.windowMenu.clear()
-
         self.windowMenu.addAction(self.nodeToolbarAct)
 
         self.windowMenu.addSeparator()
@@ -211,6 +256,12 @@ class MdiWindow(EditorWindow):
         self.windowMenu.addAction(self.nextAct)
         self.windowMenu.addAction(self.previousAct)
         self.windowMenu.addAction(self.separatorAct)
+
+        self.tileAct.setEnabled(hasMdiChild)
+        self.cascadeAct.setEnabled(hasMdiChild)
+        self.nextAct.setEnabled(hasMdiChild)
+        self.previousAct.setEnabled(hasMdiChild)
+        self.separatorAct.setVisible(hasMdiChild)
 
         windows = self.mdiArea.subWindowList()
         self.separatorAct.setVisible(len(windows) != 0)
@@ -229,6 +280,9 @@ class MdiWindow(EditorWindow):
             self.windowMapper.setMapping(action, window)
 
     def updateEditMenu(self):
+        """
+        Update edit menu.
+        """
         try:
             # self.__logger.debug("Update edit menu")
 
@@ -248,6 +302,9 @@ class MdiWindow(EditorWindow):
             dumpException(e)
 
     def _createMdiSubWindow(self, childWidget=None):
+        """
+        Create a new sub window containing a :class:`~nodedge.editor_widget.EditorWidget`
+        """
         editor = childWidget if childWidget is not None else MdiWidget()
         subWindow = self.mdiArea.addSubWindow(editor)
 
