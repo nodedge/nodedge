@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-A module containing Graphics representation of :class:`~nodedge.node.Node`
+Graphics node module containing :class:`~nodedge.node.Node` class.
 """
 
 import logging
+from typing import Optional
 
 from PyQt5.QtCore import QRectF, Qt
 from PyQt5.QtGui import QBrush, QColor, QFont, QPainterPath, QPen
@@ -16,19 +17,17 @@ from PyQt5.QtWidgets import (
 
 
 class GraphicsNode(QGraphicsItem):
-    """Class describing Graphics representation of :class:`~nodedge.node.Node`"""
+    """:class:`~nodedge.node.Node` class
 
-    def __init__(self, node, parent=None):
+    The graphics node is the graphical representation of a node.
+    """
+
+    def __init__(self, node: "Node", parent: Optional[QGraphicsItem] = None) -> None:  # type: ignore
         """
         :param node: reference to :class:`~nodedge.node.Node`
         :type node: :class:`~nodedge.node.Node`
         :param parent: parent widget
-        :type parent: QWidget
-
-        :Instance Attributes:
-
-            - **node** - reference to :class:`~nodedge.node.Node`
-            - **content** - reference to `Node Content`
+        :type parent: ``Optional[QGraphicsItem]``
         """
         super().__init__(parent)
         self.node = node
@@ -44,11 +43,12 @@ class GraphicsNode(QGraphicsItem):
 
     @property
     def title(self):
-        """title of this `Node`
+        """
+        Title of this graphical node
 
-        :getter: current Graphics Node title
-        :setter: stores and make visible the new title
-        :type: str
+        :getter: Return current Graphics Node title
+        :setter: Store and make visible the new title
+        :type: ``str``
         """
         return self._title
 
@@ -66,7 +66,9 @@ class GraphicsNode(QGraphicsItem):
         self._lastSelectedState = value
 
     def initUI(self) -> None:
-        """Set up this ``QGraphicsItem``"""
+        """
+        Set up this ``QGraphicsItem``
+        """
         self.initSizes()
         self.initStyle()
         self.initTitle()
@@ -78,7 +80,9 @@ class GraphicsNode(QGraphicsItem):
 
     # noinspection PyAttributeOutsideInit
     def initStyle(self) -> None:
-        """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
+        """
+        Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``
+        """
         self._titleColor: QColor = QColor(Qt.white)
         self._colorHovered: QColor = QColor("#FF37A6FF")
 
@@ -97,7 +101,9 @@ class GraphicsNode(QGraphicsItem):
 
     # noinspection PyAttributeOutsideInit
     def initSizes(self) -> None:
-        """Set up internal attributes like `width`, `height`, etc."""
+        """
+        Set up internal attributes like `width`, `height`, etc.
+        """
         self.width: int = 180
         self.height: int = 240
         self.edgeRoundness: float = 5.0
@@ -108,7 +114,9 @@ class GraphicsNode(QGraphicsItem):
 
     # noinspection PyAttributeOutsideInit
     def initTitle(self) -> None:
-        """Set up the title Graphics representation: font, color, position, etc."""
+        """
+        Set up the title Graphics representation: font, color, position, etc.
+        """
         self.titleItem = QGraphicsTextItem(self)
         self.titleItem.setDefaultTextColor(self._titleColor)
         self.titleItem.setFont(self._titleFont)
@@ -120,7 +128,9 @@ class GraphicsNode(QGraphicsItem):
 
     # noinspection PyAttributeOutsideInit
     def initContent(self) -> None:
-        """Set up the `grContent` - ``QGraphicsProxyWidget`` to have a container for `Graphics Content`"""
+        """
+        Set up the `grContent` - ``QGraphicsProxyWidget`` to have a container for `GraphicsContent`
+        """
         self.graphicsContent = QGraphicsProxyWidget(self)
         self.content.setGeometry(
             self.edgePadding,
@@ -131,11 +141,15 @@ class GraphicsNode(QGraphicsItem):
         self.graphicsContent.setWidget(self.content)
 
     def boundingRect(self):
-        """Defining Qt' bounding rectangle"""
+        """
+        Define Qt' bounding rectangle
+        """
         return QRectF(0, 0, self.width, self.height).normalized()
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
-        """Painting the rounded rectanglar `Node`"""
+        """
+        Paint the rounded rectangular `Node`
+        """
         # title
         pathTitle = QPainterPath()
         pathTitle.setFillRule(Qt.WindingFill)
@@ -194,7 +208,9 @@ class GraphicsNode(QGraphicsItem):
         painter.drawPath(pathOutline.simplified())
 
     def mouseMoveEvent(self, event):
-        """Overridden event to detect that we moved with this Node"""
+        """
+        Overridden event to detect that we moved with this graphical node
+        """
         super().mouseMoveEvent(event)
 
         # TODO: Optimize this condition. Just update the selected blocks.
@@ -205,7 +221,9 @@ class GraphicsNode(QGraphicsItem):
         self._wasMoved = True
 
     def mouseReleaseEvent(self, event):
-        """Overridden event to handle when we moved, selected or deselected this `Node``"""
+        """
+        Overridden event to handle when we moved, selected or deselected this graphical node
+        """
         super().mouseReleaseEvent(event)
 
         # Handle when node moved
@@ -233,15 +251,22 @@ class GraphicsNode(QGraphicsItem):
             self.onSelected()
 
     def hoverEnterEvent(self, event: QGraphicsSceneHoverEvent) -> None:
-        """Handle hover effect"""
+        """
+        Handle Qt's hover event.
+        It adds a highlighting boundary around the graphical node.
+        """
         self.hovered = True
         self.update()
 
     def hoverLeaveEvent(self, event: QGraphicsSceneHoverEvent) -> None:
-        """Handle hover effect"""
+        """
+        Handle Qt's hover effect
+        """
         self.hovered = False
         self.update()
 
     def onSelected(self):
-        """Our event handling when the node was selected"""
+        """
+        Handle when the node has been selected
+        """
         self.node.scene.graphicsScene.itemSelected.emit()
