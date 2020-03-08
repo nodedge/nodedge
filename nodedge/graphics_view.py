@@ -380,7 +380,7 @@ class GraphicsView(QGraphicsView):
 
         try:
             self.dragEdge.remove()  # type: ignore
-        except:
+        except Exception as e:
             self.__logger.warning("Impossible to remove dragEdge")
         self.dragEdge = None
 
