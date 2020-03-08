@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-A module containing Nodedge's class for representing Socket and Socket Location Constants.
+Node content module containing Nodedge's class for representing :class:`~nodedge.socket.Socket` class and
+:class:`~nodedge.socket.SocketLocation` constants.
 """
 
 import logging
@@ -22,7 +23,9 @@ class SocketLocation(IntEnum):
 
 
 class Socket(Serializable):
-    """Class representing Socket."""
+    """
+    Class representing input/output sockets of the nodes.
+    """
 
     def __init__(
         self,
@@ -35,32 +38,21 @@ class Socket(Serializable):
         isInput: bool = False,
     ):
         """
-        :param node: reference to the :class:`~nodedge.node.Node` containing this `Socket`
+        :param node: reference to the :class:`~nodedge.node.Node` containing this socket
         :type node: :class:`~nodedge.node.Node`
-        :param index: Current index of this socket in the position
+        :param index: current index of this socket in the position
         :type index: ``int``
-        :param location: Socket position
+        :param location: socket position
         :type location: :class:`~nodedge.socket.SocketLocation`
-        :param socketType: Constant defining type(color) of this socket
-        :param allowsMultiEdges: Can this socket have multiple `Edges` connected?
+        :param socketType: constant defining type of this socket. Every type is visually
+            associated to a color.
+        :param allowsMultiEdges: attribute that defines if this socket
+            can have multiple connected edges
         :type allowsMultiEdges: ``bool``
-        :param countOnThisNodeSide: number of total sockets on this position
+        :param countOnThisNodeSide: number of total sockets on this socket side, i.e. input/output
         :type countOnThisNodeSide: ``int``
-        :param isInput: Is this an input `Socket`?
+        :param isInput: attribute that defines whether this is an input or an output socket
         :type isInput: ``bool``
-
-        :Instance Attributes:
-
-            - **node** - reference to the :class:`~nodedge.node.Node` containing this `Socket`
-            - **edges** - list of `Edges` connected to this `Socket`
-            - **grSocket** - reference to the :class:`~nodedge.graphics_socket.QDMGraphicsSocket`
-            - **position** - Socket position. See :class:`~nodedge.socket.SocketPosition`
-            - **index** - Current index of this socket in the position
-            - **socket_type** - Constant defining type(color) of this socket
-            - **count_on_this_node_side** - number of sockets on this side
-            - **is_multi_edges** - ``True`` if `Socket` can contain multiple `Edges`
-            - **is_input** - ``True`` if this socket serves for Input
-            - **is_output** - ``True`` if this socket serves for Output
         """
         super().__init__()
         self.node: "Node" = node  # type: ignore # noqa: F821
@@ -87,8 +79,10 @@ class Socket(Serializable):
         )
 
     def updateSocketPos(self) -> None:
-        """Helper function to set `Graphics Socket` position. Exact socket position is calculated
-                inside :class:`~nodedge.node.Node`."""
+        """
+        Helper function to set the graphical socket position.
+        The exact socket position is calculated inside :class:`~nodedge.node.Node`.
+        """
 
         socketPos = self.node.socketPos(
             self.index, self.location, self.countOnThisNodeSide
@@ -97,7 +91,7 @@ class Socket(Serializable):
 
     def socketPos(self) -> List[float]:
         """
-        :return: Returns this `Socket` position according the implementation stored in
+        :return: return this socket's position according the implementation stored in
             :class:`~nodedge.node.Node`
         :rtype: ``x, y`` position
         """
@@ -112,9 +106,9 @@ class Socket(Serializable):
     # noinspection PyUnresolvedReferences
     def addEdge(self, edge: Optional["Edge"] = None) -> None:  # type: ignore # noqa: F821
         """
-        Append an Edge to the list of connected Edges
+        Append an edge to the list of the connected edges.
 
-        :param edge: :class:`~nodedge.edge.Edge` to connect to this `Socket`
+        :param edge: :class:`~nodedge.edge.Edge` to connect to this socket
         :type edge: :class:`~nodedge.edge.Edge`
         """
 
@@ -124,7 +118,7 @@ class Socket(Serializable):
     # noinspection PyUnresolvedReferences
     def removeEdge(self, edgeToRemove: "Edge") -> None:  # type: ignore # noqa: F821
         """
-        Disconnect passed :class:`~nodedge.edge.Edge` from this `Socket`
+        Disconnect passed :class:`~nodedge.edge.Edge` from this socket
         :param edgeToRemove: :class:`~nodedge.edge.Edge` to disconnect
         :type edgeToRemove: :class:`~nodedge.edge.Edge`
         """
@@ -135,14 +129,18 @@ class Socket(Serializable):
 
     def determineAllowsMultiEdges(self, data):
         """
-        Deserialization helper function. In our tutorials we create new version of graph data format.
-        This function is here to help solve the issue of opening older files in the newer format.
+        Deserialization helper function.
+
+        .. note::
+
+            This function is here to help solve the issue of opening older files in the newer format.
+
         If the 'multi_edges' param is missing in the dictionary, we determine if this `Socket`
         should support multiple `Edges`.
 
-        :param data: `Socket` data in ``dict`` format for deserialization
+        :param data: socket's data in ``dict`` format for deserialization
         :type data: ``dict``
-        :return: ``True`` if this `Socket` should support multi_edges
+        :return: ``True`` if this socket should support multiple edges
         """
         if "allowsMultiEdges" in data:
             return data["allowsMultiEdges"]
@@ -155,7 +153,9 @@ class Socket(Serializable):
 
     # noinspection PyUnresolvedReferences
     def removeAllEdges(self) -> None:
-        """Disconnect all `Edges` from this `Socket`"""
+        """
+        Disconnect all edges from this socket.
+        """
         while self.edges:
             edge: "Edge" = self.edges.pop(0)  # type: ignore # noqa: F821
             self.__logger.debug(f"Removing {edge} from {self}")

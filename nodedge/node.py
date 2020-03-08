@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-A module containing Nodedge's class for representing `Node`.
+Node module containing :class:`~nodedge.node.Node` class.
 """
 
 
@@ -21,7 +21,7 @@ Pos = TypeVar("Pos", List, Tuple, QPoint, QPointF)
 
 
 class Node(Serializable):
-    """Class representing `Node` in the `Scene`."""
+    """:class:`~nodedge.node.Node` class representing a node in the `Scene`."""
 
     def __init__(
         self,
@@ -33,18 +33,12 @@ class Node(Serializable):
         """
         :param scene: reference to the :class:`~nodedge.scene.Scene`
         :type scene: :class:`~nodedge.scene.Scene`
-        :param title: Node Title shown in Scene
-        :type title: str
-        :param inputSocketTypes: list of :class:`~nodedge.socket.Socket` types from which the `Sockets` will be auto created
-        :param inputSocketTypes: list of :class:`~nodedge.socket.Socket` types from which the `Sockets` will be auto created
-
-        :Instance Attributes:
-
-            - **scene** - reference to the :class:`~nodedge.scene.Scene`
-            - **grNode** - Instance of :class:`~nodedge.graphics_node.QDMGraphicsNode` handling graphical representation in the ``QGraphicsScene``. Automatically created in constructor
-            - **content** - Instance of :class:`~nodedge.graphics_content.QDMGraphicsContent` which is child of ``QWidget`` representing container for all inner widgets inside of the Node. Automatically created in constructor
-            - **inputs** - list containing Input :class:`~nodedge.socket.Socket` instances
-            - **outputs** - list containing Output :class:`~nodedge.socket.Socket` instances
+        :param title: node title shown in scene
+        :type title: ``str``
+        :param inputSocketTypes: list of types of the input `Sockets`
+        :type inputSocketTypes: ``Collection[int]``
+        :param outputSocketTypes: list of types of the output `Sockets`
+        :type outputSocketTypes: ``Collection[int]``
         """
 
         super().__init__()
@@ -73,13 +67,17 @@ class Node(Serializable):
 
     # noinspection PyAttributeOutsideInit
     def initInnerClasses(self) -> None:
-        """Sets up graphics node and content widget"""
+        """
+        Set up graphics node and content widget.
+        """
         self.content: NodeContent = NodeContent(self)
         self.graphicsNode: GraphicsNode = GraphicsNode(self)
 
     # noinspection PyAttributeOutsideInit
     def initSettings(self) -> None:
-        """Initialize properties and socket information"""
+        """
+        Initialize properties and sockets information.
+        """
         self.title: str = self._title
         self._socketSpacing: int = 22
         self._inputSocketPosition: SocketLocation = SocketLocation.LEFT_TOP
@@ -91,13 +89,13 @@ class Node(Serializable):
         self, inputs: Collection[int], outputs: Collection[int], reset: bool = True
     ) -> None:
         """
-        Create sockets for inputs and outputs
+        Create input and output sockets.
 
-        :param inputs: list of Socket Types (int)
-        :type inputs: ``list``
-        :param outputs: list of Socket Types (int)
-        :type outputs: ``list``
-        :param reset: if ``True`` destroys and removes old `Sockets`
+        :param inputs: list of types of the input `Sockets`. Every type is associated with a ``int``
+        :type inputs: ``Collection[int]``
+        :param outputs: list of types of the input `Sockets`
+        :type outputs: ``Collection[int]``
+        :param reset: if ``True`` destroy and remove old `Sockets`
         :type reset: ``bool``
         """
         if reset and hasattr(self, "inputs") and hasattr(self, "outputs"):
@@ -106,7 +104,7 @@ class Node(Serializable):
             self.inputSockets = []
             self.outputSockets = []
 
-        # Create new sockets.
+        # Create new sockets
         for ind, inp in enumerate(inputs):
             socket = Socket(
                 node=self,
@@ -133,7 +131,7 @@ class Node(Serializable):
 
     def onEdgeConnectionChanged(self, newEdge: Edge) -> None:
         """
-        Event handling that any connection (`Edge`) has changed. Currently not used...
+        Handle event associated with a change in any of the connections (`Edge`). Currently unused.
 
         :param newEdge: reference to the changed :class:`~nodedge.edge.Edge`
         :type newEdge: :class:`~nodedge.edge.Edge`
@@ -142,8 +140,8 @@ class Node(Serializable):
 
     def onInputChanged(self, newEdge: Edge):
         """
-        Event handling when Node's input Edge has changed. We auto-mark this `Node` to be `Dirty` with all it's
-        descendants
+        Handle event associated with a change in this node's input edge. When it happens, this node and all
+        its descendants are labelled as dirty.
 
         :param newEdge: reference to the changed :class:`~nodedge.edge.Edge`
         :type newEdge: :class:`~nodedge.edge.Edge`
@@ -156,11 +154,11 @@ class Node(Serializable):
     @property
     def title(self) -> str:
         """
-        Title shown in the scene
+        Title shown in the scene.
 
-        :getter: return current Node title
-        :setter: sets Node title and passes it to Graphics Node class
-        :type: ``str``
+        :getter: return current node title
+        :setter: set node title and pass it to the graphical node
+        :rtype: ``str``
         """
         return self._title
 
@@ -172,9 +170,9 @@ class Node(Serializable):
     @property
     def pos(self):
         """
-        Retrieve Node's position in the Scene
+        Retrieve node's position in the scene
 
-        :return: Node position
+        :return: node position
         :rtype: ``QPointF``
         """
         return self.graphicsNode.pos()  # QPointF
@@ -195,20 +193,18 @@ class Node(Serializable):
 
     @property
     def isDirty(self):
-        """Is this node marked as `Dirty`
+        """
+        Property stating whether or not this node is marked as `Dirty`, i.e. the node has not been
+        evaluated since last node's input/output change.
 
-        :return: ``True`` if `Node` is marked as `Dirty`
-        :rtype: ``bool``
+        :getter: ``True`` if this node is marked as `Dirty`, ``False`` otherwise
+        :setter: set the dirtiness status of this node
+        :type: ``bool``
         """
         return self._isDirty
 
     @isDirty.setter
     def isDirty(self, value: bool):
-        """Mark this `Node` as `Dirty`. See :ref:`evaluation` for more
-
-        :param value: ``True`` if this `Node` should be `Dirty`. ``False`` if you want to un-dirty this `Node`
-        :type value: ``bool``
-        """
         if self._isDirty != value:
             self._isDirty = value
 
@@ -217,20 +213,19 @@ class Node(Serializable):
 
     @property
     def isInvalid(self):
-        """Is this node marked as `Invalid`?
+        """
+        Property stating whether or not this node is marked as `Invalid`, i.e. the node has been
+        evaluated since last node's input/output change, but the evaluation was inconsistent.
 
-        :return: ``True`` if `Node` is marked as `Invalid`
-        :rtype: ``bool``
+        :getter: ``True`` if this node is marked as `Invalid`,
+            ``False`` otherwise
+        :setter: set the validity status of this node
+        :type: ``bool``
         """
         return self._isInvalid
 
     @isInvalid.setter
     def isInvalid(self, value: bool):
-        """Mark this `Node` as `Invalid`. See :ref:`evaluation` for more
-
-        :param value: ``True`` if this `Node` should be `Invalid`. ``False`` if you want to make this `Node` valid
-        :type value: ``bool``
-        """
         if self._isInvalid != value:
             self._isInvalid = value
 
@@ -239,7 +234,9 @@ class Node(Serializable):
 
     @property
     def isSelected(self):
-        """Retrieve graphics node selection state"""
+        """
+        Retrieve graphics node selection status
+        """
         return self.graphicsNode.isSelected()
 
     @isSelected.setter
@@ -256,7 +253,7 @@ class Node(Serializable):
 
         :param index: Order number of the Socket. (0, 1, 2, ...)
         :type index: ``int``
-        :param position: `Socket Position Constant` describing where the Socket is located.
+        :param position: `Socket Position Constant` describing where the Socket is located
         :type position: :class:`~nodedge.socket.SocketLocation`
         :param countOnThisSide: Total number of Sockets on this `Socket Position`
         :type countOnThisSide: ``int``
@@ -315,7 +312,10 @@ class Node(Serializable):
         return QPointF(x, y)
 
     def updateConnectedEdges(self):
-        """Recalculate (Refresh) positions of all connected `Edges`. Used for updating Graphics Edges"""
+        """
+        Refresh positions of all connected `Edges`.
+        It is used for updating graphical edges.
+        """
         for socket in self.inputSockets + self.outputSockets:
             for edge in socket.edges:
                 self.__logger.debug("Updating socket edges.")
@@ -326,7 +326,7 @@ class Node(Serializable):
     # noinspection PyAttributeOutsideInit
     def remove(self):
         """
-        Safely remove this Node
+        Safely remove this node.
         """
         self.__logger.debug(f"Removing {self}")
         self.__logger.debug("Removing all edges connected to the node.")
@@ -339,22 +339,29 @@ class Node(Serializable):
         self.scene.removeNode(self)
 
     def onMarkedDirty(self):
-        """Called when this `Node` has been marked as `Dirty`. This method is supposed to be overridden"""
+        """
+        Called when this `Node` has been marked as `Dirty`.
+        This method must be overridden.
+        """
         pass
 
     def markChildrenDirty(self, newValue: bool = True) -> None:
-        """Mark all first level children of this `Node` to be `Dirty`. Not this `Node` it self. Not other descendants
-        :param new_value: ``True`` if children should be `Dirty`. ``False`` if you want to un-dirty children
+        """
+        Mark the children of this node to be `Dirty`. Children are first-level descendants.
+        Note: it does not apply to this node.
+        :param new_value: ``True`` if children should be `Dirty`, ``False`` to un-dirty them.
         :type new_value: ``bool``
         """
         for otherNode in self.getChildrenNodes():
             otherNode.isDirty = newValue
 
     def markDescendantsDirty(self, newValue: bool = True) -> None:
-        """Mark all children and descendants of this `Node` to be `Dirty`. Not this `Node` it self
+        """
+        Mark all-level descendants of this `Node` to be `Dirty`.
+         Note: it does not apply to this node.
 
-        :param newValue: ``True`` if children and descendants should be `Dirty`.
-            ``False`` if you want to un-dirty children and descendants
+        :param newValue: ``True`` if descendants should be `Dirty`,
+            ``False`` to un-dirty them.
         :type newValue: ``bool``
         """
         for otherNode in self.getChildrenNodes():
@@ -362,23 +369,30 @@ class Node(Serializable):
             otherNode.markChildrenDirty(newValue)
 
     def onMarkedInvalid(self) -> None:
-        """Called when this `Node` has been marked as `Invalid`. This method is supposed to be overridden"""
+        """
+        Called when this node has been marked as `Invalid`.
+        This method must be overridden.
+        """
         pass
 
     def markChildrenInvalid(self, newValue: bool = True) -> None:
-        """Mark all first level children of this `Node` to be `Invalid`. Not this `Node` it self. Not other descendants
+        """
+        Mark children of this node as `Invalid`. Children are first-level descendants.
+        Note: it does not apply to this node.
 
-        :param new_value: ``True`` if children should be `Invalid`. ``False`` if you want to make children valid
+        :param new_value: ``True`` if children should be `Invalid`, ``False`` to make them valid.
         :type new_value: ``bool``
         """
         for otherNode in self.getChildrenNodes():
             otherNode.isInvalid = newValue
 
     def markDescendantsInvalid(self, newValue: bool = True) -> None:
-        """Mark all children and descendants of this `Node` to be `Invalid`. Not this `Node` it self
+        """
+        Mark descendants of this node as `Invalid`.
+        Note: it does not apply to this node.
 
-        :param new_value: ``True`` if children and descendants should be `Invalid`.
-            ``False`` if you want to make children and descendants valid
+        :param new_value: ``True`` if descendants should be `Invalid`,
+            ``False`` to make descendants valid.
         :type new_value: ``bool``
         """
 
@@ -387,22 +401,28 @@ class Node(Serializable):
             otherNode.markChildrenInvalid(newValue)
 
     def eval(self) -> float:
-        """Evaluate this `Node`. This is supposed to be overridden. See :ref:`evaluation` for more"""
+        """
+        Evaluate this node.
+        This must be overridden.
+        See :ref:`evaluation` for more details.
+        """
         self.isDirty = False
         self.isInvalid = False
         return 0
 
     def evalChildren(self) -> None:
-        """Evaluate all children of this `Node`"""
+        """
+        Evaluate children of this node
+        """
         for node in self.getChildrenNodes():
             # TODO: Investigate if we want to evaluate all the children of the child
             node.eval()
 
     def getChildrenNodes(self) -> List["Node"]:
         """
-        Retreive all first-level children connected to this `Node` `Outputs`
+        Retrieve all children connected to this node outputs.
 
-        :return: list of `Nodes` connected to this `Node` from all `Outputs`
+        :return: list of `Nodes` connected to this node from all outputs
         :rtype: List[:class:`~nodedge.node.Node`]
         """
         if not self.outputSockets:
@@ -442,23 +462,24 @@ class Node(Serializable):
 
     def inputNodesAt(self, index: int) -> List["Node"]:
         """
-        Get **all** `Nodes` connected to the Input specified by `index`
+        Get **all** nodes connected to the input specified by `index`.
 
-        :param index: Order number of the `Input Socket`
+        :param index: order number of the input socket
         :type index: ``int``
-        :return: all :class:`~nodedge.node.Node` instances which are connected to the specified `Input`
-            or ``[]`` if there is no connection of index is out of range
+        :return: all :class:`~nodedge.node.Node` instances which are connected to the specified input
+            or ``[]`` if there is no connection or index is out of range
         :rtype: List[:class:`~nodedge.node.Node`]
         """
         return self.__IONodesAt("input", index)
 
     def inputNodeAt(self, index: int) -> Optional["Node"]:
         """
-        Get the **first**  `Node` connected to the  Input specified by `index`
+        Get the **first**  node connected to the  input specified by `index`.
 
-        :param index: Order number of the `Input Socket`
+        :param index: order number of the input socket
         :type index: ``int``
-        :return: :class:`~nodedge.node.Node` which is connected to the specified `Input` or ``None`` if there is no connection of index is out of range
+        :return: :class:`~nodedge.node.Node` which is connected to the specified input
+            or ``None`` if there is no connection or index is out of range
         :rtype: :class:`~nodedge.node.Node`
         """
 
@@ -473,11 +494,12 @@ class Node(Serializable):
 
     def outputNodesAt(self, index: int) -> List["Node"]:
         """
-        Get **all** `Nodes` connected to the Output specified by `index`
+        Get **all** nodes connected to the output specified by `index`.
 
-        :param index: Order number of the `Output Socket`
+        :param index: order number of the output socket
         :type index: ``int``
-        :return: all :class:`~nodedge.node.Node` instances which are connected to the specified `Output` or ``[]`` if there is no connection of index is out of range
+        :return: all :class:`~nodedge.node.Node` instances which are connected to the specified output
+            or ``[]`` if there is no connection or index is out of range
         :rtype: List[:class:`~nodedge.node.Node`]
         """
         return self.__IONodesAt("output", index)

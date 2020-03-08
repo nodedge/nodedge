@@ -54,7 +54,7 @@ class GraphicsEdge(QGraphicsPathItem):
     def selectedState(self):
         """
 
-        :getter: Return whether the edge is is selected or not.
+        :getter: Return whether the edge is selected or not.
         :setter: Set the selection state of the edge.
         :type: ``bool``
         """

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-A module containing all code for working with Clipboard
+Scene clipboard module for clipboard support.
 """
 
 import logging
@@ -12,7 +12,8 @@ from nodedge.graphics_edge import GraphicsEdge
 
 class SceneClipboard:
     """
-    Class contains all the code for serialization/deserialization from Clipboard
+The scene clipboard class contains the code for the serialization/deserialization
+from/to the clipboard.
     """
 
     def __init__(self, scene: "Scene") -> None:  # type: ignore
@@ -23,11 +24,12 @@ class SceneClipboard:
 
     def serializeSelected(self, delete=False):
         """
-        Serializes selected items in the Scene into ``OrderedDict``
+        Serializes selected items in the scene into ``OrderedDict``.
 
-        :param delete: True if you want to delete selected items after serialization. Usefull for Cut operation
+        :param delete: ``True`` to delete selected items after serialization.
+            It is useful for cut operations.
         :type delete: ``bool``
-        :return: Serialized data of current selection in Nodedge :class:`~nodedge.scene.Scene`
+        :return: serialized data of current selection in Nodedge's :class:`~nodedge.scene.Scene`
         """
         self.__logger.debug("Copying to clipboard")
 
@@ -75,9 +77,9 @@ class SceneClipboard:
 
     def deserialize(self, data):
         """
-        Deserializes data from Clipboard.
+        Deserializes data from the clipboard.
 
-        :param data: ``dict`` data for deserialization to the :class:`Nodedge.node_scene.Scene`.
+        :param data: ``dict`` data for deserialization to the :class:`Nodedge.node_scene.Scene`
         :type data: ``dict``
         """
         hashmap = {}

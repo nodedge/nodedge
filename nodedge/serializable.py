@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-A module containing Serializable "Interface". We pretend its an abstract class
+Serializable "interface" module. We use it in place of an abstract class.
 """
 
 from collections import OrderedDict
@@ -11,7 +11,7 @@ class Serializable:
     def __init__(self):
         """
         Create data which are common to any serializable object.
-        In our case we create ``self.id`` which we use in every object in Nodedge.
+        In our case, we create ``self.id`` which we use in every object of Nodedge.
         """
         self.id = id(self)
 
@@ -32,14 +32,14 @@ class Serializable:
         Deserialization method which take data in python ``dict`` format with helping `hashmap` containing
         references to existing entities.
 
-        :param data: Dictionary containing serialized data
+        :param data: dictionary containing serialized data
         :type data: ``dict``
-        :param hashmap: Helper dictionary containing references (by id == key) to existing objects
+        :param hashmap: helper dictionary containing references (by id == key) to existing objects
         :type hashmap: ``dict``
-        :param restoreId: True if we are creating new Sockets. False is useful when loading existing
-            Sockets which we want to keep the existing object's `id`.
+        :param restoreId: ``True`` if we are creating new sockets. ``False`` is useful when loading existing
+            sockets which we want to keep the existing object's `id`
         :type restoreId: ``bool``
-        :return: ``True`` if deserialization was successful, otherwise ``False``
+        :return: ``True`` if deserialization was successful, ``False`` otherwise
         :rtype: ``bool``
         """
 

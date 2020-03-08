@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-Module with some helper functions
+Utils module with some helper functions.
 """
 
 import logging
@@ -15,7 +15,7 @@ pp = PrettyPrinter(indent=4).pprint
 
 def dumpException(e):
     """
-    Prints out Exception message with traceback to the console
+    Print out an exception message with the traceback to the console.
 
     :param e: Exception to print out
     :type e: Exception
@@ -26,10 +26,10 @@ def dumpException(e):
 
 def loadStyleSheet(fileName):
     """
-    Loads an qss stylesheet to current QApplication instance
+    Load an qss stylesheet to current QApplication instance.
 
-    :param fileName: Filename of qss stylesheet
-    :type fileName: str
+    :param fileName: filename of qss stylesheet
+    :type fileName: ``str``
     """
     logging.info(f"Style loading: {fileName}")
     file = QFile(fileName)
@@ -40,10 +40,11 @@ def loadStyleSheet(fileName):
 
 def loadStyleSheets(*args):
     """
-    Loads multiple qss stylesheets. Concats them together and applies the final stylesheet to current QApplication instance
+    Load multiple qss stylesheets.
+    It concats them together and applies the final stylesheet to current QApplication instance.
 
     :param args: variable number of filenames of qss stylesheets
-    :type args: str, str,...
+    :type args: ``str``, ``str``,...
     """
     res = ""
     for arg in args:
