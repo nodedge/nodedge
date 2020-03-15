@@ -33,7 +33,7 @@ class Socket(Serializable):
         index: int = 0,
         location: int = SocketLocation.LEFT_TOP,
         socketType: int = 1,
-        allowsMultiEdges: bool = True,
+        allowMultiEdges: bool = True,
         countOnThisNodeSide: int = 1,
         isInput: bool = False,
     ):
@@ -46,9 +46,9 @@ class Socket(Serializable):
         :type location: :class:`~nodedge.socket.SocketLocation`
         :param socketType: constant defining type of this socket. Every type is visually
             associated to a color.
-        :param allowsMultiEdges: attribute that defines if this socket
+        :param allowMultiEdges: attribute that defines if this socket
             can have multiple connected edges
-        :type allowsMultiEdges: ``bool``
+        :type allowMultiEdges: ``bool``
         :param countOnThisNodeSide: number of total sockets on this socket side, i.e. input/output
         :type countOnThisNodeSide: ``int``
         :param isInput: attribute that defines whether this is an input or an output socket
@@ -62,7 +62,7 @@ class Socket(Serializable):
         self.isInput: bool = isInput
 
         self.socketType: int = socketType
-        self.allowsMultiEdges: bool = allowsMultiEdges
+        self.allowMultiEdges: bool = allowMultiEdges
 
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
@@ -75,7 +75,7 @@ class Socket(Serializable):
     def __repr__(self):
         return (
             f"0x{hex(id(self))[-4:]} Socket({self.index}, "
-            f"{self.location}, {self.socketType}, {self.allowsMultiEdges})"
+            f"{self.location}, {self.socketType}, {self.allowMultiEdges})"
         )
 
     def updateSocketPos(self) -> None:
@@ -127,7 +127,7 @@ class Socket(Serializable):
         else:
             self.__logger.debug(f"Trying to remove {edgeToRemove} from {self}.")
 
-    def determineAllowsMultiEdges(self, data):
+    def determineallowMultiEdges(self, data):
         """
         Deserialization helper function.
 
@@ -142,8 +142,8 @@ class Socket(Serializable):
         :type data: ``dict``
         :return: ``True`` if this socket should support multiple edges
         """
-        if "allowsMultiEdges" in data:
-            return data["allowsMultiEdges"]
+        if "allowMultiEdges" in data:
+            return data["allowMultiEdges"]
         else:
             # Probably older version of file, make right socket multi edged by default
             return data["position"] in (
@@ -166,7 +166,7 @@ class Socket(Serializable):
             [
                 ("id", self.id),
                 ("index", self.index),
-                ("allowsMultiEdges", self.allowsMultiEdges),
+                ("allowMultiEdges", self.allowMultiEdges),
                 ("position", self.location),
                 ("socketType", self.socketType),
             ]
@@ -180,7 +180,7 @@ class Socket(Serializable):
 
         if restoreId:
             self.id = data["id"]
-        self.allowsMultiEdges = data["allowsMultiEdges"]
+        self.allowMultiEdges = data["allowMultiEdges"]
         hashmap[data["id"]] = self
 
         return True

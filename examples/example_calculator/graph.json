@@ -13,7 +13,7 @@
                 {
                     "id": 1895994391184,
                     "index": 0,
-                    "allowsMultiEdges": true,
+                    "allowMultiEdges": true,
                     "position": 5,
                     "socketType": 1
                 }
@@ -32,7 +32,7 @@
                 {
                     "id": 1895994430016,
                     "index": 0,
-                    "allowsMultiEdges": false,
+                    "allowMultiEdges": false,
                     "position": 2,
                     "socketType": 1
                 }
@@ -50,7 +50,7 @@
                 {
                     "id": 1895994431360,
                     "index": 0,
-                    "allowsMultiEdges": false,
+                    "allowMultiEdges": false,
                     "position": 2,
                     "socketType": 1
                 }

@@ -82,8 +82,8 @@ class Node(Serializable):
         self._socketSpacing: int = 22
         self._inputSocketPosition: SocketLocation = SocketLocation.LEFT_TOP
         self._outputSocketPosition: SocketLocation = SocketLocation.RIGHT_BOTTOM
-        self._inputAllowsMultiEdges: bool = False
-        self._outputAllowsMultiEdges: bool = True
+        self._inputallowMultiEdges: bool = False
+        self._outputallowMultiEdges: bool = True
 
     def initSockets(
         self, inputs: Collection[int], outputs: Collection[int], reset: bool = True
@@ -111,7 +111,7 @@ class Node(Serializable):
                 index=ind,
                 location=self._inputSocketPosition,
                 socketType=inp,
-                allowsMultiEdges=self._inputAllowsMultiEdges,
+                allowMultiEdges=self._inputallowMultiEdges,
                 countOnThisNodeSide=len(inputs),
                 isInput=True,
             )
@@ -123,7 +123,7 @@ class Node(Serializable):
                 index=ind,
                 location=self._outputSocketPosition,
                 socketType=out,
-                allowsMultiEdges=self._outputAllowsMultiEdges,
+                allowMultiEdges=self._outputallowMultiEdges,
                 countOnThisNodeSide=len(outputs),
                 isInput=False,
             )

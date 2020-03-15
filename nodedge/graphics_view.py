@@ -391,10 +391,10 @@ class GraphicsView(QGraphicsView):
             ):
                 item = cast(GraphicsSocket, item)
 
-                if not self.dragStartSocket.allowsMultiEdges:
+                if not self.dragStartSocket.allowMultiEdges:
                     self.dragStartSocket.removeAllEdges()
 
-                if not item.socket.allowsMultiEdges:
+                if not item.socket.allowMultiEdges:
                     item.socket.removeAllEdges()
 
                 newEdge = Edge(
