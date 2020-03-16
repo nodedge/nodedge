@@ -301,7 +301,7 @@ class GraphicsView(QGraphicsView):
             )
         elif type(item) in [GraphicsEdgeDirect, GraphicsEdgeBezier]:
             log = f"\n||||{item.edge} connects"
-            log += f"\n||||{item.edge.sourceSocket.node} \n||||{item.edge.destinationSocket.node}"
+            log += f"\n||||{item.edge.sourceSocket.node} \n||||{item.edge.targetSocket.node}"
 
             self.__logger.info(log)
 
@@ -407,7 +407,7 @@ class GraphicsView(QGraphicsView):
                 self.__logger.debug(
                     f"New edge created: {newEdge} connecting"
                     f"\n|||| {newEdge.sourceSocket} to"
-                    f"\n |||| {newEdge.destinationSocket}"
+                    f"\n |||| {newEdge.targetSocket}"
                 )
 
                 for socket in [self.dragStartSocket, item.socket]:
@@ -431,7 +431,7 @@ class GraphicsView(QGraphicsView):
         """
         if self.mode == DragMode.EDGE_DRAG:
             pos = self.mapToScene(event.pos())
-            self.dragEdge.graphicsEdge.destinationPos = pos  # type: ignore
+            self.dragEdge.graphicsEdge.targetPos = pos  # type: ignore
             self.dragEdge.graphicsEdge.update()  # type: ignore
 
         if self.mode == DragMode.EDGE_CUT:

@@ -43,7 +43,7 @@ class GraphicsEdge(QGraphicsPathItem):
         self.__logger.setLevel(logging.INFO)
 
         self._sourcePos: QPointF = QPointF(0.0, 0.0)
-        self._destinationPos: QPointF = QPointF(200.0, 200.0)
+        self._targetPos: QPointF = QPointF(200.0, 200.0)
 
         self._lastSelectedState: bool = False
         self.hovered: bool = False
@@ -79,18 +79,18 @@ class GraphicsEdge(QGraphicsPathItem):
         self._sourcePos = value
 
     @property
-    def destinationPos(self):
+    def targetPos(self):
         """
 
-        :getter: Return the edge's destination position.
-        :setter: Set the edge's destination position.
+        :getter: Return the edge's target position.
+        :setter: Set the edge's target position.
         :type: ``QPointF``
         """
-        return self._destinationPos
+        return self._targetPos
 
-    @destinationPos.setter
-    def destinationPos(self, value: QPointF):
-        self._destinationPos = value
+    @targetPos.setter
+    def targetPos(self, value: QPointF):
+        self._targetPos = value
 
     def initUI(self):
         """
@@ -192,11 +192,11 @@ class GraphicsEdge(QGraphicsPathItem):
 
         painter.setBrush(Qt.NoBrush)
 
-        if self.hovered and self.edge.destinationSocket is not None:
+        if self.hovered and self.edge.targetSocket is not None:
             painter.setPen(self._penHovered)
             painter.drawPath(self.path())
 
-        if self.edge.destinationSocket is None:
+        if self.edge.targetSocket is None:
             painter.setPen(self._penDragging)
         else:
             painter.setPen(self._pen if not self.isSelected() else self._penSelected)
@@ -205,7 +205,7 @@ class GraphicsEdge(QGraphicsPathItem):
 
     def calcPath(self) -> QPainterPath:
         """Compute the graphical path between :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
-        `~nodedge.graphics_edge.GraphicsEdge.destinationPos`.
+        `~nodedge.graphics_edge.GraphicsEdge.targetPos`.
 
         .. warning::
             This method needs to be overridden.
@@ -235,39 +235,39 @@ class GraphicsEdge(QGraphicsPathItem):
 class GraphicsEdgeDirect(GraphicsEdge):
     """
     Graphics Edge Direct class, with straight line path between :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos`
-    and :attr:`~nodedge.graphics_edge.GraphicsEdge.destinationPos`
+    and :attr:`~nodedge.graphics_edge.GraphicsEdge.targetPos`
     """
 
     def calcPath(self) -> QPainterPath:
         """Compute a straight line path between :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
-        `~nodedge.graphics_edge.GraphicsEdge.destinationPos`.
+        `~nodedge.graphics_edge.GraphicsEdge.targetPos`.
 
         :returns: The computed path
         :rtype: ``QPainterPath``
         """
         path = QPainterPath(self._sourcePos)
-        path.lineTo(self._destinationPos)
+        path.lineTo(self._targetPos)
         return path
 
 
 class GraphicsEdgeBezier(GraphicsEdge):
     """
     Graphics Edge Bezier class, with Bezier line path between :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos`
-    and :attr:`~nodedge.graphics_edge.GraphicsEdge.destinationPos`
+    and :attr:`~nodedge.graphics_edge.GraphicsEdge.targetPos`
     """
 
     def calcPath(self) -> QPainterPath:
         """
         Compute a Bezier curve path between :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
-        :attr:`~nodedge.graphics_edge.GraphicsEdge.destinationPos`.
+        :attr:`~nodedge.graphics_edge.GraphicsEdge.targetPos`.
 
         :returns: The computed path
         :rtype: ``QPainterPath``
         """
         sx = self._sourcePos.x()
         sy = self._sourcePos.y()
-        dx = self._destinationPos.x()
-        dy = self._destinationPos.y()
+        dx = self._targetPos.x()
+        dy = self._targetPos.y()
 
         dist = (dx - sx) * 0.5
 
@@ -303,7 +303,7 @@ class GraphicsEdgeBezier(GraphicsEdge):
             sy + cpy_s,
             dx + cpx_d,
             dy + cpy_d,
-            self._destinationPos.x(),
-            self._destinationPos.y(),
+            self._targetPos.x(),
+            self._targetPos.y(),
         )
         return path

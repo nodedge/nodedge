@@ -55,7 +55,7 @@ class SceneClipboard:
         for edge in selectedEdges:
             if (
                 edge.sourceSocket.id not in selectedSocket
-                or edge.destinationSocket.id not in selectedSocket
+                or edge.targetSocket.id not in selectedSocket
             ):
                 self.__logger.debug(f"Edge: {edge} is not connected with both sides")
                 edgesToRemove.append(edge)
