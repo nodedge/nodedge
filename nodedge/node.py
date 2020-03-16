@@ -12,7 +12,7 @@ from PyQt5.QtCore import QPoint, QPointF
 
 from nodedge.edge import Edge
 from nodedge.graphics_node import GraphicsNode
-from nodedge.node_content import NodeContent
+from nodedge.graphics_node_content import GraphicsNodeContent
 from nodedge.serializable import Serializable
 from nodedge.socket import Socket, SocketLocation
 from nodedge.utils import dumpException
@@ -70,7 +70,7 @@ class Node(Serializable):
         """
         Set up graphics node and content widget.
         """
-        self.content: NodeContent = NodeContent(self)
+        self.content: GraphicsNodeContent = GraphicsNodeContent(self)
         self.graphicsNode: GraphicsNode = GraphicsNode(self)
 
     # noinspection PyAttributeOutsideInit

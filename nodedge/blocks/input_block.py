@@ -1,7 +1,7 @@
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, OP_NODE_INPUT, registerNode
 from nodedge.blocks.graphics_block import GraphicsBlock
-from nodedge.blocks.input_block_content import InputBlockContent
+from nodedge.blocks.graphics_input_block_content import GraphicsInputBlockContent
 
 
 @registerNode(OP_NODE_INPUT)
@@ -17,8 +17,9 @@ class InputBlock(Block):
 
         self.eval()
 
+    # noinspection PyAttributeOutsideInit
     def initInnerClasses(self):
-        self.content = InputBlockContent(self)
+        self.content = GraphicsInputBlockContent(self)
         self.graphicsNode = GraphicsBlock(self)
 
         self.content.edit.textChanged.connect(self.onInputChanged)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Scene history module for supporting operations on the history (Undo/Redo).
+Scene history module containing :class:`~nodedge.scene_history.SceneHistory` class.
 """
 
 import logging
@@ -11,7 +11,9 @@ from nodedge.utils import dumpException
 
 class SceneHistory:
     """
-    Scene history class contains the code for undo/redo operations.
+    :class:`~nodedge.scene_history.SceneHistory` class
+
+    It contains the code for storing all the previous actions of the user in a dictionary.
     """
 
     def __init__(self, scene: "Scene", maxLength: int = 32) -> None:  # type: ignore # noqa: F821

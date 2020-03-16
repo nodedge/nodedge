@@ -1,11 +1,11 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLineEdit
 
-from nodedge.node_content import NodeContent
+from nodedge.graphics_node_content import GraphicsNodeContent
 from nodedge.utils import dumpException
 
 
-class InputBlockContent(NodeContent):
+class GraphicsInputBlockContent(GraphicsNodeContent):
     # noinspection PyAttributeOutsideInit
     def initUI(self):
         self.edit = QLineEdit("1", self)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Node content module containing Nodedge's class for representing :class:`~nodedge.socket.Socket` class and
+Socket module containing Nodedge's class for representing :class:`~nodedge.socket.Socket` class and
 :class:`~nodedge.socket.SocketLocation` constants.
 """
 
@@ -118,7 +118,8 @@ class Socket(Serializable):
     # noinspection PyUnresolvedReferences
     def removeEdge(self, edgeToRemove: "Edge") -> None:  # type: ignore # noqa: F821
         """
-        Disconnect passed :class:`~nodedge.edge.Edge` from this socket
+        Disconnect passed :class:`~nodedge.edge.Edge` from this socket.
+
         :param edgeToRemove: :class:`~nodedge.edge.Edge` to disconnect
         :type edgeToRemove: :class:`~nodedge.edge.Edge`
         """

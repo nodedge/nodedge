@@ -1,7 +1,7 @@
 import logging
 
-from nodedge.blocks.block_content import BlockContent
 from nodedge.blocks.graphics_block import GraphicsBlock
+from nodedge.blocks.graphics_block_content import GraphicsBlockContent
 from nodedge.node import Node
 from nodedge.socket import SocketLocation
 from nodedge.utils import dumpException
@@ -28,7 +28,7 @@ class Block(Node):
         self.isDirty = True
 
     def initInnerClasses(self):
-        self.content = BlockContent(self)
+        self.content = GraphicsBlockContent(self)
         self.graphicsNode = GraphicsBlock(self)
 
     def initSettings(self):

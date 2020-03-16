@@ -25,7 +25,7 @@ Submodules
    nodedge.mdi_widget
    nodedge.mdi_window
    nodedge.node
-   nodedge.node_content
+   nodedge.graphics_node_content
    nodedge.node_list_widget
    nodedge.scene
    nodedge.scene_clipboard

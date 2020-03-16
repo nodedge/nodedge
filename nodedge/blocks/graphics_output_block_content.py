@@ -1,10 +1,10 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLabel
 
-from nodedge.node_content import NodeContent
+from nodedge.graphics_node_content import GraphicsNodeContent
 
 
-class OutputBlockContent(NodeContent):
+class GraphicsOutputBlockContent(GraphicsNodeContent):
     # noinspection PyAttributeOutsideInit
     def initUI(self):
         self.label: QLabel = QLabel("42", self)

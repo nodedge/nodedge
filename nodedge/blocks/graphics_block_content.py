@@ -1,9 +1,9 @@
 from PyQt5.QtWidgets import QLabel
 
-from nodedge.node_content import NodeContent
+from nodedge.graphics_node_content import GraphicsNodeContent
 
 
-class BlockContent(NodeContent):
+class GraphicsBlockContent(GraphicsNodeContent):
     # noinspection PyAttributeOutsideInit
     def initUI(self):
         # TODO: Improve robustness, node may not have operationTitle as attribute

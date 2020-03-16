@@ -1,18 +1,18 @@
-NodeContent {
+GraphicsNodeContent {
   background: transparent;
 }
-NodeContent QFrame {
+GraphicsNodeContent QFrame {
   background: transparent;
 }
-NodeContent QTextEdit,
-NodeContent QLineEdit {
+GraphicsNodeContent QTextEdit,
+GraphicsNodeContent QLineEdit {
   background: #666;
   color: #fff;
 }
-NodeContent QLabel {
+GraphicsNodeContent QLabel {
   color: #e0e0e0;
 }
-NodeContent QLabel#BlockBackground {
+GraphicsNodeContent QLabel#BlockBackground {
   background: transparent;
   height: 0px;
   color: #484848;
@@ -21,10 +21,10 @@ NodeContent QLabel#BlockBackground {
   min-height: 49px;
   padding-left: 94px;
 }
-NodeContent QLabel#BlockBackground {
+GraphicsNodeContent QLabel#BlockBackground {
   padding-top: 12px;
 }
-NodeContent QLabel#OutputBlockContent {
+GraphicsNodeContent QLabel#OutputBlockContent {
   min-width: 150px;
   max-width: 150px;
   min-height: 45px;
@@ -33,7 +33,7 @@ NodeContent QLabel#OutputBlockContent {
   margin-top: 5px;
   font-size: 28px;
 }
-NodeContent QLineEdit#InputBlockContent {
+GraphicsNodeContent QLineEdit#InputBlockContent {
   background: #505050;
   width: 140px;
   height: 40px;

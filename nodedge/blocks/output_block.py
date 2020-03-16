@@ -1,7 +1,7 @@
 from nodedge.blocks.block import Block, EvaluationError
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, OP_NODE_OUTPUT, registerNode
 from nodedge.blocks.graphics_block import GraphicsBlock
-from nodedge.blocks.output_block_content import OutputBlockContent
+from nodedge.blocks.graphics_output_block_content import GraphicsOutputBlockContent
 
 
 @registerNode(OP_NODE_OUTPUT)
@@ -15,8 +15,9 @@ class OutputBlock(Block):
     def __init__(self, scene, inputSocketTypes=(2, 2), outputSocketTypes=(1,)):
         super().__init__(scene, inputSocketTypes=(1,), outputSocketTypes=[])
 
+    # noinspection PyAttributeOutsideInit
     def initInnerClasses(self):
-        self.content = OutputBlockContent(self)
+        self.content = GraphicsOutputBlockContent(self)
         self.graphicsNode = GraphicsBlock(self)
 
     def evalImplementation(self):

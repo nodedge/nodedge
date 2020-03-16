@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Serializable "interface" module. We use it in place of an abstract class.
+Serializable "interface" module. It is an abstract class.
 """
 
 from collections import OrderedDict
@@ -11,7 +11,9 @@ class Serializable:
     def __init__(self):
         """
         Create data which are common to any serializable object.
-        In our case, we create ``self.id`` which we use in every object of Nodedge.
+
+        It stores the id of the object used in the :class:`~nodedge.scene_history.SceneHistory`,
+        the :class:`~nodedge.scene_clipboard.SceneClipboard`, and the file structure.
         """
         self.id = id(self)
 

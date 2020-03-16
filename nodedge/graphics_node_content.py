@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-"""A module containing base class for Node's content graphical representation. It also contains example of
-overridden Text Widget which can pass to it's parent notification about currently being modified."""
+"""
+Graphics node content module containing the :class:`~nodedge.graphics_node_content.GraphicsNodeContent` class.
+"""
 
 from collections import OrderedDict
 from typing import Optional, cast
@@ -12,8 +13,11 @@ from PyQt5.QtWidgets import QTextEdit, QVBoxLayout, QWidget
 from nodedge.serializable import Serializable
 
 
-class NodeContent(QWidget, Serializable):
-    """Base class for representation of the Node's graphics content. This class also provides layout
+class GraphicsNodeContent(QWidget, Serializable):
+    """
+    :class:`~nodedge.graphics_node_content.GraphicsNodeContent` class.
+
+    Base class for representation of the Node's graphics content. This class also provides layout
     for other widgets inside of a :py:class:`~nodedge.node.Node`"""
 
     def __init__(self, node: "Node", parent: Optional[QWidget] = None):  # type: ignore
@@ -100,23 +104,25 @@ class AckTextEdit(QTextEdit):
     """
 
     def focusInEvent(self, event: QFocusEvent) -> None:
-        """Example of overridden focusInEvent to mark start of editing
+        """
+        Example of overridden focusInEvent to mark start of editing
 
         :param event: Qt's focus event
         :type event: QFocusEvent
         """
 
-        parent: NodeContent = cast(NodeContent, super().parentWidget())
+        parent: GraphicsNodeContent = cast(GraphicsNodeContent, super().parentWidget())
         parent.setEditingFlag(True)
         super().focusInEvent(event)
 
     def focusOutEvent(self, event: QFocusEvent) -> None:
-        """Example of overridden focusOutEvent to mark end of editing
+        """
+        Example of overridden focusOutEvent to mark end of editing
 
         :param event: Qt's focus event
         :type event: QFocusEvent
         """
 
-        parent: NodeContent = cast(NodeContent, super().parentWidget())
+        parent: GraphicsNodeContent = cast(GraphicsNodeContent, super().parentWidget())
         parent.setEditingFlag(False)
         super().focusOutEvent(event)

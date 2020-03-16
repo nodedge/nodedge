@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Scene clipboard module for clipboard support.
+Scene clipboard module containing :class:`~nodedge.scene_clipboard.SceneClipboard`.
 """
 
 import logging
@@ -12,8 +12,10 @@ from nodedge.graphics_edge import GraphicsEdge
 
 class SceneClipboard:
     """
-The scene clipboard class contains the code for the serialization/deserialization
-from/to the clipboard.
+    :class:`~nodedge.scene_clipboard.SceneClipboard` class
+
+    The scene clipboard class contains the code for the serialization/deserialization
+    from/to the clipboard.
     """
 
     def __init__(self, scene: "Scene") -> None:  # type: ignore
