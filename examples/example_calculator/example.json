@@ -2,7 +2,7 @@
     "id": 1583693334992,
     "sceneWidth": 64000,
     "sceneHeight": 64000,
-    "blocks": [
+    "nodes": [
         {
             "id": 1583748004592,
             "title": "Input",

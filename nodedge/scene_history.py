@@ -200,11 +200,11 @@ class SceneHistory:
             and the current selection
         :rtype: ``dict``
         """
-        selectedObjects = {"blocks": [], "edges": []}
+        selectedObjects = {"nodes": [], "edges": []}
 
         for item in self.scene.graphicsScene.selectedItems():
             if hasattr(item, "node"):
-                selectedObjects["blocks"].append(item.node.id)
+                selectedObjects["nodes"].append(item.node.id)
             elif isinstance(item, GraphicsEdge):
                 selectedObjects["edges"].append(item.edge.id)
 
@@ -235,7 +235,7 @@ class SceneHistory:
                         edge.graphicsEdge.setSelected(True)
                         break
 
-            for nodeId in stamp["selection"]["blocks"]:
+            for nodeId in stamp["selection"]["nodes"]:
                 for node in self.scene.nodes:
                     if node.id == nodeId:
                         node.graphicsNode.setSelected(True)

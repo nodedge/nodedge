@@ -286,7 +286,7 @@ class Scene(Serializable):
                 ("id", self.id),
                 ("sceneWidth", self.sceneWidth),
                 ("sceneHeight", self.sceneHeight),
-                ("blocks", nodes),
+                ("nodes", nodes),
                 ("edges", edges),
             ]
         )
@@ -303,7 +303,7 @@ class Scene(Serializable):
             self.id = data["id"]
 
         # Create blocks
-        for nodeData in data["blocks"]:
+        for nodeData in data["nodes"]:
             self.getNodeClassFromData(nodeData)(self).deserialize(
                 nodeData, hashmap, restoreId
             )

@@ -66,7 +66,7 @@ class SceneClipboard:
         serializedEdgesToKeep = [edge.serialize() for edge in selectedEdges]
         # Create data
         data = OrderedDict(
-            [("blocks", serializedSelectedNodes), ("edges", serializedEdgesToKeep)]
+            [("nodes", serializedSelectedNodes), ("edges", serializedEdgesToKeep)]
         )
 
         # If cut (aka delete) remove selected items
@@ -92,7 +92,7 @@ class SceneClipboard:
 
         # Calculate selected objects bounding box and center
         minX, maxX, minY, maxY = 1e8, -1e8, 1e8, -1e8
-        for nodeData in data["blocks"]:
+        for nodeData in data["nodes"]:
             x, y = nodeData["posX"], nodeData["posY"]
             if x < minX:
                 minX = x
@@ -113,7 +113,7 @@ class SceneClipboard:
 
         # Create each node
 
-        for nodeData in data["blocks"]:
+        for nodeData in data["nodes"]:
             newNode = self.scene.getNodeClassFromData(nodeData)(self.scene)
             newNode.deserialize(nodeData, hashmap, restoreId=False)
 
