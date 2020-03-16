@@ -277,9 +277,9 @@ class Edge(Serializable):
             [
                 ("id", self.id),
                 ("edgeType", self.edgeType),
-                ("sourceSocket", self.sourceSocket.id),
+                ("source", self.sourceSocket.id),
                 (
-                    "destinationSocket",
+                    "target",
                     self.destinationSocket.id
                     if self.destinationSocket is not None
                     else None,
@@ -292,8 +292,8 @@ class Edge(Serializable):
             hashmap = {}
         if restoreId:
             self.id = data["id"]
-        self.sourceSocket = hashmap[data["sourceSocket"]]
-        self.destinationSocket = hashmap[data["destinationSocket"]]
+        self.sourceSocket = hashmap[data["source"]]
+        self.destinationSocket = hashmap[data["target"]]
         self.edgeType = data["edgeType"]
 
         return True

@@ -252,74 +252,74 @@
         {
             "id": 1583747952704,
             "edgeType": 2,
-            "sourceSocket": 1583749280096,
-            "destinationSocket": 1583749317968
+            "source": 1583749280096,
+            "target": 1583749317968
         },
         {
             "id": 1583749319024,
             "edgeType": 2,
-            "sourceSocket": 1583749318064,
-            "destinationSocket": 1583749280960
+            "source": 1583749318064,
+            "target": 1583749280960
         },
         {
             "id": 1583749319408,
             "edgeType": 2,
-            "sourceSocket": 1583749280096,
-            "destinationSocket": 1583749318304
+            "source": 1583749280096,
+            "target": 1583749318304
         },
         {
             "id": 1583749319456,
             "edgeType": 2,
-            "sourceSocket": 1583749318448,
-            "destinationSocket": 1583749280960
+            "source": 1583749318448,
+            "target": 1583749280960
         },
         {
             "id": 1583749319552,
             "edgeType": 2,
-            "sourceSocket": 1583749280960,
-            "destinationSocket": 1583749318688
+            "source": 1583749280960,
+            "target": 1583749318688
         },
         {
             "id": 1583749319600,
             "edgeType": 2,
-            "sourceSocket": 1583749318832,
-            "destinationSocket": 1583749280096
+            "source": 1583749318832,
+            "target": 1583749280096
         },
         {
             "id": 1583749319648,
             "edgeType": 2,
-            "sourceSocket": 1583749280960,
-            "destinationSocket": 1583749319216
+            "source": 1583749280960,
+            "target": 1583749319216
         },
         {
             "id": 1583749319696,
             "edgeType": 2,
-            "sourceSocket": 1583749280096,
-            "destinationSocket": 1583749319072
+            "source": 1583749280096,
+            "target": 1583749319072
         },
         {
             "id": 1583749319744,
             "edgeType": 2,
-            "sourceSocket": 1583749319888,
-            "destinationSocket": 1583749318160
+            "source": 1583749319888,
+            "target": 1583749318160
         },
         {
             "id": 1583749320464,
             "edgeType": 2,
-            "sourceSocket": 1583749318544,
-            "destinationSocket": 1583749805200
+            "source": 1583749318544,
+            "target": 1583749805200
         },
         {
             "id": 1583749804144,
             "edgeType": 2,
-            "sourceSocket": 1583749318928,
-            "destinationSocket": 1583749804288
+            "source": 1583749318928,
+            "target": 1583749804288
         },
         {
             "id": 1583749804624,
             "edgeType": 2,
-            "sourceSocket": 1583749319312,
-            "destinationSocket": 1583749804528
+            "source": 1583749319312,
+            "target": 1583749804528
         }
     ]
 }
