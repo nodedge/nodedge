@@ -19,13 +19,13 @@ Submodules
    nodedge.graphics_cut_line
    nodedge.graphics_edge
    nodedge.graphics_node
+   nodedge.graphics_node_content
    nodedge.graphics_scene
    nodedge.graphics_socket
    nodedge.graphics_view
    nodedge.mdi_widget
    nodedge.mdi_window
    nodedge.node
-   nodedge.graphics_node_content
    nodedge.node_list_widget
    nodedge.scene
    nodedge.scene_clipboard

@@ -1,5 +1,5 @@
-nodedge.node\_content
-=====================
+nodedge.graphics\_node\_content
+===============================
 
 .. automodule:: nodedge.graphics_node_content
    :members:

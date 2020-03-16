@@ -10,7 +10,7 @@ attribute.
 - :py:func:`~nodedge.serializable.Serializable.serialize`
 - :py:func:`~nodedge.serializable.Serializable.deserialize`
 
-According to :ref:`coding-standards` we keep these two functions on the bottom of the class source code.
+According to coding-standards we keep these two functions on the bottom of the class source code.
 
 To contain all of the data we use ``OrderedDict`` instead of regular `dict`. Mainly because we want
 to retain the order of parameters serialized in files.
