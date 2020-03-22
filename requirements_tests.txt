@@ -3,6 +3,7 @@ codecov
 flake8
 mypy
 pre-commit
+pydocstyle
 PyQt5-stubs==5.13.1.4
 pytest
 pytest-cov

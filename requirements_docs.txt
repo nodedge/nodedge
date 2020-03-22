@@ -1,6 +1,7 @@
+pydocstyle
 PyQt5==5.13.1
 recommonmark
-sphinx==2.4.3
+sphinx
 sphinx-autodoc-typehints
-sphinx-autodoc-types>=2.1.1
+sphinx-autodoc-types
 -e git+https://github.com/readthedocs/sphinx_rtd_theme#egg=sphinx-rtd-theme

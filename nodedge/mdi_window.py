@@ -67,9 +67,7 @@ class MdiWindow(EditorWindow):
         self.companyName = "Nodedge"
         self.productName = "Nodedge"
         self.icon = QIcon(
-            os.path.join(
-                os.path.dirname(__file__), "resources/favicon_red_white_bg.png"
-            )
+            os.path.join(os.path.dirname(__file__), "resources/Asset 29@4x.png")
         )
         self.setWindowIcon(self.icon)
 

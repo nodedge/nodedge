@@ -5,8 +5,8 @@ Credits
 Development Lead
 ----------------
 
-* Anthony De Bortoli <anthony.debortoli@protonmail.com>
-* Enrica Soria <enrica.s92@gmail.com>
+* Anthony De Bortoli <anthony.debortoli@nodedge.io>
+* Enrica Soria <enrica.soria@nodedge.io>
 
 Contributors
 ------------
