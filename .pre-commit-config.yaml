@@ -53,4 +53,12 @@ repos:
         types: [python]
         stages: [push]
         pass_filenames: false
+      - id: docs
+        name: run checks on docs building
+        entry: tox -e docs
+        language: system
+        types: [python]
+        stages: [push]
+        pass_filenames: false
+
 
