@@ -15,7 +15,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/nodedge/nodedge/issues.
+Report bugs in `Nodedge issues page <https://github.com/nodedge/nodedge/issues>`_.
 
 If you are reporting a bug, please include:
 
@@ -38,14 +38,14 @@ and "help wanted" is open to whoever wants to implement it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-nodedge could always use more documentation, whether as part of the
-official nodedge docs, in docstrings, or even on the web in blog posts,
+Nodedge could always use more documentation, whether as part of the
+official Nodedge docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://github.com/nodedge/nodedge/issues.
+The best way to send feedback is to file an issue at `Nodedge issues page <https://github.com/nodedge/nodedge/issues>`_.
 
 If you are proposing a feature:
 
@@ -68,24 +68,25 @@ Ready to contribute? Here's how to set up `nodedge` for local development.
 
     $ mkvirtualenv nodedge
     $ cd nodedge/
-    $ python setup.py develop
+    $ pip install -r requirements_dev.txt
+    $ pre-commit install
+    $ pre-commit install --hook-type pre-push
 
 4. Create a branch for local development::
 
-    $ git checkout -b name-of-your-bugfix-or-feature
+    $ git checkout -b <feature/bugfix/refactor>/[name_of_your_contribution]
 
    Now you can make your changes locally.
 
 5. When you're done making changes, check that your changes pass flake8 and the
    tests, including testing other Python versions with tox::
 
-    $ flake8 nodedge tests
     $ python setup.py test or pytest
     $ tox
 
    To get flake8 and tox, just pip install them into your virtualenv.
 
-6. Commit your changes and push your branch to GitHub::
+6. Commit your changes and push your branch to GitHub, following the `Commit guidelines <https://github.com/nodedge/nodedge/wiki/Commit-message-guidelines>`_::
 
     $ git add .
     $ git commit -m "Your detailed description of your changes."
@@ -102,8 +103,8 @@ Before you submit a pull request, check that it meets these guidelines:
 2. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
-3. The pull request should work for Python 3.5, 3.6, 3.7 and 3.8, and for PyPy. Check
-   https://travis-ci.org/nodedge/nodedge/pull_requests
+3. The pull request should work for Python 3.6. Check
+   `Nodedge Travis pull requests build results page <https://travis-ci.org/github/nodedge/nodedge/pull_requests>`_
    and make sure that the tests pass for all supported Python versions.
 
 Tips
@@ -112,14 +113,14 @@ Tips
 To run a subset of tests::
 
 
-    $ python -m unittest tests.test_nodedge
+    $ pytest tests/node_test.py
 
 Deploying
 ---------
 
 A reminder for the maintainers on how to deploy.
 Make sure all your changes are committed (including an entry in HISTORY.rst).
-Then run::
+Nodedge uses `Semantic versioning <https://semver.org/>`_::
 
 $ bump2version patch # possible: major / minor / patch
 $ git push

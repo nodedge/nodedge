@@ -22,3 +22,4 @@ build/
 _template/
 *.egg-info/
 .tox/
+examples/examples

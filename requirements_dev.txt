@@ -1,2 +1,6 @@
+-r requirements.txt
+-r requirements_docs.txt
+-r requirements_tests.txt
+bump2version
 pre-commit
 wheel

@@ -1,5 +1,5 @@
+-r requirements.txt
 pydocstyle
-PyQt5==5.13.1
 recommonmark
 sphinx
 sphinx-autodoc-typehints
