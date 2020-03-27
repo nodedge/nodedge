@@ -10,6 +10,7 @@ include Pipfile
 include Pipfile.lock
 include readthedocs.yml
 include mypy.ini
+include .bumpversion.cfg
 
 include .flake8
 include .isort.cfg
