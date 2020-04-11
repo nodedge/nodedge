@@ -25,6 +25,7 @@ from nodedge.scene import InvalidFile, Scene
 
 
 class EditorWidget(QWidget):
+    SceneClass = Scene
     """
     :class:`~nodedge.editor_widget.EditorWidget` class
 
@@ -62,7 +63,7 @@ class EditorWidget(QWidget):
         self.layout.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(self.layout)
-        self.scene: Scene = Scene()
+        self.scene: Scene = self.__class__.SceneClass()
         self.view: GraphicsView = GraphicsView(self.scene.graphicsScene, self)
         self.layout.addWidget(self.view)
 

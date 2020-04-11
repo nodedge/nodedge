@@ -13,15 +13,21 @@ from PyQt5.QtWidgets import QApplication
 pp = PrettyPrinter(indent=4).pprint
 
 
-def dumpException(e):
+def dumpException(e=None, file=None):
     """
     Print out an exception message with the traceback to the console.
 
+
     :param e: Exception to print out
     :type e: Exception
+    :param file: optional, file where the expection is dumped
+    :type file: ``str``
     """
     logging.warning(f"{e.__class__.__name__} Exception: {e}")
-    traceback.print_tb(e.__traceback__)
+    if file is not None:
+        traceback.print_tb(e.__traceback__, file=file)
+    else:
+        traceback.print_exc()
 
 
 def loadStyleSheet(fileName):

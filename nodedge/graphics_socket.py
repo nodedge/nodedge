@@ -3,9 +3,19 @@
 Graphics socket module containing :class:`~nodedge.graphics_socket.GraphicsSocket` class.
 """
 
-from PyQt5.QtCore import QRectF
+from PyQt5.QtCore import QRectF, Qt
 from PyQt5.QtGui import QBrush, QColor, QPen
 from PyQt5.QtWidgets import QGraphicsItem
+
+SOCKET_COLORS = [
+    QColor("#FFFF7700"),
+    QColor("#FF52e220"),
+    QColor("#FF0056a6"),
+    QColor("#FFa86db1"),
+    QColor("#FFb54747"),
+    QColor("#FFdbe220"),
+    QColor("#FF888888"),
+]
 
 
 class GraphicsSocket(QGraphicsItem):
@@ -42,15 +52,7 @@ class GraphicsSocket(QGraphicsItem):
         """
         Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``
         """
-        self._colors = [
-            QColor("#FFFF7700"),
-            QColor("#FF52e220"),
-            QColor("#FF0056a6"),
-            QColor("#FFa86db1"),
-            QColor("#FFdbe220"),
-        ]
-
-        self._color_background = self._colors[self.socketColor]
+        self._color_background = GraphicsSocket.getSocketColor(self.socketColor)
         self._color_outline = QColor("#FF000000")
 
         self._pen = QPen(self._color_outline)
@@ -64,6 +66,15 @@ class GraphicsSocket(QGraphicsItem):
         """
         self.radius = 6.0
         self.outline_width = 1.0
+
+    @staticmethod
+    def getSocketColor(key):
+        """Returns the ``QColor`` for this ``key``"""
+        if type(key) == int:
+            return SOCKET_COLORS[key]
+        elif type(key) == str:
+            return QColor(key)
+        return Qt.transparent
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """

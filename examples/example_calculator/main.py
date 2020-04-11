@@ -7,6 +7,7 @@ from nodedge.mdi_window import MdiWindow
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))  # noqa: E402
 
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 

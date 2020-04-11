@@ -52,7 +52,7 @@ class MdiWindow(EditorWindow):
         if (
             activeSubWindow
             and activeSubWindow.widget
-            and isinstance(activeSubWindow.widget(), (EditorWidget))
+            and isinstance(activeSubWindow.widget(), EditorWidget)
         ):
             self.lastActiveEditorWidget = activeSubWindow.widget()
         return typing.cast(EditorWidget, self.lastActiveEditorWidget)
@@ -96,7 +96,7 @@ class MdiWindow(EditorWindow):
 
         self.createActions()
         self.createMenus()
-        # self.createToolBars()
+        self.createToolBars()
         self.createStatusBar()
         self.updateMenus()
 
@@ -110,7 +110,7 @@ class MdiWindow(EditorWindow):
         """
         self.statusBar().showMessage("Ready")
 
-    # noinspection PyArgumentList
+    # noinspection PyArgumentList, PyAttributeOutsideInit
     def createActions(self):
         """
         Create `File`, `Edit` and `About` actions.
@@ -169,7 +169,7 @@ class MdiWindow(EditorWindow):
             triggered=self.onNodesToolbarTriggered,
         )
         self.nodeToolbarAct.setCheckable(True)
-        self.nodeToolbarAct.setChecked(self.nodesDock.isVisible())
+        self.nodeToolbarAct.setChecked(True)  # self.nodesDock.isVisible()
 
         self.separatorAct = QAction(self)
         self.separatorAct.setSeparator(True)
@@ -181,9 +181,10 @@ class MdiWindow(EditorWindow):
             triggered=self.about,
         )
 
+    # noinspection PyAttributeOutsideInit
     def createToolBars(self):
         """
-        Create the `File` and `Edit` toolbar contaning few of their menu actions.
+        Create the `File` and `Edit` toolbar containing few of their menu actions.
         """
         self.fileToolBar = self.addToolBar("File")
         self.fileToolBar.addAction(self.newAct)

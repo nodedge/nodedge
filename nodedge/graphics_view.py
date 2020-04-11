@@ -187,6 +187,7 @@ class GraphicsView(QGraphicsView):
         """
         try:
             item = self.getItemAtClick(event)
+            self.__logger.debug(f"Selected object class: {item.__class__.__name__}")
 
             self.lastLMBClickScenePos = self.mapToScene(event.pos())
 

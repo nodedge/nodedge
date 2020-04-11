@@ -57,6 +57,8 @@ class Scene(Serializable):
         self._itemSelectedListeners = []
         self._itemsDeselectedListeners = []
 
+        self._silentSelectionEvents = False
+
         # Store callback for retrieving the nodes classes
         self.nodeClassSelector = None
 
@@ -118,28 +120,67 @@ class Scene(Serializable):
         """
         return self.graphicsScene.views()[0]
 
-    def onItemSelected(self):
-        """Handle Item selection and trigger event `Item Selected`"""
+    @property
+    def silentSelectionEvents(self):
+        """"
+        If this property is true, do not trigger onItemSelected when an item is selected
+
+        :return: True is onItemSelected is not triggered when an item is selected
+        :rtype: ``bool``
+        """
+        return self._silentSelectionEvents
+
+    @silentSelectionEvents.setter
+    def silentSelectionEvents(self, value: bool):
+        if self._silentSelectionEvents != value:
+            self._silentSelectionEvents = value
+
+    def onItemSelected(self, silent: bool = False):
+        """
+        Handle Item selection and trigger event `Item Selected`
+
+        :param silent: If ``True`` scene's onItemSelected won't be called and history stamp not stored
+        :type silent: ``bool``
+        """
+        if self._silentSelectionEvents:
+            return
+
         selectedItems = self.selectedItems
         if selectedItems != self._lastSelectedItems:
             self.lastSelectedItems = selectedItems
-            self.history.store("Change selection")
 
-            for callback in self._itemSelectedListeners:
-                callback()
-        self.__logger.debug("Everything done after item has been selected")
+            if not silent:
+                self.history.store("Change selection")
+                for callback in self._itemSelectedListeners:
+                    callback()
 
-    def onItemsDeselected(self):
-        """Handle Items deselection and trigger event `Items Deselected`"""
+    def onItemsDeselected(self, silent: bool = False):
+        """
+        Handle Items deselection and trigger event `Items Deselected`
+
+        :param silent: If ``True`` scene's onItemsDeselected won't be called and history stamp not stored
+        :type silent: ``bool``
+        """
         self.resetLastSelectedStates()
         if self.lastSelectedItems:
             self.lastSelectedItems = []
-            self.history.store("Deselect everything")
 
-        self.__logger.debug("Everything done after all items have been deselected")
+            if not silent:
+                self.history.store("Deselect everything")
+                for callback in self._itemsDeselectedListeners:
+                    callback()
 
-        for callback in self._itemsDeselectedListeners:
-            callback()
+    def doDeselectItems(self, silent: bool = False) -> None:
+        """
+        Deselects everything in scene
+
+        :param silent: If ``True`` scene's onItemsDeselected won't be called
+        :type silent: ``bool``
+        """
+        for item in self.selectedItems:
+            item.setSelected(False)
+        if not silent:
+            self.onItemsDeselected()
 
     def addHasBeenModifiedListener(self, callback: Callable[[], None]):
         """
@@ -216,7 +257,9 @@ class Scene(Serializable):
         if nodeToRemove in self.nodes:
             self.nodes.remove(nodeToRemove)
         else:
-            self.__logger.warning(f"Trying to remove {nodeToRemove} from {self}.")
+            self.__logger.warning(
+                f"Trying to remove {nodeToRemove} from {self} but is it not in the node list."
+            )
 
     def removeEdge(self, edgeToRemove: Edge):
         """Remove :class:`~nodedge.edge.Edge` from this `Scene`
@@ -227,7 +270,9 @@ class Scene(Serializable):
         if edgeToRemove in self.edges:
             self.edges.remove(edgeToRemove)
         else:
-            self.__logger.warning(f"Trying to remove {edgeToRemove} from {self}.")
+            self.__logger.warning(
+                f"Trying to remove {edgeToRemove} from {self} but is it not is the edge list."
+            )
 
     def clear(self):
         """Remove all `Nodes` from this `Scene`. This causes also to remove all `Edges`"""

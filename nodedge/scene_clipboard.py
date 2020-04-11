@@ -6,6 +6,8 @@ Scene clipboard module containing :class:`~nodedge.scene_clipboard.SceneClipboar
 import logging
 from collections import OrderedDict
 
+from PyQt5.QtCore import QPointF
+
 from nodedge.edge import Edge
 from nodedge.graphics_edge import GraphicsEdge
 
@@ -102,24 +104,38 @@ class SceneClipboard:
                 minY = y
             if y > maxY:
                 maxY = y
-        boundedBoxCenterX = (minX + maxX) / 2
-        boundedBoxCenterY = (minY + maxY) / 2
 
-        # center = view.mapToScene(view.rect().center)
+        # Add width and height of a node
+        # TODO: Do not use hard coded node width and height
+        maxX -= 180
+        maxY += 100
 
-        # Calculate the offset of newly created blocks
-        offsetX = mouseScenePos.x() - boundedBoxCenterX
-        offsetY = mouseScenePos.y() - boundedBoxCenterY
+        relativeCenterX = (minX + maxX) / 2 - minX
+        relativeCenterY = (minY + maxY) / 2 - minY
+
+        self.__logger.debug(f"Mouse pos: X:{mouseScenePos.x()}   Y:{mouseScenePos.y()}")
+        self.__logger.debug(f"Copied boudaries: X:[{minX, maxY}]   Y:[{minY, maxY}]")
+        self.__logger.debug(
+            f"Relative center: X:{relativeCenterX}   Y:{relativeCenterY}"
+        )
+
+        # create each node
+        createdNodes = []
+
+        self.scene.silentSelectionEvents = True
+
+        self.scene.doDeselectItems()
 
         # Create each node
 
         for nodeData in data["nodes"]:
             newNode = self.scene.getNodeClassFromData(nodeData)(self.scene)
             newNode.deserialize(nodeData, hashmap, restoreId=False)
+            createdNodes.append(newNode)
 
-            # Reajust the new node position
-            pos = newNode.pos
-            newNode.pos = (pos.x() + offsetX, pos.y() + offsetY)
+            # Readjust the new node position
+            newNode.pos = newNode.pos + mouseScenePos - QPointF(minX, minY)
+            newNode.isSelected = True
 
         # Create each edge
         if "edges" in data:
@@ -127,7 +143,10 @@ class SceneClipboard:
                 newEdge = Edge(self.scene)
                 newEdge.deserialize(edgeData, hashmap, restoreId=False)
 
+        self.scene.silentSelectionEvents = False
+
         # Store history
         self.scene.history.store("Paste items in scene.")
-
         self.__logger.debug(f"Deserializing from clipboard: {data}")
+
+        return createdNodes
