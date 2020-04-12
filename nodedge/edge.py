@@ -184,8 +184,7 @@ class Edge(Serializable):
 
         if self.sourceSocket is not None:
             sourcePos = (
-                self.sourceSocket.socketPos()
-                + self.sourceSocket.node.graphicsNode.pos()
+                self.sourceSocket.pos + self.sourceSocket.node.graphicsNode.pos()
             )
             if self.graphicsEdge is not None:
                 self.graphicsEdge.sourcePos = sourcePos
@@ -193,8 +192,7 @@ class Edge(Serializable):
 
         if self.targetSocket is not None:
             targetPos = (
-                self.targetSocket.socketPos()
-                + self.targetSocket.node.graphicsNode.pos()
+                self.targetSocket.pos + self.targetSocket.node.graphicsNode.pos()
             )
             if self.graphicsEdge is not None:
                 self.graphicsEdge.targetPos = targetPos
@@ -230,7 +228,7 @@ class Edge(Serializable):
         self.targetSocket = None
         self.sourceSocket = None
 
-    def remove(self):
+    def remove(self, silentForSocket: Optional[Socket] = None):
         """
         Safely remove this `Edge`.
 
@@ -241,6 +239,9 @@ class Edge(Serializable):
         Triggered Node Slots:
         - :py:meth:`~nodedge.node.Node.onEdgeConnectionChanged`
         - :py:meth:`~nodedge.node.Node.onInputChanged`
+
+        :param silentForSocket: Socket for whom the removal is silent
+        :type silentForSocket: Optional[:class:`~nodedge.socket.Socket`]
         """
 
         oldSockets = [self.sourceSocket, self.targetSocket]
@@ -250,7 +251,7 @@ class Edge(Serializable):
 
         self.__logger.debug(f"Removing Graphical edge: {self.graphicsEdge}")
         self.scene.graphicsScene.removeItem(self.graphicsEdge)
-        self.graphicsEdge = None
+        self.graphicsEdge = None  # type: ignore
 
         self.__logger.debug(f"Removing {self}")
         try:

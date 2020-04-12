@@ -7,7 +7,9 @@ Socket module containing Nodedge's class for representing :class:`~nodedge.socke
 import logging
 from collections import OrderedDict
 from enum import IntEnum
-from typing import List, Optional, cast
+from typing import List, Optional
+
+from PyQt5.QtCore import QPointF
 
 from nodedge.graphics_socket import GraphicsSocket
 from nodedge.serializable import Serializable
@@ -26,6 +28,8 @@ class Socket(Serializable):
     """
     Class representing input/output sockets of the nodes.
     """
+
+    GraphicsSocketClass = GraphicsSocket
 
     def __init__(
         self,
@@ -67,16 +71,58 @@ class Socket(Serializable):
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
 
-        self.graphicsSocket: GraphicsSocket = GraphicsSocket(self, self.socketType)
+        self.graphicsSocket: GraphicsSocket = self.__class__.GraphicsSocketClass(
+            self, self.socketType
+        )
         self.updateSocketPos()
 
         self.edges: List["Edge"] = []  # type: ignore
+
+    def delete(self):
+        """Delete this :class:`~nodedge.socket.Socket` from :class:`~nodedge.scene.Scene`"""
+        self.graphicsSocket.setParentItem(None)
+        self.node.scene.grScene.removeItem(self.graphicsSocket)
+        del self.graphicsSocket
 
     def __repr__(self):
         return (
             f"0x{hex(id(self))[-4:]} Socket({self.index}, "
             f"{self.location}, {self.socketType}, {self.allowMultiEdges})"
         )
+
+    @property
+    def hasAnyEdge(self) -> bool:
+        """
+        Whether the :class:`~nodedge.socket.Socket` has any :class:`~nodedge.edge.Edge` connected to it.
+
+        :return: ``True`` if any :class:`~nodedge.edge.Edge` is connected to this :class:`~nodedge.socket.Socket`
+        :rtype: ``bool``
+        """
+        return len(self.edges) > 0
+
+    @property
+    def pos(self) -> QPointF:
+        """
+        :return: return this socket's position according the implementation stored in
+            :class:`~nodedge.node.Node`
+        :rtype: ``x, y`` position
+        """
+
+        ret: QPointF = self.node.socketPos(
+            self.index, self.location, self.countOnThisNodeSide
+        )
+        return ret
+
+    def isConnected(self, edge: "Edge") -> bool:  # type: ignore
+        """
+        Returns ``True`` if :class:`~nodeeditor.node_edge.Edge` is connected to this `Socket`
+
+        :param edge: :class:`~nodeeditor.node_edge.Edge` to check if it is connected to this `Socket`
+        :type edge: :class:`~nodeeditor.node_edge.Edge`
+        :return: ``True`` if `Edge` is connected to this socket
+        :rtype: ``bool``
+        """
+        return edge in self.edges
 
     def updateSocketPos(self) -> None:
         """
@@ -88,20 +134,6 @@ class Socket(Serializable):
             self.index, self.location, self.countOnThisNodeSide
         )
         self.graphicsSocket.setPos(socketPos)
-
-    def socketPos(self) -> List[float]:
-        """
-        :return: return this socket's position according the implementation stored in
-            :class:`~nodedge.node.Node`
-        :rtype: ``x, y`` position
-        """
-
-        ret = self.node.socketPos(self.index, self.location, self.countOnThisNodeSide)
-        self.__logger.debug(
-            f"getSocketPos: {self.index}, {self.location}, {self.node}, {ret}"
-        )
-
-        return cast(List, ret)
 
     # noinspection PyUnresolvedReferences
     def addEdge(self, edge: Optional["Edge"] = None) -> None:  # type: ignore # noqa: F821
@@ -128,7 +160,24 @@ class Socket(Serializable):
         else:
             self.__logger.debug(f"Trying to remove {edgeToRemove} from {self}.")
 
-    def determineallowMultiEdges(self, data):
+    # noinspection PyUnresolvedReferences
+    def removeAllEdges(self, silent=False) -> None:
+        """
+        Disconnect all edges from this socket.
+
+        :param silent: If true, remove the edge without notifications
+        :type silent: ``bool``
+        """
+        while self.edges:
+            edge: "Edge" = self.edges.pop(0)  # type: ignore # noqa: F821
+            self.__logger.debug(f"Removing {edge} from {self}")
+            if silent:
+                edge.remove(silent)
+            else:
+                edge.remove()
+
+    @staticmethod
+    def determineAlowMultiEdges(data):
         """
         Deserialization helper function.
 
@@ -151,16 +200,6 @@ class Socket(Serializable):
                 SocketLocation.RIGHT_BOTTOM,
                 SocketLocation.RIGHT_TOP,
             )
-
-    # noinspection PyUnresolvedReferences
-    def removeAllEdges(self) -> None:
-        """
-        Disconnect all edges from this socket.
-        """
-        while self.edges:
-            edge: "Edge" = self.edges.pop(0)  # type: ignore # noqa: F821
-            self.__logger.debug(f"Removing {edge} from {self}")
-            edge.remove()
 
     def serialize(self) -> OrderedDict:
         return OrderedDict(

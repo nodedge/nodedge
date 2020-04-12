@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Graphics node module containing :class:`~nodedge.node.Node` class.
+Graphics node module containing :class:`~nodedge.graphics_node.GraphicsNode` class.
 """
 
 import logging
@@ -10,10 +10,12 @@ from PyQt5.QtCore import QRectF, Qt
 from PyQt5.QtGui import QBrush, QColor, QFont, QPainterPath, QPen
 from PyQt5.QtWidgets import (
     QGraphicsItem,
-    QGraphicsProxyWidget,
     QGraphicsSceneHoverEvent,
-    QGraphicsTextItem,
+    QGraphicsSceneMouseEvent,
 )
+
+from nodedge.graphics_node_content import GraphicsNodeContentProxy
+from nodedge.graphics_node_title_item import GraphicsNodeTitleItem
 
 
 class GraphicsNode(QGraphicsItem):
@@ -117,12 +119,11 @@ class GraphicsNode(QGraphicsItem):
         """
         Set up the title Graphics representation: font, color, position, etc.
         """
-        self.titleItem = QGraphicsTextItem(self)
+        self.titleItem: GraphicsNodeTitleItem = GraphicsNodeTitleItem(self)
         self.titleItem.setDefaultTextColor(self._titleColor)
         self.titleItem.setFont(self._titleFont)
         self.titleItem.setPos(self.titleHorizontalPadding, 0)
         self.titleItem.setTextWidth(self.width - 2 * self.titleHorizontalPadding)
-        self.titleItem.node = self.node  # type: ignore
 
         self.title = self.node.title
 
@@ -131,14 +132,15 @@ class GraphicsNode(QGraphicsItem):
         """
         Set up the `grContent` - ``QGraphicsProxyWidget`` to have a container for `GraphicsContent`.
         """
-        self.graphicsContent = QGraphicsProxyWidget(self)
+
         self.content.setGeometry(
-            self.edgePadding,
-            self.titleHeight + self.edgePadding,
-            self.width - 2 * self.edgePadding,
-            self.height - 2 * self.edgePadding - self.titleHeight,
+            int(self.edgePadding),
+            int(self.titleHeight + self.edgePadding),
+            int(self.width - 2 * self.edgePadding),
+            int(self.height - 2 * self.edgePadding - self.titleHeight),
         )
-        self.graphicsContent.setWidget(self.content)
+        self.graphicsContentProxy = GraphicsNodeContentProxy(self)
+        self.graphicsContentProxy.setWidget(self.content)
 
     def boundingRect(self):
         """
@@ -196,7 +198,12 @@ class GraphicsNode(QGraphicsItem):
         # outline
         pathOutline = QPainterPath()
         pathOutline.addRoundedRect(
-            0, 0, self.width, self.height, self.edgeRoundness, self.edgeRoundness
+            -1,
+            -1,
+            self.width + 2,
+            self.height + 2,
+            self.edgeRoundness,
+            self.edgeRoundness,
         )
         painter.setBrush(Qt.NoBrush)
 
@@ -232,7 +239,7 @@ class GraphicsNode(QGraphicsItem):
             self.node.scene.history.store("Move a node")
 
             self.node.scene.resetLastSelectedStates()
-            self._lastSelectedState = True
+            self.selectedState = True
 
             # Store the last selected, because moving does also select the blocks.
             self.node.scene.lastSelectedItems = self.node.scene.selectedItems
@@ -264,6 +271,13 @@ class GraphicsNode(QGraphicsItem):
         """
         self.hovered = False
         self.update()
+
+    def mouseDoubleClickEvent(self, event: QGraphicsSceneMouseEvent):
+        """
+        Qt's overridden event for doubleclick.
+        Resend to :func:`~nodedge.node.Node.onDoubleClicked`
+        """
+        self.node.onDoubleClicked(event)
 
     def onSelected(self):
         """

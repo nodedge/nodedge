@@ -9,6 +9,7 @@ from collections import OrderedDict
 from typing import Collection, List, Optional, Tuple, TypeVar
 
 from PyQt5.QtCore import QPoint, QPointF
+from PyQt5.QtWidgets import QGraphicsSceneMouseEvent
 
 from nodedge.edge import Edge
 from nodedge.graphics_node import GraphicsNode
@@ -575,3 +576,13 @@ class Node(Serializable):
         res = self.content.deserialize(data["content"], hashmap)
 
         return bool(True & res)
+
+    def onDoubleClicked(self, event: QGraphicsSceneMouseEvent) -> None:
+        """
+        Callback when the :class:`~nodedge.graphics_node.GraphicsNode` is double clicked.
+
+        :param event: Qt double click event
+        :type: ``QMouseEvent``
+        """
+
+        self.__logger.debug("Graphics node has been double clicked.")

@@ -8,7 +8,7 @@ from typing import Optional, cast
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFocusEvent
-from PyQt5.QtWidgets import QTextEdit, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QGraphicsProxyWidget, QTextEdit, QVBoxLayout, QWidget
 
 from nodedge.serializable import Serializable
 
@@ -47,7 +47,7 @@ class GraphicsNodeContent(QWidget, Serializable):
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.layout)
 
-        self.layout.addWidget(TextEdit("X3"))
+        self.layout.addWidget(TextEdit("N"))
 
     def setEditingFlag(self, value: bool) -> None:
         """
@@ -126,3 +126,9 @@ class TextEdit(QTextEdit):
         parent: GraphicsNodeContent = cast(GraphicsNodeContent, super().parentWidget())
         parent.setEditingFlag(False)
         super().focusOutEvent(event)
+
+
+class GraphicsNodeContentProxy(QGraphicsProxyWidget):
+    def __init__(self, graphicsNodeParent: "GraphicsNode"):  # type: ignore
+        super().__init__(graphicsNodeParent)
+        self.setWidget(graphicsNodeParent.content)

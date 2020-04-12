@@ -332,6 +332,7 @@ class MdiWindow(EditorWindow):
         if window:
             self.mdiArea.setActiveSubWindow(window)
 
+    # noinspection PyAttributeOutsideInit
     def createNodesDock(self):
         self.nodesListWidget = NodeListWidget()
 
@@ -396,7 +397,7 @@ class MdiWindow(EditorWindow):
         )
 
     def onNodesToolbarTriggered(self):
-        self.__logger.debug("")
+        self.__logger.debug("Toolbar triggered")
 
         if self.nodesDock.isVisible():
             self.nodesDock.hide()

@@ -50,7 +50,7 @@ class GraphicsView(QGraphicsView):
         super().__init__(graphicsScene, parent)
 
         self.__logger = logging.getLogger(__name__)
-        self.__logger.setLevel(logging.INFO)
+        self.__logger.setLevel(logging.DEBUG)
 
         self.graphicsScene: GraphicsScene = graphicsScene
         self.initUI()
