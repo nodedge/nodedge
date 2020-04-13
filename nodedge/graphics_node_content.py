@@ -17,9 +17,12 @@ class GraphicsNodeContent(QWidget, Serializable):
     :class:`~nodedge.graphics_node_content.GraphicsNodeContent` class.
 
     Base class for representation of the Node's graphics content. This class also
-    provides layout for other widgets inside of a :py:class:`~nodedge.node.Node` """
+    provides layout for other widgets inside of a :py:class:`~nodedge.node.Node`.
+    """
 
-    def __init__(self, node: "Node", parent: Optional[QWidget] = None):  # type: ignore
+    def __init__(
+        self, node: "Node", parent: Optional[QWidget] = None  # type: ignore
+    ) -> None:
         """
         :param node: reference to the :py:class:`~nodedge.node.Node`
         :type node: :py:class:`~nodedge.node.Node`
@@ -32,14 +35,15 @@ class GraphicsNodeContent(QWidget, Serializable):
         """
 
         super().__init__(parent)
-        self.node = node
+        self.node: "Node" = node  # type: ignore
 
         self.initUI()
         self.setAttribute(Qt.WA_TranslucentBackground)
 
     # noinspection PyAttributeOutsideInit
     def initUI(self):
-        """Sets up layouts and widgets to be rendered in
+        """
+        Sets up layouts and widgets to be rendered in
         :py:class:`~nodedge.graphics_node.QDMGraphicsNode` class.
         """
         self.layout = QVBoxLayout()
@@ -63,6 +67,7 @@ class GraphicsNodeContent(QWidget, Serializable):
         QGraphicsView class method ``keyPressEvent``.
 
         :param value: new value for editing flag
+        :type value: ``bool``
         """
 
         self.node.scene.view.editingFlag = value
@@ -71,7 +76,6 @@ class GraphicsNodeContent(QWidget, Serializable):
         """ Default serialization method.
 
         It needs to be overridden for each node implementation.
-
 
         :return OrderedDict: Serialized data as ordered dictionary
         """
@@ -91,6 +95,7 @@ class GraphicsNodeContent(QWidget, Serializable):
         """
         if hashmap is None:
             hashmap = {}
+            hashmap.clear()
         return True
 
 
@@ -108,7 +113,7 @@ class TextEdit(QTextEdit):
 
     def focusInEvent(self, event: QFocusEvent) -> None:
         """
-        Example of overridden focusInEvent to mark start of editing
+        Example of overridden focusInEvent to mark start of editing.
 
         :param event: Qt's focus event
         :type event: QFocusEvent
@@ -132,6 +137,6 @@ class TextEdit(QTextEdit):
 
 
 class GraphicsNodeContentProxy(QGraphicsProxyWidget):
-    def __init__(self, graphicsNodeParent: "GraphicsNode"):  # type: ignore
+    def __init__(self, graphicsNodeParent: "GraphicsNode") -> None:  # type: ignore
         super().__init__(graphicsNodeParent)
         self.setWidget(graphicsNodeParent.content)

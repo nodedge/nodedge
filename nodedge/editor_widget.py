@@ -12,6 +12,7 @@ from PyQt5.QtGui import QBrush, QMouseEvent, QPen
 from PyQt5.QtWidgets import (
     QApplication,
     QGraphicsItem,
+    QLabel,
     QMessageBox,
     QVBoxLayout,
     QWidget,
@@ -274,3 +275,20 @@ class EditorWidget(QWidget):
         )
 
         self.scene.history.storeInitialStamp()
+
+    def addCustomNode(self):
+        """Testing method to create a custom Node with custom content"""
+
+        class NNodeContent(QLabel):
+            def __init__(self, parentNode, parent=None):
+                super().__init__("FooBar")
+                self.node = parentNode
+                self.setParent(parent)
+
+        class NNode(Node):
+            NodeContentClass = NNodeContent
+
+        self.scene.setNodeClassSelector(lambda data: NNode)
+        node = NNode(self.scene, "A Custom Node 1", inputSocketTypes=[0, 1, 2])
+
+        self.__logger.debug("node content:", node.content)

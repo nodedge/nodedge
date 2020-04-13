@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Graphics socket module containing :class:`~nodedge.graphics_socket.GraphicsSocket` class.
+Graphics socket module containing :class:`~nodedge.graphics_socket.GraphicsSocket`
+class.
 """
 
 from PyQt5.QtCore import QRectF, Qt
@@ -22,21 +23,19 @@ class GraphicsSocket(QGraphicsItem):
     """
     :class:`~nodedge.graphics_socket.GraphicsSocket` class.
 
-    The graphics socket is the graphical representation of the :class:`~nodedge.socket.Socket`.
+    The graphics socket is the graphical representation of the
+    :class:`~nodedge.socket.Socket`.
     """
 
-    def __init__(self, socket: "Socket", socketColor: int = 1) -> None:  # type: ignore
+    def __init__(self, socket: "Socket") -> None:  # type: ignore
         """
         :param socket: reference to :class:`~nodedge.socket.Socket`
         :type socket: :class:`~nodedge.socket.Socket`
-        :param socketColor: Constant representing `Socket` color.
-        :type socketColor: ``int``
         """
 
         super(GraphicsSocket, self).__init__(socket.node.graphicsNode)
 
         self.socket = socket
-        self.socketColor = socketColor
 
         self.initUI()
 
@@ -52,12 +51,12 @@ class GraphicsSocket(QGraphicsItem):
         """
         Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``
         """
-        self._color_background = GraphicsSocket.getSocketColor(self.socketColor)
-        self._color_outline = QColor("#FF000000")
+        self._colorBackground: QColor = GraphicsSocket.getSocketColor(self.socketType)
+        self._colorOutline: QColor = QColor("#FF000000")
 
-        self._pen = QPen(self._color_outline)
-        self._pen.setWidthF(self.outline_width)
-        self._brush = QBrush(self._color_background)
+        self._pen: QPen = QPen(self._colorOutline)
+        self._pen.setWidthF(self.outlineWidth)
+        self._brush: QBrush = QBrush(self._colorBackground)
 
     # noinspection PyAttributeOutsideInit
     def initSizes(self) -> None:
@@ -65,7 +64,11 @@ class GraphicsSocket(QGraphicsItem):
         Set up internal attributes like `width`, `height`, etc.
         """
         self.radius = 6.0
-        self.outline_width = 1.0
+        self.outlineWidth = 1.0
+
+    @property
+    def socketType(self):
+        return self.socket.socketType
 
     @staticmethod
     def getSocketColor(key):
@@ -75,6 +78,13 @@ class GraphicsSocket(QGraphicsItem):
         elif type(key) == str:
             return QColor(key)
         return Qt.transparent
+
+    # noinspection PyAttributeOutsideInit
+    def updateSocketType(self):
+        """Change the Socket Type"""
+        self._colorBackground = self.getSocketColor(self.socketType)
+        self._brush = QBrush(self._colorBackground)
+        self.update()
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """
@@ -92,8 +102,8 @@ class GraphicsSocket(QGraphicsItem):
         Define Qt's bounding rectangle
         """
         return QRectF(
-            -self.radius - self.outline_width,
-            -self.radius - self.outline_width,
-            2 * (self.radius + self.outline_width),
-            2 * (self.radius + self.outline_width),
+            -self.radius - self.outlineWidth,
+            -self.radius - self.outlineWidth,
+            2 * (self.radius + self.outlineWidth),
+            2 * (self.radius + self.outlineWidth),
         )

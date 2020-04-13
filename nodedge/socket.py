@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Socket module containing Nodedge's class for representing :class:`~nodedge.socket.Socket` class and
-:class:`~nodedge.socket.SocketLocation` constants.
+Socket module containing Nodedge's class for representing
+:class:`~nodedge.socket.Socket` class and :class:`~nodedge.socket.SocketLocation`
+constants.
 """
 
 import logging
@@ -16,12 +17,12 @@ from nodedge.serializable import Serializable
 
 
 class SocketLocation(IntEnum):
-    LEFT_TOP = 1  #:
-    LEFT_CENTER = 2  #:
-    LEFT_BOTTOM = 3  #:
-    RIGHT_TOP = 4  #:
-    RIGHT_CENTER = 5  #:
-    RIGHT_BOTTOM = 6  #:
+    LEFT_TOP = 1  #: Left top
+    LEFT_CENTER = 2  #: Left center
+    LEFT_BOTTOM = 3  #: Left bottom
+    RIGHT_TOP = 4  #: Right top
+    RIGHT_CENTER = 5  #: Right center
+    RIGHT_BOTTOM = 6  #: Right bottom
 
 
 class Socket(Serializable):
@@ -53,9 +54,11 @@ class Socket(Serializable):
         :param allowMultiEdges: attribute that defines if this socket
             can have multiple connected edges
         :type allowMultiEdges: ``bool``
-        :param countOnThisNodeSide: number of total sockets on this socket side, i.e. input/output
+        :param countOnThisNodeSide: number of total sockets on this socket side, i.e.
+            input/output
         :type countOnThisNodeSide: ``int``
-        :param isInput: attribute that defines whether this is an input or an output socket
+        :param isInput: attribute that defines whether this is an input or an
+            output socket
         :type isInput: ``bool``
         """
         super().__init__()
@@ -65,24 +68,37 @@ class Socket(Serializable):
         self.countOnThisNodeSide: int = countOnThisNodeSide
         self.isInput: bool = isInput
 
-        self.socketType: int = socketType
+        self._socketType: int = socketType
         self.allowMultiEdges: bool = allowMultiEdges
 
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
 
-        self.graphicsSocket: GraphicsSocket = self.__class__.GraphicsSocketClass(
-            self, self.socketType
-        )
+        self.graphicsSocket: GraphicsSocket = self.__class__.GraphicsSocketClass(self)
         self.updateSocketPos()
 
         self.edges: List["Edge"] = []  # type: ignore
 
     @property
+    def socketType(self):
+        return self._socketType
+
+    @socketType.setter
+    def socketType(self, newValue):
+        """
+        Change the socket type
+
+        :param newValue: new socket type
+        :type newValue: ``int``
+        """
+        if self._socketType != newValue:
+            self._socketType = newValue
+
+    @property
     def isOutput(self):
         """
-
-        :getter: Return `True` is the socket is not an input, `False` otherwise.
+        :getter: Return `True` is the :class:`~nodedge.socket.Socket` is not an input,
+            `False` otherwise.
         :rtype: ``bool``
         """
         return not self.isInput
@@ -90,7 +106,7 @@ class Socket(Serializable):
     def delete(self):
         """
         Delete this :class:`~nodedge.socket.Socket`
-        from :class:`~nodedge.scene.Scene`
+        from :class:`~nodedge.scene.Scene`.
         """
         self.graphicsSocket.setParentItem(None)
         self.node.scene.grScene.removeItem(self.graphicsSocket)
@@ -105,9 +121,11 @@ class Socket(Serializable):
     @property
     def hasAnyEdge(self) -> bool:
         """
-        Whether the :class:`~nodedge.socket.Socket` has any :class:`~nodedge.edge.Edge` connected to it.
+        Whether the :class:`~nodedge.socket.Socket` has any
+        :class:`~nodedge.edge.Edge` connected to it.
 
-        :return: ``True`` if any :class:`~nodedge.edge.Edge` is connected to this :class:`~nodedge.socket.Socket`
+        :return: ``True`` if any :class:`~nodedge.edge.Edge` is connected to this
+            :class:`~nodedge.socket.Socket`
         :rtype: ``bool``
         """
         return len(self.edges) > 0
@@ -127,11 +145,13 @@ class Socket(Serializable):
 
     def isConnected(self, edge: "Edge") -> bool:  # type: ignore
         """
-        Returns ``True`` if :class:`~nodeeditor.node_edge.Edge` is connected to this `Socket`
+        Returns ``True`` if :class:`~nodedge.edge.Edge` is connected to this
+        :class:`~nodedge.socket.Socket`.
 
-        :param edge: :class:`~nodeeditor.node_edge.Edge` to check if it is connected to this `Socket`
-        :type edge: :class:`~nodeeditor.node_edge.Edge`
-        :return: ``True`` if `Edge` is connected to this socket
+        :param edge: :class:`~nodedge.edge.Edge` to check if it is connected to this
+            :class:`~nodedge.socket.Socket`
+        :type edge: :class:`~nodedge.edge.Edge`
+        :return: ``True`` if :class:`~nodedge.edge.Edge` is connected to this socket
         :rtype: ``bool``
         """
         return edge in self.edges
@@ -150,9 +170,11 @@ class Socket(Serializable):
     # noinspection PyUnresolvedReferences
     def addEdge(self, edge: Optional["Edge"] = None) -> None:  # type: ignore # noqa: F821
         """
-        Append an edge to the list of the connected edges.
+        Append an :class:`~nodedge.edge.Edge` to the list of the connected
+        :class:`~nodedge.edge.Edge`.
 
-        :param edge: :class:`~nodedge.edge.Edge` to connect to this socket
+        :param edge: :class:`~nodedge.edge.Edge` to connect to this
+            :class:`~nodedge.socket.Socket`
         :type edge: :class:`~nodedge.edge.Edge`
         """
 
@@ -162,7 +184,8 @@ class Socket(Serializable):
     # noinspection PyUnresolvedReferences
     def removeEdge(self, edgeToRemove: "Edge") -> None:  # type: ignore # noqa: F821
         """
-        Disconnect passed :class:`~nodedge.edge.Edge` from this socket.
+        Disconnect passed :class:`~nodedge.edge.Edge` from
+        this :class:`~nodedge.socket.Socket`.
 
         :param edgeToRemove: :class:`~nodedge.edge.Edge` to disconnect
         :type edgeToRemove: :class:`~nodedge.edge.Edge`
@@ -175,7 +198,8 @@ class Socket(Serializable):
     # noinspection PyUnresolvedReferences
     def removeAllEdges(self, silent=False) -> None:
         """
-        Disconnect all edges from this socket.
+        Disconnect all :class:`~nodedge.edge.Edge` from
+        this :class:`~nodedge.socket.Socket`.
 
         :param silent: If true, remove the edge without notifications
         :type silent: ``bool``
@@ -195,10 +219,12 @@ class Socket(Serializable):
 
         .. note::
 
-            This function is here to help solve the issue of opening older files in the newer format.
+            This function is here to help solve the issue of opening older files in
+            the newer format.
 
-        If the 'multi_edges' param is missing in the dictionary, we determine if this `Socket`
-        should support multiple `Edges`.
+        If the `allowMultiEdges` param is missing in the dictionary, we determine if
+        this :class:`~nodedge.socket.Socket` should support multiple
+        :class:`~nodedge.edge.Edge`.
 
         :param data: socket's data in ``dict`` format for deserialization
         :type data: ``dict``
@@ -233,6 +259,7 @@ class Socket(Serializable):
         if restoreId:
             self.id = data["id"]
         self.allowMultiEdges = data["allowMultiEdges"]
+        self.socketType = data["socketType"]
         hashmap[data["id"]] = self
 
         return True

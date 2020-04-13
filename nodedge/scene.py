@@ -373,11 +373,12 @@ class Scene(Serializable):
 
     def setNodeClassSelector(self, classSelectingFunction):
         """
-        Set the function which decides what `Node` class to instantiate during `Scene` deserialization.
-        If not set, we will always instantiate :class:`~nodedge.node.Node` for each `Node` in the `Scene`
+        Set the function which decides what `Node` class to instantiate during
+        `Scene` deserialization. If not set, we will always instantiate
+        :class:`~nodedge.node.Node` for each `Node` in the `Scene`
 
-        :param classSelectingFunction: function which returns `Node` class type (not instance)
-                                       from `Node` serialized ``dict`` data
+        :param classSelectingFunction: function which returns `Node` class type
+            (not instance) from `Node` serialized ``dict`` data
         :type classSelectingFunction: ``function``
         :return: Class Type of `Node` to be instantiated during deserialization
         :rtype: `Node` class type

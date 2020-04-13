@@ -162,8 +162,8 @@ class MdiWidget(EditorWidget):
         When the node is dropped, an instance of it is created near at the mouse
         location, displayed by its :class:`~nodedge.graphics_node.GraphicsNode`.
 
-        :param event: the Qt's drop event, contaning the mime data of the node being
-        dropped.
+        :param event: the Qt's drop event, containing the mime data of the node being
+            dropped.
         :type event: QDropEvent
         """
         if not event.mimeData().hasFormat(NODELISTWIDGET_MIMETYPE):
@@ -208,7 +208,7 @@ class MdiWidget(EditorWidget):
 
         :param event: the Qt's context menu event, happening when the user right
             clicks on the :class:`~nodedge.graphics_scene.GraphicsScene`
-        :type event: ``QContextMenuEvent``
+        :type event: ``QContextMenuEvent.py``
         """
         try:
             item = self.scene.itemAt(event.pos())
@@ -299,8 +299,8 @@ class MdiWidget(EditorWidget):
         can quickly create a new one.
 
         :param event: the Qt's context menu event, happening when the user right
-        clicks on the :class:`~nodedge.graphics_scene.GraphicsScene`
-        :type event: ``QContextMenuEvent``
+            clicks on the :class:`~nodedge.graphics_scene.GraphicsScene`
+        :type event: ``QContextMenuEvent.py``
         """
         contextMenu = self.initNodesContextMenu()
         action = contextMenu.exec_(self.mapToGlobal(event.pos()))
@@ -333,10 +333,11 @@ class MdiWidget(EditorWidget):
 
     def handleEdgeContextMenu(self, event):
         """
-        Handle Qt's context menu when the user has right clicked on an :class:`~nodedge.graphics_edge.GraphicsEdge`
+        Handle Qt's context menu when the user has right clicked on an
+        :class:`~nodedge.graphics_edge.GraphicsEdge`
 
-        :param event: the Qt's context menu event, happening when the user right clicks on the
-            :class:`~nodedge.graphics_scene.GraphicsScene`
+        :param event: the Qt's context menu event, happening when the user right clicks
+            on the :class:`~nodedge.graphics_scene.GraphicsScene`
         :type event: ``QContextMenuEvent``
         """
         contextMenu = QMenu()

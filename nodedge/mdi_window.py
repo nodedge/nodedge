@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-"""
-Multi Document Interface window module containing :class:`~nodedge.mdi_window.MdiWindow` class.
-"""
+"""Multi Document Interface window module containing
+:class:`~nodedge.mdi_window.MdiWindow` class. """
 import logging
 import os
-import typing
+from typing import cast
 
 from PyQt5.QtCore import QSignalMapper, Qt
 from PyQt5.QtGui import QIcon, QKeySequence
@@ -40,7 +39,8 @@ class MdiWindow(EditorWindow):
     @property
     def currentEditorWidget(self) -> EditorWidget:
         """
-        Property representing the :class:`~nodedge.editor_widget.EditorWidget` of the active sub-window.
+        Property representing the :class:`~nodedge.editor_widget.EditorWidget` of the
+        active sub-window.
 
         .. note::
 
@@ -55,7 +55,7 @@ class MdiWindow(EditorWindow):
             and isinstance(activeSubWindow.widget(), EditorWidget)
         ):
             self.lastActiveEditorWidget = activeSubWindow.widget()
-        return typing.cast(EditorWidget, self.lastActiveEditorWidget)
+        return cast(EditorWidget, self.lastActiveEditorWidget)
 
     # noinspection PyAttributeOutsideInit
     def initUI(self):
@@ -205,12 +205,20 @@ class MdiWindow(EditorWindow):
         """
         super().createMenus()
 
-        self.windowMenu = self.menuBar().addMenu("&Window")
-        self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
+        self.createWindowMenu()
+        self.createHelpMenu()
+
+        self.editMenu.aboutToShow.connect(self.updateEditMenu)
+
+    # noinspection PyAttributeOutsideInit
+    def createHelpMenu(self):
         self.helpMenu: QMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.aboutAct)
 
-        self.editMenu.aboutToShow.connect(self.updateEditMenu)
+    # noinspection PyAttributeOutsideInit
+    def createWindowMenu(self):
+        self.windowMenu = self.menuBar().addMenu("&Window")
+        self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
 
     def updateMenus(self):
         """
@@ -301,7 +309,8 @@ class MdiWindow(EditorWindow):
 
     def _createMdiSubWindow(self, childWidget=None):
         """
-        Create a new sub window containing a :class:`~nodedge.editor_widget.EditorWidget`
+        Create a new sub window containing a
+        :class:`~nodedge.editor_widget.EditorWidget`
         """
         editor = childWidget if childWidget is not None else MdiWidget()
         subWindow = self.mdiArea.addSubWindow(editor)
@@ -324,7 +333,8 @@ class MdiWindow(EditorWindow):
 
     def findMdiSubWindow(self, filename):
         for window in self.mdiArea.subWindowList():
-            if window.widget().filename == filename:
+            editorWidget: EditorWidget = cast(EditorWidget, window.widget())
+            if editorWidget.filename == filename:
                 return window
         return None
 
@@ -347,27 +357,31 @@ class MdiWindow(EditorWindow):
         if self.mdiArea.currentSubWindow():
             event.ignore()
         else:
-            # self.writeSettings()
-            # event.accept()
+            self.writeSettings()
+            event.accept()
             # FIXME: hacky fix for PyQt 5.14.x
-            import sys
-
-            sys.exit(0)
+            # import sys
+            #
+            # sys.exit(0)
 
     def newFile(self):
         subWindow = self._createMdiSubWindow()
-        typing.cast(EditorWidget, subWindow.widget()).addNodes()
+        cast(EditorWidget, subWindow.widget()).addNodes()
         subWindow.show()
 
         return subWindow
 
     def openFile(self, filenames):
         if isinstance(filenames, bool) or filenames is None:
-            filenames, filter = QFileDialog.getOpenFileNames(
-                parent=self, caption="Open graph from file"
+            filenames, _ = QFileDialog.getOpenFileNames(
+                parent=self,
+                caption="Open graph from file",
+                directory=EditorWindow.getFileDialogDirectory(),
+                filter=EditorWindow.getFileDialogFilter(),
             )
         else:
-            # If only one file is given as input, convert the string in list to let the next for loop work properly.
+            # If only one file is given as input,
+            # convert the string in list to let the next for loop work properly.
             if isinstance(filenames, str):
                 filenames = [filenames]
 

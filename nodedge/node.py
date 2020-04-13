@@ -260,7 +260,7 @@ class Node(Serializable):
     @property
     def isSelected(self):
         """
-        Retrieve graphics node selection status
+        Retrieve graphics node selection status.
         """
         return self.graphicsNode.isSelected()
 
@@ -274,7 +274,8 @@ class Node(Serializable):
     def socketPos(self, index: int, location: int, countOnThisSide: int = 1) -> QPointF:
         """
         Get the relative `x, y` position of a :class:`~nodedge.socket.Socket`. This is
-        used for placing the `Graphics Sockets` on `Graphics Node`.
+        used for placing the :class:`~nodedge.graphics_socket.GraphicsSocket`
+        on `Graphics Node`.
 
         :param index: Order number of the Socket. (0, 1, 2, ...)
         :type index: ``int``
@@ -559,6 +560,9 @@ class Node(Serializable):
         for socket in self.outputSockets:
             outputs.append(socket.serialize())
 
+        serializedContent: OrderedDict = OrderedDict()
+        if isinstance(self.content, Serializable):
+            serializedContent = self.content.serialize()
         return OrderedDict(
             [
                 ("id", self.id),
@@ -567,7 +571,7 @@ class Node(Serializable):
                 ("posY", self.graphicsNode.scenePos().y()),
                 ("inputSockets", inputs),
                 ("outputSockets", outputs),
-                ("content", self.content.serialize()),
+                ("content", serializedContent),
             ]
         )
 
@@ -582,12 +586,8 @@ class Node(Serializable):
             self.pos = (data["posX"], data["posY"])
             self.title = data["title"]
 
-            data["inputSockets"].sort(
-                key=lambda socket: socket["index"] + socket["location"] * 1000
-            )
-            data["outputSockets"].sort(
-                key=lambda socket: socket["index"] + socket["location"] * 1000
-            )
+            data["inputSockets"].sort(key=lambda s: s["index"] + s["location"] * 1000)
+            data["outputSockets"].sort(key=lambda s: s["index"] + s["location"] * 1000)
 
             numberOfInputs = len(data["inputSockets"])
             numberOfOutputs = len(data["outputSockets"])
@@ -708,3 +708,18 @@ class Node(Serializable):
         Returns class representing graphics node.
         """
         return self.__class__.GraphicsNodeClass
+
+    def getSocketScenePosition(self, socket: Socket) -> QPointF:
+        """
+        Get absolute :class:`~nodedge.socket.Socket` position in the
+        :class:`~nodedge.socket.Socket`.
+
+        :param socket: The socket from which we want to get the position
+        :return: :class:`~nodedge.socket.Socket`'s scene position
+        :rtype: ``QPointF``
+        """
+        nodePos: QPointF = self.graphicsNode.pos()
+        socketPos: QPointF = self.socketPos(
+            socket.index, socket.location, socket.countOnThisNodeSide
+        )
+        return QPointF(nodePos.x() + socketPos.x(), nodePos.y() + socketPos.y())

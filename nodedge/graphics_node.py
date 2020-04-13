@@ -4,7 +4,7 @@ Graphics node module containing :class:`~nodedge.graphics_node.GraphicsNode` cla
 """
 
 import logging
-from typing import Optional
+from typing import Optional, cast
 
 from PyQt5.QtCore import QRectF, Qt
 from PyQt5.QtGui import QBrush, QColor, QFont, QPainterPath, QPen
@@ -14,8 +14,9 @@ from PyQt5.QtWidgets import (
     QGraphicsSceneMouseEvent,
 )
 
-from nodedge.graphics_node_content import GraphicsNodeContentProxy
+from nodedge.graphics_node_content import GraphicsNodeContent, GraphicsNodeContentProxy
 from nodedge.graphics_node_title_item import GraphicsNodeTitleItem
+from nodedge.graphics_scene import GraphicsScene
 
 
 class GraphicsNode(QGraphicsItem):
@@ -24,7 +25,9 @@ class GraphicsNode(QGraphicsItem):
     The graphics node is the graphical representation of a node.
     """
 
-    def __init__(self, node: "Node", parent: Optional[QGraphicsItem] = None) -> None:  # type: ignore
+    def __init__(
+        self, node: "Node", parent: Optional[QGraphicsItem] = None  # type: ignore
+    ) -> None:
         """
         :param node: reference to :class:`~nodedge.node.Node`
         :type node: :class:`~nodedge.node.Node`
@@ -32,23 +35,24 @@ class GraphicsNode(QGraphicsItem):
         :type parent: ``Optional[QGraphicsItem]``
         """
         super().__init__(parent)
-        self.node = node
-        self.content = self.node.content
+        self.node: "Node" = node  # type: ignore
 
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
 
+        self._title: str = "Unnamed"
+
         self.initUI()
-        self._wasMoved = False
-        self._lastSelectedState = False
-        self.hovered = False
+        self._wasMoved: bool = False
+        self._lastSelectedState: bool = False
+        self.hovered: bool = False
 
     @property
     def title(self):
         """
-        Title of this graphical node.
+        Title of this :class:`~nodedge.graphics_node.GraphicsNode`.
 
-        :getter: Return current Graphics Node title
+        :getter: Return current :class:`~nodedge.graphics_node.GraphicsNode` title
         :setter: Store and make visible the new title
         :type: ``str``
         """
@@ -66,6 +70,17 @@ class GraphicsNode(QGraphicsItem):
     @selectedState.setter
     def selectedState(self, value):
         self._lastSelectedState = value
+
+    @property
+    def content(self):
+        """
+
+        :getter: Return reference to
+            :class:`~nodedge.graphics_node_content.GraphicsNodeContent`
+
+        :rtype: :class:`~nodedge.graphics_node_content.GraphicsNodeContent`
+        """
+        return self.node.content if self.node else None
 
     def initUI(self) -> None:
         """
@@ -130,17 +145,21 @@ class GraphicsNode(QGraphicsItem):
     # noinspection PyAttributeOutsideInit
     def initContent(self) -> None:
         """
-        Set up the `grContent` - ``QGraphicsProxyWidget`` to have a container for `GraphicsContent`.
+        Set up the
+        :class:`~nodedge.graphics_node_content.GraphicsNodeContentProxy`
+        to have a container for
+        :class:`~nodedge.graphics_node_content.GraphicsNodeContent`.
         """
 
-        self.content.setGeometry(
-            int(self.edgePadding),
-            int(self.titleHeight + self.edgePadding),
-            int(self.width - 2 * self.edgePadding),
-            int(self.height - 2 * self.edgePadding - self.titleHeight),
-        )
-        self.graphicsContentProxy = GraphicsNodeContentProxy(self)
-        self.graphicsContentProxy.setWidget(self.content)
+        if self.content is not None:
+            self.content.setGeometry(
+                int(self.edgePadding),
+                int(self.titleHeight + self.edgePadding),
+                int(self.width - 2 * self.edgePadding),
+                int(self.height - 2 * self.edgePadding - self.titleHeight),
+            )
+            self.graphicsContentProxy = GraphicsNodeContentProxy(self)
+            self.graphicsContentProxy.setWidget(self.content)
 
     def boundingRect(self):
         """
@@ -150,7 +169,7 @@ class GraphicsNode(QGraphicsItem):
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """
-        Paint the rounded rectangular `Node`.
+        Paint the rounded rectangular :class:`~nodedge.node.Node`.
         """
         # title
         pathTitle = QPainterPath()
@@ -216,12 +235,13 @@ class GraphicsNode(QGraphicsItem):
 
     def mouseMoveEvent(self, event):
         """
-        Override Qt's event to detect that we moved this graphical node.
+        Override Qt's event to detect that we moved this .
         """
         super().mouseMoveEvent(event)
 
         # TODO: Optimize this condition. Just update the selected blocks.
-        for node in self.scene().scene.nodes:
+        graphicsScene: GraphicsScene = cast(GraphicsScene, self.scene())
+        for node in graphicsScene.scene.nodes:
             if node.graphicsNode.isSelected():
                 node.updateConnectedEdges()
 
@@ -229,7 +249,8 @@ class GraphicsNode(QGraphicsItem):
 
     def mouseReleaseEvent(self, event):
         """
-        Handle Qt's event when we move, select or deselect this graphical node.
+        Handle Qt's event when we move, select or deselect this
+        :class:`~nodedge.graphics_node.GraphicsNode`.
         """
         super().mouseReleaseEvent(event)
 
@@ -260,7 +281,8 @@ class GraphicsNode(QGraphicsItem):
     def hoverEnterEvent(self, event: QGraphicsSceneHoverEvent) -> None:
         """
         Handle Qt's hover event.
-        It adds a highlighting boundary around the graphical node.
+        It adds a highlighting boundary around this
+        :class:`~nodedge.graphics_node.GraphicsNode`.
         """
         self.hovered = True
         self.update()

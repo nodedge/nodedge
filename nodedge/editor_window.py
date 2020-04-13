@@ -26,11 +26,15 @@ class EditorWindow(QMainWindow):
     """
     :class:`~nodedge.editor_window.EditorWindow` class
 
-    The editor window is the base of the multi document interface (MDI) :class:`~nodedge.mdi_window.MdiWindow`.
+    The editor window is the base of the multi document interface (MDI)
+    :class:`~nodedge.mdi_window.MdiWindow`.
 
-    The application can be opened with the :class:`~nodedge.editor_window.EditorWindow` as main window, even if
-    it is not the main use case.
+    The application can be opened with the
+    :class:`~nodedge.editor_window.EditorWindow` as main window, even if it is not
+    the main use case.
     """
+
+    EditorWidgetClass = EditorWidget
 
     def __init__(self, parent: Optional[QWidget] = None):
         """
@@ -43,8 +47,8 @@ class EditorWindow(QMainWindow):
         super().__init__(parent)
 
         logging.basicConfig(
-            format="%(asctime)s|%(levelname).4s|%(filename)10s|%(lineno).3s|"  # type: ignore
-            "%(message)s|%(funcName)s".format("%Y/%m/%d %H:%M:%S")
+            format="%(asctime)s|%(levelname).4s|%(filename)10s|"  # type: ignore
+            "%(lineno).3s|%(message)s|%(funcName)s".format("%Y/%m/%d %H:%M:%S")
         )
 
         self.__logger = logging.getLogger(__file__)
@@ -58,8 +62,8 @@ class EditorWindow(QMainWindow):
         )
         self.clipboard: QClipboard = self.instance.clipboard()
 
-        # Pycharm does not recognise resolve connect method so the inspection is disabled.
-        # noinspection PyUnresolvedReferences
+        # Pycharm does not recognise resolve connect method so the inspection is
+        # disabled. noinspection PyUnresolvedReferences
         self.clipboard.dataChanged.connect(self.onClipboardChanged)  # type: ignore
 
         self.lastActiveEditorWidget = None
@@ -73,8 +77,9 @@ class EditorWindow(QMainWindow):
 
         .. note::
 
-            The :class:`~nodedge.editor_window.EditorWindow` has only one :class:`~nodedge.editor_widget.EditorWidget`.
-            This method is overridden by the :class:`~nodedge.mdi_window.MdiWindow` which may have several
+            The :class:`~nodedge.editor_window.EditorWindow` has only one
+            :class:`~nodedge.editor_widget.EditorWidget`. This method is overridden
+            by the :class:`~nodedge.mdi_window.MdiWindow` which may have several
             :class:`~nodedge.editor_widget.EditorWidget`.
 
         :rtype: :class:`~nodedge.editor_widget`
@@ -96,7 +101,7 @@ class EditorWindow(QMainWindow):
 
         self.createMenus()
 
-        self.editorWidget = EditorWidget()
+        self.editorWidget = self.__class__.EditorWidgetClass()
         self.setCentralWidget(self.editorWidget)
         self.editorWidget.scene.addHasBeenModifiedListener(self.updateTitle)
 
@@ -112,7 +117,8 @@ class EditorWindow(QMainWindow):
     # noinspection PyAttributeOutsideInit
     def createStatusBar(self) -> None:
         """
-        Create Status bar and connect to :class:`~nodedge.graphics_view.GraphicsView`'s scenePosChanged event.
+        Create Status bar and connect to
+        :class:`~nodedge.graphics_view.GraphicsView`'s scenePosChanged event.
         """
         self.statusBar().showMessage("")
         self.statusMousePos = QLabel("")
@@ -275,7 +281,10 @@ class EditorWindow(QMainWindow):
         if self.maybeSave():
             if filename is None:
                 filename, _ = QFileDialog.getOpenFileName(
-                    parent=self, caption="Open graph from file"
+                    parent=self,
+                    caption="Open graph from file",
+                    directory=EditorWindow.getFileDialogDirectory(),
+                    filter=EditorWindow.getFileDialogFilter(),
                 )
 
             if filename == "":
@@ -290,7 +299,8 @@ class EditorWindow(QMainWindow):
 
     def saveFile(self):
         """
-        Save serialized JSON version of the currently opened file, in a JSON file based on the editor's filename.
+        Save serialized JSON version of the currently opened file, in a JSON file
+        based on the editor's filename.
         """
         self.__logger.debug("Saving graph")
         if not self.currentEditorWidget.hasName:
@@ -305,12 +315,15 @@ class EditorWindow(QMainWindow):
 
     def saveFileAs(self):
         """
-        Save serialized JSON version of the currently opened file, allowing the user to choose the filename via a
-        ``QFileDialog``.
+        Save serialized JSON version of the currently opened file, allowing the user
+        to choose the filename via a ``QFileDialog``.
         """
         self.__logger.debug("Saving graph as...")
         filename, _ = QFileDialog.getSaveFileName(
-            parent=self, caption="Save graph to file"
+            parent=self,
+            caption="Save graph to file",
+            directory=EditorWindow.getFileDialogDirectory(),
+            filter=EditorWindow.getFileDialogFilter(),
         )
 
         if filename == "":
@@ -404,9 +417,30 @@ class EditorWindow(QMainWindow):
 
             self.currentEditorWidget.scene.clipboard.deserialize(data)
 
+    @staticmethod
+    def getFileDialogDirectory() -> str:
+        """
+        Returns starting directory for ``QFileDialog`` file open/save
+
+        :return: starting directory for ``QFileDialog`` file open/save
+        :rtype: ``str``
+        """
+        return ""
+
+    @staticmethod
+    def getFileDialogFilter():
+        """
+        Returns ``str`` standard file open/save filter for ``QFileDialog``
+
+        :return: standard file open/save filter for ``QFileDialog``
+        :rtype: ``str``
+        """
+        return "Graph (*.json);;All files (*)"
+
     def maybeSave(self):
         """
-        If current :class:`~nodedge.scene.Scene` is modified, ask a dialog to save the changes.
+        If current :class:`~nodedge.scene.Scene` is modified, ask a dialog to save
+        the changes.
 
         :return: ``True`` if the action calling this method is allowed to continue.
                  ``False`` if we should cancel operation.

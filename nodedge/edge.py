@@ -236,7 +236,7 @@ class Edge(Serializable):
         self.targetSocket = None
         self.sourceSocket = None
 
-    def remove(self, silentForSocket: Optional[Socket] = None):
+    def remove(self, silentForSocket: Optional[Socket] = None, silent: bool = False):
         """
         Safely remove this `Edge`.
 
@@ -250,6 +250,8 @@ class Edge(Serializable):
 
         :param silentForSocket: Socket for whom the removal is silent
         :type silentForSocket: Optional[:class:`~nodedge.socket.Socket`]
+        :param silent: ``True`` if no events should be triggered during removing
+        :type silent: ``bool``
         """
 
         oldSockets = [self.sourceSocket, self.targetSocket]
@@ -278,6 +280,8 @@ class Edge(Serializable):
         try:
             for socket in oldSockets:
                 if socket is not None and socket.node is not None:
+                    if silent:
+                        continue
                     if silentForSocket is not None and socket == silentForSocket:
                         # if we requested silence for Socket and it's this one,
                         # skip notifications
@@ -285,7 +289,7 @@ class Edge(Serializable):
 
                     socket.node.onEdgeConnectionChanged(self)
                     if socket.isInput:
-                        socket.node.onInputChanged(self)
+                        socket.node.onInputChanged(socket)
         except Exception as e:
             dumpException(e)
 

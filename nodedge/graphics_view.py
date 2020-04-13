@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import QApplication, QGraphicsItem, QGraphicsView, QWidget
 
 from nodedge.edge import Edge, EdgeType
 from nodedge.graphics_cut_line import GraphicsCutLine
-from nodedge.graphics_edge import GraphicsEdge, GraphicsEdgeBezier, GraphicsEdgeDirect
+from nodedge.graphics_edge import GraphicsEdge
 from nodedge.graphics_scene import GraphicsScene
 from nodedge.graphics_socket import GraphicsSocket
 from nodedge.socket import Socket
@@ -43,7 +43,8 @@ class GraphicsView(QGraphicsView):
 
     def __init__(self, graphicsScene: GraphicsScene, parent: Optional[QWidget] = None):
         """
-        :param graphicsScene: reference to the :class:`~nodedge.graphics_scene.GraphicsScene`
+        :param graphicsScene: reference to the
+            :class:`~nodedge.graphics_scene.GraphicsScene`
         :type graphicsScene: :class:`~nodedge.graphics_scene.GraphicsScene`
         :param parent: parent widget
         :type parent: ``Optional[QWidget]``
@@ -74,7 +75,7 @@ class GraphicsView(QGraphicsView):
         self.dragEdge: Optional[Edge] = None
         self.dragStartSocket: Optional[Socket] = None
 
-        self.cutline = GraphicsCutLine()
+        self.cutline: GraphicsCutLine = GraphicsCutLine()
         self.graphicsScene.addItem(self.cutline)
 
         self._dragEnterListeners: List[Callable] = []
@@ -192,7 +193,7 @@ class GraphicsView(QGraphicsView):
 
             self.lastLMBClickScenePos = self.mapToScene(event.pos())
 
-            self.__logger.debug("LMB " + self.debugModifiers(event) + f"{item}")
+            self.__logger.debug("LMB " + GraphicsView.debugModifiers(event) + f"{item}")
 
             if event.modifiers() & Qt.ShiftModifier:  # type: ignore
                 event.ignore()
@@ -207,7 +208,7 @@ class GraphicsView(QGraphicsView):
                 super().mousePressEvent(fakeEvent)
                 return
 
-            if type(item) is GraphicsSocket and self.mode == DragMode.NOOP:
+            if isinstance(item, GraphicsSocket) and self.mode == DragMode.NOOP:
                 self.mode = DragMode.EDGE_DRAG
                 self.__logger.debug(f"Drag mode: {self.mode}")
                 self.dragEdgeStart(item)
@@ -298,11 +299,11 @@ class GraphicsView(QGraphicsView):
 
         if item is None:
             self.__logger.info(self)
-        elif type(item) is GraphicsSocket:
+        elif isinstance(item, GraphicsSocket):
             self.__logger.info(
                 f"\n||||{item.socket} connected to \n||||{item.socket.edges}"
             )
-        elif type(item) in [GraphicsEdgeDirect, GraphicsEdgeBezier]:
+        elif isinstance(item, GraphicsEdge):
             log = f"\n||||{item.edge} connects"
             log += (
                 f"\n||||{item.edge.sourceSocket.node} \n||||"
@@ -376,7 +377,8 @@ class GraphicsView(QGraphicsView):
         """
         Handle the end of dragging an :class:`~nodedge.edge.Edge` operation.
 
-        :param item: Item in the `Graphics Scene` where we ended dragging an :class:`~nodedge.edge.Edge`
+        :param item: Item in the `Graphics Scene` where we ended dragging an
+            :class:`~nodedge.edge.Edge`
         :type item: ``QGraphicsItem``
         :return: True is the operation is a success, false otherwise.
         :rtype: ``bool``
@@ -384,8 +386,11 @@ class GraphicsView(QGraphicsView):
         self.mode = DragMode.NOOP
         self.__logger.debug(f"Drag mode: {self.mode}")
 
+        # noinspection PyBroadException
         try:
-            self.dragEdge.remove()  # type: ignore
+            if self.dragEdge is not None:
+                # Don't notify sockets about removing drag_edge
+                self.dragEdge.remove(silent=True)
         except Exception:
             self.__logger.warning("Impossible to remove dragEdge")
         self.dragEdge = None
@@ -425,7 +430,7 @@ class GraphicsView(QGraphicsView):
                         socket.node.onEdgeConnectionChanged(newEdge)
 
                         if socket.isInput:
-                            socket.node.onInputChanged(newEdge)
+                            socket.node.onInputChanged(socket)
 
                 self.graphicsScene.scene.history.store("Create a new edge by dragging")
                 self.__logger.debug("Socket assigned.")
@@ -439,22 +444,25 @@ class GraphicsView(QGraphicsView):
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
         """
         Overridden Qt's ``mouseMoveEvent`` handling Scene/View logic
+
+        :param event: Qt's mouse event
+        :type event: ``QMouseEvent.py``
         """
+        eventScenePos = self.mapToScene(event.pos())
+
         if self.mode == DragMode.EDGE_DRAG:
-            pos = self.mapToScene(event.pos())
             if self.dragEdge is not None:
-                self.dragEdge.graphicsEdge.targetPos = pos
+                self.dragEdge.graphicsEdge.targetPos = eventScenePos
                 self.dragEdge.graphicsEdge.update()
+            else:
+                self.__logger.debug("Dragging edge does not exist.")
 
         if self.mode == DragMode.EDGE_CUT:
-            pos = self.mapToScene(event.pos())
-            self.cutline.linePoints.append(pos)
+            self.cutline.linePoints.append(eventScenePos)
             self.cutline.update()
 
-        self.lastSceneMousePos = self.mapToScene(event.pos())
-        self.scenePosChanged.emit(
-            int(self.lastSceneMousePos.x()), (self.lastSceneMousePos.y())
-        )
+        self.lastSceneMousePos = eventScenePos
+        self.scenePosChanged.emit(int(eventScenePos.x()), (eventScenePos.y()))
 
         super().mouseMoveEvent(event)
 
@@ -463,29 +471,23 @@ class GraphicsView(QGraphicsView):
         Handle key shortcuts, for example to display the scene's history in the console.
 
         :param event: Qt's Key event
-        :type event: ``QKeyEvent``
+        :type event: ``QKeyEvent.py``
         """
 
-        # if event.key() == Qt.Key_Delete:
-        #     if not self.editingFlag:
-        #         self.deleteSelected()
-        #     else:
-        #         super().keyPressEvent(event)
-        # elif event.key() == Qt.Key_S and event.modifiers() & Qt.ControlModifier:
-        #     self.graphicsScene.scene.saveToFile("graph.json")
-        # elif event.key() == Qt.Key_O and event.modifiers() & Qt.ControlModifier:
-        #     self.graphicsScene.scene.loadFromFile("graph.json")
-        # elif event.key() == Qt.Key_1:
-        #     self.graphicsScene.scene.history.store("A")
-        # elif event.key() == Qt.Key_2:
-        #     self.graphicsScene.scene.history.store("B")
-        # elif event.key() == Qt.Key_3:
-        #     self.graphicsScene.scene.history.store("C")
-        # elif event.key() == Qt.Key_Z and event.modifiers() & Qt.ControlModifier \
-        #         and not event.modifiers() & Qt.ShiftModifier:
-        #     self.graphicsScene.scene.history.undo()
-        # elif event.key() == Qt.Key_Z and event.modifiers() & Qt.ControlModifier and event.modifiers() & Qt.ShiftModifier:
-        #     self.graphicsScene.scene.history.redo()
+        # if event.key() == Qt.Key_Delete: if not self.editingFlag:
+        # self.deleteSelected() else: super().keyPressEvent(event) elif event.key()
+        # == Qt.Key_S and event.modifiers() & Qt.ControlModifier:
+        # self.graphicsScene.scene.saveToFile("graph.json") elif event.key() ==
+        # Qt.Key_O and event.modifiers() & Qt.ControlModifier:
+        # self.graphicsScene.scene.loadFromFile("graph.json") elif event.key() ==
+        # Qt.Key_1: self.graphicsScene.scene.history.store("A") elif event.key() ==
+        # Qt.Key_2: self.graphicsScene.scene.history.store("B") elif event.key() ==
+        # Qt.Key_3: self.graphicsScene.scene.history.store("C") elif event.key() ==
+        # Qt.Key_Z and event.modifiers() & Qt.ControlModifier \ and not
+        # event.modifiers() & Qt.ShiftModifier:
+        # self.graphicsScene.scene.history.undo() elif event.key() == Qt.Key_Z and
+        # event.modifiers() & Qt.ControlModifier and event.modifiers() &
+        # Qt.ShiftModifier: self.graphicsScene.scene.history.redo()
         if event.key() == Qt.Key_H:
             self.__logger.info(f"{self.graphicsScene.scene.history}")
 
@@ -529,6 +531,11 @@ class GraphicsView(QGraphicsView):
             p1 = self.cutline.linePoints[ix]
             p2 = self.cutline.linePoints[ix + 1]
 
+            # @TODO: Notify intersecting edges once.
+            #  we could collect all touched nodes, and notify them once after
+            #  all edges removed we could cut 3 edges leading to a single editor
+            #  this will notify it 3x maybe we could use some Notifier class with
+            #  methods collect() and dispatch()
             for edge in self.graphicsScene.scene.edges:
                 if edge.graphicsEdge.intersectsWith(p1, p2):
                     edge.remove()
@@ -537,7 +544,8 @@ class GraphicsView(QGraphicsView):
 
     def deleteSelected(self):
         """
-        Shortcut for safe deleting every object selected in the :class:`~nodedge.scene.Scene`.
+        Shortcut for safe deleting every object selected in the
+        :class:`~nodedge.scene.Scene`.
         """
         for item in self.graphicsScene.selectedItems():
             if isinstance(item, GraphicsEdge):
@@ -552,7 +560,7 @@ class GraphicsView(QGraphicsView):
         Return the object on which the user clicked/released the mouse button.
 
         :param event: Qt's mouse or key event
-        :type event: ``QMouseEvent``
+        :type event: ``QMouseEvent.py``
         :return: Graphical item present at the clicked/released position.
         :rtype: ``QGraphicsItem`` | ``None``
         """
@@ -562,11 +570,13 @@ class GraphicsView(QGraphicsView):
     def distanceBetweenClickAndReleaseIsOff(self, event):
         """
         Measure if we are too far from the last mouse button click scene position.
-        This is used for detection if the release is too far after the user clicked on a :class:`~nodedge.socket.Socket`
+        This is used for detection if the release is too far after the user clicked
+        on a :class:`~nodedge.socket.Socket`
 
         :param event: Qt's mouse event
-        :type event: ``QMouseEvent``
-        :return: ``True`` if we released too far from where we clicked before, ``False`` otherwise.
+        :type event: ``QMouseEvent.py``
+        :return: ``True`` if we released too far from where we clicked before, ``False``
+            otherwise.
         :rtype: ``bool``
         """
         newLMBClickPos = self.mapToScene(event.pos())
@@ -582,7 +592,8 @@ class GraphicsView(QGraphicsView):
         else:
             return True
 
-    def debugModifiers(self, event):
+    @staticmethod
+    def debugModifiers(event):
         """
         Get the name of the pressed modifier.
 
