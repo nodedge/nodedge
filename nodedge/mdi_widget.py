@@ -3,7 +3,7 @@
 Editor widget module containing :class:`~nodedge.editor_widget.EditorWidget` class.
 """
 import logging
-from typing import Callable, List
+from typing import Callable, List, Optional
 
 from PyQt5.QtCore import QDataStream, QIODevice, Qt
 from PyQt5.QtGui import (
@@ -27,6 +27,7 @@ from nodedge.edge import EdgeType
 from nodedge.editor_widget import EditorWidget
 from nodedge.graphics_view import DragMode
 from nodedge.node import Node
+from nodedge.socket import Socket
 from nodedge.utils import dumpException
 
 
@@ -34,7 +35,8 @@ class MdiWidget(EditorWidget):
     """
     :class:`~nodedge.mdi_widget.MdiWidget` class.
 
-    The mdi widget represents a sub-window of the :class:`~nodedge.mdi_window.MdiWindow`.
+    The mdi widget represents a sub-window of the
+    :class:`~nodedge.mdi_window.MdiWindow`.
     """
 
     def __init__(self):
@@ -48,7 +50,7 @@ class MdiWidget(EditorWidget):
 
         self._closeEventListeners: List[Callable] = []
 
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        # self.setAttribute(Qt.WA_DeleteOnClose)
 
         self.scene.addHasBeenModifiedListener(self.updateTitle)
         # self.scene.history.addHistoryStoredListener(self.onHistoryStored)
@@ -65,7 +67,8 @@ class MdiWidget(EditorWidget):
     # noinspection PyAttributeOutsideInit
     def initNewNodeActions(self):
         """
-        Add all available blocks in the :class:`~nodedge.node_list_widget.NodeListWidget`.
+        Add all available blocks in the
+        :class:`~nodedge.node_list_widget.NodeListWidget`.
         """
         self.nodeActions = {}
 
@@ -81,8 +84,9 @@ class MdiWidget(EditorWidget):
 
     def initNodesContextMenu(self):
         """
-        Create a context menu containing all the nodes available, so that the user can quickly create a new block
-        by right clicking on the :class:`~nodedge.scene.Scene`.
+        Create a context menu containing all the nodes available, so that the user
+        can quickly create a new block by right clicking on the
+        :class:`~nodedge.scene.Scene`.
         """
         contextMenu = QMenu(self)
         keys = list(BLOCKS.keys())
@@ -92,12 +96,15 @@ class MdiWidget(EditorWidget):
 
         return contextMenu
 
-    def getNodeClassFromData(self, data):
+    @staticmethod
+    def getNodeClassFromData(data):
         """ Get the node class associated with operation present in data.
 
-        :param data: serialized :class:`~nodedge.node.Node` containing the operation code
+        :param data: serialized :class:`~nodedge.node.Node` containing the operation
+            code
         :type: ``dict``
-        :return: class of the node associated with the operation code in data, node class in case of failure
+        :return: class of the node associated with the operation code in data,
+            node class in case of failure.
         :rtype: Node class
         """
         if "operationCode" not in data:
@@ -119,8 +126,9 @@ class MdiWidget(EditorWidget):
 
         Make sure changes have been saved before closing the widget.
 
-        :param event: Qt's close event, the user may have clicked on the close button, or pressed CTRL+W
-        :type event: ``QCloseEvent``
+        :param event: Qt's close event, the user may have clicked on the close button,
+            or pressed CTRL+W
+        :type event: ``QCloseEvent.py``
         """
         for callback in self._closeEventListeners:
             callback(self, event)
@@ -130,10 +138,12 @@ class MdiWidget(EditorWidget):
         """
         Handle node drag enter event.
 
-        When a node is dragged from the :class:`~nodedge.node_list_widget.NodeListWidget`, its logo is displayed above
-        the scene, near the location of the mouse.
+        When a node is dragged from the
+        :class:`~nodedge.node_list_widget.NodeListWidget`, its logo is displayed
+        above the scene, near the location of the mouse.
 
-        :param event: the Qt's drag event event, containing the mime data of the node being dragged
+        :param event: the Qt's drag event event, containing the mime data of the node
+            being dragged
         :return: QDragEnterEvent
         """
         if not event.mimeData().hasFormat(NODELISTWIDGET_MIMETYPE):
@@ -149,10 +159,11 @@ class MdiWidget(EditorWidget):
         """
         Handle node drop event.
 
-        When the node is dropped, an instance of it is created near at the mouse location, displayed by
-        its :class:`~nodedge.graphics_node.GraphicsNode`.
+        When the node is dropped, an instance of it is created near at the mouse
+        location, displayed by its :class:`~nodedge.graphics_node.GraphicsNode`.
 
-        :param event: the Qt's drop event, contaning the mime data of the node being dropped.
+        :param event: the Qt's drop event, contaning the mime data of the node being
+        dropped.
         :type event: QDropEvent
         """
         if not event.mimeData().hasFormat(NODELISTWIDGET_MIMETYPE):
@@ -195,8 +206,8 @@ class MdiWidget(EditorWidget):
         Handle Qt's context menu event.
 
 
-        :param event: the Qt's context menu event, happening when the user right clicks on the
-            :class:`~nodedge.graphics_scene.GraphicsScene`
+        :param event: the Qt's context menu event, happening when the user right
+            clicks on the :class:`~nodedge.graphics_scene.GraphicsScene`
         :type event: ``QContextMenuEvent``
         """
         try:
@@ -262,14 +273,33 @@ class MdiWidget(EditorWidget):
             # Manually trigger paint method.
             selected.graphicsNode.update()
 
+    # helper functions
+    @staticmethod
+    def determineTargetSocketOfNode(
+        wasDraggedFlag: bool, newNode: Node
+    ) -> Optional[Socket]:
+        targetSocket = None
+        if wasDraggedFlag:
+            if len(newNode.inputSockets) > 0:
+                targetSocket = newNode.inputSockets[0]
+        else:
+            if len(newNode.outputSockets) > 0:
+                targetSocket = newNode.outputSockets[0]
+        return targetSocket
+
+    def finishNewNodeState(self, newNode):
+        self.scene.doDeselectItems()
+        newNode.isSelected = True
+
     def handleNewNodeContextMenu(self, event):
         """
         Handle context menu event when the users has right clicked on an empty space.
 
-        Show all available nodes available in a list context menu, so that the users can quickly create a new one.
+        Show all available nodes available in a list context menu, so that the users
+        can quickly create a new one.
 
-        :param event: the Qt's context menu event, happening when the user right clicks on the
-            :class:`~nodedge.graphics_scene.GraphicsScene`
+        :param event: the Qt's context menu event, happening when the user right
+        clicks on the :class:`~nodedge.graphics_scene.GraphicsScene`
         :type event: ``QContextMenuEvent``
         """
         contextMenu = self.initNodesContextMenu()
@@ -284,7 +314,16 @@ class MdiWidget(EditorWidget):
             if self.scene.view.mode == DragMode.EDGE_DRAG:
                 self.scene.view.dragEdgeEnd(newNode.inputSockets[0].graphicsSocket)
 
-                newNode.isSelected = True
+                # newNode.isSelected = True
+
+                targetSocket: Optional[Socket] = MdiWidget.determineTargetSocketOfNode(
+                    self.scene.view.dragStartSocket.isOutput, newNode
+                )
+
+                if targetSocket is not None:
+                    self.scene.view.dragEdgeEnd(targetSocket.graphicsSocket)
+                    self.finishNewNodeState(newNode)
+
                 # newNode.inputSockets[0].edges[-1].isSelected = True
 
             else:

@@ -104,7 +104,8 @@ class EditorWindow(QMainWindow):
         self.createStatusBar()
 
         # Set window properties
-        self.setGeometry(960, 30, 960, 960)
+        # Use sizeHint instead of forced size.
+        # self.setGeometry(960, 30, 960, 960)
         self.updateTitle()
         self.show()
 
@@ -183,6 +184,14 @@ class EditorWindow(QMainWindow):
         """
         Create Menus for `File` and `Edit`.
         """
+        self.createFileMenu()
+        self.createEditMenu()
+
+    # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
+    def createFileMenu(self):
+        """
+        Create `File` Menu.
+        """
         self.fileMenu: QMenu = self.menuBar().addMenu("&File")
         self.fileMenu.addAction(self.newAct)
         self.fileMenu.addSeparator()
@@ -192,6 +201,11 @@ class EditorWindow(QMainWindow):
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.quitAct)
 
+    # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
+    def createEditMenu(self):
+        """
+        Create `Edit` Menu.
+        """
         self.editMenu: QMenu = self.menuBar().addMenu("&Edit")
         self.editMenu.addAction(self.undoAct)
         self.editMenu.addAction(self.redoAct)
@@ -201,6 +215,9 @@ class EditorWindow(QMainWindow):
         self.editMenu.addAction(self.pasteAct)
         self.editMenu.addSeparator()
         self.editMenu.addAction(self.deleteAct)
+
+    def sizeHint(self):
+        return QSize(800, 600)
 
     def updateTitle(self) -> None:
         """

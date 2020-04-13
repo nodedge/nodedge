@@ -21,6 +21,12 @@ from nodedge.utils import dumpException
 Pos = TypeVar("Pos", List, Tuple, QPoint, QPointF)
 
 
+class NodesAndSockets:
+    def __init__(self, nodes, sockets):
+        self.nodes: List["Node"] = nodes
+        self.sockets: List["Socket"] = sockets
+
+
 class Node(Serializable):
     """:class:`~nodedge.node.Node` class representing a node in the `Scene`."""
 
@@ -460,8 +466,9 @@ class Node(Serializable):
 
         return otherNodes
 
-    def __IONodesAt(self, side: str, index: int) -> List["Node"]:
+    def __IONodesAndSocketsAt(self, side: str, index: int) -> NodesAndSockets:
         IONodes = []
+        IOSockets = []
         if side == "input":
             socketList = self.inputSockets
         elif side == "output":
@@ -474,6 +481,7 @@ class Node(Serializable):
             for edge in socket.edges:
                 otherSocket = edge.getOtherSocket(socket)
                 IONodes.append(otherSocket.node)
+                IOSockets.append(otherSocket)
         except IndexError:
             self.__logger.warning(
                 f"Trying to get connected {side} node at #{index} "
@@ -482,7 +490,8 @@ class Node(Serializable):
         except Exception as e:
             dumpException(e)
         finally:
-            return IONodes
+            nodesAndSockets: NodesAndSockets = NodesAndSockets(IONodes, IOSockets)
+            return nodesAndSockets
 
     def inputNodesAt(self, index: int) -> List["Node"]:
         """
@@ -495,7 +504,7 @@ class Node(Serializable):
             or index is out of range.
         :rtype: List[:class:`~nodedge.node.Node`]
         """
-        return self.__IONodesAt("input", index)
+        return self.__IONodesAndSocketsAt("input", index).nodes
 
     def inputNodeAt(self, index: int) -> Optional["Node"]:
         """
@@ -517,6 +526,19 @@ class Node(Serializable):
             dumpException(e)
         return None
 
+    def inputNodeAndSocketAt(self, index):
+        try:
+            return {
+                "node": self.__IONodesAndSocketsAt("input", index).nodes[0],
+                "socket": self.__IONodesAndSocketsAt("input", index).sockets[0],
+            }
+        except IndexError:
+            # Index Error has already been caught in inputNodesAt, do not log it again.
+            return None
+        except Exception as e:
+            dumpException(e)
+        return None
+
     def outputNodesAt(self, index: int) -> List["Node"]:
         """
         Get **all** nodes connected to the output specified by `index`.
@@ -528,7 +550,7 @@ class Node(Serializable):
             index is out of range.
         :rtype: List[:class:`~nodedge.node.Node`]
         """
-        return self.__IONodesAt("output", index)
+        return self.__IONodesAndSocketsAt("output", index).nodes
 
     def serialize(self) -> OrderedDict:
         inputs, outputs = [], []

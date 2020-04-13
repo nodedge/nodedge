@@ -347,8 +347,12 @@ class MdiWindow(EditorWindow):
         if self.mdiArea.currentSubWindow():
             event.ignore()
         else:
-            self.writeSettings()
-            event.accept()
+            # self.writeSettings()
+            # event.accept()
+            # FIXME: hacky fix for PyQt 5.14.x
+            import sys
+
+            sys.exit(0)
 
     def newFile(self):
         subWindow = self._createMdiSubWindow()

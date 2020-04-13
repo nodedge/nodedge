@@ -17,6 +17,7 @@ from nodedge.graphics_cut_line import GraphicsCutLine
 from nodedge.graphics_edge import GraphicsEdge, GraphicsEdgeBezier, GraphicsEdgeDirect
 from nodedge.graphics_scene import GraphicsScene
 from nodedge.graphics_socket import GraphicsSocket
+from nodedge.socket import Socket
 from nodedge.utils import dumpException
 
 
@@ -71,6 +72,7 @@ class GraphicsView(QGraphicsView):
         self.rubberBandDraggingRectangle: bool = False
 
         self.dragEdge: Optional[Edge] = None
+        self.dragStartSocket: Optional[Socket] = None
 
         self.cutline = GraphicsCutLine()
         self.graphicsScene.addItem(self.cutline)
@@ -275,7 +277,8 @@ class GraphicsView(QGraphicsView):
 
         if self.rubberBandDraggingRectangle:
             self.rubberBandDraggingRectangle = False
-            # self.graphicsScene.scene.history.store("Change selection", sceneIsModified=False)
+            # self.graphicsScene.scene.history.store("Change selection",
+            # sceneIsModified=False)
             selectedItems = self.graphicsScene.selectedItems()
             if not selectedItems:
                 self.graphicsScene.itemsDeselected.emit()
@@ -301,7 +304,10 @@ class GraphicsView(QGraphicsView):
             )
         elif type(item) in [GraphicsEdgeDirect, GraphicsEdgeBezier]:
             log = f"\n||||{item.edge} connects"
-            log += f"\n||||{item.edge.sourceSocket.node} \n||||{item.edge.targetSocket.node}"
+            log += (
+                f"\n||||{item.edge.sourceSocket.node} \n||||"
+                f"{item.edge.targetSocket.node}"
+            )
 
             self.__logger.info(log)
 
@@ -391,7 +397,10 @@ class GraphicsView(QGraphicsView):
             ):
                 item = cast(GraphicsSocket, item)
 
-                if not self.dragStartSocket.allowMultiEdges:
+                if (
+                    self.dragStartSocket is not None
+                    and not self.dragStartSocket.allowMultiEdges
+                ):
                     self.dragStartSocket.removeAllEdges()
 
                 if not item.socket.allowMultiEdges:
@@ -410,11 +419,13 @@ class GraphicsView(QGraphicsView):
                     f"\n |||| {newEdge.targetSocket}"
                 )
 
+                socket: Optional[Socket]
                 for socket in [self.dragStartSocket, item.socket]:
-                    socket.node.onEdgeConnectionChanged(newEdge)
+                    if socket is not None:
+                        socket.node.onEdgeConnectionChanged(newEdge)
 
-                    if socket.isInput:
-                        socket.node.onInputChanged(newEdge)
+                        if socket.isInput:
+                            socket.node.onInputChanged(newEdge)
 
                 self.graphicsScene.scene.history.store("Create a new edge by dragging")
                 self.__logger.debug("Socket assigned.")
@@ -431,8 +442,9 @@ class GraphicsView(QGraphicsView):
         """
         if self.mode == DragMode.EDGE_DRAG:
             pos = self.mapToScene(event.pos())
-            self.dragEdge.graphicsEdge.targetPos = pos  # type: ignore
-            self.dragEdge.graphicsEdge.update()  # type: ignore
+            if self.dragEdge is not None:
+                self.dragEdge.graphicsEdge.targetPos = pos
+                self.dragEdge.graphicsEdge.update()
 
         if self.mode == DragMode.EDGE_CUT:
             pos = self.mapToScene(event.pos())

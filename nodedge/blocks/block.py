@@ -1,9 +1,10 @@
 import logging
+from typing import Optional
 
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.blocks.graphics_block_content import GraphicsBlockContent
 from nodedge.node import Node
-from nodedge.socket import SocketLocation
+from nodedge.socket import Socket, SocketLocation
 from nodedge.utils import dumpException
 
 
@@ -13,6 +14,9 @@ class Block(Node):
     operationCode = 0
     contentLabel = ""
     contentLabelObjectName = "blockBackground"
+
+    GraphicsNodeClass = GraphicsBlock
+    GraphicsNodeContentClass = GraphicsBlockContent
 
     def __init__(self, scene, inputSocketTypes=(2, 2), outputSocketTypes=(1,)):
         super().__init__(
@@ -27,16 +31,13 @@ class Block(Node):
         # A fresh block has not been evaluated yet. It means it is dirty.
         self.isDirty = True
 
-    def initInnerClasses(self):
-        self.content = GraphicsBlockContent(self)
-        self.graphicsNode = GraphicsBlock(self)
-
+    # noinspection PyAttributeOutsideInit
     def initSettings(self):
         super().initSettings()
         self._inputSocketPosition = SocketLocation.LEFT_CENTER
         self._outputSocketPosition = SocketLocation.RIGHT_CENTER
 
-    def onInputChanged(self, socket):
+    def onInputChanged(self, socket: Optional[Socket] = None):
         self.__logger.debug(f"New edge: {socket}")
         self.isDirty = True
         self.eval()
@@ -57,7 +58,7 @@ class Block(Node):
             f"evalImplementation has not been overridden by {self.__class__.__name__}"
         )
 
-    def eval(self):
+    def eval(self, index=0):
         if not self.isDirty and not self.isInvalid:
             # self.__logger.debug(f"Returning cached value of {self}")
             return self.value

@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import QGraphicsItem
 
 from nodedge.edge import Edge
 from nodedge.graphics_scene import GraphicsScene
+from nodedge.graphics_view import GraphicsView
 from nodedge.node import Node
 from nodedge.scene_clipboard import SceneClipboard
 from nodedge.scene_history import SceneHistory
@@ -112,13 +113,13 @@ class Scene(Serializable):
         return cast(List[QGraphicsItem], self.graphicsScene.selectedItems())
 
     @property
-    def view(self):
+    def view(self) -> GraphicsView:
         """Shortcut for returning `Scene` ``QGraphicsView``
 
         :return: ``QGraphicsView`` attached to the `Scene`
         :rtype: ``QGraphicsView``
         """
-        return self.graphicsScene.views()[0]
+        return cast(GraphicsView, self.graphicsScene.views()[0])
 
     @property
     def silentSelectionEvents(self):

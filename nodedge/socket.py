@@ -78,8 +78,20 @@ class Socket(Serializable):
 
         self.edges: List["Edge"] = []  # type: ignore
 
+    @property
+    def isOutput(self):
+        """
+
+        :getter: Return `True` is the socket is not an input, `False` otherwise.
+        :rtype: ``bool``
+        """
+        return not self.isInput
+
     def delete(self):
-        """Delete this :class:`~nodedge.socket.Socket` from :class:`~nodedge.scene.Scene`"""
+        """
+        Delete this :class:`~nodedge.socket.Socket`
+        from :class:`~nodedge.scene.Scene`
+        """
         self.graphicsSocket.setParentItem(None)
         self.node.scene.grScene.removeItem(self.graphicsSocket)
         del self.graphicsSocket
