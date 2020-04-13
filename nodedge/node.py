@@ -108,7 +108,7 @@ class Node(Serializable):
         Create input and output sockets.
 
         :param inputs: list of types of the input `Sockets`. Every type is associated
-        with a ``int``
+            with a ``int``
         :type inputs: ``Collection[int]``
         :param outputs: list of types of the input `Sockets`
         :type outputs: ``Collection[int]``
@@ -273,7 +273,7 @@ class Node(Serializable):
         :param index: Order number of the Socket. (0, 1, 2, ...)
         :type index: ``int``
         :param location: `Socket location constant` describing where
-        the Socket is located
+            the Socket is located
         :type location: :class:`~nodedge.socket.SocketLocation`
         :param countOnThisSide: Total number of Sockets on this `Socket Position`
         :type countOnThisSide: ``int``
@@ -372,7 +372,7 @@ class Node(Serializable):
         descendants. Note: it does not apply to this node.
 
         :param newValue: ``True`` if children should be `Dirty`,
-        ``False`` to un-dirty them.
+            ``False`` to un-dirty them.
         :type newValue: ``bool``
         """
         for otherNode in self.getChildrenNodes():
@@ -404,7 +404,7 @@ class Node(Serializable):
         Note: it does not apply to this node.
 
         :param newValue: ``True`` if children should be `Invalid`, ``False`` to make
-        them valid.
+            them valid.
         :type newValue: ``bool``
         """
         for otherNode in self.getChildrenNodes():
@@ -491,8 +491,8 @@ class Node(Serializable):
         :param index: order number of the input socket
         :type index: ``int``
         :return: all :class:`~nodedge.node.Node` instances which are connected
-        to the specified input or ``[]`` if there is no connection
-        or index is out of range.
+            to the specified input or ``[]`` if there is no connection
+            or index is out of range.
         :rtype: List[:class:`~nodedge.node.Node`]
         """
         return self.__IONodesAt("input", index)
@@ -524,7 +524,8 @@ class Node(Serializable):
         :param index: order number of the output socket
         :type index: ``int``
         :return: all :class:`~nodedge.node.Node` instances which are connected to the
-        specified output or ``[]`` if there is no connection or index is out of range
+            specified output or ``[]`` if there is no connection or
+            index is out of range.
         :rtype: List[:class:`~nodedge.node.Node`]
         """
         return self.__IONodesAt("output", index)

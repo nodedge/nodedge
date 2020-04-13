@@ -52,9 +52,8 @@ class Edge(Serializable):
         :Instance Attributes:
 
             - **scene** - reference to the :class:`~nodedge.scene.Scene` -
-            **graphicsEdge** - Instance of
-            :class:`~nodedge.graphics_edge.GraphicsEdge` subclass handling graphical
-            representation in the ``QGraphicsScene``.
+                **graphicsEdge** - Instance of :class:`~nodedge.graphics_edge.GraphicsEdge`
+                subclass handling graphical representation in the ``QGraphicsScene``.
         """
 
         super().__init__()
@@ -138,9 +137,9 @@ class Edge(Serializable):
 
         :getter: Get edge type constant for current :class:`~nodedge.edge.Edge`.
         :setter: Set new edge type. On background, create new
-        :class:`~nodedge.graphics_edge.GraphicsEdge` child class if necessary, add this
-        ``QGraphicsPathItem`` to the ``QGraphicsScene`` and update edge sockets
-        positions.
+            :class:`~nodedge.graphics_edge.GraphicsEdge` child class if necessary,
+            add this ``QGraphicsPathItem`` to the ``QGraphicsScene`` and update edge
+            sockets positions.
         :type: :class:`~nodedge.edge.EdgeType`
         """
         return self._edgeType
@@ -168,7 +167,7 @@ class Edge(Serializable):
 
         :getter: Get selection state of the edge.
         :setter: Provide the safe selecting/deselecting operation. In the background it
-        takes care about the flags, notifications and storing history for undo/redo.
+            takes care about the flags, notifications and storing history for undo/redo.
 
         :type: ``bool``
         """
@@ -217,10 +216,10 @@ class Edge(Serializable):
         Return the opposite socket on this `Edge`.
 
         :param knownSocket: Provide known :class:`~nodedge.socket.Socket` to be able
-        to determine the opposite one :type knownSocket:
-        :class:`~nodedge.socket.Socket`
+            to determine the opposite one
+        :type knownSocket: :class:`~nodedge.socket.Socket`
         :return: The opposite socket on this :class:`~nodedge.edge.Edge`,
-        eventually ``None``.
+            eventually ``None``.
         :rtype: :class:`~nodedge.socket.Socket` or ``None``
         """
 
