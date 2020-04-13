@@ -6,6 +6,7 @@ from nodedge.edge import Edge
 from nodedge.editor_widget import EditorWidget
 from nodedge.node import Node
 from nodedge.scene import Scene
+from nodedge.socket import SocketLocation
 
 
 @pytest.fixture
@@ -19,7 +20,7 @@ def emptyScene(qtbot):
 
 @pytest.fixture
 def undefinedNode(emptyScene: Scene) -> Node:
-    node = Node(emptyScene)  # noqa: F841
+    node = Node(emptyScene, inputSocketTypes=[1])  # noqa: F841
 
     return emptyScene.nodes[0]
 
@@ -106,8 +107,8 @@ def test_markIsInvalid(undefinedNode: Node):
 
 
 def test_socketPos(undefinedNode: Node):
-    a = undefinedNode.socketPos(0, 0, 1)
-    assert a == QPointF(180, 0)
+    a = undefinedNode.socketPos(0, SocketLocation.LEFT_TOP, 1)
+    assert a == QPointF(-1, 33)
 
 
 def test_remove(undefinedNode: Node):

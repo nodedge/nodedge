@@ -196,7 +196,7 @@ class Socket(Serializable):
             return data["allowMultiEdges"]
         else:
             # Probably older version of file, make right socket multi edged by default
-            return data["position"] in (
+            return data["location"] in (
                 SocketLocation.RIGHT_BOTTOM,
                 SocketLocation.RIGHT_TOP,
             )
@@ -207,7 +207,7 @@ class Socket(Serializable):
                 ("id", self.id),
                 ("index", self.index),
                 ("allowMultiEdges", self.allowMultiEdges),
-                ("position", self.location),
+                ("location", self.location),
                 ("socketType", self.socketType),
             ]
         )

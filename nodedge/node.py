@@ -79,7 +79,7 @@ class Node(Serializable):
         Set up graphics node and content widget.
         """
         self.content = self.__class__.GraphicsNodeContentClass(self)
-        self.graphicsNode = self.__class__.GraphicsNode(self)  # type: ignore
+        self.graphicsNode = self.__class__.GraphicsNodeClass(self)
 
     # noinspection PyAttributeOutsideInit
     def initSettings(self) -> None:
@@ -265,25 +265,25 @@ class Node(Serializable):
         if value is True:
             self.graphicsNode.onSelected()
 
-    def socketPos(self, index: int, position: int, countOnThisSide: int = 1) -> QPointF:
+    def socketPos(self, index: int, location: int, countOnThisSide: int = 1) -> QPointF:
         """
         Get the relative `x, y` position of a :class:`~nodedge.socket.Socket`. This is
         used for placing the `Graphics Sockets` on `Graphics Node`.
 
         :param index: Order number of the Socket. (0, 1, 2, ...)
         :type index: ``int``
-        :param position: `Socket Position Constant` describing where
+        :param location: `Socket location constant` describing where
         the Socket is located
-        :type position: :class:`~nodedge.socket.SocketLocation`
+        :type location: :class:`~nodedge.socket.SocketLocation`
         :param countOnThisSide: Total number of Sockets on this `Socket Position`
         :type countOnThisSide: ``int``
         :return: Position of described Socket on the `Node`
         :rtype: ``QPointF``
         """
         x: int = (
-            self.socketOffsets[cast(SocketLocation, position)]
+            self.socketOffsets[cast(SocketLocation, location)]
             if (
-                position
+                location
                 in (
                     SocketLocation.LEFT_TOP,
                     SocketLocation.LEFT_CENTER,
@@ -291,17 +291,17 @@ class Node(Serializable):
                 )
             )
             else self.graphicsNode.width
-            + self.socketOffsets[cast(SocketLocation, position)]
+            + self.socketOffsets[cast(SocketLocation, location)]
         )
 
-        if position in (SocketLocation.LEFT_BOTTOM, SocketLocation.RIGHT_BOTTOM):
+        if location in (SocketLocation.LEFT_BOTTOM, SocketLocation.RIGHT_BOTTOM):
             y: float = (
                 self.graphicsNode.height
                 - self.graphicsNode.edgeRoundness
                 - self.graphicsNode.titleVerticalPadding
                 - index * self._socketSpacing
             )
-        elif position in (SocketLocation.LEFT_CENTER, SocketLocation.RIGHT_CENTER):
+        elif location in (SocketLocation.LEFT_CENTER, SocketLocation.RIGHT_CENTER):
             numberOfSockets: int = countOnThisSide
             nodeHeight: float = self.graphicsNode.height
             topOffset: float = (
@@ -320,7 +320,7 @@ class Node(Serializable):
             if numberOfSockets > 1:
                 y -= self._socketSpacing * (numberOfSockets - 1) / 2
 
-        elif position in (SocketLocation.LEFT_TOP, SocketLocation.RIGHT_TOP):
+        elif location in (SocketLocation.LEFT_TOP, SocketLocation.RIGHT_TOP):
             y = (
                 self.graphicsNode.titleHeight
                 + self.graphicsNode.titleVerticalPadding
@@ -542,8 +542,8 @@ class Node(Serializable):
                 ("title", self.title),
                 ("posX", self.graphicsNode.scenePos().x()),
                 ("posY", self.graphicsNode.scenePos().y()),
-                ("inputs", inputs),
-                ("outputs", outputs),
+                ("inputSockets", inputs),
+                ("outputSockets", outputs),
                 ("content", self.content.serialize()),
             ]
         )
@@ -613,7 +613,7 @@ class Node(Serializable):
                     )
 
                     # Append newly created output to the list
-                    self.outputSockets.append(found)
+                    self.inputSockets.append(found)
 
                 found.deserialize(socketData, hashmap, restoreId)
 

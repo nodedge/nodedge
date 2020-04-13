@@ -264,7 +264,7 @@ class Edge(Serializable):
 
         self.__logger.debug(f"Removing Graphical edge: {self.graphicsEdge}")
         self.scene.graphicsScene.removeItem(self.graphicsEdge)
-        self.scene.grScene.update()
+        self.scene.graphicsScene.update()
         self.graphicsEdge = None  # type: ignore
 
         self.__logger.debug(f"Removing {self}")
