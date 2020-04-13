@@ -51,8 +51,10 @@ class Edge(Serializable):
 
         :Instance Attributes:
 
-            - **scene** - reference to the :class:`~nodedge.scene.Scene`
-            - **graphicsEdge** - Instance of :class:`~nodedge.graphics_edge.GraphicsEdge` subclass handling graphical representation in the ``QGraphicsScene``.
+            - **scene** - reference to the :class:`~nodedge.scene.Scene` -
+            **graphicsEdge** - Instance of
+            :class:`~nodedge.graphics_edge.GraphicsEdge` subclass handling graphical
+            representation in the ``QGraphicsScene``.
         """
 
         super().__init__()
@@ -96,7 +98,8 @@ class Edge(Serializable):
 
     @sourceSocket.setter
     def sourceSocket(self, value: Socket) -> None:
-        # If the edge was assigned to another socket before, remove the edge from the socket.
+        # If the edge was assigned to another socket before, remove the edge from the
+        # socket.
         if self._sourceSocket is not None:
             self._sourceSocket.removeEdge(self)
         # Assign new start socket.
@@ -118,7 +121,8 @@ class Edge(Serializable):
 
     @targetSocket.setter
     def targetSocket(self, value: Socket) -> None:
-        # If the edge was assigned to another socket before, remove the edge from the socket.
+        # If the edge was assigned to another socket before, remove the edge from the
+        # socket.
         if self._targetSocket is not None:
             self._targetSocket.removeEdge(self)
         # Assign new end socket.
@@ -132,11 +136,12 @@ class Edge(Serializable):
         """
         Edge type
 
-        :getter: Get edge type constant for current ``Edge``.
-        :setter: Set new edge type. On background, create new :class:`~nodedge.graphics_edge.GraphicsEdge`
-            child class if necessary, add this ``QGraphicsPathItem`` to the ``QGraphicsScene`` and update edge sockets
-            positions.
-        :type: :class:`~nodedge.edge.EdgeTyoe`
+        :getter: Get edge type constant for current :class:`~nodedge.edge.Edge`.
+        :setter: Set new edge type. On background, create new
+        :class:`~nodedge.graphics_edge.GraphicsEdge` child class if necessary, add this
+        ``QGraphicsPathItem`` to the ``QGraphicsScene`` and update edge sockets
+        positions.
+        :type: :class:`~nodedge.edge.EdgeType`
         """
         return self._edgeType
 
@@ -162,8 +167,8 @@ class Edge(Serializable):
         Property defining whether the edge is selected or not.
 
         :getter: Get selection state of the edge.
-        :setter: Provide the safe selecting/deselecting operation. In the background it takes care about the flags,
-            notifications and storing history for undo/redo.
+        :setter: Provide the safe selecting/deselecting operation. In the background it
+        takes care about the flags, notifications and storing history for undo/redo.
 
         :type: ``bool``
         """
@@ -178,10 +183,11 @@ class Edge(Serializable):
 
     def updatePos(self) -> None:
         """
-        Update the internal :class:`~nodedge.graphics_edge.GraphicsEdge` positions according to the
-        start and end :class:`~nodedge.socket.Socket`
+        Update the internal :class:`~nodedge.graphics_edge.GraphicsEdge` positions
+        according to the start and end :class:`~nodedge.socket.Socket`
         """
 
+        sourcePos = None
         if self.sourceSocket is not None:
             sourcePos = (
                 self.sourceSocket.pos + self.sourceSocket.node.graphicsNode.pos()
@@ -198,7 +204,8 @@ class Edge(Serializable):
                 self.graphicsEdge.targetPos = targetPos
         else:
             if self.graphicsEdge is not None:
-                self.graphicsEdge.targetPos = sourcePos
+                if sourcePos is not None:
+                    self.graphicsEdge.targetPos = sourcePos
 
         self.__logger.debug(f"Start socket: {self.sourceSocket}")
         self.__logger.debug(f"End socket: {self.targetSocket}")
@@ -209,9 +216,11 @@ class Edge(Serializable):
         """
         Return the opposite socket on this `Edge`.
 
-        :param knownSocket: Provide known :class:`~nodedge.socket.Socket` to be able to determine the opposite one
-        :type knownSocket: :class:`~nodedge.socket.Socket`
-        :return: The opposite socket on this ``Edge``, eventually ``None``
+        :param knownSocket: Provide known :class:`~nodedge.socket.Socket` to be able
+        to determine the opposite one :type knownSocket:
+        :class:`~nodedge.socket.Socket`
+        :return: The opposite socket on this :class:`~nodedge.edge.Edge`,
+        eventually ``None``.
         :rtype: :class:`~nodedge.socket.Socket` or ``None``
         """
 
@@ -232,9 +241,9 @@ class Edge(Serializable):
         """
         Safely remove this `Edge`.
 
-        Remove :class:`~nodedge.graphics_edge.GraphicsEdge` from the ``QGraphicsScene`` and it's reference to all other
-        graphical elements.
-        Notify previously connected :class:`~nodedge.node.Node` (s) about this event.
+        Remove :class:`~nodedge.graphics_edge.GraphicsEdge` from the
+        ``QGraphicsScene`` and it's reference to all other graphical elements. Notify
+        previously connected :class:`~nodedge.node.Node` (s) about this event.
 
         Triggered Node Slots:
         - :py:meth:`~nodedge.node.Node.onEdgeConnectionChanged`
@@ -246,11 +255,16 @@ class Edge(Serializable):
 
         oldSockets = [self.sourceSocket, self.targetSocket]
 
+        # ugly hack, since I noticed that even when you remove grEdge from scene,
+        # sometimes it stays there! How dare you Qt!
+        self.graphicsEdge.hide()
+
         self.__logger.debug(f"Removing {self} from all sockets.")
         self.removeFromSockets()
 
         self.__logger.debug(f"Removing Graphical edge: {self.graphicsEdge}")
         self.scene.graphicsScene.removeItem(self.graphicsEdge)
+        self.scene.grScene.update()
         self.graphicsEdge = None  # type: ignore
 
         self.__logger.debug(f"Removing {self}")
@@ -265,6 +279,11 @@ class Edge(Serializable):
         try:
             for socket in oldSockets:
                 if socket is not None and socket.node is not None:
+                    if silentForSocket is not None and socket == silentForSocket:
+                        # if we requested silence for Socket and it's this one,
+                        # skip notifications
+                        continue
+
                     socket.node.onEdgeConnectionChanged(self)
                     if socket.isInput:
                         socket.node.onInputChanged(self)
@@ -276,7 +295,10 @@ class Edge(Serializable):
             [
                 ("id", self.id),
                 ("edgeType", self.edgeType),
-                ("source", self.sourceSocket.id),
+                (
+                    "source",
+                    self.sourceSocket.id if self.sourceSocket is not None else None,
+                ),
                 (
                     "target",
                     self.targetSocket.id if self.targetSocket is not None else None,

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-Graphics node content module containing the :class:`~nodedge.graphics_node_content.GraphicsNodeContent` class.
-"""
+"""Graphics node content module containing the
+:class:`~nodedge.graphics_node_content.GraphicsNodeContent` class. """
 
 from collections import OrderedDict
 from typing import Optional, cast
@@ -17,8 +16,8 @@ class GraphicsNodeContent(QWidget, Serializable):
     """
     :class:`~nodedge.graphics_node_content.GraphicsNodeContent` class.
 
-    Base class for representation of the Node's graphics content. This class also provides layout
-    for other widgets inside of a :py:class:`~nodedge.node.Node`"""
+    Base class for representation of the Node's graphics content. This class also
+    provides layout for other widgets inside of a :py:class:`~nodedge.node.Node` """
 
     def __init__(self, node: "Node", parent: Optional[QWidget] = None):  # type: ignore
         """
@@ -53,13 +52,15 @@ class GraphicsNodeContent(QWidget, Serializable):
         """
         .. note::
 
-            If you are handling keyPress events by default Qt Window's shortcuts and ``QActions``, you will not
-            probably need to use this method
+            If you are handling keyPress events by default Qt Window's shortcuts and
+            ``QActions``, you will not probably need to use this method
 
-        Helper function which sets editingFlag inside :py:class:`~nodedge.graphics_view.GraphicsView` class.
+        Helper function which sets editingFlag inside
+        :py:class:`~nodedge.graphics_view.GraphicsView` class.
 
-        This is a helper function to handle keys inside nodes with ``QLineEdits`` or ``QTextEdits`` (you can
-        use overridden :py:class:`TextEdit` class) and with QGraphicsView class method ``keyPressEvent``.
+        This is a helper function to handle keys inside nodes with ``QLineEdits`` or
+        ``QTextEdits`` (you can use overridden :py:class:`TextEdit` class) and with
+        QGraphicsView class method ``keyPressEvent``.
 
         :param value: new value for editing flag
         """
@@ -97,10 +98,12 @@ class TextEdit(QTextEdit):
     """
     .. note::
 
-        This class is example of ``QTextEdit`` modification to be able to handle `Delete` key with overridden
-        Qt's ``keyPressEvent`` (when not using ``QActions`` in menu or toolbar)
+        This class is example of ``QTextEdit`` modification to be able to handle
+        `Delete` key with overridden Qt's ``keyPressEvent`` (when not using
+        ``QActions`` in menu or toolbar)
 
-    overridden ``QTextEdit`` which sends notification about being edited to parent's container :py:class:`GraphicsNodeContent`
+    overridden ``QTextEdit`` which sends notification about being edited to parent's
+    container :py:class:`GraphicsNodeContent`
     """
 
     def focusInEvent(self, event: QFocusEvent) -> None:

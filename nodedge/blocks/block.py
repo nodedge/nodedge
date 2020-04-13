@@ -36,8 +36,8 @@ class Block(Node):
         self._inputSocketPosition = SocketLocation.LEFT_CENTER
         self._outputSocketPosition = SocketLocation.RIGHT_CENTER
 
-    def onInputChanged(self, newEdge):
-        self.__logger.debug(f"New edge: {newEdge}")
+    def onInputChanged(self, socket):
+        self.__logger.debug(f"New edge: {socket}")
         self.isDirty = True
         self.eval()
 

@@ -8,13 +8,13 @@
             "title": "Input",
             "posX": -346.0,
             "posY": -184.0,
-            "inputs": [],
-            "outputs": [
+            "inputSockets": [],
+            "outputSockets": [
                 {
                     "id": 1583749280096,
                     "index": 0,
                     "allowMultiEdges": true,
-                    "position": 5,
+                    "location": 5,
                     "socketType": 1
                 }
             ],
@@ -28,13 +28,13 @@
             "title": "Input",
             "posX": -347.0,
             "posY": -24.0,
-            "inputs": [],
-            "outputs": [
+            "inputSockets": [],
+            "outputSockets": [
                 {
                     "id": 1583749280960,
                     "index": 0,
                     "allowMultiEdges": true,
-                    "position": 5,
+                    "location": 5,
                     "socketType": 1
                 }
             ],
@@ -48,28 +48,28 @@
             "title": "Add",
             "posX": -94.25,
             "posY": -298.75,
-            "inputs": [
+            "inputSockets": [
                 {
                     "id": 1583749317968,
                     "index": 0,
                     "allowMultiEdges": false,
-                    "position": 2,
+                    "location": 2,
                     "socketType": 2
                 },
                 {
                     "id": 1583749318064,
                     "index": 1,
                     "allowMultiEdges": false,
-                    "position": 2,
+                    "location": 2,
                     "socketType": 2
                 }
             ],
-            "outputs": [
+            "outputSockets": [
                 {
                     "id": 1583749318160,
                     "index": 0,
                     "allowMultiEdges": true,
-                    "position": 5,
+                    "location": 5,
                     "socketType": 1
                 }
             ],
@@ -81,28 +81,28 @@
             "title": "Subtract",
             "posX": -97.25,
             "posY": -177.75,
-            "inputs": [
+            "inputSockets": [
                 {
                     "id": 1583749318304,
                     "index": 0,
                     "allowMultiEdges": false,
-                    "position": 2,
+                    "location": 2,
                     "socketType": 2
                 },
                 {
                     "id": 1583749318448,
                     "index": 1,
                     "allowMultiEdges": false,
-                    "position": 2,
+                    "location": 2,
                     "socketType": 2
                 }
             ],
-            "outputs": [
+            "outputSockets": [
                 {
                     "id": 1583749318544,
                     "index": 0,
                     "allowMultiEdges": true,
-                    "position": 5,
+                    "location": 5,
                     "socketType": 1
                 }
             ],
@@ -114,28 +114,28 @@
             "title": "Multiply",
             "posX": -98.25,
             "posY": -49.75,
-            "inputs": [
+            "inputSockets": [
                 {
                     "id": 1583749318688,
                     "index": 0,
                     "allowMultiEdges": false,
-                    "position": 2,
+                    "location": 2,
                     "socketType": 2
                 },
                 {
                     "id": 1583749318832,
                     "index": 1,
                     "allowMultiEdges": false,
-                    "position": 2,
+                    "location": 2,
                     "socketType": 2
                 }
             ],
-            "outputs": [
+            "outputSockets": [
                 {
                     "id": 1583749318928,
                     "index": 0,
                     "allowMultiEdges": true,
-                    "position": 5,
+                    "location": 5,
                     "socketType": 1
                 }
             ],
@@ -147,28 +147,28 @@
             "title": "Divide",
             "posX": -102.25,
             "posY": 69.25,
-            "inputs": [
+            "inputSockets": [
                 {
                     "id": 1583749319072,
                     "index": 0,
                     "allowMultiEdges": false,
-                    "position": 2,
+                    "location": 2,
                     "socketType": 2
                 },
                 {
                     "id": 1583749319216,
                     "index": 1,
                     "allowMultiEdges": false,
-                    "position": 2,
+                    "location": 2,
                     "socketType": 2
                 }
             ],
-            "outputs": [
+            "outputSockets": [
                 {
                     "id": 1583749319312,
                     "index": 0,
                     "allowMultiEdges": true,
-                    "position": 5,
+                    "location": 5,
                     "socketType": 1
                 }
             ],
@@ -180,16 +180,16 @@
             "title": "Output",
             "posX": 123.0,
             "posY": -296.5,
-            "inputs": [
+            "inputSockets": [
                 {
                     "id": 1583749319888,
                     "index": 0,
                     "allowMultiEdges": false,
-                    "position": 2,
+                    "location": 2,
                     "socketType": 1
                 }
             ],
-            "outputs": [],
+            "outputSockets": [],
             "content": {},
             "operationCode": 2
         },
@@ -198,16 +198,16 @@
             "title": "Output",
             "posX": 120.0,
             "posY": -181.5,
-            "inputs": [
+            "inputSockets": [
                 {
                     "id": 1583749805200,
                     "index": 0,
                     "allowMultiEdges": false,
-                    "position": 2,
+                    "location": 2,
                     "socketType": 1
                 }
             ],
-            "outputs": [],
+            "outputSockets": [],
             "content": {},
             "operationCode": 2
         },
@@ -216,16 +216,16 @@
             "title": "Output",
             "posX": 115.0,
             "posY": -53.5,
-            "inputs": [
+            "inputSockets": [
                 {
                     "id": 1583749804288,
                     "index": 0,
                     "allowMultiEdges": false,
-                    "position": 2,
+                    "location": 2,
                     "socketType": 1
                 }
             ],
-            "outputs": [],
+            "outputSockets": [],
             "content": {},
             "operationCode": 2
         },
@@ -234,16 +234,16 @@
             "title": "Output",
             "posX": 109.0,
             "posY": 64.5,
-            "inputs": [
+            "inputSockets": [
                 {
                     "id": 1583749804528,
                     "index": 0,
                     "allowMultiEdges": false,
-                    "position": 2,
+                    "location": 2,
                     "socketType": 1
                 }
             ],
-            "outputs": [],
+            "outputSockets": [],
             "content": {},
             "operationCode": 2
         }

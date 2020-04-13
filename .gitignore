@@ -15,7 +15,6 @@ htmlcov/
 .mypy_cache
 venv/
 venv36/
-.idea/
 docs/build/
 dist/
 build/

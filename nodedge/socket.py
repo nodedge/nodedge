@@ -177,7 +177,7 @@ class Socket(Serializable):
                 edge.remove()
 
     @staticmethod
-    def determineAlowMultiEdges(data):
+    def determineAllowMultiEdges(data):
         """
         Deserialization helper function.
 

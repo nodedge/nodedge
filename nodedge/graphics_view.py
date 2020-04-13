@@ -50,7 +50,7 @@ class GraphicsView(QGraphicsView):
         super().__init__(graphicsScene, parent)
 
         self.__logger = logging.getLogger(__name__)
-        self.__logger.setLevel(logging.DEBUG)
+        self.__logger.setLevel(logging.INFO)
 
         self.graphicsScene: GraphicsScene = graphicsScene
         self.initUI()
@@ -67,8 +67,8 @@ class GraphicsView(QGraphicsView):
 
         self.mode: DragMode = DragMode.NOOP
         self.lastLMBClickScenePos: Optional[QPointF] = None
-        self.editingFlag = False
-        self.rubberBandDraggingRectangle = False
+        self.editingFlag: bool = False
+        self.rubberBandDraggingRectangle: bool = False
 
         self.dragEdge: Optional[Edge] = None
 
@@ -164,7 +164,6 @@ class GraphicsView(QGraphicsView):
                 dumpException(e)
         elif event.button() == Qt.RightButton:
             self.rightMouseButtonPress(event)
-
         else:
             super().mousePressEvent(event)
 

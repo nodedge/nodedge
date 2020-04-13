@@ -6,7 +6,7 @@ Node module containing :class:`~nodedge.node.Node` class.
 
 import logging
 from collections import OrderedDict
-from typing import Collection, List, Optional, Tuple, TypeVar
+from typing import Collection, List, Optional, Tuple, TypeVar, cast
 
 from PyQt5.QtCore import QPoint, QPointF
 from PyQt5.QtWidgets import QGraphicsSceneMouseEvent
@@ -23,6 +23,10 @@ Pos = TypeVar("Pos", List, Tuple, QPoint, QPointF)
 
 class Node(Serializable):
     """:class:`~nodedge.node.Node` class representing a node in the `Scene`."""
+
+    GraphicsNodeClass = GraphicsNode
+    GraphicsNodeContentClass = GraphicsNodeContent
+    SocketClass = Socket
 
     def __init__(
         self,
@@ -64,15 +68,18 @@ class Node(Serializable):
         self._isInvalid: bool = False
 
     def __str__(self):
-        return f"0x{hex(id(self))[-4:]} Node({self.title}, {self.inputSockets}, {self.outputSockets})"
+        return (
+            f"0x{hex(id(self))[-4:]} {self.__class__.__name__}({self.title}, "
+            f"{self.inputSockets}, {self.outputSockets})"
+        )
 
     # noinspection PyAttributeOutsideInit
     def initInnerClasses(self) -> None:
         """
         Set up graphics node and content widget.
         """
-        self.content: GraphicsNodeContent = GraphicsNodeContent(self)
-        self.graphicsNode: GraphicsNode = GraphicsNode(self)
+        self.content = self.__class__.GraphicsNodeContentClass(self)
+        self.graphicsNode = self.__class__.GraphicsNode(self)  # type: ignore
 
     # noinspection PyAttributeOutsideInit
     def initSettings(self) -> None:
@@ -83,8 +90,16 @@ class Node(Serializable):
         self._socketSpacing: int = 22
         self._inputSocketPosition: SocketLocation = SocketLocation.LEFT_TOP
         self._outputSocketPosition: SocketLocation = SocketLocation.RIGHT_BOTTOM
-        self._inputallowMultiEdges: bool = False
-        self._outputallowMultiEdges: bool = True
+        self._inputAllowMultiEdges: bool = False
+        self._outputAllowMultiEdges: bool = True
+        self.socketOffsets = {
+            SocketLocation.LEFT_BOTTOM: -1,
+            SocketLocation.LEFT_CENTER: -1,
+            SocketLocation.LEFT_TOP: -1,
+            SocketLocation.RIGHT_BOTTOM: 1,
+            SocketLocation.RIGHT_CENTER: 1,
+            SocketLocation.RIGHT_TOP: 1,
+        }
 
     def initSockets(
         self, inputs: Collection[int], outputs: Collection[int], reset: bool = True
@@ -92,7 +107,8 @@ class Node(Serializable):
         """
         Create input and output sockets.
 
-        :param inputs: list of types of the input `Sockets`. Every type is associated with a ``int``
+        :param inputs: list of types of the input `Sockets`. Every type is associated
+        with a ``int``
         :type inputs: ``Collection[int]``
         :param outputs: list of types of the input `Sockets`
         :type outputs: ``Collection[int]``
@@ -107,12 +123,12 @@ class Node(Serializable):
 
         # Create new sockets
         for ind, inp in enumerate(inputs):
-            socket = Socket(
+            socket = self.__class__.SocketClass(
                 node=self,
                 index=ind,
                 location=self._inputSocketPosition,
                 socketType=inp,
-                allowMultiEdges=self._inputallowMultiEdges,
+                allowMultiEdges=self._inputAllowMultiEdges,
                 countOnThisNodeSide=len(inputs),
                 isInput=True,
             )
@@ -124,7 +140,7 @@ class Node(Serializable):
                 index=ind,
                 location=self._outputSocketPosition,
                 socketType=out,
-                allowMultiEdges=self._outputallowMultiEdges,
+                allowMultiEdges=self._outputAllowMultiEdges,
                 countOnThisNodeSide=len(outputs),
                 isInput=False,
             )
@@ -132,23 +148,24 @@ class Node(Serializable):
 
     def onEdgeConnectionChanged(self, newEdge: Edge) -> None:
         """
-        Handle event associated with a change in any of the connections (`Edge`). Currently unused.
+        Handle event associated with a change in any of the connections (`Edge`).
+        Currently unused.
 
         :param newEdge: reference to the changed :class:`~nodedge.edge.Edge`
         :type newEdge: :class:`~nodedge.edge.Edge`
         """
         self.__logger.debug(f"{newEdge}")
 
-    def onInputChanged(self, newEdge: Edge):
+    def onInputChanged(self, socket: Socket):
         """
-        Handle event associated with a change in this node's input edge. When it happens, this node and all
-        its descendants are labelled as dirty.
+        Handle event associated with a change in this node's input edge.
+        When it happens, this node and all its descendants are labelled as dirty.
 
-        :param newEdge: reference to the changed :class:`~nodedge.edge.Edge`
-        :type newEdge: :class:`~nodedge.edge.Edge`
+        :param socket: reference to the changed :class:`~nodedge.socket.Socket`
+        :type socket: :class:`~nodedge.socket.Socket`
         """
 
-        self.__logger.debug(f"{newEdge}")
+        self.__logger.debug(f"{socket}")
         self.isDirty = True
         self.markDescendantsDirty()
 
@@ -195,8 +212,8 @@ class Node(Serializable):
     @property
     def isDirty(self):
         """
-        Property stating whether or not this node is marked as `Dirty`, i.e. the node has not been
-        evaluated since last node's input/output change.
+        Property stating whether or not this node is marked as `Dirty`, i.e. the node
+        has not been evaluated since last node's input/output change.
 
         :getter: ``True`` if this node is marked as `Dirty`, ``False`` otherwise
         :setter: set the dirtiness status of this node
@@ -215,8 +232,9 @@ class Node(Serializable):
     @property
     def isInvalid(self):
         """
-        Property stating whether or not this node is marked as `Invalid`, i.e. the node has been
-        evaluated since last node's input/output change, but the evaluation was inconsistent.
+        Property stating whether or not this node is marked as `Invalid`, i.e. the node
+        has been evaluated since last node's input/output change,
+        but the evaluation was inconsistent.
 
         :getter: ``True`` if this node is marked as `Invalid`,
             ``False`` otherwise
@@ -249,12 +267,13 @@ class Node(Serializable):
 
     def socketPos(self, index: int, position: int, countOnThisSide: int = 1) -> QPointF:
         """
-        Get the relative `x, y` position of a :class:`~nodedge.socket.Socket`. This is used for placing
-        the `Graphics Sockets` on `Graphics Node`.
+        Get the relative `x, y` position of a :class:`~nodedge.socket.Socket`. This is
+        used for placing the `Graphics Sockets` on `Graphics Node`.
 
         :param index: Order number of the Socket. (0, 1, 2, ...)
         :type index: ``int``
-        :param position: `Socket Position Constant` describing where the Socket is located
+        :param position: `Socket Position Constant` describing where
+        the Socket is located
         :type position: :class:`~nodedge.socket.SocketLocation`
         :param countOnThisSide: Total number of Sockets on this `Socket Position`
         :type countOnThisSide: ``int``
@@ -262,7 +281,7 @@ class Node(Serializable):
         :rtype: ``QPointF``
         """
         x: int = (
-            0
+            self.socketOffsets[cast(SocketLocation, position)]
             if (
                 position
                 in (
@@ -272,6 +291,7 @@ class Node(Serializable):
                 )
             )
             else self.graphicsNode.width
+            + self.socketOffsets[cast(SocketLocation, position)]
         )
 
         if position in (SocketLocation.LEFT_BOTTOM, SocketLocation.RIGHT_BOTTOM):
@@ -348,10 +368,12 @@ class Node(Serializable):
 
     def markChildrenDirty(self, newValue: bool = True) -> None:
         """
-        Mark the children of this node to be `Dirty`. Children are first-level descendants.
-        Note: it does not apply to this node.
-        :param new_value: ``True`` if children should be `Dirty`, ``False`` to un-dirty them.
-        :type new_value: ``bool``
+        Mark the children of this node to be `Dirty`. Children are first-level
+        descendants. Note: it does not apply to this node.
+
+        :param newValue: ``True`` if children should be `Dirty`,
+        ``False`` to un-dirty them.
+        :type newValue: ``bool``
         """
         for otherNode in self.getChildrenNodes():
             otherNode.isDirty = newValue
@@ -381,8 +403,9 @@ class Node(Serializable):
         Mark children of this node as `Invalid`. Children are first-level descendants.
         Note: it does not apply to this node.
 
-        :param new_value: ``True`` if children should be `Invalid`, ``False`` to make them valid.
-        :type new_value: ``bool``
+        :param newValue: ``True`` if children should be `Invalid`, ``False`` to make
+        them valid.
+        :type newValue: ``bool``
         """
         for otherNode in self.getChildrenNodes():
             otherNode.isInvalid = newValue
@@ -392,16 +415,16 @@ class Node(Serializable):
         Mark descendants of this node as `Invalid`.
         Note: it does not apply to this node.
 
-        :param new_value: ``True`` if descendants should be `Invalid`,
+        :param newValue: ``True`` if descendants should be `Invalid`,
             ``False`` to make descendants valid.
-        :type new_value: ``bool``
+        :type newValue: ``bool``
         """
 
         for otherNode in self.getChildrenNodes():
             otherNode.isInvalid = newValue
             otherNode.markChildrenInvalid(newValue)
 
-    def eval(self) -> float:
+    def eval(self, index=0) -> float:
         """
         Evaluate this node.
         This must be overridden.
@@ -467,8 +490,9 @@ class Node(Serializable):
 
         :param index: order number of the input socket
         :type index: ``int``
-        :return: all :class:`~nodedge.node.Node` instances which are connected to the specified input
-            or ``[]`` if there is no connection or index is out of range
+        :return: all :class:`~nodedge.node.Node` instances which are connected
+        to the specified input or ``[]`` if there is no connection
+        or index is out of range.
         :rtype: List[:class:`~nodedge.node.Node`]
         """
         return self.__IONodesAt("input", index)
@@ -499,8 +523,8 @@ class Node(Serializable):
 
         :param index: order number of the output socket
         :type index: ``int``
-        :return: all :class:`~nodedge.node.Node` instances which are connected to the specified output
-            or ``[]`` if there is no connection or index is out of range
+        :return: all :class:`~nodedge.node.Node` instances which are connected to the
+        specified output or ``[]`` if there is no connection or index is out of range
         :rtype: List[:class:`~nodedge.node.Node`]
         """
         return self.__IONodesAt("output", index)
@@ -535,41 +559,103 @@ class Node(Serializable):
             self.pos = (data["posX"], data["posY"])
             self.title = data["title"]
 
-            data["inputs"].sort(
-                key=lambda socket: socket["index"] + socket["position"] * 1000
+            data["inputSockets"].sort(
+                key=lambda socket: socket["index"] + socket["location"] * 1000
             )
-            data["outputs"].sort(
-                key=lambda socket: socket["index"] + socket["position"] * 1000
+            data["outputSockets"].sort(
+                key=lambda socket: socket["index"] + socket["location"] * 1000
             )
 
-            numberOfInputs = len(data["inputs"])
-            numberOfOutputs = len(data["outputs"])
+            numberOfInputs = len(data["inputSockets"])
+            numberOfOutputs = len(data["outputSockets"])
 
-            self.inputSockets = []
-            for socketData in data["inputs"]:
-                newSocket = Socket(
-                    node=self,
-                    index=socketData["index"],
-                    location=socketData["position"],
-                    socketType=socketData["socketType"],
-                    countOnThisNodeSide=numberOfInputs,
-                    isInput=True,
-                )
-                newSocket.deserialize(socketData, hashmap, restoreId)
-                self.inputSockets.append(newSocket)
+            # First method: delete existing sockets. When we do this,
+            # deserialization will override even the number of sockets defined in the
+            # constructor of a node...
+            # Second method: reuse existing sockets,
+            # dont create new ones if not necessary
 
-            self.outputSockets = []
-            for socketData in data["outputs"]:
-                newSocket = Socket(
-                    node=self,
-                    index=socketData["index"],
-                    location=socketData["position"],
-                    socketType=socketData["socketType"],
-                    countOnThisNodeSide=numberOfOutputs,
-                    isInput=False,
-                )
-                newSocket.deserialize(socketData, hashmap, restoreId)
-                self.outputSockets.append(newSocket)
+            # self.inputSockets = []
+            # for socketData in data["inputs"]:
+            #     newSocket = Socket(
+            #         node=self,
+            #         index=socketData["index"],
+            #         location=socketData["position"],
+            #         socketType=socketData["socketType"],
+            #         countOnThisNodeSide=numberOfInputs,
+            #         isInput=True,
+            #     )
+            #     newSocket.deserialize(socketData, hashmap, restoreId)
+            #     self.inputSockets.append(newSocket)
+
+            for socketData in data["inputSockets"]:
+                found = None
+                for socket in self.inputSockets:
+                    if socket.index == socketData["index"]:
+                        found = socket
+                        break
+                if found is None:
+                    self.__logger.debug(
+                        "Deserialization of socket data has not found "
+                        "input socket with index:",
+                        socketData["index"],
+                    )
+                    self.__logger.debug("Actual socket data:", socketData)
+
+                    # Create new socket for this
+                    found = self.__class__.SocketClass(
+                        node=self,
+                        index=socketData["index"],
+                        location=socketData["location"],
+                        socketType=socketData["socketType"],
+                        countOnThisNodeSide=numberOfInputs,
+                        isInput=True,
+                    )
+
+                    # Append newly created output to the list
+                    self.outputSockets.append(found)
+
+                found.deserialize(socketData, hashmap, restoreId)
+
+            # self.outputSockets = []
+            # for socketData in data["outputs"]:
+            #     newSocket = Socket(
+            #         node=self,
+            #         index=socketData["index"],
+            #         location=socketData["position"],
+            #         socketType=socketData["socketType"],
+            #         countOnThisNodeSide=numberOfOutputs,
+            #         isInput=False,
+            #     )
+            #     newSocket.deserialize(socketData, hashmap, restoreId)
+            #     self.outputSockets.append(newSocket)
+
+            for socketData in data["outputSockets"]:
+                found = None
+                for socket in self.outputSockets:
+                    # print("\t", socket, socket.index, "=?", socket_data['index'])
+                    if socket.index == socketData["index"]:
+                        found = socket
+                        break
+                if found is None:
+                    self.__logger.debug(
+                        "Deserialization of socket data has not found output socket "
+                        "with index:",
+                        socketData["index"],
+                    )
+                    # Create new socket for this
+                    found = self.__class__.SocketClass(
+                        node=self,
+                        index=socketData["index"],
+                        location=socketData["location"],
+                        socketType=socketData["socketType"],
+                        countOnThisNodeSide=numberOfOutputs,
+                        isInput=False,
+                    )
+                    # Append newly created output to the list
+                    self.outputSockets.append(found)
+                found.deserialize(socketData, hashmap, restoreId)
+
         except Exception as e:
             dumpException(e)
 
@@ -579,10 +665,23 @@ class Node(Serializable):
 
     def onDoubleClicked(self, event: QGraphicsSceneMouseEvent) -> None:
         """
-        Callback when the :class:`~nodedge.graphics_node.GraphicsNode` is double clicked.
+        Callback when the :class:`~nodedge.graphics_node.GraphicsNode`
+        is double clicked.
 
         :param event: Qt double click event
-        :type: ``QMouseEvent``
+        :type event: ``QMouseEvent``
         """
 
-        self.__logger.debug("Graphics node has been double clicked.")
+        self.__logger.debug(f"Graphics node has been double clicked: {event}")
+
+    def getNodeContentClass(self):
+        """
+        Returns class representing node content.
+        """
+        return self.__class__.GraphicsNodeContentClass
+
+    def getGraphicsNodeClass(self):
+        """
+        Returns class representing graphics node.
+        """
+        return self.__class__.GraphicsNodeClass
