@@ -11,6 +11,7 @@ include Pipfile.lock
 include readthedocs.yml
 include mypy.ini
 include .bumpversion.cfg
+include CODE_OF_CONDUCT.md
 
 include .flake8
 include .isort.cfg
