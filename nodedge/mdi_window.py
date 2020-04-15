@@ -8,12 +8,18 @@ from typing import cast
 from PyQt5.QtCore import QSignalMapper, Qt
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import (
+    QAbstractItemView,
     QAction,
     QDockWidget,
     QFileDialog,
+    QHeaderView,
+    QListWidget,
+    QListWidgetItem,
     QMdiArea,
     QMenu,
     QMessageBox,
+    QTableWidget,
+    QTableWidgetItem,
     QWidget,
 )
 
@@ -93,6 +99,8 @@ class MdiWindow(EditorWindow):
         self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
 
         self.createNodesDock()
+        self.createHistoryDock()
+        self.createSceneItemsDock()
 
         self.createActions()
         self.createMenus()
@@ -318,6 +326,8 @@ class MdiWindow(EditorWindow):
         icon = QIcon(".")
         subWindow.setWindowIcon(icon)
         editor.scene.history.addHistoryModifiedListener(self.updateEditMenu)
+        editor.scene.history.addHistoryModifiedListener(self.updateHistoryDock)
+        editor.scene.history.addHistoryModifiedListener(self.updateSceneItemsDock)
         editor.addCloseEventListener(self.onSubWindowClosed)
 
         return subWindow
@@ -351,6 +361,71 @@ class MdiWindow(EditorWindow):
         self.nodesDock.setFloating(False)
 
         self.addDockWidget(Qt.RightDockWidgetArea, self.nodesDock)
+
+    # noinspection PyAttributeOutsideInit
+    def createHistoryDock(self):
+        self.historyListWidget = QListWidget()
+
+        self.historyDock = QDockWidget("History")
+        self.historyDock.setWidget(self.historyListWidget)
+        self.historyDock.setFloating(False)
+
+        self.addDockWidget(Qt.RightDockWidgetArea, self.historyDock)
+
+    def updateHistoryDock(self):
+        if self.currentEditorWidget is not None:
+            self.historyListWidget.clear()
+            for stamp in self.currentEditorWidget.scene.history.stack:
+                item = QListWidgetItem(stamp["desc"], self.historyListWidget)
+
+                item.setFlags(
+                    Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled
+                )
+
+    # noinspection PyAttributeOutsideInit
+    def createSceneItemsDock(self):
+        self.sceneItemsTableWidget = QTableWidget(0, 3)
+        self.sceneItemsTableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
+
+        headerNames = ("Item Name", "Type", "Position")
+        self.sceneItemsTableWidget.setHorizontalHeaderLabels(headerNames)
+        # self.sceneItemsTableWidget.horizontalHeader().setSectionResizeMode(
+        #     0, QHeaderView.Stretch
+        # )
+        self.sceneItemsTableWidget.verticalHeader().hide()
+        self.sceneItemsTableWidget.setShowGrid(True)
+
+        self.sceneItemsDock = QDockWidget("Scene items")
+        self.sceneItemsDock.setWidget(self.sceneItemsTableWidget)
+        self.sceneItemsDock.setFloating(False)
+
+        self.addDockWidget(Qt.BottomDockWidgetArea, self.sceneItemsDock)
+
+        # self.sceneItemsTableWidget.cellActivated.connect()
+
+    def updateSceneItemsDock(self):
+        if self.currentEditorWidget is not None:
+            self.sceneItemsTableWidget.setRowCount(0)
+            for item in self.currentEditorWidget.scene.nodes:
+
+                itemNameItem = QTableWidgetItem(item.title)
+                itemNameItem.setFlags(itemNameItem.flags() ^ Qt.ItemIsEditable)
+
+                typeItem = QTableWidgetItem(f"{item.__class__.__name__}")
+                typeItem.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+                typeItem.setFlags(typeItem.flags() ^ Qt.ItemIsEditable)
+
+                positionItem = QTableWidgetItem(f"[{item.pos.x()}, {item.pos.y()}]")
+                positionItem.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+                positionItem.setFlags(positionItem.flags() ^ Qt.ItemIsEditable)
+
+                row = self.sceneItemsTableWidget.rowCount()
+                self.sceneItemsTableWidget.insertRow(row)
+                self.sceneItemsTableWidget.setItem(row, 0, itemNameItem)
+                self.sceneItemsTableWidget.setItem(row, 1, typeItem)
+                self.sceneItemsTableWidget.setItem(row, 2, positionItem)
+
+            self.sceneItemsTableWidget.resizeColumnsToContents()
 
     def closeEvent(self, event):
         self.mdiArea.closeAllSubWindows()
@@ -401,6 +476,7 @@ class MdiWindow(EditorWindow):
                         editor.updateTitle()
                         subWindow = self._createMdiSubWindow(editor)
                         subWindow.show()
+                        self.updateSceneItemsDock()
                     else:
                         self.__logger.debug("Loading fail")
                         editor.close()

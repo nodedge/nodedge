@@ -162,7 +162,7 @@ class Scene(Serializable):
         Handle Items deselection and trigger event `Items Deselected`
 
         :param silent: If ``True`` scene's onItemsDeselected won't be called and
-        history stamp not stored.
+            history stamp not stored.
         :type silent: ``bool``
         """
         self.resetLastSelectedStates()

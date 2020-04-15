@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-Edge module containing :class:`~nodedge.edge.Edge` and :class:`~nodedge.edge.EdgeType` class.
-"""
+"""Edge module containing :class:`~nodedge.edge.Edge` and
+:class:`~nodedge.edge.EdgeType` class. """
 
 import logging
 from collections import OrderedDict
@@ -27,7 +26,7 @@ class Edge(Serializable):
     """
     Edge class.
 
-    The edge is the component connecting two :class:`~nodedge.node.Node`s.
+    The edge is the component connecting two :class:`~nodedge.node.Node` s.
 
     [NODE 1]------EDGE------[NODE 2]
     """
@@ -51,10 +50,10 @@ class Edge(Serializable):
 
         :Instance Attributes:
 
-            - **scene** - reference to the :class:`~nodedge.scene.Scene` -
-                **graphicsEdge** - Instance of
-                :class:`~nodedge.graphics_edge.GraphicsEdge` subclass handling graphical
-                representation in the ``QGraphicsScene``.
+            - **scene** - reference to the :class:`~nodedge.scene.Scene`
+            - **graphicsEdge**
+            - Instance of :class:`~nodedge.graphics_edge.GraphicsEdge` subclass
+                handling graphical representation in the ``QGraphicsScene``.
         """
 
         super().__init__()
@@ -214,7 +213,8 @@ class Edge(Serializable):
 
     def getOtherSocket(self, knownSocket: "Socket"):
         """
-        Return the opposite :class:`~nodedge.socket.Socket` on this :class:`~nodedge.edge.Edge`.
+        Return the opposite :class:`~nodedge.socket.Socket` on this
+        :class:`~nodedge.edge.Edge`.
 
         :param knownSocket: Provide known :class:`~nodedge.socket.Socket` to be able
             to determine the opposite one
@@ -259,7 +259,8 @@ class Edge(Serializable):
 
         # ugly hack, since I noticed that even when you remove grEdge from scene,
         # sometimes it stays there! How dare you Qt!
-        self.graphicsEdge.hide()
+        if self.graphicsEdge is not None:
+            self.graphicsEdge.hide()
 
         self.__logger.debug(f"Removing {self} from all sockets.")
         self.removeFromSockets()

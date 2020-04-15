@@ -185,7 +185,7 @@ class GraphicsEdge(QGraphicsPathItem):
         Qt's overridden method to paint the edge.
 
         .. note:: The path is calculated in
-        :func:`~nodedge.graphics_edge.GraphicsEdge.calcPath` method
+            :func:`~nodedge.graphics_edge.GraphicsEdge.calcPath` method.
         """
         self.setPath(self.calcPath())
 

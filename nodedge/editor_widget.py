@@ -72,7 +72,7 @@ class EditorWidget(QWidget):
     def hasName(self) -> bool:
         """
         :getter: Return if a file has been loaded in this
-        :class:`~nodedge.editor_widget.EditorWidget` or not.
+            :class:`~nodedge.editor_widget.EditorWidget` or not.
 
         :rtype: ``bool``
         """
@@ -82,7 +82,7 @@ class EditorWidget(QWidget):
     def shortName(self) -> str:
         """
         :getter: Return the short name of this
-        :class:`~nodedge.editor_widget.EditorWidget`.
+            :class:`~nodedge.editor_widget.EditorWidget`.
 
         :rtype: ``str``
         """
@@ -115,7 +115,7 @@ class EditorWidget(QWidget):
     def canUndo(self) -> bool:
         """
         :getter: Return whether previously executed operations are saved in history
-        or not.
+            or not.
 
         :rtype: ``bool``
         """
@@ -142,7 +142,7 @@ class EditorWidget(QWidget):
     def hasSelectedItems(self) -> bool:
         """
         :getter: Return ``True`` if there is selected items in the
-        :class:`nodedge.node_scene.Scene`.
+            :class:`nodedge.node_scene.Scene`.
         :rtype: ``bool``
         """
         return self.selectedItems != []

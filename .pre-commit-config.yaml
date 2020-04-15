@@ -41,7 +41,7 @@ repos:
         pass_filenames: false
       - id: typing
         name: run typing checks
-        entry: tox -e type
+        entry: tox -e mypy
         language: system
         types: [python]
         stages: [commit]
