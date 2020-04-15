@@ -13,7 +13,8 @@ class SceneHistory:
     """
     :class:`~nodedge.scene_history.SceneHistory` class
 
-    It contains the code for storing all the previous actions of the user in a dictionary.
+    It contains the code for storing all the previous actions of the user in a
+    dictionary.
     """
 
     def __init__(self, scene: "Scene", maxLength: int = 32) -> None:  # type: ignore # noqa: F821
@@ -88,7 +89,8 @@ class SceneHistory:
     @property
     def canUndo(self) -> bool:
         """
-        This property returns ``True`` if the undo operation is available for the current history stack.
+        This property returns ``True`` if the undo operation is available for the
+        current history stack.
 
         :rtype: ``bool``
         """
@@ -97,7 +99,8 @@ class SceneHistory:
     @property
     def canRedo(self) -> bool:
         """
-        This property returns ``True`` if the redo operation is available for the current history stack.
+        This property returns ``True`` if the redo operation is available for the
+        current history stack.
 
         :rtype: ``bool``
         """
@@ -130,7 +133,8 @@ class SceneHistory:
 
         :param desc: Description of current history stamp
         :type desc: ``str``
-        :param sceneIsModified: if ``True`` marks that :class:`~nodedge.scene.Scene` has been modified
+        :param sceneIsModified: if ``True`` marks that
+        :class:`~nodedge.scene.Scene` has been modified.
         :type sceneIsModified: ``bool``
 
         Triggers:
@@ -140,7 +144,8 @@ class SceneHistory:
         """
 
         self.__logger.debug(
-            f"Storing '{desc}' in history with current step: {self.currentStep} / {len(self.stack)} "
+            f"Storing '{desc}' in history with current step: {self.currentStep} / "
+            f"{len(self.stack)} "
             f"(max. {self._maxLength})"
         )
         stamp = self._createStamp(desc)
@@ -178,7 +183,8 @@ class SceneHistory:
         """
 
         self.__logger.debug(
-            f"Restoring history with current step: {self.currentStep} / {len(self.stack)} "
+            f"Restoring history with current step: {self.currentStep} / "
+            f"{len(self.stack)} "
             f"(max. {self._maxLength})"
         )
 
@@ -218,7 +224,8 @@ class SceneHistory:
 
     def _restoreStamp(self, stamp):
         """
-        Restore history stamp to the current scene, included indication of the selected items.
+        Restore history stamp to the current scene, included indication of the
+        selected items.
 
         :param stamp: history stamp to restore
         :type stamp: ``dict``

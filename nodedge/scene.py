@@ -32,7 +32,8 @@ class Scene(Serializable):
             - **nodes** - list of `Nodes` in this `Scene`
             - **edges** - list of `Edges` in this `Scene`
             - **history** - Instance of :class:`~nodedge.scene_history.SceneHistory`
-            - **clipboard** - Instance of :class:`~nodedge.scene_clipboard.SceneClipboard`
+            - **clipboard** - Instance of
+                :class:`~nodedge.scene_clipboard.SceneClipboard`
             - **scene_width** - width of this `Scene` in pixels
             - **scene_height** - height of this `Scene` in pixels
         """
@@ -140,7 +141,8 @@ class Scene(Serializable):
         """
         Handle Item selection and trigger event `Item Selected`
 
-        :param silent: If ``True`` scene's onItemSelected won't be called and history stamp not stored
+        :param silent: If ``True`` scene's onItemSelected won't be called and history
+            stamp not stored.
         :type silent: ``bool``
         """
         if self._silentSelectionEvents:
@@ -159,7 +161,8 @@ class Scene(Serializable):
         """
         Handle Items deselection and trigger event `Items Deselected`
 
-        :param silent: If ``True`` scene's onItemsDeselected won't be called and history stamp not stored
+        :param silent: If ``True`` scene's onItemsDeselected won't be called and
+        history stamp not stored.
         :type silent: ``bool``
         """
         self.resetLastSelectedStates()
@@ -259,7 +262,8 @@ class Scene(Serializable):
             self.nodes.remove(nodeToRemove)
         else:
             self.__logger.warning(
-                f"Trying to remove {nodeToRemove} from {self} but is it not in the node list."
+                f"Trying to remove {nodeToRemove} from {self} but is it not in the "
+                f"node list. "
             )
 
     def removeEdge(self, edgeToRemove: Edge):
@@ -272,11 +276,13 @@ class Scene(Serializable):
             self.edges.remove(edgeToRemove)
         else:
             self.__logger.warning(
-                f"Trying to remove {edgeToRemove} from {self} but is it not is the edge list."
+                f"Trying to remove {edgeToRemove} from {self} but is it not is the "
+                f"edge list. "
             )
 
     def clear(self):
-        """Remove all `Nodes` from this `Scene`. This causes also to remove all `Edges`"""
+        """Remove all `Nodes` from this `Scene`. This causes also to remove all
+        `Edges` """
         while len(self.nodes) > 0:
             self.nodes[0].remove()
 
@@ -304,7 +310,8 @@ class Scene(Serializable):
 
         :param filename: from what file to load the `Scene`
         :type filename: ``str``
-        :raises: :class:`~nodedge.scene.InvalidFile` if there was an error decoding JSON file
+        :raises: :class:`~nodedge.scene.InvalidFile` if there was an error
+            decoding JSON file.
         """
         with open(filename, "r") as file:
             rawData = file.read()
@@ -361,8 +368,8 @@ class Scene(Serializable):
 
     def getNodeClassFromData(self, data):
         """
-        Takes `Node` serialized data and determines which `Node Class` to instantiate according the description
-        in the serialized Node.
+        Takes `Node` serialized data and determines which `Node Class` to instantiate
+        according the description in the serialized Node.
 
         :param data: serialized `Node` object data
         :type data: ``dict``

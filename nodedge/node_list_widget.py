@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-Node list widget module containing :class:`~nodedge.node_list_widget.NodeListWidget` class.
-"""
+"""Node list widget module containing
+:class:`~nodedge.node_list_widget.NodeListWidget` class. """
 
 import logging
 from typing import Optional
@@ -45,7 +44,8 @@ class NodeListWidget(QListWidget):
     # noinspection PyAttributeOutsideInit
     def initUI(self) -> None:
         """
-        Set up this :class:`~nodedge.node_list_widget.NodeListWidget` with its icon and :class:`~nodedge.node.Node`.
+        Set up this :class:`~nodedge.node_list_widget.NodeListWidget` with its icon
+        and :class:`~nodedge.node.Node`.
         """
 
         self.iconsSize: QSize = QSize(32, 32)
@@ -78,14 +78,19 @@ class NodeListWidget(QListWidget):
         item.setIcon(QIcon(pixmap))
         item.setSizeHint(self.iconsSize)
 
-        item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)  # type: ignore
+        item.setFlags(
+            Qt.ItemIsEnabled
+            | Qt.ItemIsSelectable
+            | Qt.ItemIsDragEnabled  # type: ignore
+        )
 
         item.setData(Qt.UserRole, pixmap)
         item.setData(Qt.UserRole + 1, operationCode)
 
     def startDrag(self, *args, **kwargs) -> None:
         """
-        Serialize data when a user start dragging a node from the list, to be able to instantiate it later.
+        Serialize data when a user start dragging a node from the list, to be able to
+        instantiate it later.
         """
         try:
             item = self.currentItem()
@@ -97,7 +102,8 @@ class NodeListWidget(QListWidget):
 
             itemData = QByteArray()
             dataStream = QDataStream(itemData, QIODevice.WriteOnly)
-            dataStream << pixmap  # type: ignore # left operand works fine with QDataStream
+            # left operand works fine with QDataStream
+            dataStream << pixmap  # type: ignore
             dataStream.writeInt(operationCode)
             dataStream.writeQString(item.text())
 

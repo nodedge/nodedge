@@ -20,7 +20,7 @@ def dumpException(e=None, file=None):
 
     :param e: Exception to print out
     :type e: Exception
-    :param file: optional, file where the expection is dumped
+    :param file: optional, file where the exception is dumped
     :type file: ``str``
     """
     logging.warning(f"{e.__class__.__name__} Exception: {e}")
@@ -46,8 +46,8 @@ def loadStyleSheet(fileName):
 
 def loadStyleSheets(*args):
     """
-    Load multiple qss stylesheets.
-    It concats them together and applies the final stylesheet to current QApplication instance.
+    Load multiple qss stylesheets. It concatenates them together and applies the final
+    stylesheet to current QApplication instance.
 
     :param args: variable number of filenames of qss stylesheets
     :type args: ``str``, ``str``,...

@@ -28,7 +28,9 @@ class GraphicsScene(QGraphicsScene):
     #: pyqtSignal emitted when items are deselected in the `Scene`
     itemsDeselected = pyqtSignal()
 
-    def __init__(self, scene: "Scene", parent: Optional[QWidget] = None) -> None:  # type: ignore
+    def __init__(
+        self, scene: "Scene", parent: Optional[QWidget] = None  # type: ignore
+    ) -> None:
         """
         :param scene: reference to the :class:`~nodedge.scene.Scene`
         :type scene: :class:`~nodedge.scene.Scene`
@@ -65,7 +67,8 @@ class GraphicsScene(QGraphicsScene):
 
     # noinspection PyAttributeOutsideInit
     def initSizes(self):
-        """Set up internal attributes like `grid_size`, `scene_width` and `scene_height`."""
+        """Set up internal attributes like `grid_size`, `scene_width` and
+        `scene_height`. """
         self.grid_size = 20
         self.grid_squares = 5
         self.scene_width = 64000
@@ -129,7 +132,7 @@ class GraphicsScene(QGraphicsScene):
         Handle Qt's mouse's button press event.
 
         :param event: Mouse release event
-        :type event: ``QGraphicsSceneMouseEvent``
+        :type event: ``QGraphicsSceneMouseEvent.py``
         """
         item: Optional[QGraphicsItem] = self.itemAt(event.scenePos(), QTransform())
 
@@ -154,7 +157,7 @@ class GraphicsScene(QGraphicsScene):
         Handle Qt's mouse's button release event.
 
         :param event: Mouse release event
-        :type event: ``QGraphicsSceneMouseEvent``
+        :type event: ``QGraphicsSceneMouseEvent.py``
         """
         item = self.itemAt(event.scenePos(), QTransform())
 

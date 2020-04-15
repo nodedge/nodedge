@@ -41,7 +41,7 @@ class GraphicsSocket(QGraphicsItem):
 
     def initUI(self) -> None:
         """
-        Setup this ``QGraphicsItem``
+        Setup this ``QGraphicsItem``.
         """
         self.initSizes()
         self.initStyle()
@@ -49,7 +49,7 @@ class GraphicsSocket(QGraphicsItem):
     # noinspection PyAttributeOutsideInit
     def initStyle(self) -> None:
         """
-        Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``
+        Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``.
         """
         self._colorBackground: QColor = GraphicsSocket.getSocketColor(self.socketType)
         self._colorOutline: QColor = QColor("#FF000000")
@@ -72,7 +72,7 @@ class GraphicsSocket(QGraphicsItem):
 
     @staticmethod
     def getSocketColor(key):
-        """Returns the ``QColor`` for this ``key``"""
+        """Returns the ``QColor`` for this ``key``."""
         if type(key) == int:
             return SOCKET_COLORS[key]
         elif type(key) == str:
@@ -81,14 +81,14 @@ class GraphicsSocket(QGraphicsItem):
 
     # noinspection PyAttributeOutsideInit
     def updateSocketType(self):
-        """Change the Socket Type"""
+        """Change the Socket Type."""
         self._colorBackground = self.getSocketColor(self.socketType)
         self._brush = QBrush(self._colorBackground)
         self.update()
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """
-        Paint a circle
+        Paint a circle.
         """
         painter.setBrush(self._brush)
         painter.setPen(self._pen)
@@ -99,7 +99,7 @@ class GraphicsSocket(QGraphicsItem):
 
     def boundingRect(self):
         """
-        Define Qt's bounding rectangle
+        Define Qt's bounding rectangle.
         """
         return QRectF(
             -self.radius - self.outlineWidth,

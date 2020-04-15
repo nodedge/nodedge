@@ -22,7 +22,8 @@ from PyQt5.QtWidgets import (
 class GraphicsEdge(QGraphicsPathItem):
     """:class:`~nodedge.graphics_edge.GraphicsEdge` class
 
-    The graphics edge is the graphical representation of the :class:`~nodedge.edge.Edge`.
+    The graphics edge is the graphical representation of the
+    :class:`~nodedge.edge.Edge`.
     """
 
     def __init__(self, edge: "Edge", parent: Optional[QGraphicsItem] = None) -> None:  # type: ignore
@@ -121,7 +122,8 @@ class GraphicsEdge(QGraphicsPathItem):
 
         self.setZValue(-1)
 
-        self._controlPointRoundness: float = 100.0  #: Bezier control point distance on the line
+        #: Bezier control point distance on the line
+        self._controlPointRoundness: float = 100.0
 
     def boundingRect(self):
         """
@@ -182,8 +184,8 @@ class GraphicsEdge(QGraphicsPathItem):
         """
         Qt's overridden method to paint the edge.
 
-        .. note::
-            The path is calculated in :func:`~nodedge.graphics_edge.GraphicsEdge.calcPath` method
+        .. note:: The path is calculated in
+        :func:`~nodedge.graphics_edge.GraphicsEdge.calcPath` method
         """
         self.setPath(self.calcPath())
 
@@ -201,7 +203,8 @@ class GraphicsEdge(QGraphicsPathItem):
         painter.drawPath(self.path())
 
     def calcPath(self) -> QPainterPath:
-        """Compute the graphical path between :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
+        """Compute the graphical path between
+        :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
         `~nodedge.graphics_edge.GraphicsEdge.targetPos`.
 
         .. warning::
@@ -214,7 +217,8 @@ class GraphicsEdge(QGraphicsPathItem):
 
     def intersectsWith(self, p1: QPointF, p2: QPointF) -> bool:
         """
-        Compute if the edge's path intersects with line between points given as argument.
+        Compute if the edge's path intersects with line between points given as
+        argument.
 
         :param p1: first point
         :type p1: ``QPointF``
@@ -231,12 +235,14 @@ class GraphicsEdge(QGraphicsPathItem):
 
 class GraphicsEdgeDirect(GraphicsEdge):
     """
-    Graphics Edge Direct class, with straight line path between :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos`
-    and :attr:`~nodedge.graphics_edge.GraphicsEdge.targetPos`
+    Graphics Edge Direct class, with straight line path between
+    :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
+    :attr:`~nodedge.graphics_edge.GraphicsEdge.targetPos`
     """
 
     def calcPath(self) -> QPainterPath:
-        """Compute a straight line path between :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
+        """Compute a straight line path between
+        :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
         `~nodedge.graphics_edge.GraphicsEdge.targetPos`.
 
         :returns: The computed path
@@ -249,13 +255,15 @@ class GraphicsEdgeDirect(GraphicsEdge):
 
 class GraphicsEdgeBezier(GraphicsEdge):
     """
-    Graphics Edge Bezier class, with Bezier line path between :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos`
-    and :attr:`~nodedge.graphics_edge.GraphicsEdge.targetPos`
+    Graphics Edge Bezier class, with Bezier line path between
+    :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
+    :attr:`~nodedge.graphics_edge.GraphicsEdge.targetPos`
     """
 
     def calcPath(self) -> QPainterPath:
         """
-        Compute a Bezier curve path between :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
+        Compute a Bezier curve path between
+        :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
         :attr:`~nodedge.graphics_edge.GraphicsEdge.targetPos`.
 
         :returns: The computed path

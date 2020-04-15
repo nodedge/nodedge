@@ -7,6 +7,7 @@ from nodedge.graphics_node import GraphicsNode
 
 
 class GraphicsBlock(GraphicsNode):
+    # noinspection PyAttributeOutsideInit
     def initSizes(self):
         super().initSizes()
         self.width = 160
@@ -16,6 +17,7 @@ class GraphicsBlock(GraphicsNode):
         self.titleHorizontalPadding = 8.0
         self.titleVerticalPadding = 10.0
 
+    # noinspection PyAttributeOutsideInit
     def initStyle(self):
         super().initStyle()
         self.icons = QImage(

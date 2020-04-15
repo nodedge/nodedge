@@ -56,8 +56,8 @@ class EditorWidget(QWidget):
     # noinspection PyAttributeOutsideInit
     def initUI(self):
         """
-        Set up this :class:`~nodedge.editor_widget.EditorWidget` with its layout,  :class:`~nodedge.scene.Scene`
-        and :class:`~nodedge.graphics_view.GraphicsView`.
+        Set up this :class:`~nodedge.editor_widget.EditorWidget` with its layout,
+        :class:`~nodedge.scene.Scene` and :class:`~nodedge.graphics_view.GraphicsView`.
         """
 
         self.layout: QVBoxLayout = QVBoxLayout()
@@ -71,7 +71,8 @@ class EditorWidget(QWidget):
     @property
     def hasName(self) -> bool:
         """
-        :getter: Return if a file has been loaded in this :class:`~nodedge.editor_widget.EditorWidget` or not.
+        :getter: Return if a file has been loaded in this
+        :class:`~nodedge.editor_widget.EditorWidget` or not.
 
         :rtype: ``bool``
         """
@@ -80,7 +81,8 @@ class EditorWidget(QWidget):
     @property
     def shortName(self) -> str:
         """
-        :getter: Return the short name of this :class:`~nodedge.editor_widget.EditorWidget`.
+        :getter: Return the short name of this
+        :class:`~nodedge.editor_widget.EditorWidget`.
 
         :rtype: ``str``
         """
@@ -112,7 +114,8 @@ class EditorWidget(QWidget):
     @property
     def canUndo(self) -> bool:
         """
-        :getter: Return whether previously executed operations are saved in history or not.
+        :getter: Return whether previously executed operations are saved in history
+        or not.
 
         :rtype: ``bool``
         """
@@ -138,7 +141,8 @@ class EditorWidget(QWidget):
     @property
     def hasSelectedItems(self) -> bool:
         """
-        :getter: Return ``True`` if there is selected items in the :class:`nodedge.node_scene.Scene`.
+        :getter: Return ``True`` if there is selected items in the
+        :class:`nodedge.node_scene.Scene`.
         :rtype: ``bool``
         """
         return self.selectedItems != []
@@ -245,7 +249,8 @@ class EditorWidget(QWidget):
 
     def addNodes(self) -> None:
         """
-        Testing method to create 3 :class:`~nodedge.node.Node` connected by 2 :class:`~nodedge.edge.Edge`.
+        Testing method to create 3 :class:`~nodedge.node.Node` connected by 2
+        :class:`~nodedge.edge.Edge`.
         """
         node1 = Node(
             self.scene, "Node 1", inputSocketTypes=[1, 2, 3], outputSocketTypes=[1]
@@ -291,4 +296,4 @@ class EditorWidget(QWidget):
         self.scene.setNodeClassSelector(lambda data: NNode)
         node = NNode(self.scene, "A Custom Node 1", inputSocketTypes=[0, 1, 2])
 
-        self.__logger.debug("node content:", node.content)
+        self.__logger.debug("Node content:", node.content)
