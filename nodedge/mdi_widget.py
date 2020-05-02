@@ -194,7 +194,7 @@ class MdiWidget(EditorWidget):
         try:
             node = getClassFromOperationCode(operationCode)(self.scene)
             node.pos = (scenePos.x(), scenePos.y())
-            self.scene.history.store(f"Created node {node.__class__.__name__}.")
+            self.scene.history.store(f"Create {node.__class__.__name__}")
         except Exception as e:
             dumpException(e)
 

@@ -1,5 +1,7 @@
+from random import random
+
 import pytest
-from PyQt5.QtCore import QPoint, Qt
+from PyQt5.QtCore import QPoint, QPointF, Qt
 from PyQt5.QtWidgets import QGraphicsView, QMainWindow
 from pytestqt.qtbot import QtBot
 
@@ -216,3 +218,26 @@ def test_onSelectedItems(qtbot: QtBot):
     )
     assert scene.selectedItems == [node.graphicsNode]
     assert scene.lastSelectedItems == [node.graphicsNode]
+
+
+@pytest.mark.parametrize("execution_number", range(5))
+def test_undo_crash_without_details(execution_number, qtbot):
+    window = MdiWindow()
+    window.show()
+
+    subWindow = window.newFile()
+    scene = subWindow.widget().scene
+    scene.clear()
+    scene.history.clear(storeInitialStamp=True)
+    subWindow.show()
+    print(scene.history.stack)
+    node = Node(scene, "", [1], [1])  # noqa: F841
+    scene.history.store("Create new node")
+    for i in range(5):
+        pos = QPointF(random() * 100000, random() * 100000)
+        scene.nodes[0].pos = pos
+        scene.history.store("Change node position")
+        scene.history.undo()
+        print(scene.history.currentStep)
+
+    print(scene.history.stackSize)

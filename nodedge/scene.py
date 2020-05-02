@@ -347,24 +347,28 @@ class Scene(Serializable):
     def deserialize(
         self, data: dict, hashmap: Optional[dict] = None, restoreId: bool = True
     ) -> bool:
-        if hashmap is None:
-            hashmap = {}
-        self.__logger.debug(f"Deserialize data: {data}")
-        self.clear()
+        try:
+            if hashmap is None:
+                hashmap = {}
+            self.__logger.debug(f"Deserialize data: {data}")
+            self.clear()
 
-        if restoreId:
-            self.id = data["id"]
+            if restoreId:
+                self.id = data["id"]
 
-        # Create blocks
-        for nodeData in data["nodes"]:
-            self.getNodeClassFromData(nodeData)(self).deserialize(
-                nodeData, hashmap, restoreId
-            )
+            # Create blocks
+            for nodeData in data["nodes"]:
+                self.getNodeClassFromData(nodeData)(self).deserialize(
+                    nodeData, hashmap, restoreId
+                )
 
-        # Create edges
-        for edgeData in data["edges"]:
-            Edge(self).deserialize(edgeData, hashmap, restoreId)
-        return True
+            # Create edges
+            for edgeData in data["edges"]:
+                Edge(self).deserialize(edgeData, hashmap, restoreId)
+            return True
+        except Exception as e:
+            dumpException(e)
+            return False
 
     def getNodeClassFromData(self, data):
         """

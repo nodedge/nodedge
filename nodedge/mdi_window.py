@@ -12,7 +12,6 @@ from PyQt5.QtWidgets import (
     QAction,
     QDockWidget,
     QFileDialog,
-    QHeaderView,
     QListWidget,
     QListWidgetItem,
     QMdiArea,
@@ -25,6 +24,7 @@ from PyQt5.QtWidgets import (
 
 from nodedge.editor_widget import EditorWidget
 from nodedge.editor_window import EditorWindow
+from nodedge.history_list_widget import HistoryListWidget
 from nodedge.mdi_widget import MdiWidget
 from nodedge.node_list_widget import NodeListWidget
 from nodedge.utils import dumpException, loadStyleSheets
@@ -40,6 +40,9 @@ class MdiWindow(EditorWindow):
     def __init__(self):
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
+
+        self.currentEditorWidgetChangedListeners = []
+
         super(MdiWindow, self).__init__()
 
     @property
@@ -73,7 +76,7 @@ class MdiWindow(EditorWindow):
         self.companyName = "Nodedge"
         self.productName = "Nodedge"
         self.icon = QIcon(
-            os.path.join(os.path.dirname(__file__), "resources/Asset 29@4x.png")
+            os.path.join(os.path.dirname(__file__), "resources/nodedge_logo.png")
         )
         self.setWindowIcon(self.icon)
 
@@ -94,7 +97,11 @@ class MdiWindow(EditorWindow):
         self.mdiArea.setTabsMovable(True)
         self.setCentralWidget(self.mdiArea)
 
-        self.mdiArea.subWindowActivated.connect(self.updateMenus)
+        self.addCurrentEditorWidgetChangedListener(self.updateMenus)
+        self.addCurrentEditorWidgetChangedListener(self.updateSceneItemsDock)
+
+        self.mdiArea.subWindowActivated.connect(self.onSubWindowActivated)
+
         self.windowMapper = QSignalMapper(self)
         self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
 
@@ -326,7 +333,7 @@ class MdiWindow(EditorWindow):
         icon = QIcon(".")
         subWindow.setWindowIcon(icon)
         editor.scene.history.addHistoryModifiedListener(self.updateEditMenu)
-        editor.scene.history.addHistoryModifiedListener(self.updateHistoryDock)
+        editor.scene.history.addHistoryModifiedListener(self.historyListWidget.update)
         editor.scene.history.addHistoryModifiedListener(self.updateSceneItemsDock)
         editor.addCloseEventListener(self.onSubWindowClosed)
 
@@ -364,23 +371,14 @@ class MdiWindow(EditorWindow):
 
     # noinspection PyAttributeOutsideInit
     def createHistoryDock(self):
-        self.historyListWidget = QListWidget()
+        self.historyListWidget = HistoryListWidget(self)
+        self.addCurrentEditorWidgetChangedListener(self.historyListWidget.update)
 
         self.historyDock = QDockWidget("History")
         self.historyDock.setWidget(self.historyListWidget)
         self.historyDock.setFloating(False)
 
         self.addDockWidget(Qt.RightDockWidgetArea, self.historyDock)
-
-    def updateHistoryDock(self):
-        if self.currentEditorWidget is not None:
-            self.historyListWidget.clear()
-            for stamp in self.currentEditorWidget.scene.history.stack:
-                item = QListWidgetItem(stamp["desc"], self.historyListWidget)
-
-                item.setFlags(
-                    Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled
-                )
 
     # noinspection PyAttributeOutsideInit
     def createSceneItemsDock(self):
@@ -399,7 +397,7 @@ class MdiWindow(EditorWindow):
         self.sceneItemsDock.setWidget(self.sceneItemsTableWidget)
         self.sceneItemsDock.setFloating(False)
 
-        self.addDockWidget(Qt.BottomDockWidgetArea, self.sceneItemsDock)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.sceneItemsDock)
 
         # self.sceneItemsTableWidget.cellActivated.connect()
 
@@ -434,14 +432,10 @@ class MdiWindow(EditorWindow):
         else:
             self.writeSettings()
             event.accept()
-            # FIXME: hacky fix for PyQt 5.14.x
-            # import sys
-            #
-            # sys.exit(0)
 
     def newFile(self):
         subWindow = self._createMdiSubWindow()
-        cast(EditorWidget, subWindow.widget()).addNodes()
+        # cast(EditorWidget, subWindow.widget()).addNodes()
         subWindow.show()
 
         return subWindow
@@ -497,3 +491,17 @@ class MdiWindow(EditorWindow):
             self.nodesDock.hide()
         else:
             self.nodesDock.show()
+
+    def addCurrentEditorWidgetChangedListener(self, callback):
+        self.currentEditorWidgetChangedListeners.append(callback)
+
+    def onSubWindowActivated(self):
+        for callback in self.currentEditorWidgetChangedListeners:
+            callback()
+
+        if (
+            self.currentEditorWidget is not None
+            and self.currentEditorWidget.scene is not None
+            and self.currentEditorWidget.scene.history is not None
+        ):
+            self.historyListWidget.history = self.currentEditorWidget.scene.history
