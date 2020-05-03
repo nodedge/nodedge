@@ -7,7 +7,12 @@ from collections import OrderedDict
 from enum import IntEnum
 from typing import Optional
 
-from nodedge.graphics_edge import GraphicsEdge, GraphicsEdgeBezier, GraphicsEdgeDirect
+from nodedge.graphics_edge import (
+    GraphicsEdge,
+    GraphicsEdgeBezier,
+    GraphicsEdgeCircuit,
+    GraphicsEdgeDirect,
+)
 from nodedge.serializable import Serializable
 from nodedge.socket import Socket
 from nodedge.utils import dumpException
@@ -20,6 +25,7 @@ class EdgeType(IntEnum):
 
     STRAIGHT = 1  #:
     BEZIER = 2  #:
+    CIRCUIT = 3  #:
 
 
 class Edge(Serializable):
@@ -36,7 +42,7 @@ class Edge(Serializable):
         scene: "Scene",  # type: ignore
         startSocket: Optional[Socket] = None,
         endSocket: Optional[Socket] = None,
-        edgeType: EdgeType = EdgeType.BEZIER,
+        edgeType: EdgeType = EdgeType.CIRCUIT,
     ):
         """
         :param scene: Reference to the scene
@@ -153,8 +159,10 @@ class Edge(Serializable):
 
         if self.edgeType == EdgeType.STRAIGHT:
             self.graphicsEdge: GraphicsEdge = GraphicsEdgeDirect(self)
-        else:
+        elif self.edgeType == EdgeType.BEZIER:
             self.graphicsEdge = GraphicsEdgeBezier(self)
+        else:
+            self.graphicsEdge = GraphicsEdgeCircuit(self)
         self.scene.graphicsScene.addItem(self.graphicsEdge)
 
         if self.sourceSocket is not None:

@@ -415,7 +415,7 @@ class GraphicsView(QGraphicsView):
                     self.graphicsScene.scene,
                     self.dragStartSocket,
                     item.socket,
-                    edgeType=EdgeType.BEZIER,
+                    edgeType=EdgeType.CIRCUIT,
                 )
                 item.socket.addEdge(newEdge)
                 self.__logger.debug(

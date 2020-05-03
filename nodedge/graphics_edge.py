@@ -308,3 +308,37 @@ class GraphicsEdgeBezier(GraphicsEdge):
             self._targetPos.y(),
         )
         return path
+
+
+class GraphicsEdgeCircuit(GraphicsEdge):
+    """
+    Compute a path composed of vertical and horizontal lines between
+    :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
+    :attr:`~nodedge.graphics_edge.GraphicsEdge.targetPos`.
+
+    :returns: The computed path
+    :rtype: ``QPainterPath``
+    """
+
+    def calcPath(self) -> QPainterPath:
+        """
+        Compute a path composed of vertical and horizontal lines between
+        :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
+        :attr:`~nodedge.graphics_edge.GraphicsEdge.targetPos`.
+
+        :returns: The computed path
+        :rtype: ``QPainterPath``
+        """
+
+        sx = self._sourcePos.x()
+        sy = self._sourcePos.y()
+        dx = self._targetPos.x()
+        dy = self._targetPos.y()
+
+        mx = (sx + dx) * 0.5
+
+        path = QPainterPath(self._sourcePos)
+        path.lineTo(mx, sy)
+        path.lineTo(mx, dy)
+        path.lineTo(dx, dy)
+        return path
