@@ -6,7 +6,7 @@ Node module containing :class:`~nodedge.node.Node` class.
 
 import logging
 from collections import OrderedDict
-from typing import Collection, List, Optional, Tuple, TypeVar, cast
+from typing import Callable, Collection, List, Optional, Tuple, TypeVar, cast
 
 from PyQt5.QtCore import QPoint, QPointF
 from PyQt5.QtWidgets import QGraphicsSceneMouseEvent
@@ -72,6 +72,8 @@ class Node(Serializable):
         # Evaluation attributes
         self._isDirty: bool = False
         self._isInvalid: bool = False
+
+        self.selectedListeners: List[Callable] = []
 
     def __str__(self):
         return (
@@ -723,3 +725,6 @@ class Node(Serializable):
             socket.index, socket.location, socket.countOnThisNodeSide
         )
         return QPointF(nodePos.x() + socketPos.x(), nodePos.y() + socketPos.y())
+
+    def addSelectedListener(self, callback):
+        self.selectedListeners.append(callback)

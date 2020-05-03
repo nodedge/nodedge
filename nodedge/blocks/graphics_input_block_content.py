@@ -12,6 +12,8 @@ class GraphicsInputBlockContent(GraphicsNodeContent):
         self.edit.setAlignment(Qt.AlignRight)
         self.edit.setObjectName(self.node.contentLabelObjectName)
 
+        self.edit.editingFinished.connect(self.onEditingFinished)
+
     def serialize(self):
         res = super().serialize()
         res["value"] = self.edit.text()
@@ -29,3 +31,11 @@ class GraphicsInputBlockContent(GraphicsNodeContent):
             dumpException(e)
 
         return res
+
+    def onEditingFinished(self):
+        if (
+            self.node is not None
+            and self.node.scene is not None
+            and self.node.scene.history is not None
+        ):
+            self.node.scene.history.store("Change input content")
