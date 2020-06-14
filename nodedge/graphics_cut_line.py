@@ -40,7 +40,7 @@ class GraphicsCutLine(QGraphicsItem):
         """
         Calculate the ``QPainterPath`` object from list of line points.
 
-        :return: shape function returning ``QPainterPath`` representation of Cutting Line
+        :return: shape function returning ``QPainterPath`` representation of cut line
         :rtype: ``QPainterPath``
         """
 

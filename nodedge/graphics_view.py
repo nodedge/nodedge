@@ -32,7 +32,9 @@ class DragMode(IntEnum):
 
 
 #: Distance when click on socket to enable `Drag Edge`
-EDGE_START_DRAG_THRESHOLD = 10
+EDGE_START_DRAG_THRESHOLD = 40
+
+DEBUG_MMB_SCENE_ITEMS = True
 
 
 class GraphicsView(QGraphicsView):
@@ -121,7 +123,7 @@ class GraphicsView(QGraphicsView):
         Call all the listeners of that event.
 
         :param event: Mouse drag enter event
-        :type event: ``QDragEnterEvent``
+        :type event: ``QDragEnterEvent.py``
         """
         for callback in self._dragEnterListeners:
             callback(event)
@@ -133,7 +135,7 @@ class GraphicsView(QGraphicsView):
         Call all the listeners of that event.
 
         :param event: Mouse drop event
-        :type event: ``QDropEvent``
+        :type event: ``QDropEvent.py``
         """
         for callback in self._dropListeners:
             callback(event)
@@ -297,20 +299,21 @@ class GraphicsView(QGraphicsView):
         # Debug logging
         item = self.getItemAtClick(event)
 
-        if item is None:
-            self.__logger.info(self)
-        elif isinstance(item, GraphicsSocket):
-            self.__logger.info(
-                f"\n||||{item.socket} connected to \n||||{item.socket.edges}"
-            )
-        elif isinstance(item, GraphicsEdge):
-            log = f"\n||||{item.edge} connects"
-            log += (
-                f"\n||||{item.edge.sourceSocket.node} \n||||"
-                f"{item.edge.targetSocket.node}"
-            )
+        if DEBUG_MMB_SCENE_ITEMS:
+            if item is None:
+                self.__logger.info(self)
+            elif isinstance(item, GraphicsSocket):
+                self.__logger.info(
+                    f"\n||||{item.socket} connected to \n||||{item.socket.edges}"
+                )
+            elif isinstance(item, GraphicsEdge):
+                log = f"\n||||{item.edge} connects"
+                log += (
+                    f"\n||||{item.edge.sourceSocket.node} \n||||"
+                    f"{item.edge.targetSocket.node}"
+                )
 
-            self.__logger.info(log)
+                self.__logger.info(log)
 
         # Faking event to enable mouse dragging the scene
         release_event = QMouseEvent(

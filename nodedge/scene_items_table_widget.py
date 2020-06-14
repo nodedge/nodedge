@@ -9,6 +9,7 @@ from typing import Optional
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QAbstractItemView,
+    QHeaderView,
     QMainWindow,
     QTableWidget,
     QTableWidgetItem,
@@ -30,9 +31,10 @@ class SceneItemsTableWidget(QTableWidget):
 
         headerNames = ("Name", "Type", "PosX", "PosY")
         self.setHorizontalHeaderLabels(headerNames)
-        # self.sceneItemsTableWidget.horizontalHeader().setSectionResizeMode(
-        #     0, QHeaderView.Stretch
-        # )
+        self.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+        self.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
         self.verticalHeader().hide()
         self.setShowGrid(True)
 
@@ -40,6 +42,7 @@ class SceneItemsTableWidget(QTableWidget):
         self.cellDoubleClicked.connect(self.onCellDoubleClicked)  # type: ignore
 
     def update(self, *__args) -> None:
+        print(self.size())
         if self.scene is not None:
             self.setRowCount(0)
             for node in self.scene.nodes:
@@ -72,7 +75,7 @@ class SceneItemsTableWidget(QTableWidget):
                     posXItem.setSelected(True)
                     posYItem.setSelected(True)
 
-            self.resizeColumnsToContents()
+        super().update()
 
     def onCellClicked(self, row: int, column: int):
         if self.scene is not None:

@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import (
     QGraphicsSceneMouseEvent,
 )
 
-from nodedge.graphics_node_content import GraphicsNodeContent, GraphicsNodeContentProxy
+from nodedge.graphics_node_content import GraphicsNodeContentProxy
 from nodedge.graphics_node_title_item import GraphicsNodeTitleItem
 from nodedge.graphics_scene import GraphicsScene
 

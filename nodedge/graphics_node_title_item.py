@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-Graphics node title item module containing :class:`~nodedge.graphics_node_title_item.GraphicsNodeTitleItem` class.
-"""
+"""Graphics node title item module containing
+:class:`~nodedge.graphics_node_title_item.GraphicsNodeTitleItem` class. """
 
 from PyQt5.QtWidgets import QGraphicsTextItem
 

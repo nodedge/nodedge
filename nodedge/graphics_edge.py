@@ -26,7 +26,9 @@ class GraphicsEdge(QGraphicsPathItem):
     :class:`~nodedge.edge.Edge`.
     """
 
-    def __init__(self, edge: "Edge", parent: Optional[QGraphicsItem] = None) -> None:  # type: ignore
+    def __init__(
+        self, edge: "Edge", parent: Optional[QGraphicsItem] = None  # type: ignore
+    ) -> None:
         """
         :param edge: reference to :class:`~nodedge.edge.Edge`
         :type edge: :class:`~nodedge.edge.Edge`

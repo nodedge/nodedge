@@ -164,7 +164,7 @@ class MdiWidget(EditorWidget):
 
         :param event: the Qt's drop event, containing the mime data of the node being
             dropped.
-        :type event: QDropEvent
+        :type event: QDropEvent.py
         """
         if not event.mimeData().hasFormat(NODELISTWIDGET_MIMETYPE):
             event.ignore()

@@ -11,9 +11,11 @@ from PyQt5.QtWidgets import (
     QAction,
     QDockWidget,
     QFileDialog,
+    QHeaderView,
     QMdiArea,
     QMenu,
     QMessageBox,
+    QVBoxLayout,
     QWidget,
 )
 
@@ -380,17 +382,6 @@ class MdiWindow(EditorWindow):
 
     # noinspection PyAttributeOutsideInit
     def createSceneItemsDock(self):
-        # self.sceneItemsTableWidget = QTableWidget(0, 4)
-        # self.sceneItemsTableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
-        #
-        # headerNames = ("Name", "Type", "PosX", "PosY")
-        # self.sceneItemsTableWidget.setHorizontalHeaderLabels(headerNames)
-        # # self.sceneItemsTableWidget.horizontalHeader().setSectionResizeMode(
-        # #     0, QHeaderView.Stretch
-        # # )
-        # self.sceneItemsTableWidget.verticalHeader().hide()
-        # self.sceneItemsTableWidget.setShowGrid(True)
-
         self.sceneItemsTableWidget = SceneItemsTableWidget(self)
         self.addCurrentEditorWidgetChangedListener(self.sceneItemsTableWidget.update)
 
@@ -398,9 +389,9 @@ class MdiWindow(EditorWindow):
         self.sceneItemsDock.setWidget(self.sceneItemsTableWidget)
         self.sceneItemsDock.setFloating(False)
 
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.sceneItemsDock)
+        self.sceneItemsLayout = QVBoxLayout(self.sceneItemsDock)
 
-        # self.sceneItemsTableWidget.cellActivated.connect()
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.sceneItemsDock)
 
     def closeEvent(self, event):
         self.mdiArea.closeAllSubWindows()
