@@ -93,6 +93,7 @@ class Socket(Serializable):
         """
         if self._socketType != newValue:
             self._socketType = newValue
+            self.graphicsSocket.updateSocketType()
 
     @property
     def isOutput(self):

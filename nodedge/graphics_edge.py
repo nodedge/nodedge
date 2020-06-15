@@ -7,7 +7,7 @@ Graphics edge module containing :class:`~nodedge.graphics_edge.GraphicsEdge`,
 
 import logging
 import math
-from typing import Optional
+from typing import Optional, Union
 
 from PyQt5.QtCore import QPointF, Qt
 from PyQt5.QtGui import QColor, QPainterPath, QPen
@@ -17,6 +17,9 @@ from PyQt5.QtWidgets import (
     QGraphicsSceneHoverEvent,
     QGraphicsSceneMouseEvent,
 )
+
+from nodedge.graphics_socket import getSocketColor
+from nodedge.utils import dumpException
 
 
 class GraphicsEdge(QGraphicsPathItem):
@@ -105,7 +108,8 @@ class GraphicsEdge(QGraphicsPathItem):
         """
         Initialize ``QObject`` like ``QColor``, ``QPen`` and ``QBrush``
         """
-        self._color: QColor = QColor("#001000")
+        self._defaultColor: QColor = QColor("#001000")
+        self._color: QColor = self._defaultColor
         self._colorSelected: QColor = QColor("#00ff00")
         self._colorHovered: QColor = QColor("#FF37A6FF")
 
@@ -233,6 +237,49 @@ class GraphicsEdge(QGraphicsPathItem):
         cutpath.lineTo(p2)
         path = self.calcPath()
         return cutpath.intersects(path)
+
+    # noinspection PyAttributeOutsideInit
+    def changeColor(self, color: Union[str, QColor]):
+        """Change color of the edge from string hex value '#00ff00'"""
+
+        newColor = color if isinstance(color, QColor) else QColor(color)
+
+        self.__logger.debug(
+            "Change color to:",
+            newColor.red(),
+            newColor.green(),
+            newColor.blue(),
+            "on edge:",
+            self.edge,
+        )
+
+        self._color = newColor
+        self._pen = QPen(self._color)
+        self._pen.setWidthF(3.0)
+
+    def setColorFromSockets(self) -> bool:
+        """
+        Change color according to connected sockets.
+        Returns ``True`` if color can be determined.
+        """
+        try:
+            if self.edge is None:
+                return False
+
+            if self.edge.sourceSocket is None:
+                return False
+
+            if self.edge.targetSocket is None:
+                return False
+
+            sourceSocketType = self.edge.sourceSocket.socketType
+            targetSocketType = self.edge.targetSocket.socketType
+            if sourceSocketType != targetSocketType:
+                return False
+            self.changeColor(getSocketColor(sourceSocketType))
+        except Exception as e:
+            dumpException(e)
+        return True
 
 
 class GraphicsEdgeDirect(GraphicsEdge):

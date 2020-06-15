@@ -153,9 +153,12 @@ class Scene(Serializable):
             self.lastSelectedItems = selectedItems
 
             if not silent:
-                self.history.store("Change selection")
+                # we could create some kind of UI which could be serialized,
+                # therefore first run all callbacks...
                 for callback in self._itemSelectedListeners:
                     callback()
+                # and store history as a last step always
+                self.history.store("Change selection")
 
     def onItemsDeselected(self, silent: bool = False):
         """
@@ -356,15 +359,48 @@ class Scene(Serializable):
             if restoreId:
                 self.id = data["id"]
 
-            # Create blocks
-            for nodeData in data["nodes"]:
-                self.getNodeClassFromData(nodeData)(self).deserialize(
-                    nodeData, hashmap, restoreId
-                )
+            # Deserialize blocks
+            allNodes = self.nodes.copy()
 
-            # Create edges
+            for nodeData in data["nodes"]:
+                # Does this node already exist in the scene?
+                existingNode: Optional[Node] = None
+                for node in allNodes:
+                    if node.id == nodeData["id"]:
+                        existingNode = node
+
+                if not existingNode:
+                    newNode = self.getNodeClassFromData(nodeData)(self)
+                    newNode.deserialize(nodeData, hashmap, restoreId)
+                else:
+                    existingNode.deserialize(nodeData, hashmap, restoreId)
+
+            # Remove nodes which are left in the scene and were not
+            # in the serialized data. They were not in the graph before.
+            while allNodes:
+                node = allNodes.pop()
+                node.remove()
+
+            # Deserialize edges
+            allEdges = self.edges.copy()
+
             for edgeData in data["edges"]:
-                Edge(self).deserialize(edgeData, hashmap, restoreId)
+                # Does this edge already exist in the scene?
+                existingEdge: Optional[Edge] = None
+                for edge in allEdges:
+                    if edge.id == edgeData["id"]:
+                        existingEdge = edge
+
+                if not existingEdge:
+                    Edge(self).deserialize(edgeData, hashmap, restoreId)
+                else:
+                    existingEdge.deserialize(edgeData, hashmap, restoreId)
+
+            # Remove edge which are left in the scene and were not
+            # in the serialized data. They were not in the graph before.
+            while allEdges:
+                edge = allEdges.pop()
+                edge.remove()
             return True
         except Exception as e:
             dumpException(e)

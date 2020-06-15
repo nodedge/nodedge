@@ -25,7 +25,7 @@ from nodedge.blocks.block_config import (
 )
 from nodedge.edge import EdgeType
 from nodedge.editor_widget import EditorWidget
-from nodedge.graphics_view import DragMode
+from nodedge.graphics_view import EdgeDraggingMode
 from nodedge.node import Node
 from nodedge.socket import Socket
 from nodedge.utils import dumpException
@@ -311,8 +311,8 @@ class MdiWidget(EditorWidget):
             newNode.pos = scenePos
             self.__contextLogger.debug(f"New node: {newNode}")
 
-            if self.scene.view.mode == DragMode.EDGE_DRAG:
-                self.scene.view.dragEdgeEnd(newNode.inputSockets[0].graphicsSocket)
+            if self.scene.view.mode == EdgeDraggingMode.EDGE_DRAG:
+                self.scene.view.endEdgeDragging(newNode.inputSockets[0].graphicsSocket)
 
                 # newNode.isSelected = True
 
@@ -321,7 +321,7 @@ class MdiWidget(EditorWidget):
                 )
 
                 if targetSocket is not None:
-                    self.scene.view.dragEdgeEnd(targetSocket.graphicsSocket)
+                    self.scene.view.endEdgeDragging(targetSocket.graphicsSocket)
                     self.finishNewNodeState(newNode)
 
                 # newNode.inputSockets[0].edges[-1].isSelected = True

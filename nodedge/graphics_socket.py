@@ -39,6 +39,8 @@ class GraphicsSocket(QGraphicsItem):
 
         self.initUI()
 
+        self.isHighlighted = False
+
     def initUI(self) -> None:
         """
         Setup this ``QGraphicsItem``.
@@ -51,12 +53,15 @@ class GraphicsSocket(QGraphicsItem):
         """
         Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``.
         """
-        self._colorBackground: QColor = GraphicsSocket.getSocketColor(self.socketType)
+        self._colorBackground: QColor = getSocketColor(self.socketType)
         self._colorOutline: QColor = QColor("#FF000000")
+        self._colorHighlight: QColor = QColor("#FF37A6FF")
 
         self._pen: QPen = QPen(self._colorOutline)
         self._pen.setWidthF(self.outlineWidth)
         self._brush: QBrush = QBrush(self._colorBackground)
+        self._penHighlight: QPen = QPen(self._colorHighlight)
+        self._penHighlight.setWidthF(2.0)
 
     # noinspection PyAttributeOutsideInit
     def initSizes(self) -> None:
@@ -70,19 +75,10 @@ class GraphicsSocket(QGraphicsItem):
     def socketType(self):
         return self.socket.socketType
 
-    @staticmethod
-    def getSocketColor(key):
-        """Returns the ``QColor`` for this ``key``."""
-        if type(key) == int:
-            return SOCKET_COLORS[key]
-        elif type(key) == str:
-            return QColor(key)
-        return Qt.transparent
-
     # noinspection PyAttributeOutsideInit
     def updateSocketType(self):
         """Change the Socket Type."""
-        self._colorBackground = self.getSocketColor(self.socketType)
+        self._colorBackground = getSocketColor(self.socketType)
         self._brush = QBrush(self._colorBackground)
         self.update()
 
@@ -91,7 +87,7 @@ class GraphicsSocket(QGraphicsItem):
         Paint a circle.
         """
         painter.setBrush(self._brush)
-        painter.setPen(self._pen)
+        painter.setPen(self._pen if not self.isHighlighted else self._penHighlight)
 
         painter.drawEllipse(
             -self.radius, -self.radius, 2 * self.radius, 2 * self.radius
@@ -107,3 +103,12 @@ class GraphicsSocket(QGraphicsItem):
             2 * (self.radius + self.outlineWidth),
             2 * (self.radius + self.outlineWidth),
         )
+
+
+def getSocketColor(key):
+    """Returns the ``QColor`` for this ``key``."""
+    if type(key) == int:
+        return SOCKET_COLORS[key]
+    elif type(key) == str:
+        return QColor(key)
+    return Qt.transparent

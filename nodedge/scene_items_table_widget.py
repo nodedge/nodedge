@@ -42,7 +42,6 @@ class SceneItemsTableWidget(QTableWidget):
         self.cellDoubleClicked.connect(self.onCellDoubleClicked)  # type: ignore
 
     def update(self, *__args) -> None:
-        print(self.size())
         if self.scene is not None:
             self.setRowCount(0)
             for node in self.scene.nodes:

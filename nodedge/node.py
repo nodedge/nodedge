@@ -717,6 +717,7 @@ class Node(Serializable):
         :class:`~nodedge.socket.Socket`.
 
         :param socket: The socket from which we want to get the position
+        :type socket: :class:`~nodedge.socket.Socket`
         :return: :class:`~nodedge.socket.Socket`'s scene position
         :rtype: ``QPointF``
         """
@@ -728,3 +729,12 @@ class Node(Serializable):
 
     def addSelectedListener(self, callback):
         self.selectedListeners.append(callback)
+
+    def onDeserialized(self, data: dict):
+        """Event manually called when this node was deserialized.
+        Currently called when node is deserialized from :class:`~nodedge.scene.Scene`.
+
+        :param data: data which have been deserialized
+        :type data: ``dict``
+        """
+        pass
