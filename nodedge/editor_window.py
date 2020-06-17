@@ -47,8 +47,8 @@ class EditorWindow(QMainWindow):
         super().__init__(parent)
 
         logging.basicConfig(
-            format="%(asctime)s|%(levelname).4s|%(filename)10s|"  # type: ignore
-            "%(lineno).3s|%(message)s|%(funcName)s".format("%Y/%m/%d %H:%M:%S")
+            format="%(asctime)s|%(levelname).4s|%(filename)10s|"
+            "%(lineno).3s|%(message)s|%(funcName)s"
         )
 
         self.__logger = logging.getLogger(__file__)

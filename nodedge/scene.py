@@ -168,8 +168,12 @@ class Scene(Serializable):
             history stamp not stored.
         :type silent: ``bool``
         """
+
+        if self.selectedItems == self.lastSelectedItems:
+            return
+
         self.resetLastSelectedStates()
-        if self.lastSelectedItems:
+        if not self.selectedItems:
             self.lastSelectedItems = []
 
             if not silent:
@@ -408,27 +412,30 @@ class Scene(Serializable):
 
     def getNodeClassFromData(self, data):
         """
-        Takes `Node` serialized data and determines which `Node Class` to instantiate
-        according the description in the serialized Node.
+        Takes :class:`~nodedge.node.Node` serialized data and determines which `Node
+        Class` to instantiate according the description in the serialized Node.
 
-        :param data: serialized `Node` object data
+        :param data: serialized :class:`~nodedge.node.Node` object data
         :type data: ``dict``
-        :return: Instance of `Node` class to be used in this Scene
-        :rtype: `Node` class instance
+        :return: Instance of :class:`~nodedge.node.Node` class to be used in this Scene
+        :rtype: :class:`~nodedge.node.Node` class instance
         """
         return Node if self.nodeClassSelector is None else self.nodeClassSelector(data)
 
     def setNodeClassSelector(self, classSelectingFunction):
         """
-        Set the function which decides what `Node` class to instantiate during
-        `Scene` deserialization. If not set, we will always instantiate
-        :class:`~nodedge.node.Node` for each `Node` in the `Scene`
+        Set the function which decides what :class:`~nodedge.node.Node` class to
+        instantiate during `Scene` deserialization. If not set, we will always
+        instantiate :class:`~nodedge.node.Node` for each :class:`~nodedge.node.Node`
+        in the `Scene`
 
-        :param classSelectingFunction: function which returns `Node` class type
-            (not instance) from `Node` serialized ``dict`` data
+        :param classSelectingFunction: function which returns
+            :class:`~nodedge.node.Node` class type (not instance) from
+            :class:`~nodedge.node.Node` serialized ``dict`` data
         :type classSelectingFunction: ``function``
-        :return: Class Type of `Node` to be instantiated during deserialization
-        :rtype: `Node` class type
+        :return: Class Type of :class:`~nodedge.node.Node` to be instantiated during
+            deserialization
+        :rtype: :class:`~nodedge.node.Node` class type
         """
         self.nodeClassSelector = classSelectingFunction
 
@@ -441,6 +448,20 @@ class Scene(Serializable):
         :rtype: ``QGraphicsItem``
         """
         return self.view.itemAt(pos)
+
+    def getNodeById(self, nodeId: int) -> Optional[Node]:
+        """
+        Find node in the scene according to provided `nodeId`
+
+        :param nodeId: ID of the node we are looking for
+        :type nodeId: ``int``
+        :return: Found `:class:`~nodedge.node.Node`` or ``None``
+        :rtype: `:class:`~nodedge.node.Node`` or ``None``
+        """
+        for node in self.nodes:
+            if node.id == nodeId:
+                return node
+        return None
 
 
 class InvalidFile(Exception):

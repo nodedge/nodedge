@@ -125,7 +125,7 @@ def test_markChildrenDirty(connectedNode: Node):
     assert childNode.isDirty is False
     connectedNode.markChildrenDirty(True)
     assert childNode.isDirty is True
-    assert grandChildNode.isDirty is False
+    assert grandChildNode.isDirty is False  # type: ignore
 
 
 def test_markDescendantsDirty(connectedNode: Node):
@@ -134,7 +134,7 @@ def test_markDescendantsDirty(connectedNode: Node):
     assert childNode.isDirty is False
     connectedNode.markDescendantsDirty(True)
     assert childNode.isDirty is True
-    assert grandChildNode.isDirty is True
+    assert grandChildNode.isDirty is True  # type: ignore
 
 
 def test_markChildrenInvalid(connectedNode: Node):
@@ -143,7 +143,7 @@ def test_markChildrenInvalid(connectedNode: Node):
     assert childNode.isInvalid is False
     connectedNode.markChildrenInvalid(True)
     assert childNode.isInvalid is True
-    assert grandChildNode.isInvalid is False
+    assert grandChildNode.isInvalid is False  # type: ignore
 
 
 def test_markDescendantsInvalid(connectedNode: Node):
@@ -152,7 +152,7 @@ def test_markDescendantsInvalid(connectedNode: Node):
     assert childNode.isInvalid is False
     connectedNode.markDescendantsInvalid(True)
     assert childNode.isInvalid is True
-    assert grandChildNode.isInvalid is True
+    assert grandChildNode.isInvalid is True  # type: ignore
 
 
 def test_eval(undefinedNode: Node):

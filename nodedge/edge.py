@@ -65,7 +65,7 @@ class Edge(Serializable):
         super().__init__()
 
         self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.INFO)
+        self.__logger.setLevel(logging.DEBUG)
 
         # Default initialization
         self._sourceSocket: Optional[Socket] = None

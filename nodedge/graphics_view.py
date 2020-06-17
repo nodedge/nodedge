@@ -70,12 +70,12 @@ class GraphicsView(QGraphicsView):
         self._dropListeners: List[Callable] = []
 
     def __str__(self):
-        rep = f"\n||||Scene:"
-        rep += f"\n||||Nodes:"
+        rep = "\n||||Scene:"
+        rep += "\n||||Nodes:"
         for node in self.graphicsScene.scene.nodes:
             rep += f"\n||||{node}"
 
-        rep += f"\n||||Edges:"
+        rep += "\n||||Edges:"
         for edge in self.graphicsScene.scene.edges:
             rep += f"\n||||{edge}"
         rep += "\n||||"
@@ -289,19 +289,27 @@ class GraphicsView(QGraphicsView):
 
         if DEBUG_MMB_SCENE_ITEMS:
             if item is None:
+                if event.modifiers() & Qt.SHIFT:  # type: ignore
+                    lastSelectedItems = self.graphicsScene.scene.lastSelectedItems
+                    self.__logger.info(
+                        f"\n||||Last selected items: {lastSelectedItems}",
+                    )
+                    return
                 self.__logger.info(self)
+                return
             elif isinstance(item, GraphicsSocket):
                 self.__logger.info(
                     f"\n||||{item.socket} connected to \n||||{item.socket.edges}"
                 )
+                return
             elif isinstance(item, GraphicsEdge):
                 log = f"\n||||{item.edge} connects"
                 log += (
                     f"\n||||{item.edge.sourceSocket.node} \n||||"
                     f"{item.edge.targetSocket.node}"
                 )
-
                 self.__logger.info(log)
+                return
 
         # Faking event to enable mouse dragging the scene
         release_event = QMouseEvent(
