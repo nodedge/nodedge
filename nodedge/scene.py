@@ -25,7 +25,7 @@ from nodedge.utils import dumpException
 class Scene(Serializable):
     """:class:`~nodedge.scene.Scene` class"""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         :Instance Attributes:
 
@@ -44,22 +44,22 @@ class Scene(Serializable):
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
 
-        self.sceneWidth = 64000
-        self.sceneHeight = 64000
+        self.sceneWidth: int = 64000
+        self.sceneHeight: int = 64000
 
         self.history = SceneHistory(self)
         self.clipboard = SceneClipboard(self)
 
         self._isModified: bool = False
-        self.isModified = False
+        self.isModified: bool = False
 
-        self._lastSelectedItems = []
+        self._lastSelectedItems: List[QGraphicsItem] = []
 
-        self._hasBeenModifiedListeners = []
-        self._itemSelectedListeners = []
-        self._itemsDeselectedListeners = []
+        self._hasBeenModifiedListeners: List[Callable] = []
+        self._itemSelectedListeners: List[Callable] = []
+        self._itemsDeselectedListeners: List[Callable] = []
 
-        self._silentSelectionEvents = False
+        self._silentSelectionEvents: bool = False
 
         # Store callback for retrieving the nodes classes
         self.nodeClassSelector = None
@@ -68,6 +68,9 @@ class Scene(Serializable):
         self.graphicsScene.setScene(self.sceneWidth, self.sceneHeight)
         self.graphicsScene.itemSelected.connect(self.onItemSelected)
         self.graphicsScene.itemsDeselected.connect(self.onItemsDeselected)
+
+        # current filename assigned to this scene
+        self.filename: Optional[str] = None
 
     @property
     def isModified(self) -> bool:
@@ -94,11 +97,18 @@ class Scene(Serializable):
         self._isModified = value
 
     @property
-    def lastSelectedItems(self):
+    def lastSelectedItems(self) -> List[QGraphicsItem]:
+        """
+        Returns last selected graphics items.
+        This property is used to detect if selection has changed.
+
+        :return: Last selected items
+        :rtype: ``list[QGraphicsItem]``
+        """
         return self._lastSelectedItems
 
     @lastSelectedItems.setter
-    def lastSelectedItems(self, value: bool):
+    def lastSelectedItems(self, value: List[QGraphicsItem]):
         if value != self._lastSelectedItems:
             self._lastSelectedItems = value
 
@@ -111,7 +121,7 @@ class Scene(Serializable):
         :rtype: list[QGraphicsItem]
         """
 
-        return cast(List[QGraphicsItem], self.graphicsScene.selectedItems())
+        return self.graphicsScene.selectedItems()
 
     @property
     def view(self) -> GraphicsView:
@@ -235,7 +245,7 @@ class Scene(Serializable):
         """
         self.view.addDropListener(callback)
 
-    def resetLastSelectedStates(self):
+    def resetLastSelectedStates(self) -> None:
         """Resets internal `selected flags` in all `Nodes` and `Edges` in the `Scene`"""
 
         for node in self.nodes:
@@ -287,7 +297,7 @@ class Scene(Serializable):
                 f"edge list. "
             )
 
-    def clear(self):
+    def clear(self) -> None:
         """Remove all `Nodes` from this `Scene`. This causes also to remove all
         `Edges` """
         while len(self.nodes) > 0:
@@ -310,6 +320,7 @@ class Scene(Serializable):
             self.__logger.info(f"Saving to {filename} was successful.")
 
             self.isModified = False
+            self.filename = filename
 
     def loadFromFile(self, filename):
         """
@@ -320,12 +331,13 @@ class Scene(Serializable):
         :raises: :class:`~nodedge.scene.InvalidFile` if there was an error
             decoding JSON file.
         """
-        with open(filename, "r") as file:
+        with open(filename) as file:
             rawData = file.read()
             try:
                 data = json.loads(rawData, encoding="utf-8")
                 self.deserialize(data)
                 self.isModified = False
+                self.filename = filename
             except json.JSONDecodeError:
                 raise InvalidFile(
                     f"{os.path.basename(filename)} is not a valid JSON file"
@@ -352,7 +364,12 @@ class Scene(Serializable):
         )
 
     def deserialize(
-        self, data: dict, hashmap: Optional[dict] = None, restoreId: bool = True
+        self,
+        data: dict,
+        hashmap: Optional[dict] = None,
+        restoreId: bool = True,
+        *args,
+        **kwargs,
     ) -> bool:
         try:
             if hashmap is None:

@@ -4,6 +4,7 @@ Scene history module containing :class:`~nodedge.scene_history.SceneHistory` cla
 """
 
 import logging
+from typing import Callable, Dict
 
 from nodedge.graphics_edge import GraphicsEdge
 from nodedge.graphics_node import GraphicsNode
@@ -40,6 +41,12 @@ class SceneHistory:
 
     @property
     def currentStep(self) -> int:
+        """
+        Property representing the current step on the history stack loaded in the scene.
+
+        :return: current step on the history stack
+        :rtype: ``int``
+        """
         return self._currentStep
 
     @currentStep.setter
@@ -55,13 +62,28 @@ class SceneHistory:
 
     @property
     def stackSize(self) -> int:
+        """
+        Number of elements that can be stored in the history stack.
+
+        :return: History stack size
+        :rtype: ``int``
+        """
         return len(self._stack)
 
     @property
     def stack(self):
+        """
+        The stack is a private member of the history,
+        it cannot be modified outside of the class.
+        This property only has a getter to implement this constraint.
+
+
+        :return: history stack
+        :rtype: ``List[dict]``
+        """
         return self._stack
 
-    def addHistoryModifiedListener(self, callback):
+    def addHistoryModifiedListener(self, callback: Callable) -> None:
         """
         Register the callback associated with a `HistoryModified` event.
 
@@ -69,7 +91,7 @@ class SceneHistory:
         """
         self._historyModifiedListeners.append(callback)
 
-    def addHistoryStoredListener(self, callback):
+    def addHistoryStoredListener(self, callback: Callable) -> None:
         """
         Register the callback associated with a `HistoryStored` event.
 
@@ -77,7 +99,7 @@ class SceneHistory:
         """
         self._historyStoredListeners.append(callback)
 
-    def addHistoryRestoredListener(self, callback):
+    def addHistoryRestoredListener(self, callback: Callable) -> None:
         """
         Register the callback associated with a `HistoryRestored` event.
 
@@ -85,9 +107,14 @@ class SceneHistory:
         """
         self._historyRestoredListeners.append(callback)
 
-    def clear(self, storeInitialStamp=True):
+    def clear(self, storeInitialStamp: bool = True):
         """
         Reset the history stack.
+
+        :param storeInitialStamp: if True, an initial stamp will be stored in the
+            history after cleaning. Otherwise, the history will be empty after cleaning,
+            leading to the first actions to be non cancellable.
+        :type storeInitialStamp: ``bool``
         """
         self._currentStep = -1
         self._stack = []
@@ -103,7 +130,7 @@ class SceneHistory:
 
         return dlog
 
-    def storeInitialStamp(self):
+    def storeInitialStamp(self) -> None:
         """
         Helper function usually used when new or open file operations
         are requested.
@@ -130,7 +157,7 @@ class SceneHistory:
         """
         return self._currentStep + 1 < self.stackSize
 
-    def undo(self):
+    def undo(self) -> None:
         """
         Perform the undo operation.
         """
@@ -151,7 +178,7 @@ class SceneHistory:
             self.restore()
             self.scene.isModified = True
 
-    def store(self, desc, sceneIsModified=True):
+    def store(self, desc: str, sceneIsModified: bool = True) -> None:
         """
         Store the history stamp into the history stack.
 
@@ -196,7 +223,7 @@ class SceneHistory:
         for callback in self._historyStoredListeners:
             callback()
 
-    def restore(self):
+    def restore(self) -> None:
         """
         Restore history stamp from history stack.
 
@@ -220,7 +247,7 @@ class SceneHistory:
         for callback in self._historyRestoredListeners:
             callback()
 
-    def _createStamp(self, desc):
+    def _createStamp(self, desc: str) -> Dict:
         """
         Create a history stamp.
         Internally it serializes the whole scene and the current selection.
@@ -230,7 +257,7 @@ class SceneHistory:
             and the current selection
         :rtype: ``dict``
         """
-        selectedObjects = {"nodes": [], "edges": []}
+        selectedObjects: dict = {"nodes": [], "edges": []}
 
         for item in self.scene.graphicsScene.selectedItems():
             if isinstance(item, GraphicsNode):  # hasattr(item, "node")
@@ -246,7 +273,7 @@ class SceneHistory:
 
         return stamp
 
-    def restoreStamp(self, stamp):
+    def restoreStamp(self, stamp: Dict) -> None:
         """
         Restore history stamp to the current scene, included indication of the
         selected items.
@@ -275,6 +302,12 @@ class SceneHistory:
             self.__logger.warning("Failed to restore stamp")
             dumpException(e)
 
-    def restoreStep(self, step):
+    def restoreStep(self, step: int) -> None:
+        """
+        Restore the step of the stack given as argument.
+
+        :param step: index of the stack to be restored
+        :type step: ``int``
+        """
         self._currentStep = step
         self.restore()

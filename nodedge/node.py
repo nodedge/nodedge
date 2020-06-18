@@ -33,6 +33,7 @@ class Node(Serializable):
     GraphicsNodeClass = GraphicsNode
     GraphicsNodeContentClass = GraphicsNodeContent
     SocketClass = Socket
+    contentLabelObjectName = "undefined"
 
     def __init__(
         self,
@@ -577,7 +578,14 @@ class Node(Serializable):
             ]
         )
 
-    def deserialize(self, data, hashmap=None, restoreId=True) -> bool:
+    def deserialize(
+        self,
+        data: dict,
+        hashmap: Optional[dict] = None,
+        restoreId: bool = True,
+        *args,
+        **kwargs,
+    ):
         if hashmap is None:
             hashmap = {}
         try:

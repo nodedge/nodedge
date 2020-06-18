@@ -82,7 +82,12 @@ class GraphicsNodeContent(QWidget, Serializable):
         return OrderedDict([])
 
     def deserialize(
-        self, data: dict, hashmap: Optional[dict] = None, restoreId: bool = False
+        self,
+        data: dict,
+        hashmap: Optional[dict] = None,
+        restoreId: bool = False,
+        *args,
+        **kwargs
     ) -> bool:
         """ Default deserialize method.
 
@@ -137,6 +142,13 @@ class TextEdit(QTextEdit):
 
 
 class GraphicsNodeContentProxy(QGraphicsProxyWidget):
+    """
+    :class:`~nodedge.graphics_node_content.GraphicsNodeContentProxy` class.
+
+    It is a ``QGraphicsProxyWidget`` around the
+    :class:`~nodedge.graphics_node_content.GraphicsNodeContent`.
+    """
+
     def __init__(self, graphicsNodeParent: "GraphicsNode") -> None:  # type: ignore
         super().__init__(graphicsNodeParent)
         self.setWidget(graphicsNodeParent.content)

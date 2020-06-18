@@ -8,6 +8,10 @@ from typing import Optional
 
 
 class Serializable:
+    """
+    :class:`~nodedge.serializable.Serializable` class
+    """
+
     def __init__(self):
         """
         Create data which are common to any serializable object.
@@ -29,7 +33,12 @@ class Serializable:
         raise NotImplementedError()
 
     def deserialize(
-        self, data: dict, hashmap: Optional[dict] = None, restoreId: bool = True
+        self,
+        data: dict,
+        hashmap: Optional[dict] = None,
+        restoreId: bool = True,
+        *args,
+        **kwargs
     ) -> bool:
         """
         Deserialization method which take data in python ``dict`` format with helping

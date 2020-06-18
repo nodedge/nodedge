@@ -65,7 +65,7 @@ class Edge(Serializable):
         super().__init__()
 
         self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.DEBUG)
+        self.__logger.setLevel(logging.INFO)
 
         # Default initialization
         self._sourceSocket: Optional[Socket] = None
@@ -236,7 +236,7 @@ class Edge(Serializable):
             self.sourceSocket if knownSocket == self.targetSocket else self.targetSocket
         )
 
-    def removeFromSockets(self):
+    def removeFromSockets(self) -> None:
         """
         Set start and end :class:`~nodedge.socket.Socket` to ``None``
         """
@@ -319,7 +319,14 @@ class Edge(Serializable):
             ]
         )
 
-    def deserialize(self, data, hashmap=None, restoreId=True):
+    def deserialize(
+        self,
+        data: dict,
+        hashmap: Optional[dict] = None,
+        restoreId: bool = True,
+        *args,
+        **kwargs,
+    ):
         if hashmap is None:
             hashmap = {}
         if restoreId:

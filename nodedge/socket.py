@@ -252,8 +252,13 @@ class Socket(Serializable):
         )
 
     def deserialize(
-        self, data: dict, hashmap: Optional[dict] = None, restoreId: bool = True
-    ) -> bool:
+        self,
+        data: dict,
+        hashmap: Optional[dict] = None,
+        restoreId: bool = True,
+        *args,
+        **kwargs,
+    ):
         if hashmap is None:
             hashmap = {}
 

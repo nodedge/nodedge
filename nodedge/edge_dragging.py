@@ -26,7 +26,7 @@ class EdgeDraggingMode(IntEnum):
 class EdgeDragging:
     """:class:`~nodedge.edge_dragging.EdgeDragging` class ."""
 
-    def __init__(self, graphicsView: "GraphicsView"):  # type: ignore
+    def __init__(self, graphicsView: "GraphicsView") -> None:  # type: ignore
         self.graphicsView = graphicsView
         self.dragEdge: Optional[Edge] = None
         self.dragStartSocket: Optional[Socket] = None
@@ -50,6 +50,8 @@ class EdgeDragging:
                 graphicsSocket.socket,
                 edgeType=EdgeType.BEZIER,
             )
+            self.dragEdge.graphicsEdge.makeUnselectable()
+
         except Exception as e:
             dumpException(e)
 
@@ -86,7 +88,6 @@ class EdgeDragging:
                 self.graphicsView.graphicsScene.scene,
                 self.dragStartSocket,
                 graphicsSocket.socket,
-                edgeType=EdgeType.CIRCUIT,
             )
             graphicsSocket.socket.addEdge(newEdge)
             self.__logger.debug(

@@ -1,4 +1,8 @@
+# -*- coding: utf-8 -*-
+"""Block module containing :class:`~nodedge.block.Block` class. """
+
 import logging
+from collections import OrderedDict
 from typing import Optional
 
 from nodedge.blocks.graphics_block import GraphicsBlock
@@ -9,6 +13,12 @@ from nodedge.utils import dumpException
 
 
 class Block(Node):
+    """
+    :class:`~nodedge.block.Block` class
+
+    A block is node which can be evaluated to produce an output.
+    """
+
     iconPath = ""
     operationTitle = "Undefined"
     operationCode = 0
@@ -33,11 +43,20 @@ class Block(Node):
 
     # noinspection PyAttributeOutsideInit
     def initSettings(self):
+        """
+        Initialize the location of the input and output sockets.
+        """
         super().initSettings()
         self._inputSocketPosition = SocketLocation.LEFT_CENTER
         self._outputSocketPosition = SocketLocation.RIGHT_CENTER
 
-    def onInputChanged(self, socket: Optional[Socket] = None):
+    def onInputChanged(self, socket: Optional[Socket] = None) -> None:
+        """
+        Called when the value of an input has changed.
+
+        :param socket: the socket on which the input has changed
+        :return: ``None``
+        """
         self.__logger.debug(f"New edge: {socket}")
         self.isDirty = True
         self.eval()
@@ -87,12 +106,19 @@ class Block(Node):
         #     self.markChildrenDirty()
         #     self.evalChildren()
 
-    def serialize(self):
+    def serialize(self) -> OrderedDict:
         res = super().serialize()
         res["operationCode"] = self.__class__.operationCode
         return res
 
-    def deserialize(self, data, hashmap=None, restoreId=True):
+    def deserialize(
+        self,
+        data: dict,
+        hashmap: Optional[dict] = None,
+        restoreId: bool = True,
+        *args,
+        **kwargs,
+    ):
         if hashmap is None:
             hashmap = {}
         res = super().deserialize(data, hashmap, restoreId)
@@ -102,12 +128,31 @@ class Block(Node):
 
 
 class EvaluationError(Exception):
+    """
+    :class:`~nodedge.block.EvaluationError` class
+
+    If a not cannot be evaluated, raise this error.
+    """
+
     pass
 
 
 class MissInputError(EvaluationError):
+    """
+    :class:`~nodedge.block.MissInputError` class
+
+    If an input is missing to a block, preventing it to be evaluated, raise this error.
+    """
+
     pass
 
 
 class RedundantInputError(EvaluationError):
+    """
+    :class:`~nodedge.block.RedundantInputError` class
+
+    If two different inputs are connected to a single input socket of a block,
+    raise this error.
+    """
+
     pass

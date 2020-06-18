@@ -1,3 +1,10 @@
+"""
+Graphics input block content module containing
+:class:`~nodedge.graphics_input_block_content.GraphicsInputBlockContent` class.
+"""
+
+from typing import Optional
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLineEdit
 
@@ -6,6 +13,10 @@ from nodedge.utils import dumpException
 
 
 class GraphicsInputBlockContent(GraphicsNodeContent):
+    """
+    :class:`~nodedge.graphics_input_block_content.GraphicsInputBlockContent` class
+    """
+
     # noinspection PyAttributeOutsideInit
     def initUI(self):
         self.edit = QLineEdit("1", self)
@@ -19,7 +30,14 @@ class GraphicsInputBlockContent(GraphicsNodeContent):
         res["value"] = self.edit.text()
         return res
 
-    def deserialize(self, data, hashmap=None, restoreId=False):
+    def deserialize(
+        self,
+        data: dict,
+        hashmap: Optional[dict] = None,
+        restoreId: bool = False,
+        *args,
+        **kwargs
+    ):
         if hashmap is None:
             hashmap = {}
         res = super().deserialize(data, hashmap, restoreId)

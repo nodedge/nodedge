@@ -79,7 +79,7 @@ class SceneClipboard:
 
         return data
 
-    def deserialize(self, data):
+    def deserialize(self, data, *args, **kwargs):
         """
         Deserializes data from the clipboard.
 
@@ -130,7 +130,7 @@ class SceneClipboard:
 
         for nodeData in data["nodes"]:
             newNode = self.scene.getNodeClassFromData(nodeData)(self.scene)
-            newNode.deserialize(nodeData, hashmap, restoreId=False)
+            newNode.deserialize(nodeData, hashmap, restoreId=False, *args, **kwargs)
             createdNodes.append(newNode)
 
             # Readjust the new node position
@@ -141,7 +141,7 @@ class SceneClipboard:
         if "edges" in data:
             for edgeData in data["edges"]:
                 newEdge = Edge(self.scene)
-                newEdge.deserialize(edgeData, hashmap, restoreId=False)
+                newEdge.deserialize(edgeData, hashmap, restoreId=False, *args, **kwargs)
 
         self.scene.silentSelectionEvents = False
 

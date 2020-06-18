@@ -281,6 +281,14 @@ class GraphicsEdge(QGraphicsPathItem):
             dumpException(e)
         return True
 
+    def makeUnselectable(self):
+        """
+        Used for :class:`~nodedge.edge_dragging.EdgeDragging` to disable click
+        detection over this graphics item.
+        """
+        self.setFlag(QGraphicsItem.ItemIsSelectable, False)
+        self.setAcceptHoverEvents(False)
+
 
 class GraphicsEdgeDirect(GraphicsEdge):
     """
