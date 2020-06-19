@@ -329,6 +329,7 @@ class EditorWindow(QMainWindow):
         if filename == "":
             return
 
+        self.beforeSaveFileAs(self.currentEditorWidget, filename)
         self.currentEditorWidget.saveFile(filename)
         self.statusBar().showMessage(
             f"Successfully saved to {self.currentEditorWidget.shortName}", 5000
@@ -481,3 +482,20 @@ class EditorWindow(QMainWindow):
         settings = QSettings(self.companyName, self.productName)
         settings.setValue("pos", self.pos())
         settings.setValue("size", self.size())
+
+    def beforeSaveFileAs(
+        self, currentEditorWidget: EditorWidget, filename: str
+    ) -> None:
+        """
+        Event triggered after choosing filename and before actual fileSave(). Current
+        :class:`~nodedge.editor_widget.EditorWidget` is passed because focus is lost
+        after asking with ``QFileDialog`` and therefore `getCurrentNodeEditorWidget`
+        will return ``None``.
+
+        :param currentEditorWidget: :class:`~nodedge.editor_widget.EditorWidget`
+            currently focused
+        :type currentEditorWidget: :class:`~nodedge.editor_widget.EditorWidget`
+        :param filename: name of the file to be saved
+        :type filename: ``str``
+        """
+        pass

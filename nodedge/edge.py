@@ -5,7 +5,7 @@
 import logging
 from collections import OrderedDict
 from enum import IntEnum
-from typing import Optional
+from typing import Callable, List, Optional
 
 from nodedge.graphics_edge import (
     GraphicsEdge,
@@ -36,6 +36,9 @@ class Edge(Serializable):
 
     [NODE 1]------EDGE------[NODE 2]
     """
+
+    edgeValidators: List[Callable] = []  #: class variable containing list of
+    # registered edge validators
 
     def __init__(
         self,
@@ -302,6 +305,43 @@ class Edge(Serializable):
                         socket.node.onInputChanged(socket)
         except Exception as e:
             dumpException(e)
+
+    @classmethod
+    def getEdgeValidators(cls):
+        """Return the list of Edge Validator Callbacks"""
+        return cls.edgeValidators
+
+    @classmethod
+    def registerEdgeValidator(cls, validatorCallback: Callable):
+        """Register Edge Validator Callback
+
+        :param validatorCallback: A function handle to validate Edge
+        :type validatorCallback: `function`
+        """
+        cls.edgeValidators.append(validatorCallback)
+
+    @classmethod
+    def validateEdge(cls, startSocket: Socket, endSocket: Socket) -> bool:
+        """Validate Edge against all registered `Edge Validator Callbacks`
+
+        :param startSocket: Starting :class:`~nodedge.socket.Socket` of Edge to check
+        :type startSocket: :class:`~nodedge.socket.Socket`
+        :param endSocket: Target/End :class:`~nodedge.socket.Socket` of Edge to check
+        :type endSocket: :class:`~nodedge.socket.Socket`
+        :return: ``True`` if the Edge is valid, ``False`` otherwise
+        :rtype: ``bool``
+        """
+        for validator in cls.getEdgeValidators():
+            if not validator(startSocket, endSocket):
+                return False
+        return True
+
+    def reconnect(self, sourceSocket: Socket, targetSocket: Socket):
+        """Helper function which reconnects edge `sourceSocket` to `targetSocket`"""
+        if self.sourceSocket == sourceSocket:
+            self.sourceSocket = targetSocket
+        elif self.targetSocket == sourceSocket:
+            self.targetSocket = targetSocket
 
     def serialize(self):
         return OrderedDict(

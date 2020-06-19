@@ -140,7 +140,7 @@ class GraphicsScene(QGraphicsScene):
             item is not None
             and item not in self.selectedItems()
             and item.parentItem() not in self.selectedItems()
-            and not event.modifiers() & Qt.ShiftModifier  # type: ignore
+            and not int(event.modifiers()) & Qt.ShiftModifier
         ):
             self.__logger.debug(f"Pressed item: {item}")
             self.__logger.debug(f"Pressed parent item: {item.parentItem()}")

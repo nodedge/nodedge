@@ -7,6 +7,8 @@ import logging
 from enum import IntEnum
 from typing import Optional
 
+from PyQt5.QtWidgets import QGraphicsItem
+
 from nodedge.edge import Edge, EdgeType
 from nodedge.graphics_socket import GraphicsSocket
 from nodedge.socket import Socket
@@ -35,6 +37,25 @@ class EdgeDragging:
         self.__logger = logging.getLogger(__name__)
         self.__logger.setLevel(logging.INFO)
 
+    def update(self, item: Optional[QGraphicsItem]):
+        if isinstance(item, GraphicsSocket):
+            graphicsSocket: GraphicsSocket = item
+            if self.mode == EdgeDraggingMode.NOOP:
+                self.mode = EdgeDraggingMode.EDGE_DRAG
+                self.__logger.debug(f"Drag mode: {self.mode}")
+                self.startEdgeDragging(graphicsSocket)
+                return
+            elif self.mode == EdgeDraggingMode.EDGE_DRAG:
+                ret = self.endEdgeDragging(graphicsSocket)
+                if ret:
+                    self.__logger.debug(f"Drag mode: {self.mode}")
+                    return
+        else:
+            if self.mode == EdgeDraggingMode.EDGE_DRAG:
+                self.mode = EdgeDraggingMode.NOOP
+                self.endEdgeDragging(None)
+                self.__logger.debug("End dragging edge early")
+
     def startEdgeDragging(self, graphicsSocket: GraphicsSocket):
         """
         Handle the start of dragging an :class:`~nodedge.edge.Edge` operation.
@@ -55,7 +76,7 @@ class EdgeDragging:
         except Exception as e:
             dumpException(e)
 
-    def endEdgeDragging(self, graphicsSocket: GraphicsSocket):
+    def endEdgeDragging(self, graphicsSocket: Optional[GraphicsSocket]):
         """
         Handle the end of dragging an :class:`~nodedge.edge.Edge` operation.
 
@@ -80,6 +101,9 @@ class EdgeDragging:
             if self.dragStartSocket is not None:
                 if not self.dragStartSocket.allowMultiEdges:
                     self.dragStartSocket.removeAllEdges()
+
+            if graphicsSocket is None:
+                return
 
             if not graphicsSocket.socket.allowMultiEdges:
                 graphicsSocket.socket.removeAllEdges()

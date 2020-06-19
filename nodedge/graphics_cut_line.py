@@ -1,13 +1,109 @@
 # -*- coding: utf-8 -*-
-"""
-Graphics cut line module containing :class:`~nodedge.graphics_cut_line.GraphicsCutLine` class.
-"""
+"""Graphics cut line module containing
+:class:`~nodedge.graphics_cut_line.GraphicsCutLine` class. """
 
-from typing import List, Optional, cast
+from enum import IntEnum
+from typing import List, Optional
 
-from PyQt5.QtCore import QPointF, QRectF, Qt
-from PyQt5.QtGui import QPainter, QPainterPath, QPen, QPolygonF
-from PyQt5.QtWidgets import QGraphicsItem, QStyleOptionGraphicsItem, QWidget
+from PyQt5.QtCore import QEvent, QPointF, QRectF, Qt
+from PyQt5.QtGui import QMouseEvent, QPainter, QPainterPath, QPen, QPolygonF
+from PyQt5.QtWidgets import (
+    QApplication,
+    QGraphicsItem,
+    QStyleOptionGraphicsItem,
+    QWidget,
+)
+
+
+class CutLineMode(IntEnum):
+    """
+    :class:`~nodedge.graphics_cut_line.CutLineMode` class.
+    """
+
+    NOOP = 1  #: Mode representing ready state
+    CUTTING = 2  #: Mode representing when we draw a cutting edge
+
+
+class CutLine:
+    """
+        :class:`~nodedge.graphics_cut_line.CutLine` class.
+    """
+
+    def __init__(self, graphicsView: "GraphicsView"):  # type: ignore
+        self.mode: CutLineMode = CutLineMode.NOOP
+        self.graphicsCutLine: GraphicsCutLine = GraphicsCutLine()
+        self.graphicsView = graphicsView
+        self.graphicsView.graphicsScene.addItem(self.graphicsCutLine)
+
+    def update(self, event: QMouseEvent) -> Optional[QMouseEvent]:
+        """
+        Update the state machine of the cut line as well as the graphics cut line.
+
+        :param event: Event triggering the update
+        :type event: ``QMouseEvent``
+        :return: Optional modified event needed by
+            :class:`~nodedge.graphics_view.GraphicsView`
+        :rtype: Optional[QMouseEvent]
+        """
+        eventButton: Qt.MouseButton = event.button()
+        eventType: QEvent.Type = event.type()
+        eventScenePos = self.graphicsView.mapToScene(event.pos())
+        eventModifiers: Qt.KeyboardModifiers = event.modifiers()
+        if self.mode == CutLineMode.NOOP:
+            if (
+                eventType == QEvent.MouseButtonPress
+                and eventButton == Qt.LeftButton
+                and int(eventModifiers) & Qt.ControlModifier
+            ):
+
+                self.mode = CutLineMode.CUTTING
+                QApplication.setOverrideCursor(Qt.CrossCursor)
+
+                return QMouseEvent(
+                    QEvent.MouseButtonRelease,
+                    event.localPos(),
+                    event.screenPos(),
+                    Qt.LeftButton,
+                    Qt.NoButton,
+                    event.modifiers(),
+                )
+
+        if self.mode == CutLineMode.CUTTING:
+            if event.type() == QEvent.MouseMove:
+                self.graphicsCutLine.linePoints.append(eventScenePos)
+                self.graphicsCutLine.update()
+            elif (
+                eventType == QEvent.MouseButtonRelease and eventButton == Qt.LeftButton
+            ):
+                self.cutIntersectingEdges()
+                self.graphicsCutLine.linePoints = []
+                self.graphicsCutLine.update()
+                QApplication.setOverrideCursor(Qt.ArrowCursor)
+                self.mode = CutLineMode.NOOP
+
+        return None
+
+    def cutIntersectingEdges(self) -> None:
+        """
+        Compare which :class:`~nodedge.edge.Edge`s intersect with current
+        :class:`~nodedge.graphics_cut_line.GraphicsCutLine` and delete them safely.
+        """
+        scene: "Scene" = self.graphicsView.graphicsScene.scene  # type: ignore
+
+        for ix in range(len(self.graphicsCutLine.linePoints) - 1):
+            p1 = self.graphicsCutLine.linePoints[ix]
+            p2 = self.graphicsCutLine.linePoints[ix + 1]
+
+            # @TODO: Notify intersecting edges once.
+            #  we could collect all touched nodes, and notify them once after
+            #  all edges removed we could cut 3 edges leading to a single editor
+            #  this will notify it 3x maybe we could use some Notifier class with
+            #  methods collect() and dispatch()
+            for edge in scene.edges:
+                if edge.graphicsEdge.intersectsWith(p1, p2):
+                    edge.remove()
+
+        scene.history.store("Delete cut edges.")
 
 
 class GraphicsCutLine(QGraphicsItem):
@@ -15,17 +111,17 @@ class GraphicsCutLine(QGraphicsItem):
 
     Cutting Line used for cutting multiple `Edges` with one stroke"""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Optional[QGraphicsItem] = None) -> None:
         """
         :param parent: parent widget
-        :type parent: ``QWidget``
+        :type parent: ``Optional[QGraphicsItem]``
         """
 
         super().__init__(parent)
 
         self.linePoints: List[QPointF] = []
         self._pen: QPen = QPen(Qt.gray)
-        self._pen.setWidth(2.0)
+        self._pen.setWidth(2)
         self._pen.setDashPattern([3, 3])
 
         self.setZValue(2)

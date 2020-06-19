@@ -9,10 +9,10 @@ from typing import Callable, List, Optional
 
 from PyQt5.QtCore import QEvent, QPointF, Qt, pyqtSignal
 from PyQt5.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QMouseEvent, QPainter
-from PyQt5.QtWidgets import QApplication, QGraphicsItem, QGraphicsView, QWidget
+from PyQt5.QtWidgets import QGraphicsItem, QGraphicsView, QWidget
 
 from nodedge.edge_dragging import EdgeDragging, EdgeDraggingMode
-from nodedge.graphics_cut_line import GraphicsCutLine
+from nodedge.graphics_cut_line import CutLine
 from nodedge.graphics_edge import GraphicsEdge
 from nodedge.graphics_scene import GraphicsScene
 from nodedge.graphics_socket import GraphicsSocket
@@ -62,9 +62,7 @@ class GraphicsView(QGraphicsView):
         self.rubberBandDraggingRectangle: bool = False
 
         self.edgeDragging: EdgeDragging = EdgeDragging(self)
-
-        self.cutline: GraphicsCutLine = GraphicsCutLine()
-        self.graphicsScene.addItem(self.cutline)
+        self.cutline: CutLine = CutLine(self)
 
         self._dragEnterListeners: List[Callable] = []
         self._dropListeners: List[Callable] = []
@@ -176,57 +174,37 @@ class GraphicsView(QGraphicsView):
         Handle when the left mouse button is pressed.
         """
         try:
-            item = self.getItemAtClick(event)
+            item: Optional[QGraphicsItem] = self.getItemAtClick(event)
             self.__logger.debug(f"Selected object class: {item.__class__.__name__}")
 
             self.lastLMBClickScenePos = self.mapToScene(event.pos())
 
             self.__logger.debug("LMB " + GraphicsView.debugModifiers(event) + f"{item}")
 
-            if event.modifiers() & Qt.ShiftModifier:  # type: ignore
+            if int(event.modifiers()) & Qt.ShiftModifier:
                 event.ignore()
-                fakeEvent = QMouseEvent(  # type: ignore
+                fakeEvent: QMouseEvent = QMouseEvent(  # type: ignore
                     QEvent.MouseButtonPress,
                     event.localPos(),
                     event.screenPos(),
                     Qt.LeftButton,
-                    event.buttons() | Qt.LeftButton,  # type: ignore
-                    event.modifiers() | Qt.ControlModifier,  # type: ignore
+                    int(event.buttons()) | Qt.LeftButton,
+                    int(event.modifiers()) | Qt.ControlModifier,
                 )
                 super().mousePressEvent(fakeEvent)
                 return
 
-            if isinstance(item, GraphicsSocket):
-                graphicsSocket: GraphicsSocket = item
-                if self.edgeDragging.mode == EdgeDraggingMode.NOOP:
-                    self.edgeDragging.mode = EdgeDraggingMode.EDGE_DRAG
-                    self.__logger.debug(f"Drag mode: {self.edgeDragging.mode}")
-                    self.edgeDragging.startEdgeDragging(graphicsSocket)
-                    return
-                elif self.edgeDragging.mode == EdgeDraggingMode.EDGE_DRAG:
-                    ret = self.edgeDragging.endEdgeDragging(graphicsSocket)
-                    if ret:
-                        self.__logger.debug(f"Drag mode: {self.edgeDragging.mode}")
-                        return
+            self.edgeDragging.update(item)
+            modifiedEvent = self.cutline.update(event)
+
+            if modifiedEvent is not None:
+                super().mouseReleaseEvent(modifiedEvent)
+            else:
+                super().mousePressEvent(event)
 
             if item is None:
-                if event.modifiers() & Qt.ControlModifier:  # type: ignore
-                    self.edgeDragging.mode = EdgeDraggingMode.EDGE_CUT
-                    fakeEvent = QMouseEvent(
-                        QEvent.MouseButtonRelease,
-                        event.localPos(),
-                        event.screenPos(),
-                        Qt.LeftButton,
-                        Qt.NoButton,
-                        event.modifiers(),
-                    )
-                    super().mouseReleaseEvent(fakeEvent)
-                    QApplication.setOverrideCursor(Qt.CrossCursor)
-                    return
-                else:
-                    self.rubberBandDraggingRectangle = True
+                self.rubberBandDraggingRectangle = True
 
-            super().mousePressEvent(event)
         except Exception as e:
             dumpException(e)
 
@@ -258,13 +236,7 @@ class GraphicsView(QGraphicsView):
                         if ret:
                             return
 
-            if self.edgeDragging.mode == EdgeDraggingMode.EDGE_CUT:
-                self.cutIntersectingEdges()
-                self.cutline.linePoints = []
-                self.cutline.update()
-                QApplication.setOverrideCursor(Qt.ArrowCursor)
-                self.edgeDragging.mode = EdgeDraggingMode.NOOP
-                return
+            self.cutline.update(event)
 
             if self.rubberBandDraggingRectangle:
                 self.rubberBandDraggingRectangle = False
@@ -378,12 +350,7 @@ class GraphicsView(QGraphicsView):
             else:
                 self.__logger.debug("Dragging edge does not exist.")
 
-        if (
-            self.edgeDragging.mode == EdgeDraggingMode.EDGE_CUT
-            and self.cutline is not None
-        ):
-            self.cutline.linePoints.append(eventScenePos)
-            self.cutline.update()
+        self.cutline.update(event)
 
         self.lastSceneMousePos = eventScenePos
         self.scenePosChanged.emit(int(eventScenePos.x()), (eventScenePos.y()))
@@ -446,26 +413,6 @@ class GraphicsView(QGraphicsView):
         if not clamped or self.zoomClamp is False:
             self.scale(zoomFactor, zoomFactor)
 
-    def cutIntersectingEdges(self):
-        """
-        Compare which :class:`~nodedge.edge.Edge`s intersect with current
-        :class:`~nodedge.graphics_cut_line.GraphicsCutLine` and delete them safely.
-        """
-        for ix in range(len(self.cutline.linePoints) - 1):
-            p1 = self.cutline.linePoints[ix]
-            p2 = self.cutline.linePoints[ix + 1]
-
-            # @TODO: Notify intersecting edges once.
-            #  we could collect all touched nodes, and notify them once after
-            #  all edges removed we could cut 3 edges leading to a single editor
-            #  this will notify it 3x maybe we could use some Notifier class with
-            #  methods collect() and dispatch()
-            for edge in self.graphicsScene.scene.edges:
-                if edge.graphicsEdge.intersectsWith(p1, p2):
-                    edge.remove()
-
-        self.graphicsScene.scene.history.store("Delete cut edges.")
-
     def deleteSelected(self):
         """
         Shortcut for safe deleting every object selected in the
@@ -492,7 +439,7 @@ class GraphicsView(QGraphicsView):
         pos = event.pos()
         return self.itemAt(pos)
 
-    def distanceBetweenClickAndReleaseIsOff(self, event):
+    def distanceBetweenClickAndReleaseIsOff(self, event: QMouseEvent) -> bool:
         """
         Measure if we are too far from the last mouse button click scene position.
         This is used for detection if the release is too far after the user clicked
@@ -504,8 +451,10 @@ class GraphicsView(QGraphicsView):
             otherwise.
         :rtype: ``bool``
         """
-        newLMBClickPos = self.mapToScene(event.pos())
-        distScene = newLMBClickPos - self.lastLMBClickScenePos
+        if self.lastLMBClickScenePos is None:
+            return False
+        newLMBClickPos: QPointF = self.mapToScene(event.pos())
+        distScene = newLMBClickPos - self.lastLMBClickScenePos  # type: ignore
         edgeStartDragThresholdSquared = EDGE_START_DRAG_THRESHOLD ** 2
         distSceneSquared = distScene.x() * distScene.x() + distScene.y() * distScene.y()
         if distSceneSquared < edgeStartDragThresholdSquared:
@@ -518,7 +467,7 @@ class GraphicsView(QGraphicsView):
             return True
 
     @staticmethod
-    def debugModifiers(event):
+    def debugModifiers(event: QMouseEvent) -> str:
         """
         Get the name of the pressed modifier.
 
@@ -526,10 +475,10 @@ class GraphicsView(QGraphicsView):
         :rtype: ``str``
         """
         dlog = ""
-        if event.modifiers() & Qt.ShiftModifier:
+        if int(event.modifiers()) & Qt.ShiftModifier:
             dlog += "SHIFT "
-        if event.modifiers() & Qt.ControlModifier:
+        if int(event.modifiers()) & Qt.ControlModifier:
             dlog += "CTRL "
-        if event.modifiers() & Qt.AltModifier:
+        if int(event.modifiers()) & Qt.AltModifier:
             dlog += "ALT "
         return dlog

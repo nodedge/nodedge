@@ -23,10 +23,14 @@ from nodedge.edge import Edge, EdgeType
 from nodedge.graphics_view import GraphicsView
 from nodedge.node import Node
 from nodedge.scene import InvalidFile, Scene
+from nodedge.utils import dumpException
 
 
 class EditorWidget(QWidget):
+    """:class:`~nodedge.editor_widget.EditorWidget` class"""
+
     SceneClass = Scene
+    GraphicsViewClass = GraphicsView
     """
     :class:`~nodedge.editor_widget.EditorWidget` class
 
@@ -65,7 +69,9 @@ class EditorWidget(QWidget):
 
         self.setLayout(self.layout)
         self.scene: Scene = self.__class__.SceneClass()
-        self.view: GraphicsView = GraphicsView(self.scene.graphicsScene, self)
+        self.view: GraphicsView = self.__class__.GraphicsViewClass(
+            self.scene.graphicsScene, self
+        )
         self.layout.addWidget(self.view)
 
     @property
@@ -180,12 +186,22 @@ class EditorWidget(QWidget):
             QApplication.restoreOverrideCursor()
             self.evalNodes()
             return True
+        except FileNotFoundError as e:
+            self.__logger.warning(f"File {filename} not found: {e}")
+            dumpException(e)
+            QMessageBox.warning(
+                self,
+                "Error loading %s" % os.path.basename(filename),
+                str(e).replace("[Errno 2]", ""),
+            )
+            return False
         except InvalidFile as e:
             self.__logger.warning(f"Error loading {filename}: {e}")
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(
                 self, f"Error loading {os.path.basename(filename)}", str(e)
             )
+            dumpException(e)
             return False
 
     def saveFile(self, filename: Optional[str] = None) -> bool:
