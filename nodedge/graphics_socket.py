@@ -4,9 +4,16 @@ Graphics socket module containing :class:`~nodedge.graphics_socket.GraphicsSocke
 class.
 """
 
+from typing import Optional, Union
+
 from PyQt5.QtCore import QRectF, Qt
-from PyQt5.QtGui import QBrush, QColor, QPen
-from PyQt5.QtWidgets import QGraphicsItem
+from PyQt5.QtGui import QBrush, QColor, QPainter, QPen
+from PyQt5.QtWidgets import (
+    QGraphicsItem,
+    QGraphicsSceneHoverEvent,
+    QStyleOptionGraphicsItem,
+    QWidget,
+)
 
 SOCKET_COLORS = [
     QColor("#FFFF7700"),
@@ -39,7 +46,7 @@ class GraphicsSocket(QGraphicsItem):
 
         self.initUI()
 
-        self.isHighlighted = False
+        self.hovered = False
 
     def initUI(self) -> None:
         """
@@ -47,6 +54,7 @@ class GraphicsSocket(QGraphicsItem):
         """
         self.initSizes()
         self.initStyle()
+        self.setAcceptHoverEvents(True)
 
     # noinspection PyAttributeOutsideInit
     def initStyle(self) -> None:
@@ -55,47 +63,60 @@ class GraphicsSocket(QGraphicsItem):
         """
         self._colorBackground: QColor = getSocketColor(self.socketType)
         self._colorOutline: QColor = QColor("#FF000000")
-        self._colorHighlight: QColor = QColor("#FF37A6FF")
+        self._colorHovered: QColor = QColor("#FF37A6FF")
 
         self._pen: QPen = QPen(self._colorOutline)
         self._pen.setWidthF(self.outlineWidth)
         self._brush: QBrush = QBrush(self._colorBackground)
-        self._penHighlight: QPen = QPen(self._colorHighlight)
-        self._penHighlight.setWidthF(2.0)
+        self._penHovered: QPen = QPen(self._colorHovered)
+        self._penHovered.setWidthF(2.0)
 
     # noinspection PyAttributeOutsideInit
     def initSizes(self) -> None:
         """
         Set up internal attributes like `width`, `height`, etc.
         """
-        self.radius = 6.0
+        self.radius: int = 6
         self.outlineWidth = 1.0
 
     @property
-    def socketType(self):
-        return self.socket.socketType
+    def socketType(self) -> int:
+        """
+
+        :return: socket type
+        :rtype: ``int``
+        """
+        return int(self.socket.socketType)
 
     # noinspection PyAttributeOutsideInit
-    def updateSocketType(self):
+    def updateSocketType(self) -> None:
         """Change the Socket Type."""
         self._colorBackground = getSocketColor(self.socketType)
         self._brush = QBrush(self._colorBackground)
         self.update()
 
-    def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
+    def paint(
+        self,
+        painter: QPainter,
+        options: QStyleOptionGraphicsItem,
+        widget: Optional[QWidget] = None,
+    ):
         """
         Paint a circle.
         """
         painter.setBrush(self._brush)
-        painter.setPen(self._pen if not self.isHighlighted else self._penHighlight)
+        painter.setPen(self._pen if not self.hovered else self._penHovered)
 
         painter.drawEllipse(
             -self.radius, -self.radius, 2 * self.radius, 2 * self.radius
         )
 
-    def boundingRect(self):
+    def boundingRect(self) -> QRectF:
         """
         Define Qt's bounding rectangle.
+
+        :return: Graphics socket bounding rectangle.
+        :rtype: ``QRectF``
         """
         return QRectF(
             -self.radius - self.outlineWidth,
@@ -104,11 +125,30 @@ class GraphicsSocket(QGraphicsItem):
             2 * (self.radius + self.outlineWidth),
         )
 
+    def hoverEnterEvent(self, event: QGraphicsSceneHoverEvent) -> None:
+        """
+        Overridden Qt's slot to handle mouse hovering on the edge.
 
-def getSocketColor(key):
+        :param event: Qt's mouse hover event
+        :type event: ``QGraphicsSceneHoverEvent``
+        """
+        self.hovered = True
+        self.update()
+
+    def hoverLeaveEvent(self, event: QGraphicsSceneHoverEvent) -> None:
+        """
+        Overridden Qt's slot to handle mouse hovering's end on the edge.
+
+        :param event: Qt's mouse hover event
+        :type event: ``QGraphicsSceneHoverEvent``
+        """
+        self.hovered = False
+        self.update()
+
+
+def getSocketColor(key: Union[int, str]) -> QColor:
     """Returns the ``QColor`` for this ``key``."""
-    if type(key) == int:
+    if isinstance(key, int):
         return SOCKET_COLORS[key]
-    elif type(key) == str:
+    elif isinstance(key, str):
         return QColor(key)
-    return Qt.transparent

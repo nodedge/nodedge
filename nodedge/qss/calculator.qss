@@ -6,8 +6,8 @@ GraphicsNodeContent QFrame {
 }
 GraphicsNodeContent QTextEdit,
 GraphicsNodeContent QLineEdit {
-  background: #666;
-  color: #fff;
+  background: #060606;
+  color: #ffffff;
 }
 GraphicsNodeContent QLabel {
   color: #e0e0e0;
@@ -42,5 +42,5 @@ GraphicsNodeContent QLineEdit#InputBlockContent {
   font-size: 28px;
 }
 QGraphicsView {
-  selection-background-color: #fff;
+  selection-background-color: #ffffff;
 }

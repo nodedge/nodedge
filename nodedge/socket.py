@@ -80,11 +80,11 @@ class Socket(Serializable):
         self.edges: List["Edge"] = []  # type: ignore
 
     @property
-    def socketType(self):
+    def socketType(self) -> int:
         return self._socketType
 
     @socketType.setter
-    def socketType(self, newValue):
+    def socketType(self, newValue: int):
         """
         Change the socket type
 

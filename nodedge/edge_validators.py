@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Edge validators module containing the Edge Validator functions which can be 
-registered as callbacks to :class:`~nodedge.edge.Edge` class. 
+"""Edge validators module containing the Edge Validator functions which can be
+registered as callbacks to :class:`~nodedge.edge.Edge` class.
 
 Example of registering Edge Validator callbacks:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You can register validation callbacks once for example on the bottom of node_edge.py 
-file or on the application start with calling this: 
+You can register validation callbacks once for example on the bottom of node_edge.py
+file or on the application start with calling this:
 
 .. code-block:: python
 
