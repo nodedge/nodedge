@@ -79,7 +79,7 @@ class MdiWindow(EditorWindow):
         self.setWindowIcon(self.icon)
 
         self.styleSheetFilename = os.path.join(
-            os.path.dirname(__file__), "qss/calculator.qss"
+            os.path.dirname(__file__), "qss/calculator-dark.qss"
         )
         loadStyleSheets(
             # os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),

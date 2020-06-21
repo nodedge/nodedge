@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from nodedge.blocks.block import Block, EvaluationError
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, OP_NODE_ADD, registerNode
 

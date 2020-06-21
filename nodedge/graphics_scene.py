@@ -54,8 +54,8 @@ class GraphicsScene(QGraphicsScene):
 
     # noinspection PyAttributeOutsideInit
     def initStyle(self):
-        """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
-        self._color_background = QColor("#ffffff")
+        """Initialize ``QObjects`` like ``QColor``, ``QPten`` and ``QBrush``"""
+        self._color_background = QColor("#DFE0DC")
         self._color_light = QColor("#ffffff")
         self._color_dark = QColor("#ffffff")
 
@@ -74,13 +74,13 @@ class GraphicsScene(QGraphicsScene):
         self.scene_width = 64000
         self.scene_height = 64000
 
-    def setScene(self, width, height):
+    def setScene(self, width, height) -> None:
         """
         Set `width` and `height` of the graphics scene.
         """
         self.setSceneRect(-width // 2, -height // 2, width, height)
 
-    def drawBackground(self, painter, rectangle):
+    def drawBackground(self, painter, rectangle) -> None:
         """
         Draw background scene grid.
         """
@@ -152,7 +152,7 @@ class GraphicsScene(QGraphicsScene):
 
         super().mousePressEvent(event)
 
-    def mouseReleaseEvent(self, event: QGraphicsSceneMouseEvent):
+    def mouseReleaseEvent(self, event: QGraphicsSceneMouseEvent) -> None:
         """
         Handle Qt's mouse's button release event.
 

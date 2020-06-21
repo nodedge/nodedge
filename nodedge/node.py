@@ -22,7 +22,15 @@ Pos = TypeVar("Pos", List, Tuple, QPoint, QPointF)
 
 
 class NodesAndSockets:
-    def __init__(self, nodes, sockets):
+    """
+    :class:`~nodedge.node.NodesAndSockets` class
+    """
+
+    def __init__(self, nodes, sockets) -> None:
+        """
+        :param nodes: list of nodes to add to the structure
+        :param sockets: list of sockets to add to the structure
+        """
         self.nodes: List["Node"] = nodes
         self.sockets: List["Socket"] = sockets
 
@@ -151,7 +159,6 @@ class Node(Serializable):
                 socketType=out,
                 allowMultiEdges=self._outputAllowMultiEdges,
                 countOnThisNodeSide=len(outputs),
-                isInput=False,
             )
             self.outputSockets.append(socket)
 

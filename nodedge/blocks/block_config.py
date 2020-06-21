@@ -1,7 +1,6 @@
+# -*- coding: utf-8 -*-
 import os
 from typing import Dict, TypeVar
-
-from nodedge.blocks.block import Block
 
 NODELISTWIDGET_MIMETYPE = "application/x-item"
 

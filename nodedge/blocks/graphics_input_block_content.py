@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Graphics input block content module containing
 :class:`~nodedge.graphics_input_block_content.GraphicsInputBlockContent` class.
