@@ -182,6 +182,10 @@ background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,
 stop : 0 #4f9eee,stop : 1 #2084ea);
 border:0;}
 
+QTableView::item{
+color:#ffffff;
+}
+
 QTableView::item:hover{
 background:#6e6e6e;
 }
