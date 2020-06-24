@@ -2,7 +2,7 @@ import os
 import sys
 
 from PyQt5.QtGui import QColor, QPalette
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QApplication
 
 from nodedge.mdi_window import MdiWindow
 from nodedge.utils import dumpException

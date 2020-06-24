@@ -3,10 +3,11 @@
 Scene items table widget module containing
 :class:`~nodedge.scene_items_table_widget.SceneItemsTableWidget` class.
 """
-
+import logging
 from typing import Optional
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtGui import QMouseEvent
 from PyQt5.QtWidgets import (
     QAbstractItemView,
     QHeaderView,
@@ -15,14 +16,21 @@ from PyQt5.QtWidgets import (
     QTableWidgetItem,
 )
 
+from nodedge import DEBUG_ITEMS_PRESSED
 from nodedge.scene import Scene
+from nodedge.utils import widgetsAt
 
 
 class SceneItemsTableWidget(QTableWidget):
     """:class:`~nodedge.scene_items_table_widget.SceneItemsTableWidget` class ."""
 
+    itemsPressed = pyqtSignal(list)
+
     def __init__(self, parent: Optional[QMainWindow] = None):
         super().__init__(parent)
+
+        self.__logger = logging.getLogger(__file__)
+        self.__logger.setLevel(logging.INFO)
 
         self.setColumnCount(4)
         self.setSelectionBehavior(QAbstractItemView.SelectRows)
@@ -86,3 +94,11 @@ class SceneItemsTableWidget(QTableWidget):
         self.scene.view.centerOn(
             float(self.item(row, 2).text()), float(self.item(row, 3).text())
         )
+
+    def mousePressEvent(self, e: QMouseEvent) -> None:
+        pos = e.globalPos()
+        if DEBUG_ITEMS_PRESSED:
+            itemsPressed = [w.__class__.__name__ for w in widgetsAt(pos)]
+            self.__logger.debug(itemsPressed)
+            self.itemsPressed.emit(itemsPressed)
+        super().mousePressEvent(e)

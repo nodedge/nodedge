@@ -3,29 +3,33 @@
 :class:`~nodedge.mdi_window.MdiWindow` class. """
 import logging
 import os
-from typing import cast
+from typing import List, cast
 
-from PyQt5.QtCore import QSignalMapper, Qt
-from PyQt5.QtGui import QIcon, QKeySequence
+from PyQt5.QtCore import QFile, QSignalMapper, Qt, QTimer
+from PyQt5.QtGui import QBrush, QColor, QCursor, QIcon, QKeySequence, QPalette
 from PyQt5.QtWidgets import (
     QAction,
+    QApplication,
     QDockWidget,
     QFileDialog,
     QHeaderView,
+    QMainWindow,
     QMdiArea,
     QMenu,
     QMessageBox,
     QVBoxLayout,
     QWidget,
+    qApp,
 )
 
 from nodedge.editor_widget import EditorWidget
 from nodedge.editor_window import EditorWindow
 from nodedge.history_list_widget import HistoryListWidget
+from nodedge.mdi_area import MdiArea
 from nodedge.mdi_widget import MdiWidget
 from nodedge.node_list_widget import NodeListWidget
 from nodedge.scene_items_table_widget import SceneItemsTableWidget
-from nodedge.utils import dumpException, loadStyleSheets
+from nodedge.utils import dumpException, loadStyleSheets, widgetsAt
 
 
 class MdiWindow(EditorWindow):
@@ -40,6 +44,8 @@ class MdiWindow(EditorWindow):
         self.__logger.setLevel(logging.INFO)
 
         self.currentEditorWidgetChangedListeners = []
+
+        self.stylesheetLastModified = 0
 
         super(MdiWindow, self).__init__()
 
@@ -86,7 +92,13 @@ class MdiWindow(EditorWindow):
             self.styleSheetFilename
         )
 
-        self.mdiArea = QMdiArea()
+        self.timer = QTimer()
+        self.timer.setTimerType(Qt.PreciseTimer)
+        self.timer.setInterval(500.0)
+        self.timer.timeout.connect(self.checkStylesheet)
+        self.timer.start()
+
+        self.mdiArea = MdiArea()
         self.mdiArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.mdiArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.mdiArea.setViewMode(QMdiArea.TabbedView)
@@ -362,6 +374,7 @@ class MdiWindow(EditorWindow):
     # noinspection PyAttributeOutsideInit
     def createNodesDock(self):
         self.nodesListWidget = NodeListWidget()
+        self.nodesListWidget.itemsPressed.connect(self.showItemsInStatusBar)
 
         self.nodesDock = QDockWidget("Nodes")
         self.nodesDock.setWidget(self.nodesListWidget)
@@ -372,6 +385,7 @@ class MdiWindow(EditorWindow):
     # noinspection PyAttributeOutsideInit
     def createHistoryDock(self):
         self.historyListWidget = HistoryListWidget(self)
+        self.historyListWidget.itemsPressed.connect(self.showItemsInStatusBar)
         self.addCurrentEditorWidgetChangedListener(self.historyListWidget.update)
 
         self.historyDock = QDockWidget("History")
@@ -383,13 +397,12 @@ class MdiWindow(EditorWindow):
     # noinspection PyAttributeOutsideInit
     def createSceneItemsDock(self):
         self.sceneItemsTableWidget = SceneItemsTableWidget(self)
+        self.sceneItemsTableWidget.itemsPressed.connect(self.showItemsInStatusBar)
         self.addCurrentEditorWidgetChangedListener(self.sceneItemsTableWidget.update)
 
         self.sceneItemsDock = QDockWidget("Scene items")
         self.sceneItemsDock.setWidget(self.sceneItemsTableWidget)
         self.sceneItemsDock.setFloating(False)
-
-        self.sceneItemsLayout = QVBoxLayout(self.sceneItemsDock)
 
         self.addDockWidget(Qt.LeftDockWidgetArea, self.sceneItemsDock)
 
@@ -474,6 +487,28 @@ class MdiWindow(EditorWindow):
         ):
             self.historyListWidget.history = self.currentEditorWidget.scene.history
             self.sceneItemsTableWidget.scene = self.currentEditorWidget.scene
+            self.currentEditorWidget.scene.graphicsScene.itemsPressed.connect(
+                self.showItemsInStatusBar
+            )
             # self.currentEditorWidget.scene.graphicsScene.itemSelected.connect(
             #     self.sceneItemsTableWidget.onSceneItemSelected
             # )
+
+    def checkStylesheet(self):
+        try:
+            modTime = os.path.getmtime(self.styleSheetFilename)
+        except FileNotFoundError:
+            self.__logger.warning("Stylesheet was not found")
+            return
+
+        if modTime != self.stylesheetLastModified:
+            self.stylesheetLastModified = modTime
+            loadStyleSheets(self.styleSheetFilename)
+
+    # def mousePressEvent(self, event):
+    #     pos = QCursor.pos()
+    #     self.__logger.debug([w.__class__ for w in widgetsAt(pos)])
+    #     return super().mousePressEvent(event)
+
+    def showItemsInStatusBar(self, items: List[str]):
+        self.statusBar().showMessage(f"Pressed items: {items}")

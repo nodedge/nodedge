@@ -13,12 +13,14 @@ from PyQt5.QtCore import (
     QPoint,
     QSize,
     Qt,
+    pyqtSignal,
 )
-from PyQt5.QtGui import QDrag, QIcon, QPixmap
+from PyQt5.QtGui import QDrag, QIcon, QMouseEvent, QPixmap
 from PyQt5.QtWidgets import QAbstractItemView, QListWidget, QListWidgetItem, QWidget
 
+from nodedge import DEBUG_ITEMS_PRESSED
 from nodedge.blocks.block_config import *
-from nodedge.utils import dumpException
+from nodedge.utils import dumpException, widgetsAt
 
 
 class NodeListWidget(QListWidget):
@@ -27,6 +29,8 @@ class NodeListWidget(QListWidget):
 
     The list widget contains the declaration of all the available nodes.
     """
+
+    itemsPressed = pyqtSignal(list)
 
     def __init__(self, parent: Optional[QWidget] = None):
         """
@@ -119,3 +123,11 @@ class NodeListWidget(QListWidget):
 
         except Exception as e:
             dumpException(e)
+
+    def mousePressEvent(self, e: QMouseEvent) -> None:
+        if DEBUG_ITEMS_PRESSED:
+            pos = e.globalPos()
+            itemsPressed = [w.__class__.__name__ for w in widgetsAt(pos)]
+            self.__logger.debug(itemsPressed)
+            self.itemsPressed.emit(itemsPressed)
+        super().mousePressEvent(e)

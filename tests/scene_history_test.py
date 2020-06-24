@@ -102,3 +102,12 @@ def test_store(emptyHistory):
     assert emptyHistory.currentStep == 1
     assert emptyHistory.stackSize == 2
     assert emptyHistory.scene.isModified is False
+
+
+def test_restoreStep(filledHistory):
+    filledHistory.scene.isModified = False
+    expectedStep = 1
+    initialStackSize = filledHistory.stackSize
+    filledHistory.restoreStep(expectedStep)
+    assert filledHistory.currentStep == expectedStep
+    assert filledHistory.stackSize == initialStackSize

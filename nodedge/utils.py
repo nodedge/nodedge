@@ -7,7 +7,8 @@ import logging
 import traceback
 from pprint import PrettyPrinter
 
-from PyQt5.QtCore import QFile
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtCore import QFile, QPoint
 from PyQt5.QtWidgets import QApplication
 
 pp = PrettyPrinter(indent=4).pprint
@@ -59,3 +60,28 @@ def loadStyleSheets(*args):
         styleSheet = file.readAll()
         res = "\n" + str(styleSheet, encoding="utf-8")
     QApplication.instance().setStyleSheet(res)
+
+
+def widgetsAt(pos):
+    """Return ALL widgets at `pos`
+
+    Arguments:
+        pos (QPoint): Position at which to get widgets
+
+    """
+
+    widgets = []
+    widget_at = QtWidgets.qApp.widgetAt(int(pos.x()), int(pos.y()))
+
+    while widget_at:
+        widgets.append(widget_at)
+
+        # Make widget invisible to further enquiries
+        widget_at.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
+        widget_at = QtWidgets.qApp.widgetAt(pos)
+
+    # Restore attribute
+    for widget in widgets:
+        widget.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents, False)
+
+    return widgets

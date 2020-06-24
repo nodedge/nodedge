@@ -8,7 +8,7 @@ background:#474747;
 
 QStatusBar{
 background:#474747;
-color:#cccccc;
+color:#ffffff;
 }
 
 QTabWidget{
@@ -36,6 +36,7 @@ padding-bottom:3px;
 min-width:8ex;
 border:1px solid #333333;
 border-bottom:0;}
+
 QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:!selected:hover{
 background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 #6d6d6d,
 stop : 0.1 #474747,stop : 0.89 #3f3f3f,stop : 1 #3f3f3f);
@@ -58,22 +59,22 @@ border:1px solid #333333;border-radius:0;
 }
 
 QMdiArea QTabBar QToolButton::left-arrow{
-image:url(":../resources/icons/small_arrow_left-light.png");
+image:url("../../nodedge/resources/icons/chevron_left_100.png");
 }
 
 QMdiArea QTabBar QToolButton::right-arrow{
-image:url(":icons/small_arrow_right-light.png");
+image:url("../../nodedge/resources/icons/chevron_right_100.png");
 }
 
-QMdiArea QTabBar::close-button:selected{
-image:url("../resources/icons/close_window_100.png");
+QMdiArea QTabBar::close-button{
+image:url("../../nodedge/resources/icons/close_window_100.png");
 origin: border;
 subcontrol-origin:border;
 subcontrol-position:right bottom;
 }
 
 QMdiArea QTabBar::close-button:!selected{
-image:url("../../nodedge/resources/icons/close_window_100.png");
+image:url("close_window_100.png");
 }
 
 QMdiSubWindow{
@@ -181,9 +182,52 @@ background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,
 stop : 0 #4f9eee,stop : 1 #2084ea);
 border:0;}
 
+QTableView::item:hover{
+background:#6e6e6e;
+}
+
+QTable View::item:active:hover{
+color:#ffffff;
+}
+
+QTableView::item:selected,QTableView::item:active:selected{
+color:#ffffff;
+background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,
+stop : 0 #4f9eee,stop : 1 #2084ea);
+border:0;}
+
 QPushButton{
+border: 1px solid #A9A9A9;
+border-radius: 0;
+color: #000000;
+font-size: 12px;
+padding: 6px 16px;
+background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+stop: 0.0 #FDFDFD, stop: 0.3 #F8F8F8,
+stop: 0.7 #EDEDED, stop: 1.0 #EBEBEB);
+}
+
+QPushButton:hover{
 color:#e6e6e6;
-background:#555555;
+background:#6e6e00;
+border-color:#141414;
+}
+
+QPushButton:focus,
+QPushButton:hover,
+QPushButton:hover:focus,
+QPushButton:pressed,
+QPushButton:pressed:focus{
+color:#e6e6e6;
+background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,
+stop : 0 #4f9eee,
+stop : 1 #2084ea);
+border-color:#141414;
+}
+
+QPushButton:default{
+color:#e6e6e6;
+background:#141414;
 border-color:#141414;
 }
 
@@ -220,4 +264,51 @@ color:#e0e0e0;
 
 QGraphicsView{
 selection-background-color:#ffffff;
+}
+
+GraphicsNodeContent {
+  background: transparent;
+}
+GraphicsNodeContent QFrame {
+  background: transparent;
+}
+GraphicsNodeContent QTextEdit,
+GraphicsNodeContent QLineEdit {
+  background: #060606;
+  color: #ffffff;
+}
+GraphicsNodeContent QLabel {
+  color: #e0e0e0;
+}
+GraphicsNodeContent QLabel#BlockBackground {
+  background: transparent;
+  height: 0px;
+  color: #484848;
+  font-size: 72px;
+  max-height: 49px;
+  min-height: 49px;
+  padding-left: 94px;
+}
+GraphicsNodeContent QLabel#BlockBackground {
+  padding-top: 12px;
+}
+GraphicsNodeContent QLabel#OutputBlockContent {
+  min-width: 150px;
+  max-width: 150px;
+  min-height: 45px;
+  max-height: 45px;
+  margin-left: 10px;
+  margin-top: 5px;
+  font-size: 28px;
+}
+GraphicsNodeContent QLineEdit#InputBlockContent {
+  background: #505050;
+  width: 140px;
+  height: 40px;
+  margin-top: 5px;
+  margin-left: 5px;
+  font-size: 28px;
+}
+QGraphicsView {
+  selection-background-color: #ffffff;
 }

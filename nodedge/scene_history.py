@@ -239,7 +239,7 @@ class SceneHistory:
             f"(max. {self._maxLength})"
         )
 
-        self.restoreStamp(self._stack[self._currentStep])
+        self._restoreStamp(self._stack[self._currentStep])
 
         for callback in self._historyModifiedListeners:
             callback()
@@ -273,7 +273,7 @@ class SceneHistory:
 
         return stamp
 
-    def restoreStamp(self, stamp: Dict) -> None:
+    def _restoreStamp(self, stamp: Dict) -> None:
         """
         Restore history stamp to the current scene, included indication of the
         selected items.

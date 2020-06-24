@@ -28,6 +28,8 @@ class GraphicsScene(QGraphicsScene):
     #: pyqtSignal emitted when items are deselected in the `Scene`
     itemsDeselected = pyqtSignal()
 
+    itemsPressed = pyqtSignal(list)
+
     def __init__(
         self, scene: "Scene", parent: Optional[QWidget] = None  # type: ignore
     ) -> None:

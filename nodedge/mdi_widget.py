@@ -311,17 +311,21 @@ class MdiWidget(EditorWidget):
             newNode.pos = scenePos
             self.__contextLogger.debug(f"New node: {newNode}")
 
-            if self.scene.view.mode == EdgeDraggingMode.EDGE_DRAG:
-                self.scene.view.endEdgeDragging(newNode.inputSockets[0].graphicsSocket)
+            if self.scene.view.edgeDragging.mode == EdgeDraggingMode.EDGE_DRAG:
+                self.scene.view.edgeDragging.endEdgeDragging(
+                    newNode.inputSockets[0].graphicsSocket
+                )
 
                 # newNode.isSelected = True
 
                 targetSocket: Optional[Socket] = MdiWidget.determineTargetSocketOfNode(
-                    self.scene.view.dragStartSocket.isOutput, newNode
+                    self.scene.view.edgeDragging.dragStartSocket.isOutput, newNode
                 )
 
                 if targetSocket is not None:
-                    self.scene.view.endEdgeDragging(targetSocket.graphicsSocket)
+                    self.scene.view.edgeDragging.endEdgeDragging(
+                        targetSocket.graphicsSocket
+                    )
                     self.finishNewNodeState(newNode)
 
                 # newNode.inputSockets[0].edges[-1].isSelected = True
