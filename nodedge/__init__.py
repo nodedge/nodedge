@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-DEBUG_ITEMS_PRESSED = False
+DEBUG_ITEMS_PRESSED = True
