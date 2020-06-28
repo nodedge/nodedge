@@ -3,19 +3,20 @@ Introduction
 ************
 
 Welcome to the Nodedge User's Manual. This manual contains information
-on using Nodedge software, including documentation for all
-development modules in the package and examples illustrating their use.
+on how to use the Nodedge software and includes the documentation for all
+the modules of the package and examples illustrating their use.
 
-Overview
-========
+..
+    Overview
+    ========
 
-Some differences from Simulink
-==============================
+    Some differences from Simulink
+    ==============================
 
 Installation
 ============
 
-`nodedge` package can be installed using pip or the
+The `nodedge` package can be installed using pip or the
 standard distutils/setuptools mechanisms.
 
 To install using pip::
@@ -34,7 +35,10 @@ To install in your default python interpreter, use::
 Getting started
 ===============
 
-There are two different ways to use the package.  For the default interface, simply import the control package as follows::
+.. There are two different ways to use the package. For the default interface,
+
+To use nodedge simply import the package as follows::
 
     >>> import nodedge
+
 

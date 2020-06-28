@@ -16,7 +16,8 @@ Nodedge is a free and open-source software for graphical programming. Try it out
    :maxdepth: 2
 
    intro
-   conventions
+   .. conventions
+
    apidoc/nodedge
    examples
    evaluation
