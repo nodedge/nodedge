@@ -82,7 +82,7 @@ class Edge(Serializable):
 
         self.scene.addEdge(self)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         :return: Edge(hex id, start socket hex id, end socket hex id, edge type)
         :rtype: ``string``
@@ -343,7 +343,13 @@ class Edge(Serializable):
         elif self.targetSocket == sourceSocket:
             self.targetSocket = targetSocket
 
-    def serialize(self):
+    def serialize(self) -> OrderedDict:
+        """
+        Serialization method.
+
+        :return: Serialized edge
+        :rtype: ``OrderedDict``
+        """
         return OrderedDict(
             [
                 ("id", self.id),
@@ -366,7 +372,19 @@ class Edge(Serializable):
         restoreId: bool = True,
         *args,
         **kwargs,
-    ):
+    ) -> bool:
+        """
+        Deserialization method.
+
+        :param data:
+        :type data: ``dict``
+        :param hashmap:
+        :type hashmap: ``Optional[dict]``
+        :param restoreId:
+        :type restoreId: ``bool``
+        :return: success status
+        :rtype: ``bool``
+        """
         if hashmap is None:
             hashmap = {}
         if restoreId:

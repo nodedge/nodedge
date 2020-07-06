@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from random import random
+from typing import cast
 
 import pytest
 from PyQt5.QtCore import QPoint, QPointF, Qt
@@ -175,7 +176,8 @@ def test_onSelectedItems(qtbot: QtBot):
     window.show()
 
     subWindow = window.newFile()
-    scene = subWindow.widget().scene
+    editorWidget: EditorWidget = cast(EditorWidget, subWindow.widget())
+    scene = editorWidget.scene
     scene.clear()
     subWindow.show()
     node = Node(scene, "", [1], [1])  # noqa: F841
@@ -186,36 +188,36 @@ def test_onSelectedItems(qtbot: QtBot):
 
     window.setActiveSubWindow(subWindow)
 
-    pos2 = subWindow.widget().scene.view.mapToScene(QPoint(-10, -10))
-    pos3 = subWindow.widget().scene.view.mapToScene(QPoint(10, 10))
-    subWindow.widget().scene.view.show()
+    pos2 = editorWidget.scene.view.mapToScene(QPoint(-10, -10))
+    pos3 = editorWidget.scene.view.mapToScene(QPoint(10, 10))
+    editorWidget.scene.view.show()
 
-    # subWindow.widget().scene.graphicsScene.setFocus(Qt.ActiveWindowFocusReason)
+    # editorWidget.scene.graphicsScene.setFocus(Qt.ActiveWindowFocusReason)
     qtbot.mousePress(
-        subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos2.x()), int(-pos2.y()))
+        editorWidget, Qt.LeftButton, pos=QPoint(int(-pos2.x()), int(-pos2.y()))
     )
     qtbot.mouseRelease(
-        subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos2.x()), int(-pos2.y()))
+        editorWidget, Qt.LeftButton, pos=QPoint(int(-pos2.x()), int(-pos2.y()))
     )
 
     assert scene.selectedItems == [node.graphicsNode]
     assert scene.lastSelectedItems == [node.graphicsNode]
 
     qtbot.mousePress(
-        subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos3.x()), int(-pos3.y()))
+        editorWidget, Qt.LeftButton, pos=QPoint(int(-pos3.x()), int(-pos3.y()))
     )
     qtbot.mouseRelease(
-        subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos3.x()), int(-pos3.y()))
+        editorWidget, Qt.LeftButton, pos=QPoint(int(-pos3.x()), int(-pos3.y()))
     )
     assert scene.selectedItems == []
     assert scene.lastSelectedItems == []
 
-    subWindow.widget().scene.view.rubberBandDraggingRectangle = True
+    editorWidget.scene.view.rubberBandDraggingRectangle = True
     qtbot.mousePress(
-        subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos2.x()), int(-pos2.y()))
+        editorWidget, Qt.LeftButton, pos=QPoint(int(-pos2.x()), int(-pos2.y()))
     )
     qtbot.mouseRelease(
-        subWindow.widget(), Qt.LeftButton, pos=QPoint(int(-pos2.x()), int(-pos2.y()))
+        editorWidget, Qt.LeftButton, pos=QPoint(int(-pos2.x()), int(-pos2.y()))
     )
     assert scene.selectedItems == [node.graphicsNode]
     assert scene.lastSelectedItems == [node.graphicsNode]
@@ -227,7 +229,8 @@ def test_undo_crash_without_details(execution_number, qtbot):
     window.show()
 
     subWindow = window.newFile()
-    scene = subWindow.widget().scene
+    editorWidget: EditorWidget = cast(EditorWidget, subWindow.widget())
+    scene = editorWidget.scene
     scene.clear()
     scene.history.clear(storeInitialStamp=True)
     subWindow.show()

@@ -68,8 +68,6 @@ image:url("../../nodedge/resources/icons/chevron_right_100.png");
 
 QMdiArea QTabBar::close-button{
 image:url("../../nodedge/resources/icons/close_window_100.png");
-origin: border;
-subcontrol-origin:border;
 subcontrol-position:right bottom;
 }
 
@@ -105,7 +103,6 @@ subcontrol-origin:margin;
 text-align:center;
 icon-size:16px;
 width:14px;
-position:absolute;
 top:0;
 bottom:0;
 left:0;right:4px;}

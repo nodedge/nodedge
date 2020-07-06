@@ -46,6 +46,7 @@ class EditorWindow(QMainWindow):
 
         super().__init__(parent)
 
+        # noinspection SpellCheckingInspection
         logging.basicConfig(
             format="%(asctime)s|%(levelname).4s|%(filename)10s|"
             "%(lineno).3s|%(message)s|%(funcName)s"
@@ -63,15 +64,17 @@ class EditorWindow(QMainWindow):
         self.clipboard: QClipboard = self.instance.clipboard()
 
         # Pycharm does not recognise resolve connect method so the inspection is
-        # disabled. noinspection PyUnresolvedReferences
+        # noinspection PyUnresolvedReferences
         self.clipboard.dataChanged.connect(self.onClipboardChanged)  # type: ignore
 
-        self.lastActiveEditorWidget = None
+        self.lastActiveEditorWidget: Optional[EditorWidget] = None
+
+        self.debugMode: bool = False
 
         self.initUI()
 
     @property
-    def currentEditorWidget(self) -> EditorWidget:
+    def currentEditorWidget(self) -> Optional[EditorWidget]:
         """
         :getter: Get current :class:`~nodedge.editor_widget.EditorWidget`
 
@@ -82,7 +85,7 @@ class EditorWindow(QMainWindow):
             by the :class:`~nodedge.mdi_window.MdiWindow` which may have several
             :class:`~nodedge.editor_widget.EditorWidget`.
 
-        :rtype: :class:`~nodedge.editor_widget`
+        :rtype: Optional[:class:`~nodedge.editor_widget`]
         """
         centralWidget = self.centralWidget()
         if isinstance(centralWidget, EditorWidget):
@@ -97,13 +100,14 @@ class EditorWindow(QMainWindow):
 
         Create :class:`~nodedge.editor_widget.EditorWidget`, Actions and Menus
         """
-        self.createActions()
-
-        self.createMenus()
 
         self.editorWidget = self.__class__.EditorWidgetClass()
         self.setCentralWidget(self.editorWidget)
         self.editorWidget.scene.addHasBeenModifiedListener(self.updateTitle)
+
+        self.createActions()
+
+        self.createMenus()
 
         # Initialize status bar
         self.createStatusBar()
@@ -123,6 +127,10 @@ class EditorWindow(QMainWindow):
         self.statusBar().showMessage("")
         self.statusMousePos = QLabel("")
         self.statusBar().addPermanentWidget(self.statusMousePos)
+
+        if self.currentEditorWidget is None:
+            return
+
         self.currentEditorWidget.view.scenePosChanged.connect(self.OnScenePosChanged)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit
@@ -222,7 +230,13 @@ class EditorWindow(QMainWindow):
         self.editMenu.addSeparator()
         self.editMenu.addAction(self.deleteAct)
 
-    def sizeHint(self):
+    def sizeHint(self) -> QSize:
+        """
+        Qt's size hint handle.
+        TODO: Investigate if we really need to overwrite this method.
+
+        :return: ``None``
+        """
         return QSize(800, 600)
 
     def updateTitle(self) -> None:
@@ -244,6 +258,11 @@ class EditorWindow(QMainWindow):
             self.currentEditorWidget.updateTitle()
 
     def onClipboardChanged(self) -> None:
+        """
+        Slot called when the clipboard has changed.
+
+        :return: ``None``
+        """
         self.__logger.debug(f"Clipboard changed: {self.clipboard.text()}")
 
     def OnScenePosChanged(self, x: float, y: float):
@@ -347,7 +366,12 @@ class EditorWindow(QMainWindow):
         else:
             event.ignore()
 
-    def quit(self):
+    def quit(self) -> None:
+        """
+        Callback when the user decides to close the application.
+
+        :return: ``None``
+        """
         self.close()
 
     def undo(self) -> None:
@@ -392,9 +416,7 @@ class EditorWindow(QMainWindow):
         """
         self.__logger.debug("Copying selected items")
         if self.currentEditorWidget:
-            data = self.currentEditorWidget.scene.clipboard.serializeSelected(
-                delete=False
-            )
+            data = self.currentEditorWidget.scene.clipboard.serializeSelected()
             strData = json.dumps(data, indent=4)
             self.__logger.debug(strData)
             self.clipboard.setText(strData)
@@ -472,6 +494,7 @@ class EditorWindow(QMainWindow):
         settings = QSettings(self.companyName, self.productName)
         pos = settings.value("pos", QPoint(200, 200))
         size = settings.value("size", QSize(400, 400))
+        self.debugMode = settings.value("debug", False)
         self.move(pos)
         self.resize(size)
 
@@ -482,6 +505,7 @@ class EditorWindow(QMainWindow):
         settings = QSettings(self.companyName, self.productName)
         settings.setValue("pos", self.pos())
         settings.setValue("size", self.size())
+        settings.setValue("debug", self.debugMode)
 
     def beforeSaveFileAs(
         self, currentEditorWidget: EditorWidget, filename: str

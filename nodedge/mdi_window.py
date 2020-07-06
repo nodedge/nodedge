@@ -3,23 +3,19 @@
 :class:`~nodedge.mdi_window.MdiWindow` class. """
 import logging
 import os
-from typing import List, cast
+from typing import Any, Callable, List, Optional, cast
 
-from PyQt5.QtCore import QFile, QSignalMapper, Qt, QTimer
-from PyQt5.QtGui import QBrush, QColor, QCursor, QIcon, QKeySequence, QPalette
+from PyQt5.QtCore import QSignalMapper, Qt, QTimer
+from PyQt5.QtGui import QCloseEvent, QIcon, QKeySequence
 from PyQt5.QtWidgets import (
     QAction,
-    QApplication,
     QDockWidget,
     QFileDialog,
-    QHeaderView,
-    QMainWindow,
     QMdiArea,
+    QMdiSubWindow,
     QMenu,
     QMessageBox,
-    QVBoxLayout,
     QWidget,
-    qApp,
 )
 
 from nodedge.editor_widget import EditorWidget
@@ -29,7 +25,7 @@ from nodedge.mdi_area import MdiArea
 from nodedge.mdi_widget import MdiWidget
 from nodedge.node_list_widget import NodeListWidget
 from nodedge.scene_items_table_widget import SceneItemsTableWidget
-from nodedge.utils import dumpException, loadStyleSheets, widgetsAt
+from nodedge.utils import dumpException, loadStyleSheets
 
 
 class MdiWindow(EditorWindow):
@@ -39,18 +35,18 @@ class MdiWindow(EditorWindow):
     The mdi window is the main window of Nodedge.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
 
-        self.currentEditorWidgetChangedListeners = []
+        self.currentEditorWidgetChangedListeners: List[Callable] = []
 
-        self.stylesheetLastModified = 0
+        self.stylesheetLastModified: float = 0.0
 
         super(MdiWindow, self).__init__()
 
     @property
-    def currentEditorWidget(self) -> EditorWidget:
+    def currentEditorWidget(self) -> Optional[EditorWidget]:
         """
         Property representing the :class:`~nodedge.editor_widget.EditorWidget` of the
         active sub-window.
@@ -63,15 +59,15 @@ class MdiWindow(EditorWindow):
         """
         activeSubWindow = self.mdiArea.activeSubWindow()
         if (
-            activeSubWindow
-            and activeSubWindow.widget
+            activeSubWindow is not None  # type: ignore
+            and activeSubWindow.widget() is not None
             and isinstance(activeSubWindow.widget(), EditorWidget)
         ):
-            self.lastActiveEditorWidget = activeSubWindow.widget()
-        return cast(EditorWidget, self.lastActiveEditorWidget)
+            self.lastActiveEditorWidget = cast(EditorWidget, activeSubWindow.widget())
+        return self.lastActiveEditorWidget
 
     # noinspection PyAttributeOutsideInit
-    def initUI(self):
+    def initUI(self) -> None:
         """
         Set up this ``QMainWindow``.
 
@@ -94,7 +90,7 @@ class MdiWindow(EditorWindow):
 
         self.timer = QTimer()
         self.timer.setTimerType(Qt.PreciseTimer)
-        self.timer.setInterval(500.0)
+        self.timer.setInterval(500)
         self.timer.timeout.connect(self.checkStylesheet)
         self.timer.start()
 
@@ -109,11 +105,15 @@ class MdiWindow(EditorWindow):
 
         self.addCurrentEditorWidgetChangedListener(self.updateMenus)
 
-        self.mdiArea.subWindowActivated.connect(self.onSubWindowActivated)
+        self.mdiArea.subWindowActivated.connect(  # type: ignore
+            self.onSubWindowActivated
+        )
 
         self.windowMapper = QSignalMapper(self)
         # noinspection PyUnresolvedReferences
-        self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
+        self.windowMapper.mapped[QWidget].connect(  # type: ignore
+            self.setActiveSubWindow
+        )
 
         self.createNodesDock()
         self.createHistoryDock()
@@ -129,85 +129,68 @@ class MdiWindow(EditorWindow):
 
         self.setWindowTitle(self.productName)
 
-    def createStatusBar(self):
+    def createStatusBar(self) -> None:
         """
         Create the status bar describing Nodedge status and the mouse position.
         """
         self.statusBar().showMessage("Ready")
 
     # noinspection PyArgumentList, PyAttributeOutsideInit
-    def createActions(self):
+    def createActions(self) -> None:
         """
         Create `File`, `Edit` and `About` actions.
         """
         super().createActions()
 
-        self.closeAct = QAction(
-            "Cl&ose",
-            self,
-            statusTip="Close the active window",
-            triggered=self.mdiArea.closeActiveSubWindow,
-        )
+        self.closeAct = QAction("Cl&ose", self)
+        self.closeAct.setStatusTip("Close the active window")
+        self.closeAct.triggered.connect(self.mdiArea.closeActiveSubWindow)
 
-        self.closeAllAct = QAction(
-            "Close &All",
-            self,
-            statusTip="Close all the windows",
-            triggered=self.mdiArea.closeAllSubWindows,
-        )
+        self.closeAllAct = QAction("Close &All", self)
+        self.closeAllAct.setStatusTip("Close all the windows")
+        self.closeAllAct.triggered.connect(self.mdiArea.closeAllSubWindows)
 
-        self.tileAct = QAction(
-            "&Tile",
-            self,
-            statusTip="Tile the windows",
-            triggered=self.mdiArea.tileSubWindows,
-        )
+        self.tileAct = QAction("&Tile", self)
+        self.tileAct.setStatusTip("Tile the windows")
+        self.tileAct.triggered.connect(self.mdiArea.tileSubWindows)
 
-        self.cascadeAct = QAction(
-            "&Cascade",
-            self,
-            statusTip="Cascade the windows",
-            triggered=self.mdiArea.cascadeSubWindows,
-        )
+        self.cascadeAct = QAction("&Cascade", self)
+        self.cascadeAct.setStatusTip("Cascade the windows")
+        self.cascadeAct.triggered.connect(self.mdiArea.cascadeSubWindows)
 
-        self.nextAct = QAction(
-            "Ne&xt",
-            self,
-            shortcut=QKeySequence.NextChild,
-            statusTip="Move the focus to the next window",
-            triggered=self.mdiArea.activateNextSubWindow,
-        )
+        self.nextAct = QAction("Ne&xt", self)
+        self.nextAct.setShortcut(QKeySequence.NextChild)
+        self.nextAct.setStatusTip("Move the focus to the next window")
+        self.nextAct.triggered.connect(self.mdiArea.activateNextSubWindow)
 
-        self.previousAct = QAction(
-            "Pre&vious",
-            self,
-            shortcut=QKeySequence.PreviousChild,
-            statusTip="Move the focus to the previous window",
-            triggered=self.mdiArea.activatePreviousSubWindow,
-        )
+        # noinspection SpellCheckingInspection
+        self.previousAct = QAction("Pre&vious", self)
+        self.previousAct.setShortcut(QKeySequence.PreviousChild)
+        self.previousAct.setStatusTip("Move the focus to the previous window")
+        self.previousAct.triggered.connect(self.mdiArea.activatePreviousSubWindow)
 
-        self.nodeToolbarAct = QAction(
-            "&Node toolbar",
-            self,
-            shortcut="ctrl+alt+n",
-            statusTip="Enable/Disable the node toolbar",
-            triggered=self.onNodesToolbarTriggered,
-        )
+        self.nodeToolbarAct = QAction("&Node toolbar", self)
+        self.nodeToolbarAct.setShortcut("ctrl+alt+n")
+        self.nodeToolbarAct.setStatusTip("Enable/Disable the node toolbar")
+        self.nodeToolbarAct.triggered.connect(self.onNodesToolbarTriggered)
+
         self.nodeToolbarAct.setCheckable(True)
         self.nodeToolbarAct.setChecked(True)  # self.nodesDock.isVisible()
 
         self.separatorAct = QAction(self)
         self.separatorAct.setSeparator(True)
 
-        self.aboutAct = QAction(
-            "&About",
-            self,
-            statusTip="Show the application's About box",
-            triggered=self.about,
-        )
+        self.aboutAct: QAction = QAction("&About", self)
+        self.aboutAct.setStatusTip("Show the application's About box")
+        self.aboutAct.triggered.connect(self.about)
+
+        self.debugAct = QAction("&Debug", self)
+        self.debugAct.setShortcut("ctrl+alt+shift+d")
+        self.debugAct.setStatusTip("Enable/Disable the debug mode")
+        self.debugAct.triggered.connect(self.onDebugSwitched)
 
     # noinspection PyAttributeOutsideInit
-    def createToolBars(self):
+    def createToolBars(self) -> None:
         """
         Create the `File` and `Edit` toolbar containing few of their menu actions.
         """
@@ -221,7 +204,7 @@ class MdiWindow(EditorWindow):
         self.editToolBar.addAction(self.copyAct)
         self.editToolBar.addAction(self.pasteAct)
 
-    def createMenus(self):
+    def createMenus(self) -> None:
         """
         Create `Window` and `Help` menus.
 
@@ -233,19 +216,27 @@ class MdiWindow(EditorWindow):
         self.createWindowMenu()
         self.createHelpMenu()
 
-        self.editMenu.aboutToShow.connect(self.updateEditMenu)
+        # noinspection PyUnresolvedReferences
+        self.editMenu.aboutToShow.connect(self.updateEditMenu)  # type: ignore
 
     # noinspection PyAttributeOutsideInit
-    def createHelpMenu(self):
+    def createHelpMenu(self) -> None:
+        """
+        Create help menu, containing about action.
+        """
         self.helpMenu: QMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.aboutAct)
 
     # noinspection PyAttributeOutsideInit
-    def createWindowMenu(self):
+    def createWindowMenu(self) -> None:
+        """
+        Create window menu, containing window navigation actions.
+        """
         self.windowMenu = self.menuBar().addMenu("&Window")
-        self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
+        # noinspection PyUnresolvedReferences
+        self.windowMenu.aboutToShow.connect(self.updateWindowMenu)  # type: ignore
 
-    def updateMenus(self):
+    def updateMenus(self) -> None:
         """
         Update menus accordingly to the presence or not of sub-window in the editor,
         enabling and disabling file manipulation actions, for example.
@@ -255,7 +246,7 @@ class MdiWindow(EditorWindow):
         self.updateEditMenu()
         self.updateWindowMenu()
 
-    def updateFileMenu(self):
+    def updateFileMenu(self) -> None:
         """
         Update file menu.
         """
@@ -266,7 +257,7 @@ class MdiWindow(EditorWindow):
         self.closeAct.setEnabled(hasMdiChild)
         self.closeAllAct.setEnabled(hasMdiChild)
 
-    def updateWindowMenu(self):
+    def updateWindowMenu(self) -> None:
         """
         Update window menu.
         """
@@ -298,41 +289,47 @@ class MdiWindow(EditorWindow):
         self.separatorAct.setVisible(len(windows) != 0)
 
         for i, window in enumerate(windows):
-            child: EditorWidget = window.widget()
+            widget: QWidget = window.widget()
+            if not isinstance(widget, EditorWidget):
+                self.__logger.warning(
+                    "The widget of the sub window should be an 'editor widget'"
+                )
+            editorWidget: EditorWidget = cast(EditorWidget, widget)
 
-            text = "%d %s" % (i + 1, child.userFriendlyFilename)
+            text = f"{i + 1} {editorWidget.userFriendlyFilename}"
             if i < 9:
                 text = "&" + text
 
             action = self.windowMenu.addAction(text)
             action.setCheckable(True)
-            action.setChecked(child is self.currentEditorWidget)
+            action.setChecked(editorWidget is self.currentEditorWidget)
             action.triggered.connect(self.windowMapper.map)
             self.windowMapper.setMapping(action, window)
 
-    def updateEditMenu(self):
+    def updateEditMenu(self) -> None:
         """
         Update edit menu.
         """
-        try:
-            # self.__logger.debug("Update edit menu")
+        # self.__logger.debug("Update edit menu")
 
-            active = self.currentEditorWidget
-            hasMdiChild = active is not None
+        active = self.currentEditorWidget
+        if active is None:
+            return
+        hasMdiChild = active is not None
 
-            self.pasteAct.setEnabled(hasMdiChild)
+        self.pasteAct.setEnabled(hasMdiChild)
 
-            hasSelection = hasMdiChild and active.hasSelectedItems
-            self.cutAct.setEnabled(hasSelection)
-            self.copyAct.setEnabled(hasMdiChild and active.hasSelectedItems)
-            self.deleteAct.setEnabled(hasMdiChild and active.hasSelectedItems)
+        hasSelection = hasMdiChild and active.hasSelectedItems
+        self.cutAct.setEnabled(hasSelection)
+        self.copyAct.setEnabled(hasMdiChild and active.hasSelectedItems)
+        self.deleteAct.setEnabled(hasMdiChild and active.hasSelectedItems)
 
-            self.undoAct.setEnabled(hasMdiChild and active.canUndo)
-            self.redoAct.setEnabled(hasMdiChild and active.canRedo)
-        except Exception as e:
-            dumpException(e)
+        self.undoAct.setEnabled(hasMdiChild and active.canUndo)
+        self.redoAct.setEnabled(hasMdiChild and active.canRedo)
 
-    def _createMdiSubWindow(self, childWidget=None):
+    def _createMdiSubWindow(
+        self, childWidget: Optional[MdiWidget] = None
+    ) -> QMdiSubWindow:
         """
         Create a new sub window containing a
         :class:`~nodedge.editor_widget.EditorWidget`
@@ -351,8 +348,19 @@ class MdiWindow(EditorWindow):
 
         return subWindow
 
-    def onSubWindowClosed(self, widget, event):
+    def onSubWindowClosed(self, widget: EditorWidget, event: QCloseEvent) -> None:
+        """
+        Slot called when sub window is being closed.
+
+        :param widget:
+        :type widget: ``EditorWidget``
+        :param event:
+        :type event: ``QCloseEvent.py``
+        """
         subWindowToBeDeleted = self.findMdiSubWindow(widget.filename)
+        if subWindowToBeDeleted is None:
+            return
+
         self.mdiArea.setActiveSubWindow(subWindowToBeDeleted)
 
         if self.maybeSave():
@@ -360,19 +368,37 @@ class MdiWindow(EditorWindow):
         else:
             event.ignore()
 
-    def findMdiSubWindow(self, filename):
+    def findMdiSubWindow(self, filename: str) -> Optional[QMdiSubWindow]:
+        """
+        Find the sub window containing the file which name has been given as parameter.
+
+        :param filename: the filename to be looked for
+        :return: The sub window containing the appropriate file
+        :rtype: ``QMdiSubWindow``
+        """
         for window in self.mdiArea.subWindowList():
             editorWidget: EditorWidget = cast(EditorWidget, window.widget())
             if editorWidget.filename == filename:
                 return window
         return None
 
-    def setActiveSubWindow(self, window):
+    def setActiveSubWindow(self, window: QMdiSubWindow) -> None:
+        """
+        Setter for active sub window.
+
+        :param window:
+        :type window: ``QMdiSubWindow``
+        :return:
+        """
+
         if window:
             self.mdiArea.setActiveSubWindow(window)
 
     # noinspection PyAttributeOutsideInit
-    def createNodesDock(self):
+    def createNodesDock(self) -> None:
+        """
+        Create Nodes dock.
+        """
         self.nodesListWidget = NodeListWidget()
         self.nodesListWidget.itemsPressed.connect(self.showItemsInStatusBar)
 
@@ -383,7 +409,10 @@ class MdiWindow(EditorWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.nodesDock)
 
     # noinspection PyAttributeOutsideInit
-    def createHistoryDock(self):
+    def createHistoryDock(self) -> None:
+        """
+        Create history dock.
+        """
         self.historyListWidget = HistoryListWidget(self)
         self.historyListWidget.itemsPressed.connect(self.showItemsInStatusBar)
         self.addCurrentEditorWidgetChangedListener(self.historyListWidget.update)
@@ -395,7 +424,10 @@ class MdiWindow(EditorWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.historyDock)
 
     # noinspection PyAttributeOutsideInit
-    def createSceneItemsDock(self):
+    def createSceneItemsDock(self) -> None:
+        """
+        Create scene items dock.
+        """
         self.sceneItemsTableWidget = SceneItemsTableWidget(self)
         self.sceneItemsTableWidget.itemsPressed.connect(self.showItemsInStatusBar)
         self.addCurrentEditorWidgetChangedListener(self.sceneItemsTableWidget.update)
@@ -406,7 +438,14 @@ class MdiWindow(EditorWindow):
 
         self.addDockWidget(Qt.LeftDockWidgetArea, self.sceneItemsDock)
 
-    def closeEvent(self, event):
+    def closeEvent(self, event: QCloseEvent) -> None:
+        """
+        Qt's close event handle.
+
+        :param event: close event
+        :type event: ``QCloseEvent.py``
+        :return: ``None``
+        """
         self.mdiArea.closeAllSubWindows()
         if self.mdiArea.currentSubWindow():
             event.ignore()
@@ -414,14 +453,30 @@ class MdiWindow(EditorWindow):
             self.writeSettings()
             event.accept()
 
-    def newFile(self):
+    def newFile(self) -> QMdiSubWindow:
+        """
+        New file.
+
+        Create a new sub window and show it.
+
+        :return: ``None``
+        """
         subWindow = self._createMdiSubWindow()
         # cast(EditorWidget, subWindow.widget()).addNodes()
         subWindow.show()
 
         return subWindow
 
-    def openFile(self, filenames):
+    def openFile(self, filenames: Any) -> None:
+        """
+        Open fileS.
+        TODO: Rename openFile function as it can open several files.
+
+
+        :param filenames: TODO
+        :type filenames: Optional[bool, str, List[str]]
+        :return: ``None``
+        """
         if isinstance(filenames, bool) or filenames is None:
             filenames, _ = QFileDialog.getOpenFileNames(
                 parent=self,
@@ -440,10 +495,10 @@ class MdiWindow(EditorWindow):
             if filename:
                 existingSubWindow = self.findMdiSubWindow(filename)
                 if existingSubWindow:
-                    self.__logger.debug("Existing subwindow")
+                    self.__logger.debug("Existing sub window")
                     self.mdiArea.setActiveSubWindow(existingSubWindow)
                 else:
-                    # Create a new subwindow and open the file
+                    # Create a new sub window and open the file
                     editor = MdiWidget()
                     if editor.loadFile(filename):
                         self.__logger.debug("Loading success")
@@ -456,7 +511,14 @@ class MdiWindow(EditorWindow):
                         self.__logger.debug("Loading fail")
                         editor.close()
 
-    def about(self):
+    def about(self) -> None:
+        """
+        About slot.
+
+        Shows a message box with more information about Nodedge.
+
+        :return: ``None``
+        """
         QMessageBox.about(
             self,
             "About Nodedge calculator",
@@ -465,7 +527,12 @@ class MdiWindow(EditorWindow):
             "Isaac Asimov.",
         )
 
-    def onNodesToolbarTriggered(self):
+    def onNodesToolbarTriggered(self) -> None:
+        """
+        Slot called when the nodes toolbar has been triggered.
+
+        :return: ``None``
+        """
         self.__logger.debug("Toolbar triggered")
 
         if self.nodesDock.isVisible():
@@ -473,18 +540,25 @@ class MdiWindow(EditorWindow):
         else:
             self.nodesDock.show()
 
-    def addCurrentEditorWidgetChangedListener(self, callback):
+    def addCurrentEditorWidgetChangedListener(self, callback) -> None:
+        """
+        Add a callback to current widget changed listener.
+
+        :param callback:
+        :return:
+        """
         self.currentEditorWidgetChangedListeners.append(callback)
 
-    def onSubWindowActivated(self):
+    def onSubWindowActivated(self) -> None:
+        """
+        Slot called when a sub window is activated.
+
+        :return: ``None``
+        """
         for callback in self.currentEditorWidgetChangedListeners:
             callback()
 
-        if (
-            self.currentEditorWidget is not None
-            and self.currentEditorWidget.scene is not None
-            and self.currentEditorWidget.scene.history is not None
-        ):
+        if self.currentEditorWidget is not None:
             self.historyListWidget.history = self.currentEditorWidget.scene.history
             self.sceneItemsTableWidget.scene = self.currentEditorWidget.scene
             self.currentEditorWidget.scene.graphicsScene.itemsPressed.connect(
@@ -494,7 +568,10 @@ class MdiWindow(EditorWindow):
             #     self.sceneItemsTableWidget.onSceneItemSelected
             # )
 
-    def checkStylesheet(self):
+    def checkStylesheet(self) -> None:
+        """
+        Helper function which checks if the stylesheet exists and has changed.
+        """
         try:
             modTime = os.path.getmtime(self.styleSheetFilename)
         except FileNotFoundError:
@@ -505,10 +582,16 @@ class MdiWindow(EditorWindow):
             self.stylesheetLastModified = modTime
             loadStyleSheets(self.styleSheetFilename)
 
-    # def mousePressEvent(self, event):
-    #     pos = QCursor.pos()
-    #     self.__logger.debug([w.__class__ for w in widgetsAt(pos)])
-    #     return super().mousePressEvent(event)
-
     def showItemsInStatusBar(self, items: List[str]):
+        """
+        Slot triggered when an item has been selected.
+        Shows the class names of the selected items in the status bar.
+
+        :param items: selected items
+        :type items: ``List[str]``
+        """
         self.statusBar().showMessage(f"Pressed items: {items}")
+
+    def onDebugSwitched(self):
+        """Event called when the debug action is triggered."""
+        pass

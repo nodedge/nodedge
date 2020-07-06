@@ -47,8 +47,8 @@ class Scene(Serializable):
         self.sceneWidth: int = 64000
         self.sceneHeight: int = 64000
 
-        self.history = SceneHistory(self)
-        self.clipboard = SceneClipboard(self)
+        self.history: SceneHistory = SceneHistory(self)
+        self.clipboard: SceneClipboard = SceneClipboard(self)
 
         self._isModified: bool = False
         self.isModified: bool = False
@@ -64,7 +64,7 @@ class Scene(Serializable):
         # Store callback for retrieving the nodes classes
         self.nodeClassSelector = None
 
-        self.graphicsScene = GraphicsScene(self)
+        self.graphicsScene: GraphicsScene = GraphicsScene(self)
         self.graphicsScene.setScene(self.sceneWidth, self.sceneHeight)
         self.graphicsScene.itemSelected.connect(self.onItemSelected)
         self.graphicsScene.itemsDeselected.connect(self.onItemsDeselected)

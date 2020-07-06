@@ -182,7 +182,7 @@ class EditorWidget(QWidget):
             self.scene.loadFromFile(filename)
             self.filename = filename
             # Don't store initial stamp because the file has still not been changed.
-            self.scene.history.clear(storeInitialStamp=True)
+            self.scene.history.clear()
             QApplication.restoreOverrideCursor()
             self.evalNodes()
             return True

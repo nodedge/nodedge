@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-<ModuleName> module containing :class:`~nodedge.<Name>.<ClassName>` class.
+mdi_area module containing :class:`~nodedge.mdi_area.MdiArea` class.
 """
 import logging
 import os
 
 from PyQt5.QtCore import QSize, Qt, pyqtSignal
-from PyQt5.QtGui import QMouseEvent, QPainter, QPalette, QPixmap
+from PyQt5.QtGui import QMouseEvent, QPainter, QPaintEvent, QPalette, QPixmap
 from PyQt5.QtWidgets import QMdiArea
 
 from nodedge import DEBUG_ITEMS_PRESSED
@@ -14,9 +14,13 @@ from nodedge.utils import widgetsAt
 
 
 class MdiArea(QMdiArea):
+    """
+    :class:`~nodedge.mdi_area.MdiArea` class.
+    """
+
     itemsPressed = pyqtSignal(list)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.DEBUG)
 
@@ -31,7 +35,13 @@ class MdiArea(QMdiArea):
             QSize(1024 * scale, 768 * scale), Qt.KeepAspectRatio
         )
 
-    def paintEvent(self, event):
+    def paintEvent(self, event: QPaintEvent) -> None:
+        """
+        Qt's paint event handle.
+
+        :param event:
+        :type event: ``QPaintEvent.py``
+        """
 
         painter = QPainter()
         painter.begin(self.viewport())
@@ -42,8 +52,8 @@ class MdiArea(QMdiArea):
             )
         else:
             painter.fillRect(event.rect(), self.palette().color(QPalette.Window))
-            x = (self.width() - self.display_pixmap.width()) / 2
-            y = (self.height() - self.display_pixmap.height()) / 2
+            x: int = (self.width() - self.display_pixmap.width()) // 2
+            y: int = (self.height() - self.display_pixmap.height()) // 2
             painter.drawPixmap(x, y, self.display_pixmap)
 
         painter.end()
@@ -56,6 +66,12 @@ class MdiArea(QMdiArea):
     #     )
 
     def mousePressEvent(self, e: QMouseEvent) -> None:
+        """
+        Qt's mouse press handle.
+
+        :param e:
+        :type e: ``QMouseEvent``
+        """
         if DEBUG_ITEMS_PRESSED:
             pos = e.globalPos()
             self.__logger.debug([w.__class__.__name__ for w in widgetsAt(pos)])

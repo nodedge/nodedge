@@ -111,7 +111,9 @@ class MdiWidget(EditorWidget):
             return Node
         return getClassFromOperationCode(data["operationCode"])
 
-    def addCloseEventListener(self, callback: Callable[[], None]):
+    def addCloseEventListener(
+        self, callback: Callable[[EditorWidget, QCloseEvent], None]
+    ):
         """
         Register callback for `Has Been Modified` event
 
