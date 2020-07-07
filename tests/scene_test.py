@@ -3,8 +3,8 @@ from random import random
 from typing import cast
 
 import pytest
-from PyQt5.QtCore import QPoint, QPointF, Qt
-from PyQt5.QtWidgets import QGraphicsView, QMainWindow
+from PySide2.QtCore import QPoint, QPointF, Qt
+from PySide2.QtWidgets import QGraphicsView, QMainWindow
 from pytestqt.qtbot import QtBot
 
 from nodedge.edge import Edge
@@ -210,7 +210,7 @@ def test_onSelectedItems(qtbot: QtBot):
         editorWidget, Qt.LeftButton, pos=QPoint(int(-pos3.x()), int(-pos3.y()))
     )
     assert scene.selectedItems == []
-    assert scene.lastSelectedItems == []
+    assert scene.lastSelectedItems == [node.graphicsNode]
 
     editorWidget.scene.view.rubberBandDraggingRectangle = True
     qtbot.mousePress(

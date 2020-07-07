@@ -7,9 +7,9 @@ and :class:`~nodedge.graphics_view.DragMode` classes.
 import logging
 from typing import Callable, List, Optional
 
-from PyQt5.QtCore import QEvent, QPointF, Qt, pyqtSignal
-from PyQt5.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QMouseEvent, QPainter
-from PyQt5.QtWidgets import QGraphicsItem, QGraphicsView, QWidget
+from PySide2.QtCore import QEvent, QPointF, Qt, Signal
+from PySide2.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QMouseEvent, QPainter
+from PySide2.QtWidgets import QGraphicsItem, QGraphicsView, QWidget
 
 from nodedge.edge_dragging import EdgeDragging, EdgeDraggingMode
 from nodedge.graphics_cut_line import CutLine
@@ -28,8 +28,8 @@ DEBUG_MMB_SCENE_ITEMS = True
 class GraphicsView(QGraphicsView):
     """:class:`~nodedge.graphics_view.GraphicsView` class."""
 
-    #: pyqtSignal emitted when cursor position on the `Scene` has changed
-    scenePosChanged = pyqtSignal(int, int)
+    #: Signal emitted when cursor position on the `Scene` has changed
+    scenePosChanged = Signal(int, int)
 
     def __init__(self, graphicsScene: GraphicsScene, parent: Optional[QWidget] = None):
         """
@@ -181,15 +181,15 @@ class GraphicsView(QGraphicsView):
 
             self.__logger.debug("LMB " + GraphicsView.debugModifiers(event) + f"{item}")
 
-            if int(event.modifiers()) & Qt.ShiftModifier:
+            if event.modifiers() & Qt.ShiftModifier:
                 event.ignore()
-                fakeEvent: QMouseEvent = QMouseEvent(  # type: ignore
+                fakeEvent: QMouseEvent = QMouseEvent(
                     QEvent.MouseButtonPress,
                     event.localPos(),
                     event.screenPos(),
                     Qt.LeftButton,
-                    int(event.buttons()) | Qt.LeftButton,
-                    int(event.modifiers()) | Qt.ControlModifier,
+                    event.buttons() | Qt.LeftButton,
+                    event.modifiers() | Qt.ControlModifier,
                 )
                 super().mousePressEvent(fakeEvent)
                 return
@@ -215,15 +215,15 @@ class GraphicsView(QGraphicsView):
         item = self.getItemAtClick(event)
 
         try:
-            if event.modifiers() & Qt.ShiftModifier:  # type: ignore
+            if event.modifiers() & Qt.ShiftModifier:
                 event.ignore()
-                fakeEvent = QMouseEvent(  # type: ignore
+                fakeEvent = QMouseEvent(
                     event.type(),
                     event.localPos(),
                     event.screenPos(),
                     Qt.LeftButton,
                     Qt.NoButton,
-                    event.modifiers() | Qt.ControlModifier,  # type: ignore
+                    event.modifiers() | Qt.ControlModifier,
                 )
                 super().mouseReleaseEvent(fakeEvent)
                 return
@@ -243,9 +243,9 @@ class GraphicsView(QGraphicsView):
                 selectedItems = self.graphicsScene.selectedItems()
                 if selectedItems != self.graphicsScene.scene.lastSelectedItems:
                     if not selectedItems:
-                        self.graphicsScene.itemsDeselected.emit()
+                        self.graphicsScene.itemsDeselected.emit()  # type: ignore
                     else:
-                        self.graphicsScene.itemSelected.emit()
+                        self.graphicsScene.itemSelected.emit()  # type: ignore
                 return
         except Exception as e:
             dumpException(e)
@@ -261,7 +261,7 @@ class GraphicsView(QGraphicsView):
 
         if DEBUG_MMB_SCENE_ITEMS:
             if item is None:
-                if event.modifiers() & Qt.SHIFT:  # type: ignore
+                if event.modifiers() & Qt.SHIFT:
                     lastSelectedItems = self.graphicsScene.scene.lastSelectedItems
                     self.__logger.info(
                         f"\n||||Last selected items: {lastSelectedItems}",
@@ -294,12 +294,12 @@ class GraphicsView(QGraphicsView):
         )
         super().mouseReleaseEvent(release_event)
         self.setDragMode(QGraphicsView.ScrollHandDrag)
-        fake_event = QMouseEvent(  # type: ignore
+        fake_event = QMouseEvent(
             event.type(),
             event.localPos(),
             event.screenPos(),
             Qt.LeftButton,
-            event.buttons() | Qt.LeftButton,  # type: ignore
+            event.buttons() | Qt.LeftButton,
             event.modifiers(),
         )
         super().mousePressEvent(fake_event)
@@ -308,12 +308,12 @@ class GraphicsView(QGraphicsView):
         """
         Handle when middle mouse button is released.
         """
-        fake_event = QMouseEvent(  # type: ignore
+        fake_event = QMouseEvent(
             event.type(),
             event.localPos(),
             event.screenPos(),
             Qt.LeftButton,
-            event.buttons() & -Qt.LeftButton,  # type: ignore
+            event.buttons() & -Qt.LeftButton,
             event.modifiers(),
         )
         super().mouseReleaseEvent(fake_event)
@@ -353,7 +353,10 @@ class GraphicsView(QGraphicsView):
         self.cutline.update(event)
 
         self.lastSceneMousePos = eventScenePos
-        self.scenePosChanged.emit(int(eventScenePos.x()), (eventScenePos.y()))
+        # noinspection PyUnresolvedReferences
+        self.scenePosChanged.emit(  # type: ignore
+            int(eventScenePos.x()), int(eventScenePos.y())
+        )
 
         super().mouseMoveEvent(event)
 
@@ -454,7 +457,7 @@ class GraphicsView(QGraphicsView):
         if self.lastLMBClickScenePos is None:
             return False
         newLMBClickPos: QPointF = self.mapToScene(event.pos())
-        distScene = newLMBClickPos - self.lastLMBClickScenePos  # type: ignore
+        distScene = newLMBClickPos - self.lastLMBClickScenePos
         edgeStartDragThresholdSquared = EDGE_START_DRAG_THRESHOLD ** 2
         distSceneSquared = distScene.x() * distScene.x() + distScene.y() * distScene.y()
         if distSceneSquared < edgeStartDragThresholdSquared:
@@ -475,10 +478,10 @@ class GraphicsView(QGraphicsView):
         :rtype: ``str``
         """
         dlog = ""
-        if int(event.modifiers()) & Qt.ShiftModifier:
+        if event.modifiers() & Qt.ShiftModifier:
             dlog += "SHIFT "
-        if int(event.modifiers()) & Qt.ControlModifier:
+        if event.modifiers() & Qt.ControlModifier:
             dlog += "CTRL "
-        if int(event.modifiers()) & Qt.AltModifier:
+        if event.modifiers() & Qt.AltModifier:
             dlog += "ALT "
         return dlog

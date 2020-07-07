@@ -10,7 +10,7 @@ from collections import OrderedDict
 from enum import IntEnum
 from typing import List, Optional
 
-from PyQt5.QtCore import QPointF
+from PySide2.QtCore import QPointF
 
 from nodedge.graphics_socket import GraphicsSocket
 from nodedge.serializable import Serializable

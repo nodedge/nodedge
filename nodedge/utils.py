@@ -7,9 +7,9 @@ import logging
 import traceback
 from pprint import PrettyPrinter
 
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import QFile, QPoint
-from PyQt5.QtWidgets import QApplication
+from PySide2 import QtCore, QtWidgets
+from PySide2.QtCore import QFile, QPoint
+from PySide2.QtWidgets import QApplication
 
 pp = PrettyPrinter(indent=4).pprint
 

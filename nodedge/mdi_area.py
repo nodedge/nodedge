@@ -5,9 +5,9 @@ mdi_area module containing :class:`~nodedge.mdi_area.MdiArea` class.
 import logging
 import os
 
-from PyQt5.QtCore import QSize, Qt, pyqtSignal
-from PyQt5.QtGui import QMouseEvent, QPainter, QPaintEvent, QPalette, QPixmap
-from PyQt5.QtWidgets import QMdiArea
+from PySide2.QtCore import QSize, Qt, Signal
+from PySide2.QtGui import QMouseEvent, QPainter, QPaintEvent, QPalette, QPixmap
+from PySide2.QtWidgets import QMdiArea
 
 from nodedge import DEBUG_ITEMS_PRESSED
 from nodedge.utils import widgetsAt
@@ -18,7 +18,7 @@ class MdiArea(QMdiArea):
     :class:`~nodedge.mdi_area.MdiArea` class.
     """
 
-    itemsPressed = pyqtSignal(list)
+    itemsPressed = Signal(list)
 
     def __init__(self, parent=None) -> None:
         self.__logger = logging.getLogger(__file__)
@@ -75,5 +75,8 @@ class MdiArea(QMdiArea):
         if DEBUG_ITEMS_PRESSED:
             pos = e.globalPos()
             self.__logger.debug([w.__class__.__name__ for w in widgetsAt(pos)])
-            self.itemsPressed.emit([w.__class__.__name__ for w in widgetsAt(pos)])
+            # noinspection PyUnresolvedReferences
+            self.itemsPressed.emit(  # type: ignore
+                [w.__class__.__name__ for w in widgetsAt(pos)]
+            )
         super().mousePressEvent(e)

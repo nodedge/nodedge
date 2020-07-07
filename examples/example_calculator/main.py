@@ -1,20 +1,20 @@
 import os
 import sys
 
-from PyQt5.QtGui import QColor, QPalette
-from PyQt5.QtWidgets import QApplication
+from PySide2.QtGui import QColor, QPalette
+from PySide2.QtWidgets import QApplication
 
 from nodedge.mdi_window import MdiWindow
 from nodedge.utils import dumpException
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))  # noqa: E402
-
+os.environ["QT_API"] = "pyside"
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    app: QApplication = QApplication(sys.argv)
 
-    app.setStyle("Fusion")
-    p = app.palette()
+    QApplication.setStyle("Fusion")
+    p = QApplication.palette()
     p.setColor(QPalette.Window, QColor(53, 53, 53))
     p.setColor(QPalette.Button, QColor(53, 53, 53))
     p.setColor(QPalette.Highlight, QColor(142, 45, 197))

@@ -6,9 +6,9 @@ History list widget module containing
 import logging
 from typing import Optional
 
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QMouseEvent
-from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QMainWindow
+from PySide2.QtCore import Qt, Signal
+from PySide2.QtGui import QMouseEvent
+from PySide2.QtWidgets import QListWidget, QListWidgetItem, QMainWindow
 
 from nodedge import DEBUG_ITEMS_PRESSED
 from nodedge.scene_history import SceneHistory
@@ -18,7 +18,7 @@ from nodedge.utils import widgetsAt
 class HistoryListWidget(QListWidget):
     """:class:`~nodedge.history_list_widget.HistoryListWidget` class ."""
 
-    itemsPressed = pyqtSignal(list)
+    itemsPressed = Signal(list)
 
     def __init__(self, parent: Optional[QMainWindow] = None, history=None):
         super(HistoryListWidget, self).__init__(parent)
@@ -28,7 +28,7 @@ class HistoryListWidget(QListWidget):
 
         self.history: SceneHistory = history
 
-        self.itemClicked.connect(self.onItemClicked)  # type: ignore
+        self.itemClicked.connect(self.onItemClicked)
 
     def update(self, *__args) -> None:
         if self.history is not None:
@@ -38,9 +38,7 @@ class HistoryListWidget(QListWidget):
                 item.setData(Qt.ToolTipRole, index)
 
                 item.setFlags(
-                    Qt.ItemIsEnabled
-                    | Qt.ItemIsSelectable
-                    | Qt.ItemIsDragEnabled  # type: ignore
+                    Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled
                 )
 
                 if index == self.history.currentStep:
@@ -58,5 +56,6 @@ class HistoryListWidget(QListWidget):
             pos = e.globalPos()
             itemsPressed = [w.__class__.__name__ for w in widgetsAt(pos)]
             self.__logger.debug(itemsPressed)
-            self.itemsPressed.emit(itemsPressed)
+            # noinspection PyUnresolvedReferences
+            self.itemsPressed.emit(itemsPressed)  # type: ignore
         super().mousePressEvent(e)

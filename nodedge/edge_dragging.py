@@ -7,7 +7,7 @@ import logging
 from enum import IntEnum
 from typing import Optional
 
-from PyQt5.QtWidgets import QGraphicsItem
+from PySide2.QtWidgets import QGraphicsItem
 
 from nodedge.edge import Edge, EdgeType
 from nodedge.graphics_socket import GraphicsSocket

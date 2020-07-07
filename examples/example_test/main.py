@@ -2,7 +2,7 @@ import inspect
 import os
 import sys
 
-from PyQt5.QtWidgets import *
+from PySide2.QtWidgets import *
 
 from nodedge.editor_window import EditorWindow
 from nodedge.utils import loadStyleSheet

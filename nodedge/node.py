@@ -8,8 +8,8 @@ import logging
 from collections import OrderedDict
 from typing import Callable, Collection, List, Optional, Tuple, TypeVar, cast
 
-from PyQt5.QtCore import QPoint, QPointF
-from PyQt5.QtWidgets import QGraphicsSceneMouseEvent
+from PySide2.QtCore import QPoint, QPointF
+from PySide2.QtWidgets import QGraphicsSceneMouseEvent
 
 from nodedge.edge import Edge
 from nodedge.graphics_node import GraphicsNode

@@ -5,7 +5,7 @@
 import logging
 from typing import Optional
 
-from PyQt5.QtCore import (
+from PySide2.QtCore import (
     QByteArray,
     QDataStream,
     QIODevice,
@@ -13,10 +13,10 @@ from PyQt5.QtCore import (
     QPoint,
     QSize,
     Qt,
-    pyqtSignal,
+    Signal,
 )
-from PyQt5.QtGui import QDrag, QIcon, QMouseEvent, QPixmap
-from PyQt5.QtWidgets import QAbstractItemView, QListWidget, QListWidgetItem, QWidget
+from PySide2.QtGui import QDrag, QIcon, QMouseEvent, QPixmap
+from PySide2.QtWidgets import QAbstractItemView, QListWidget, QListWidgetItem, QWidget
 
 from nodedge import DEBUG_ITEMS_PRESSED
 from nodedge.blocks.block_config import *
@@ -30,7 +30,7 @@ class NodeListWidget(QListWidget):
     The list widget contains the declaration of all the available nodes.
     """
 
-    itemsPressed = pyqtSignal(list)
+    itemsPressed = Signal(list)
 
     def __init__(self, parent: Optional[QWidget] = None):
         """
@@ -79,14 +79,11 @@ class NodeListWidget(QListWidget):
         """
         item = QListWidgetItem(name, self)
         pixmap = QPixmap(iconPath) if iconPath else "."
-        item.setIcon(QIcon(pixmap))
+        # TODO: Investigate QIcon constructor
+        item.setIcon(QIcon(pixmap))  # type: ignore
         item.setSizeHint(self.iconsSize)
 
-        item.setFlags(
-            Qt.ItemIsEnabled
-            | Qt.ItemIsSelectable
-            | Qt.ItemIsDragEnabled  # type: ignore
-        )
+        item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
 
         item.setData(Qt.UserRole, pixmap)
         item.setData(Qt.UserRole + 1, operationCode)
@@ -107,7 +104,7 @@ class NodeListWidget(QListWidget):
             itemData = QByteArray()
             dataStream = QDataStream(itemData, QIODevice.WriteOnly)
             # left operand works fine with QDataStream
-            dataStream << pixmap  # type: ignore
+            dataStream << pixmap
             dataStream.writeInt(operationCode)
             dataStream.writeQString(item.text())
 
@@ -129,5 +126,6 @@ class NodeListWidget(QListWidget):
             pos = e.globalPos()
             itemsPressed = [w.__class__.__name__ for w in widgetsAt(pos)]
             self.__logger.debug(itemsPressed)
-            self.itemsPressed.emit(itemsPressed)
+            # noinspection PyUnresolvedReferences
+            self.itemsPressed.emit(itemsPressed)  # type: ignore
         super().mousePressEvent(e)

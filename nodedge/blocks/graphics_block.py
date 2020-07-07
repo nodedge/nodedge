@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 
-from PyQt5.QtCore import QRectF
-from PyQt5.QtGui import QImage
+from PySide2.QtCore import QRectF
+from PySide2.QtGui import QImage
 
 from nodedge.graphics_node import GraphicsNode
 

@@ -5,9 +5,9 @@
 from enum import IntEnum
 from typing import List, Optional
 
-from PyQt5.QtCore import QEvent, QPointF, QRectF, Qt
-from PyQt5.QtGui import QMouseEvent, QPainter, QPainterPath, QPen, QPolygonF
-from PyQt5.QtWidgets import (
+from PySide2.QtCore import QEvent, QPointF, QRectF, Qt
+from PySide2.QtGui import QMouseEvent, QPainter, QPainterPath, QPen, QPolygonF
+from PySide2.QtWidgets import (
     QApplication,
     QGraphicsItem,
     QStyleOptionGraphicsItem,
@@ -53,7 +53,7 @@ class CutLine:
             if (
                 eventType == QEvent.MouseButtonPress
                 and eventButton == Qt.LeftButton
-                and int(eventModifiers) & Qt.ControlModifier
+                and eventModifiers & Qt.ControlModifier
             ):
 
                 self.mode = CutLineMode.CUTTING

@@ -5,9 +5,9 @@
 from collections import OrderedDict
 from typing import Optional, cast
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFocusEvent
-from PyQt5.QtWidgets import QGraphicsProxyWidget, QTextEdit, QVBoxLayout, QWidget
+from PySide2.QtCore import Qt
+from PySide2.QtGui import QFocusEvent
+from PySide2.QtWidgets import QGraphicsProxyWidget, QTextEdit, QVBoxLayout, QWidget
 
 from nodedge.serializable import Serializable
 
@@ -34,7 +34,7 @@ class GraphicsNodeContent(QWidget, Serializable):
             - **layout** - ``QLayout`` container
         """
 
-        super().__init__(parent)
+        QWidget.__init__(self, parent)
         self.node: "Node" = node  # type: ignore
 
         self.initUI()

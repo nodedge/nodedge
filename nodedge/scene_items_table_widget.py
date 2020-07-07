@@ -6,9 +6,9 @@ Scene items table widget module containing
 import logging
 from typing import Optional
 
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QMouseEvent
-from PyQt5.QtWidgets import (
+from PySide2.QtCore import Qt, Signal
+from PySide2.QtGui import QMouseEvent
+from PySide2.QtWidgets import (
     QAbstractItemView,
     QHeaderView,
     QMainWindow,
@@ -24,7 +24,7 @@ from nodedge.utils import widgetsAt
 class SceneItemsTableWidget(QTableWidget):
     """:class:`~nodedge.scene_items_table_widget.SceneItemsTableWidget` class ."""
 
-    itemsPressed = pyqtSignal(list)
+    itemsPressed = Signal(list)
 
     def __init__(self, parent: Optional[QMainWindow] = None):
         super().__init__(parent)
@@ -46,8 +46,8 @@ class SceneItemsTableWidget(QTableWidget):
         self.verticalHeader().hide()
         self.setShowGrid(True)
 
-        self.cellClicked.connect(self.onCellClicked)  # type: ignore
-        self.cellDoubleClicked.connect(self.onCellDoubleClicked)  # type: ignore
+        self.cellClicked.connect(self.onCellClicked)
+        self.cellDoubleClicked.connect(self.onCellDoubleClicked)
 
     def update(self, *__args) -> None:
         if self.scene is not None:
@@ -55,19 +55,19 @@ class SceneItemsTableWidget(QTableWidget):
             for node in self.scene.nodes:
 
                 nameItem = QTableWidgetItem(node.title)
-                nameItem.setFlags(nameItem.flags() ^ Qt.ItemIsEditable)  # type: ignore
+                nameItem.setFlags(nameItem.flags() ^ Qt.ItemIsEditable)
 
                 typeItem = QTableWidgetItem(f"{node.__class__.__name__}")
                 typeItem.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
-                typeItem.setFlags(typeItem.flags() ^ Qt.ItemIsEditable)  # type: ignore
+                typeItem.setFlags(typeItem.flags() ^ Qt.ItemIsEditable)
 
                 posXItem = QTableWidgetItem(f"{node.pos.x()}")
                 posXItem.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
-                posXItem.setFlags(posXItem.flags() ^ Qt.ItemIsEditable)  # type: ignore
+                posXItem.setFlags(posXItem.flags() ^ Qt.ItemIsEditable)
 
                 posYItem = QTableWidgetItem(f"{node.pos.y()}")
                 posYItem.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
-                posYItem.setFlags(posYItem.flags() ^ Qt.ItemIsEditable)  # type: ignore
+                posYItem.setFlags(posYItem.flags() ^ Qt.ItemIsEditable)
 
                 row = self.rowCount()
                 self.insertRow(row)
@@ -100,5 +100,6 @@ class SceneItemsTableWidget(QTableWidget):
         if DEBUG_ITEMS_PRESSED:
             itemsPressed = [w.__class__.__name__ for w in widgetsAt(pos)]
             self.__logger.debug(itemsPressed)
-            self.itemsPressed.emit(itemsPressed)
+            # noinspection PyUnresolvedReferences
+            self.itemsPressed.emit(itemsPressed)  # type: ignore
         super().mousePressEvent(e)

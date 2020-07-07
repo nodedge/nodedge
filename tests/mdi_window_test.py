@@ -1,5 +1,5 @@
 import pytest
-from PyQt5.QtWidgets import QMessageBox
+from PySide2.QtWidgets import QMessageBox
 from pytestqt.qtbot import QtBot
 
 from nodedge.mdi_window import MdiWindow
@@ -29,8 +29,7 @@ def test_setActiveSubWindow(qtbot: QtBot, filledMdiWindow: MdiWindow):
     subWindow = filledMdiWindow.mdiArea.subWindowList()[0]
     filledMdiWindow.mdiArea.setActiveSubWindow(subWindow)
 
-    with qtbot.waitActive(subWindow, timeout=10):
-        assert filledMdiWindow.mdiArea.activeSubWindow() == subWindow
+    assert filledMdiWindow.mdiArea.activeSubWindow() == subWindow
 
 
 def test_closeSubWindow(qtbot: QtBot, mocker):

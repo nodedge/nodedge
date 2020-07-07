@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QLabel
+from PySide2.QtCore import Qt
+from PySide2.QtWidgets import QLabel
 
 from nodedge.graphics_node_content import GraphicsNodeContent
 

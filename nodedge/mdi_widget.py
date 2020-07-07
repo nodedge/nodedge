@@ -5,8 +5,8 @@ Editor widget module containing :class:`~nodedge.editor_widget.EditorWidget` cla
 import logging
 from typing import Callable, List, Optional
 
-from PyQt5.QtCore import QDataStream, QIODevice, Qt
-from PyQt5.QtGui import (
+from PySide2.QtCore import QDataStream, QIODevice, Qt
+from PySide2.QtGui import (
     QCloseEvent,
     QContextMenuEvent,
     QDragEnterEvent,
@@ -15,7 +15,7 @@ from PyQt5.QtGui import (
     QMouseEvent,
     QPixmap,
 )
-from PyQt5.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
+from PySide2.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import (
@@ -179,7 +179,7 @@ class MdiWidget(EditorWidget):
         dataStream = QDataStream(eventData, QIODevice.ReadOnly)
         pixmap: QPixmap = QPixmap()
 
-        dataStream >> pixmap  # type: ignore
+        dataStream >> pixmap
         operationCode = dataStream.readInt()
         text = dataStream.readQString()
 
@@ -244,7 +244,7 @@ class MdiWidget(EditorWidget):
         markInvalidAct = contextMenu.addAction("Mark invalid")
         unmarkAct = contextMenu.addAction("Unmark invalid")
         evalAct = contextMenu.addAction("Eval")
-        action = contextMenu.exec_(self.mapToGlobal(event.pos()))
+        action = QMenu.exec_(self.mapToGlobal(event.pos()))
 
         selected = None
         item = self.scene.itemAt(event.pos())

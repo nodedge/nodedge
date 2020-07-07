@@ -9,9 +9,9 @@ import logging
 import math
 from typing import Optional, Union
 
-from PyQt5.QtCore import QPointF, Qt
-from PyQt5.QtGui import QColor, QPainterPath, QPen
-from PyQt5.QtWidgets import (
+from PySide2.QtCore import QPointF, Qt
+from PySide2.QtGui import QColor, QPainterPath, QPen
+from PySide2.QtWidgets import (
     QGraphicsItem,
     QGraphicsPathItem,
     QGraphicsSceneHoverEvent,
@@ -233,7 +233,7 @@ class GraphicsEdge(QGraphicsPathItem):
         :return: ``True`` if this edge's path intersects with the line between p1 and p2
         :rtype: ``bool``
         """
-        cutpath = QPainterPath(p1)
+        cutpath: QPainterPath = QPainterPath(p1)
         cutpath.lineTo(p2)
         path = self.calcPath()
         return cutpath.intersects(path)

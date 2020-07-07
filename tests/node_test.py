@@ -1,6 +1,6 @@
 import pytest
-from PyQt5.QtCore import QPointF
-from PyQt5.QtWidgets import QMainWindow
+from PySide2.QtCore import QPointF
+from PySide2.QtWidgets import QMainWindow
 
 from nodedge.edge import Edge
 from nodedge.editor_widget import EditorWidget

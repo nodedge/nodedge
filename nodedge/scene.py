@@ -9,8 +9,8 @@ import os
 from collections import OrderedDict
 from typing import Callable, List, Optional, cast
 
-from PyQt5.QtGui import QDragEnterEvent, QDropEvent
-from PyQt5.QtWidgets import QGraphicsItem
+from PySide2.QtGui import QDragEnterEvent, QDropEvent
+from PySide2.QtWidgets import QGraphicsItem
 
 from nodedge.edge import Edge
 from nodedge.graphics_scene import GraphicsScene
@@ -66,8 +66,7 @@ class Scene(Serializable):
 
         self.graphicsScene: GraphicsScene = GraphicsScene(self)
         self.graphicsScene.setScene(self.sceneWidth, self.sceneHeight)
-        self.graphicsScene.itemSelected.connect(self.onItemSelected)
-        self.graphicsScene.itemsDeselected.connect(self.onItemsDeselected)
+        self.graphicsScene.itemSelected.connect(self.onItemSelected)  # type: ignore
 
         # current filename assigned to this scene
         self.filename: Optional[str] = None

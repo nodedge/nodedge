@@ -7,9 +7,9 @@ import logging
 import math
 from typing import Optional
 
-from PyQt5.QtCore import QLine, Qt, pyqtSignal
-from PyQt5.QtGui import QColor, QPen, QTransform
-from PyQt5.QtWidgets import (
+from PySide2.QtCore import QLine, Qt, Signal
+from PySide2.QtGui import QColor, QPen, QTransform
+from PySide2.QtWidgets import (
     QGraphicsItem,
     QGraphicsScene,
     QGraphicsSceneDragDropEvent,
@@ -23,12 +23,12 @@ class GraphicsScene(QGraphicsScene):
 
     The graphics scene contains the background grid."""
 
-    #: pyqtSignal emitted when some item is selected in the `Scene`
-    itemSelected = pyqtSignal()
-    #: pyqtSignal emitted when items are deselected in the `Scene`
-    itemsDeselected = pyqtSignal()
+    #: Signal emitted when some item is selected in the `Scene`
+    itemSelected = Signal()
+    #: Signal emitted when items are deselected in the `Scene`
+    itemsDeselected = Signal()
 
-    itemsPressed = pyqtSignal(list)
+    itemsPressed = Signal(list)
 
     def __init__(
         self, scene: "Scene", parent: Optional[QWidget] = None  # type: ignore
@@ -115,10 +115,10 @@ class GraphicsScene(QGraphicsScene):
 
         # Draw the lines
         painter.setPen(self._penLight)
-        painter.drawLines(*linesLight)
+        painter.drawLines(linesLight)
 
         painter.setPen(self._penDark)
-        painter.drawLines(*linesDark)
+        painter.drawLines(linesDark)
 
     def dragMoveEvent(self, event: QGraphicsSceneDragDropEvent) -> None:
         """
@@ -142,7 +142,7 @@ class GraphicsScene(QGraphicsScene):
             item is not None
             and item not in self.selectedItems()
             and item.parentItem() not in self.selectedItems()
-            and not int(event.modifiers()) & Qt.ShiftModifier
+            and not event.modifiers() & Qt.ShiftModifier
         ):
             self.__logger.debug(f"Pressed item: {item}")
             self.__logger.debug(f"Pressed parent item: {item.parentItem()}")
@@ -150,7 +150,8 @@ class GraphicsScene(QGraphicsScene):
                 f"Selected items in graphics scene: {self.selectedItems()}"
             )
             for item in self.selectedItems():
-                item.setSelected(False)
+                if item is not None:
+                    item.setSelected(False)
 
         super().mousePressEvent(event)
 

@@ -1,5 +1,5 @@
 import pytest
-from PyQt5.QtWidgets import QMainWindow
+from PySide2.QtWidgets import QMainWindow
 
 from nodedge.editor_widget import EditorWidget
 from nodedge.node import Node

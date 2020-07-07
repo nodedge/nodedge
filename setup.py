@@ -29,7 +29,7 @@ KEYWORDS = [
     "dynamic-systems",
     "python3",
     "qt5",
-    "pyqt5",
+    "pyside2",
     "platform-indenpendent",
     "windows",
     "linux",

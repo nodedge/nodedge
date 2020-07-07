@@ -5,9 +5,9 @@ import logging
 import os
 from typing import Any, Callable, List, Optional, cast
 
-from PyQt5.QtCore import QSignalMapper, Qt, QTimer
-from PyQt5.QtGui import QCloseEvent, QIcon, QKeySequence
-from PyQt5.QtWidgets import (
+from PySide2.QtCore import QSignalMapper, Qt, QTimer, Slot
+from PySide2.QtGui import QCloseEvent, QIcon, QKeySequence
+from PySide2.QtWidgets import (
     QAction,
     QDockWidget,
     QFileDialog,
@@ -25,7 +25,7 @@ from nodedge.mdi_area import MdiArea
 from nodedge.mdi_widget import MdiWidget
 from nodedge.node_list_widget import NodeListWidget
 from nodedge.scene_items_table_widget import SceneItemsTableWidget
-from nodedge.utils import dumpException, loadStyleSheets
+from nodedge.utils import loadStyleSheets
 
 
 class MdiWindow(EditorWindow):
@@ -105,15 +105,10 @@ class MdiWindow(EditorWindow):
 
         self.addCurrentEditorWidgetChangedListener(self.updateMenus)
 
-        self.mdiArea.subWindowActivated.connect(  # type: ignore
-            self.onSubWindowActivated
-        )
+        self.mdiArea.subWindowActivated.connect(self.onSubWindowActivated)
 
         self.windowMapper = QSignalMapper(self)
-        # noinspection PyUnresolvedReferences
-        self.windowMapper.mapped[QWidget].connect(  # type: ignore
-            self.setActiveSubWindow
-        )
+        self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
 
         self.createNodesDock()
         self.createHistoryDock()
@@ -170,7 +165,7 @@ class MdiWindow(EditorWindow):
         self.previousAct.triggered.connect(self.mdiArea.activatePreviousSubWindow)
 
         self.nodeToolbarAct = QAction("&Node toolbar", self)
-        self.nodeToolbarAct.setShortcut("ctrl+alt+n")
+        self.nodeToolbarAct.setShortcut(QKeySequence("ctrl+alt+n"))
         self.nodeToolbarAct.setStatusTip("Enable/Disable the node toolbar")
         self.nodeToolbarAct.triggered.connect(self.onNodesToolbarTriggered)
 
@@ -185,7 +180,7 @@ class MdiWindow(EditorWindow):
         self.aboutAct.triggered.connect(self.about)
 
         self.debugAct = QAction("&Debug", self)
-        self.debugAct.setShortcut("ctrl+alt+shift+d")
+        self.debugAct.setShortcut(QKeySequence("ctrl+alt+shift+d"))
         self.debugAct.setStatusTip("Enable/Disable the debug mode")
         self.debugAct.triggered.connect(self.onDebugSwitched)
 
@@ -217,7 +212,7 @@ class MdiWindow(EditorWindow):
         self.createHelpMenu()
 
         # noinspection PyUnresolvedReferences
-        self.editMenu.aboutToShow.connect(self.updateEditMenu)  # type: ignore
+        self.editMenu.aboutToShow.connect(self.updateEditMenu)
 
     # noinspection PyAttributeOutsideInit
     def createHelpMenu(self) -> None:
@@ -234,7 +229,7 @@ class MdiWindow(EditorWindow):
         """
         self.windowMenu = self.menuBar().addMenu("&Window")
         # noinspection PyUnresolvedReferences
-        self.windowMenu.aboutToShow.connect(self.updateWindowMenu)  # type: ignore
+        self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
 
     def updateMenus(self) -> None:
         """
@@ -303,6 +298,7 @@ class MdiWindow(EditorWindow):
             action = self.windowMenu.addAction(text)
             action.setCheckable(True)
             action.setChecked(editorWidget is self.currentEditorWidget)
+            # noinspection PyUnresolvedReferences
             action.triggered.connect(self.windowMapper.map)
             self.windowMapper.setMapping(action, window)
 
@@ -379,7 +375,7 @@ class MdiWindow(EditorWindow):
         for window in self.mdiArea.subWindowList():
             editorWidget: EditorWidget = cast(EditorWidget, window.widget())
             if editorWidget.filename == filename:
-                return window
+                return cast(QMdiSubWindow, window)
         return None
 
     def setActiveSubWindow(self, window: QMdiSubWindow) -> None:
@@ -400,7 +396,9 @@ class MdiWindow(EditorWindow):
         Create Nodes dock.
         """
         self.nodesListWidget = NodeListWidget()
-        self.nodesListWidget.itemsPressed.connect(self.showItemsInStatusBar)
+        self.nodesListWidget.itemsPressed.connect(  # type: ignore
+            self.showItemsInStatusBar
+        )
 
         self.nodesDock = QDockWidget("Nodes")
         self.nodesDock.setWidget(self.nodesListWidget)
@@ -414,7 +412,9 @@ class MdiWindow(EditorWindow):
         Create history dock.
         """
         self.historyListWidget = HistoryListWidget(self)
-        self.historyListWidget.itemsPressed.connect(self.showItemsInStatusBar)
+        self.historyListWidget.itemsPressed.connect(  # type: ignore
+            self.showItemsInStatusBar
+        )
         self.addCurrentEditorWidgetChangedListener(self.historyListWidget.update)
 
         self.historyDock = QDockWidget("History")
@@ -429,7 +429,9 @@ class MdiWindow(EditorWindow):
         Create scene items dock.
         """
         self.sceneItemsTableWidget = SceneItemsTableWidget(self)
-        self.sceneItemsTableWidget.itemsPressed.connect(self.showItemsInStatusBar)
+        self.sceneItemsTableWidget.itemsPressed.connect(  # type: ignore
+            self.showItemsInStatusBar
+        )
         self.addCurrentEditorWidgetChangedListener(self.sceneItemsTableWidget.update)
 
         self.sceneItemsDock = QDockWidget("Scene items")
@@ -481,7 +483,7 @@ class MdiWindow(EditorWindow):
             filenames, _ = QFileDialog.getOpenFileNames(
                 parent=self,
                 caption="Open graph from file",
-                directory=EditorWindow.getFileDialogDirectory(),
+                dir=EditorWindow.getFileDialogDirectory(),
                 filter=EditorWindow.getFileDialogFilter(),
             )
         else:
@@ -561,7 +563,8 @@ class MdiWindow(EditorWindow):
         if self.currentEditorWidget is not None:
             self.historyListWidget.history = self.currentEditorWidget.scene.history
             self.sceneItemsTableWidget.scene = self.currentEditorWidget.scene
-            self.currentEditorWidget.scene.graphicsScene.itemsPressed.connect(
+            graphicsScene = self.currentEditorWidget.scene.graphicsScene
+            graphicsScene.itemsPressed.connect(  # type: ignore
                 self.showItemsInStatusBar
             )
             # self.currentEditorWidget.scene.graphicsScene.itemSelected.connect(

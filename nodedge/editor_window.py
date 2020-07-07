@@ -7,9 +7,9 @@ import logging
 import os
 from typing import Optional, cast
 
-from PyQt5.QtCore import QPoint, QSettings, QSize
-from PyQt5.QtGui import QClipboard, QCloseEvent, QGuiApplication
-from PyQt5.QtWidgets import (
+from PySide2.QtCore import QPoint, QSettings, QSize
+from PySide2.QtGui import QClipboard, QCloseEvent, QGuiApplication, QKeySequence
+from PySide2.QtWidgets import (
     QAction,
     QFileDialog,
     QLabel,
@@ -65,7 +65,7 @@ class EditorWindow(QMainWindow):
 
         # Pycharm does not recognise resolve connect method so the inspection is
         # noinspection PyUnresolvedReferences
-        self.clipboard.dataChanged.connect(self.onClipboardChanged)  # type: ignore
+        self.clipboard.dataChanged.connect(self.onClipboardChanged)
 
         self.lastActiveEditorWidget: Optional[EditorWidget] = None
 
@@ -131,7 +131,9 @@ class EditorWindow(QMainWindow):
         if self.currentEditorWidget is None:
             return
 
-        self.currentEditorWidget.view.scenePosChanged.connect(self.OnScenePosChanged)
+        self.currentEditorWidget.view.scenePosChanged.connect(  # type: ignore
+            self.OnScenePosChanged
+        )
 
     # noinspection PyArgumentList, PyAttributeOutsideInit
     def createActions(self) -> None:
@@ -139,57 +141,57 @@ class EditorWindow(QMainWindow):
         Create basic `File` and `Edit` actions.
         """
         self.newAct: QAction = QAction("&New", self)
-        self.newAct.setShortcut("Ctrl+N")
+        self.newAct.setShortcut(QKeySequence("Ctrl+N"))
         self.newAct.setStatusTip("Create new Nodedge graph")
         self.newAct.triggered.connect(self.newFile)
 
         self.openAct = QAction("&Open", self)
-        self.openAct.setShortcut("Ctrl+O")
+        self.openAct.setShortcut(QKeySequence("Ctrl+O"))
         self.openAct.setStatusTip("Open file")
         self.openAct.triggered.connect(self.openFile)
 
         self.saveAct = QAction("&Save", self)
-        self.saveAct.setShortcut("Ctrl+S")
+        self.saveAct.setShortcut(QKeySequence("Ctrl+S"))
         self.saveAct.setStatusTip("Save file")
         self.saveAct.triggered.connect(self.saveFile)
 
         self.saveAsAct = QAction("Save &As", self)
-        self.saveAsAct.setShortcut("Ctrl+Shift+S")
+        self.saveAsAct.setShortcut(QKeySequence("Ctrl+Shift+S"))
         self.saveAsAct.setStatusTip("Save file as...")
         self.saveAsAct.triggered.connect(self.saveFileAs)
 
         self.quitAct = QAction("&Quit", self)
-        self.quitAct.setShortcut("Ctrl+Q")
+        self.quitAct.setShortcut(QKeySequence("Ctrl+Q"))
         self.quitAct.setStatusTip("Exit application")
         self.quitAct.triggered.connect(self.quit)
 
         self.undoAct = QAction("&Undo", self)
-        self.undoAct.setShortcut("Ctrl+Z")
+        self.undoAct.setShortcut(QKeySequence("Ctrl+Z"))
         self.undoAct.setStatusTip("Undo last operation")
         self.undoAct.triggered.connect(self.undo)
 
         self.redoAct = QAction("&Redo", self)
-        self.redoAct.setShortcut("Ctrl+Shift+Z")
+        self.redoAct.setShortcut(QKeySequence("Ctrl+Shift+Z"))
         self.redoAct.setStatusTip("Redo last operation")
         self.redoAct.triggered.connect(self.redo)
 
         self.cutAct = QAction("C&ut", self)
-        self.cutAct.setShortcut("Ctrl+X")
+        self.cutAct.setShortcut(QKeySequence("Ctrl+X"))
         self.cutAct.setStatusTip("Cut selected items")
         self.cutAct.triggered.connect(self.cut)
 
         self.copyAct = QAction("&Copy", self)
-        self.copyAct.setShortcut("Ctrl+C")
+        self.copyAct.setShortcut(QKeySequence("Ctrl+C"))
         self.copyAct.setStatusTip("Copy selected items")
         self.copyAct.triggered.connect(self.copy)
 
         self.pasteAct = QAction("&Paste", self)
-        self.pasteAct.setShortcut("Ctrl+V")
+        self.pasteAct.setShortcut(QKeySequence("Ctrl+V"))
         self.pasteAct.setStatusTip("Paste selected items")
         self.pasteAct.triggered.connect(self.paste)
 
         self.deleteAct = QAction("&Delete", self)
-        self.deleteAct.setShortcut("Del")
+        self.deleteAct.setShortcut(QKeySequence("Del"))
         self.deleteAct.setStatusTip("Delete selected items")
         self.deleteAct.triggered.connect(self.delete)
 
@@ -302,7 +304,7 @@ class EditorWindow(QMainWindow):
                 filename, _ = QFileDialog.getOpenFileName(
                     parent=self,
                     caption="Open graph from file",
-                    directory=EditorWindow.getFileDialogDirectory(),
+                    dir=EditorWindow.getFileDialogDirectory(),
                     filter=EditorWindow.getFileDialogFilter(),
                 )
 
@@ -341,7 +343,7 @@ class EditorWindow(QMainWindow):
         filename, _ = QFileDialog.getSaveFileName(
             parent=self,
             caption="Save graph to file",
-            directory=EditorWindow.getFileDialogDirectory(),
+            dir=EditorWindow.getFileDialogDirectory(),
             filter=EditorWindow.getFileDialogFilter(),
         )
 
@@ -492,8 +494,8 @@ class EditorWindow(QMainWindow):
         Read the permanent profile settings for this application.
         """
         settings = QSettings(self.companyName, self.productName)
-        pos = settings.value("pos", QPoint(200, 200))
-        size = settings.value("size", QSize(400, 400))
+        pos: QPoint = cast(QPoint, settings.value("pos", QPoint(200, 200)))
+        size: QSize = cast(QSize, settings.value("size", QSize(400, 400)))
         self.debugMode = settings.value("debug", False)
         self.move(pos)
         self.resize(size)
