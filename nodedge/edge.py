@@ -222,7 +222,7 @@ class Edge(Serializable):
         if self.graphicsEdge is not None:
             self.graphicsEdge.update()
 
-    def getOtherSocket(self, knownSocket: "Socket"):
+    def getOtherSocket(self, knownSocket: Optional["Socket"]):
         """
         Return the opposite :class:`~nodedge.socket.Socket` on this
         :class:`~nodedge.edge.Edge`.

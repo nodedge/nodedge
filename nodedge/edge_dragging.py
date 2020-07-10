@@ -28,6 +28,7 @@ class EdgeDraggingMode(IntEnum):
 class EdgeDragging:
     """:class:`~nodedge.edge_dragging.EdgeDragging` class ."""
 
+    # noinspection PyUnresolvedReferences
     def __init__(self, graphicsView: "GraphicsView") -> None:  # type: ignore
         self.graphicsView = graphicsView
         self.dragEdge: Optional[Edge] = None
@@ -37,7 +38,13 @@ class EdgeDragging:
         self.__logger = logging.getLogger(__name__)
         self.__logger.setLevel(logging.INFO)
 
-    def update(self, item: Optional[QGraphicsItem]):
+    def update(self, item: Optional[QGraphicsItem]) -> None:
+        """
+        Update callback.
+
+        :param item: selected item.
+        :return: ``Optional[QGraphicsItem]``
+        """
         if isinstance(item, GraphicsSocket):
             graphicsSocket: GraphicsSocket = item
             if self.mode == EdgeDraggingMode.NOOP:

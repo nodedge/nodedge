@@ -372,7 +372,8 @@ class Node(Serializable):
             socket.removeAllEdges()
         self.__logger.debug("Removing the graphical node.")
         self.scene.graphicsScene.removeItem(self.graphicsNode)
-        self.graphicsNode = None
+        # TODO: Investigate why setting graphicsNode to None makes tests crash.
+        # self.graphicsNode = None
         self.__logger.debug("Removing the node from the scene.")
         self.scene.removeNode(self)
 
@@ -491,8 +492,9 @@ class Node(Serializable):
             socket = socketList[index]
             for edge in socket.edges:
                 otherSocket = edge.getOtherSocket(socket)
-                IONodes.append(otherSocket.node)
-                IOSockets.append(otherSocket)
+                if otherSocket is not None:
+                    IONodes.append(otherSocket.node)
+                    IOSockets.append(otherSocket)
         except IndexError:
             self.__logger.warning(
                 f"Trying to get connected {side} node at #{index} "

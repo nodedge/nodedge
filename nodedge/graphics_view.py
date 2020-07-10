@@ -62,7 +62,7 @@ class GraphicsView(QGraphicsView):
         self.rubberBandDraggingRectangle: bool = False
 
         self.edgeDragging: EdgeDragging = EdgeDragging(self)
-        self.cutline: CutLine = CutLine(self)
+        self.cutLine: CutLine = CutLine(self)
 
         self._dragEnterListeners: List[Callable] = []
         self._dropListeners: List[Callable] = []
@@ -195,7 +195,7 @@ class GraphicsView(QGraphicsView):
                 return
 
             self.edgeDragging.update(item)
-            modifiedEvent = self.cutline.update(event)
+            modifiedEvent = self.cutLine.update(event)
 
             if modifiedEvent is not None:
                 super().mouseReleaseEvent(modifiedEvent)
@@ -236,7 +236,7 @@ class GraphicsView(QGraphicsView):
                         if ret:
                             return
 
-            self.cutline.update(event)
+            self.cutLine.update(event)
 
             if self.rubberBandDraggingRectangle:
                 self.rubberBandDraggingRectangle = False
@@ -350,7 +350,7 @@ class GraphicsView(QGraphicsView):
             else:
                 self.__logger.debug("Dragging edge does not exist.")
 
-        self.cutline.update(event)
+        self.cutLine.update(event)
 
         self.lastSceneMousePos = eventScenePos
         # noinspection PyUnresolvedReferences

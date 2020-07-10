@@ -6,6 +6,10 @@ from PySide2.QtWidgets import QGraphicsTextItem
 
 
 class GraphicsNodeTitleItem(QGraphicsTextItem):
-    def __init__(self, graphicsNodeParent: "GraphicsNode"):  # type: ignore
+    """
+    :class:`~nodedge.graphics_node_title_item.GraphicsNodeTitleItem` class.
+    """
+
+    def __init__(self, graphicsNodeParent: "GraphicsNode") -> None:  # type: ignore
         super().__init__(graphicsNodeParent)
         self.graphicsNode = graphicsNodeParent

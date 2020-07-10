@@ -180,7 +180,7 @@ class MdiWidget(EditorWidget):
         pixmap: QPixmap = QPixmap()
 
         dataStream >> pixmap
-        operationCode = dataStream.readInt()
+        operationCode = dataStream.readInt32()
         text = dataStream.readQString()
 
         mousePos = event.pos()

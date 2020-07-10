@@ -31,6 +31,11 @@ class HistoryListWidget(QListWidget):
         self.itemClicked.connect(self.onItemClicked)
 
     def update(self, *__args) -> None:
+        """
+        Qt's update callback.
+
+        :return: ``None``
+        """
         if self.history is not None:
             self.clear()
             for index, stamp in enumerate(self.history.stack):

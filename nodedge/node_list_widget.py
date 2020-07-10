@@ -105,7 +105,7 @@ class NodeListWidget(QListWidget):
             dataStream = QDataStream(itemData, QIODevice.WriteOnly)
             # left operand works fine with QDataStream
             dataStream << pixmap
-            dataStream.writeInt(operationCode)
+            dataStream.writeInt32(operationCode)
             dataStream.writeQString(item.text())
 
             mimeData = QMimeData()

@@ -19,7 +19,10 @@ class SceneHistory:
     dictionary.
     """
 
-    def __init__(self, scene: "Scene", maxLength: int = 32) -> None:  # type: ignore # noqa: F821
+    # noinspection PyUnresolvedReferences
+    def __init__(
+        self, scene: "Scene", maxLength: int = 32
+    ) -> None:  # type: ignore # noqa: F821
         """
         :param scene: reference to the :class:`~nodedge.scene.Scene`
         :type scene: :class:`~nodedge.scene.Scene`
@@ -167,7 +170,7 @@ class SceneHistory:
             self._currentStep -= 1
             self.restore()
 
-    def redo(self):
+    def redo(self) -> None:
         """
         Perform the redo operation
         """

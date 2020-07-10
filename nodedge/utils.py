@@ -71,14 +71,14 @@ def widgetsAt(pos):
     """
 
     widgets = []
-    widget_at = QtWidgets.qApp.widgetAt(int(pos.x()), int(pos.y()))
+    widget_at = QtWidgets.QApplication.widgetAt(int(pos.x()), int(pos.y()))
 
     while widget_at:
         widgets.append(widget_at)
 
         # Make widget invisible to further enquiries
         widget_at.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
-        widget_at = QtWidgets.qApp.widgetAt(pos)
+        widget_at = QtWidgets.QApplication.widgetAt(pos)
 
     # Restore attribute
     for widget in widgets:

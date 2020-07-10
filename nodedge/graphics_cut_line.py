@@ -14,6 +14,8 @@ from PySide2.QtWidgets import (
     QWidget,
 )
 
+from nodedge.utils import dumpException
+
 
 class CutLineMode(IntEnum):
     """
@@ -88,22 +90,25 @@ class CutLine:
         Compare which :class:`~nodedge.edge.Edge`s intersect with current
         :class:`~nodedge.graphics_cut_line.GraphicsCutLine` and delete them safely.
         """
-        scene: "Scene" = self.graphicsView.graphicsScene.scene  # type: ignore
+        try:
+            scene: "Scene" = self.graphicsView.graphicsScene.scene  # type: ignore
 
-        for ix in range(len(self.graphicsCutLine.linePoints) - 1):
-            p1 = self.graphicsCutLine.linePoints[ix]
-            p2 = self.graphicsCutLine.linePoints[ix + 1]
+            for ix in range(len(self.graphicsCutLine.linePoints) - 1):
+                p1 = self.graphicsCutLine.linePoints[ix]
+                p2 = self.graphicsCutLine.linePoints[ix + 1]
 
-            # @TODO: Notify intersecting edges once.
-            #  we could collect all touched nodes, and notify them once after
-            #  all edges removed we could cut 3 edges leading to a single editor
-            #  this will notify it 3x maybe we could use some Notifier class with
-            #  methods collect() and dispatch()
-            for edge in scene.edges:
-                if edge.graphicsEdge.intersectsWith(p1, p2):
-                    edge.remove()
+                # @TODO: Notify intersecting edges once.
+                #  we could collect all touched nodes, and notify them once after
+                #  all edges removed we could cut 3 edges leading to a single editor
+                #  this will notify it 3x maybe we could use some Notifier class with
+                #  methods collect() and dispatch()
+                for edge in scene.edges:
+                    if edge.graphicsEdge.intersectsWith(p1, p2):
+                        edge.remove()
 
-        scene.history.store("Delete cut edges.")
+            scene.history.store("Delete cut edges.")
+        except Exception as e:
+            dumpException(e)
 
 
 class GraphicsCutLine(QGraphicsItem):

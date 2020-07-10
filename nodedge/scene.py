@@ -321,7 +321,7 @@ class Scene(Serializable):
             self.isModified = False
             self.filename = filename
 
-    def loadFromFile(self, filename):
+    def loadFromFile(self, filename: str) -> None:
         """
         Load `Scene` from a file on disk
 
@@ -345,6 +345,13 @@ class Scene(Serializable):
                 dumpException(e)
 
     def serialize(self) -> OrderedDict:
+        """
+        Serialization method to serialize this class data into ``OrderedDict`` which
+        can be stored in memory or file easily.
+
+        :return: data serialized in ``OrderedDict``
+        :rtype: ``OrderedDict``
+        """
         nodes, edges = [], []
         for node in self.nodes:
             nodes.append(node.serialize())
@@ -370,6 +377,22 @@ class Scene(Serializable):
         *args,
         **kwargs,
     ) -> bool:
+        """
+        Deserialization method which take data in python ``dict`` format with helping
+        `hashmap` containing references to existing entities.
+
+        :param data: dictionary containing serialized data
+        :type data: ``dict``
+        :param hashmap: helper dictionary containing references (by id == key) to
+            existing objects
+        :type hashmap: ``dict``
+        :param restoreId: ``True`` if we are creating new sockets. ``False`` is useful
+            when loading existing sockets which we want to keep the existing
+            object's `id`
+        :type restoreId: ``bool``
+        :return: ``True`` if deserialization was successful, ``False`` otherwise
+        :rtype: ``bool``
+        """
         try:
             if hashmap is None:
                 hashmap = {}
