@@ -21,8 +21,8 @@ class SceneHistory:
 
     # noinspection PyUnresolvedReferences
     def __init__(
-        self, scene: "Scene", maxLength: int = 32
-    ) -> None:  # type: ignore # noqa: F821
+        self, scene: "Scene", maxLength: int = 32  # type: ignore # noqa: F821
+    ) -> None:
         """
         :param scene: reference to the :class:`~nodedge.scene.Scene`
         :type scene: :class:`~nodedge.scene.Scene`
@@ -301,6 +301,7 @@ class SceneHistory:
                     if node.id == nodeId:
                         node.graphicsNode.setSelected(True)
                         break
+            self.__logger.debug("History stamp has been restored.")
         except Exception as e:
             self.__logger.warning("Failed to restore stamp")
             dumpException(e)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Graphics cut line module containing
 :class:`~nodedge.graphics_cut_line.GraphicsCutLine` class. """
-
+import logging
 from enum import IntEnum
 from typing import List, Optional
 
@@ -31,7 +31,10 @@ class CutLine:
         :class:`~nodedge.graphics_cut_line.CutLine` class.
     """
 
-    def __init__(self, graphicsView: "GraphicsView"):  # type: ignore
+    def __init__(self, graphicsView: "GraphicsView") -> None:  # type: ignore
+
+        self.__logger = logging.getLogger(__file__)
+        self.__logger.setLevel(logging.INFO)
         self.mode: CutLineMode = CutLineMode.NOOP
         self.graphicsCutLine: GraphicsCutLine = GraphicsCutLine()
         self.graphicsView = graphicsView
@@ -92,7 +95,7 @@ class CutLine:
         """
         try:
             scene: "Scene" = self.graphicsView.graphicsScene.scene  # type: ignore
-
+            self.__logger.debug(f"Cutting points: {self.graphicsCutLine.linePoints}")
             for ix in range(len(self.graphicsCutLine.linePoints) - 1):
                 p1 = self.graphicsCutLine.linePoints[ix]
                 p2 = self.graphicsCutLine.linePoints[ix + 1]
@@ -102,12 +105,24 @@ class CutLine:
                 #  all edges removed we could cut 3 edges leading to a single editor
                 #  this will notify it 3x maybe we could use some Notifier class with
                 #  methods collect() and dispatch()
-                for edge in scene.edges:
+
+                for edge in reversed(scene.edges):
                     if edge.graphicsEdge.intersectsWith(p1, p2):
+                        self.__logger.debug(
+                            f"[{p1.__pos__()}, {p2.__pos__()}] intersects with: {edge}"
+                        )
                         edge.remove()
+                    else:
+                        self.__logger.debug(
+                            f"[{p1.__pos__()}, {p2.__pos__()}] does not intersect with: "
+                            f"{edge.graphicsEdge.path()}"
+                        )
 
             scene.history.store("Delete cut edges.")
+            self.__logger.debug("Cutting has been done.")
+
         except Exception as e:
+            self.__logger.debug("e")
             dumpException(e)
 
 

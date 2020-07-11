@@ -585,6 +585,7 @@ class MdiWindow(EditorWindow):
             self.stylesheetLastModified = modTime
             loadStyleSheets(self.styleSheetFilename)
 
+    @Slot(List[str])  # type: ignore
     def showItemsInStatusBar(self, items: List[str]):
         """
         Slot triggered when an item has been selected.

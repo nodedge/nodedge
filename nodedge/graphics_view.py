@@ -313,7 +313,7 @@ class GraphicsView(QGraphicsView):
             event.localPos(),
             event.screenPos(),
             Qt.LeftButton,
-            event.buttons() & -Qt.LeftButton,
+            event.buttons() | -Qt.LeftButton,
             event.modifiers(),
         )
         super().mouseReleaseEvent(fake_event)
