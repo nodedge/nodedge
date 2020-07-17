@@ -184,7 +184,7 @@ class MdiWidget(EditorWidget):
         text = dataStream.readQString()
 
         mousePos = event.pos()
-        scenePos = self.scene.view.mapToScene(mousePos)
+        scenePos = self.scene.graphicsView.mapToScene(mousePos)
 
         self.__logger.debug(
             f"Received text ({text}) and code ({operationCode}) at pos ({scenePos})"
@@ -309,23 +309,24 @@ class MdiWidget(EditorWidget):
 
         if action is not None:
             newNode = getClassFromOperationCode(action.data())(self.scene)
-            scenePos = self.scene.view.mapToScene(event.pos())
+            scenePos = self.scene.graphicsView.mapToScene(event.pos())
             newNode.pos = scenePos
             self.__contextLogger.debug(f"New node: {newNode}")
 
-            if self.scene.view.edgeDragging.mode == EdgeDraggingMode.EDGE_DRAG:
-                self.scene.view.edgeDragging.endEdgeDragging(
+            if self.scene.graphicsView.edgeDragging.mode == EdgeDraggingMode.EDGE_DRAG:
+                self.scene.graphicsView.edgeDragging.endEdgeDragging(
                     newNode.inputSockets[0].graphicsSocket
                 )
 
                 # newNode.isSelected = True
 
                 targetSocket: Optional[Socket] = MdiWidget.determineTargetSocketOfNode(
-                    self.scene.view.edgeDragging.dragStartSocket.isOutput, newNode
+                    self.scene.graphicsView.edgeDragging.dragStartSocket.isOutput,
+                    newNode,
                 )
 
                 if targetSocket is not None:
-                    self.scene.view.edgeDragging.endEdgeDragging(
+                    self.scene.graphicsView.edgeDragging.endEdgeDragging(
                         targetSocket.graphicsSocket
                     )
                     self.finishNewNodeState(newNode)

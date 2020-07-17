@@ -129,6 +129,7 @@ class MdiWindow(EditorWindow):
         Create the status bar describing Nodedge status and the mouse position.
         """
         self.statusBar().showMessage("Ready")
+        super().createStatusBar()
 
     # noinspection PyArgumentList, PyAttributeOutsideInit
     def createActions(self) -> None:

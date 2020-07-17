@@ -91,7 +91,7 @@ class SceneItemsTableWidget(QTableWidget):
         self.item(row, column).setSelected(True)
 
     def onCellDoubleClicked(self, row, column):
-        self.scene.view.centerOn(
+        self.scene.graphicsView.centerOn(
             float(self.item(row, 2).text()), float(self.item(row, 3).text())
         )
 

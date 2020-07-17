@@ -123,7 +123,7 @@ class Scene(Serializable):
         return self.graphicsScene.selectedItems()
 
     @property
-    def view(self) -> GraphicsView:
+    def graphicsView(self) -> GraphicsView:
         """Shortcut for returning `Scene` ``QGraphicsView``
 
         :return: ``QGraphicsView`` attached to the `Scene`
@@ -234,7 +234,7 @@ class Scene(Serializable):
 
         :param callback: callback function
         """
-        self.view.addDragEnterListener(callback)
+        self.graphicsView.addDragEnterListener(callback)
 
     def addDropListener(self, callback: Callable[[QDropEvent], None]):
         """
@@ -242,7 +242,7 @@ class Scene(Serializable):
 
         :param callback: callback function
         """
-        self.view.addDropListener(callback)
+        self.graphicsView.addDropListener(callback)
 
     def resetLastSelectedStates(self) -> None:
         """Resets internal `selected flags` in all `Nodes` and `Edges` in the `Scene`"""
@@ -486,7 +486,7 @@ class Scene(Serializable):
         :return: Qt Graphics Item at scene position
         :rtype: ``QGraphicsItem``
         """
-        return self.view.itemAt(pos)
+        return self.graphicsView.itemAt(pos)
 
     def getNodeById(self, nodeId: int) -> Optional[Node]:
         """

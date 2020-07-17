@@ -7,7 +7,7 @@ import logging
 import os
 from typing import Optional, cast
 
-from PySide2.QtCore import QPoint, QSettings, QSize
+from PySide2.QtCore import QPoint, QSettings, QSize, Qt
 from PySide2.QtGui import QClipboard, QCloseEvent, QGuiApplication, QKeySequence
 from PySide2.QtWidgets import (
     QAction,
@@ -53,7 +53,7 @@ class EditorWindow(QMainWindow):
         )
 
         self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.INFO)
+        self.__logger.setLevel(logging.DEBUG)
 
         self.companyName = "Nodedge"
         self.productName = "Editor"
@@ -131,7 +131,7 @@ class EditorWindow(QMainWindow):
         if self.currentEditorWidget is None:
             return
 
-        self.currentEditorWidget.view.scenePosChanged.connect(  # type: ignore
+        self.currentEditorWidget.graphicsView.scenePosChanged.connect(  # type: ignore
             self.OnScenePosChanged
         )
 
@@ -186,7 +186,7 @@ class EditorWindow(QMainWindow):
         self.copyAct.triggered.connect(self.copy)
 
         self.pasteAct = QAction("&Paste", self)
-        self.pasteAct.setShortcut(QKeySequence("Ctrl+V"))
+        self.pasteAct.setShortcut(QKeySequence.Paste)
         self.pasteAct.setStatusTip("Paste selected items")
         self.pasteAct.triggered.connect(self.paste)
 
@@ -195,6 +195,11 @@ class EditorWindow(QMainWindow):
         self.deleteAct.setStatusTip("Delete selected items")
         self.deleteAct.triggered.connect(self.delete)
 
+        self.fitInViewAct = QAction("Fit in view", self)
+        self.fitInViewAct.setShortcut(QKeySequence(Qt.Key_Space))
+        self.fitInViewAct.setStatusTip("Fit content in view")
+        self.fitInViewAct.triggered.connect(self.onFitInView)
+
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
     def createMenus(self) -> None:
         """
@@ -202,6 +207,7 @@ class EditorWindow(QMainWindow):
         """
         self.createFileMenu()
         self.createEditMenu()
+        self.createViewMenu()
 
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
     def createFileMenu(self):
@@ -231,6 +237,14 @@ class EditorWindow(QMainWindow):
         self.editMenu.addAction(self.pasteAct)
         self.editMenu.addSeparator()
         self.editMenu.addAction(self.deleteAct)
+
+    # noinspection PyAttributeOutsideInit
+    def createViewMenu(self) -> None:
+        """
+        Create view menu.
+        """
+        self.viewMenu: QMenu = self.menuBar().addMenu("&View")
+        self.viewMenu.addAction(self.fitInViewAct)
 
     def sizeHint(self) -> QSize:
         """
@@ -275,7 +289,6 @@ class EditorWindow(QMainWindow):
         :param y: new cursor y position
         :type y: float
         """
-
         self.statusMousePos.setText(f"Scene pos: {x}, {y}")
 
     def newFile(self):
@@ -398,7 +411,7 @@ class EditorWindow(QMainWindow):
         """
         self.__logger.debug("Deleting selected items")
         if self.currentEditorWidget:
-            self.currentEditorWidget.view.deleteSelected()
+            self.currentEditorWidget.graphicsView.deleteSelected()
 
     def cut(self) -> None:
         """
@@ -525,3 +538,7 @@ class EditorWindow(QMainWindow):
         :type filename: ``str``
         """
         pass
+
+    def onFitInView(self):
+        if self.currentEditorWidget is not None:
+            self.currentEditorWidget.graphicsView.graphicsScene.fitInView()

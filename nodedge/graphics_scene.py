@@ -4,13 +4,14 @@ Graphics scene module containing :class:`~nodedge.graphics_scene.GraphicsScene` 
 """
 
 import logging
-import math
+from math import ceil, floor, log
 from typing import Optional
 
 from PySide2.QtCore import QLine, Qt, Signal
-from PySide2.QtGui import QColor, QPen, QTransform
+from PySide2.QtGui import QColor, QMatrix, QPen, QTransform
 from PySide2.QtWidgets import (
     QGraphicsItem,
+    QGraphicsItemGroup,
     QGraphicsScene,
     QGraphicsSceneDragDropEvent,
     QGraphicsSceneMouseEvent,
@@ -89,10 +90,10 @@ class GraphicsScene(QGraphicsScene):
         super().drawBackground(painter, rectangle)
 
         # Create the background grid
-        left = int(math.floor(rectangle.left()))
-        right = int(math.ceil(rectangle.right()))
-        top = int(math.floor(rectangle.top()))
-        bottom = int(math.ceil(rectangle.bottom()))
+        left = int(floor(rectangle.left()))
+        right = int(ceil(rectangle.right()))
+        top = int(floor(rectangle.top()))
+        bottom = int(ceil(rectangle.bottom()))
 
         firstLeft = left - (left % self.gridSize)
         first_top = top - (top % self.gridSize)
@@ -168,3 +169,48 @@ class GraphicsScene(QGraphicsScene):
             item.setSelected(True)
 
         super().mouseReleaseEvent(event)
+
+    def fitInView(self):
+        """
+
+        :return:
+        """
+        if len(self.scene.nodes) <= 1:
+            return
+
+        nodes = self.scene.nodes
+        items = [node.graphicsNode for node in nodes]
+        group = QGraphicsItemGroup()
+        for item in items:
+            group.addToGroup(item)
+
+        zoomInFactor = self.scene.graphicsView.zoomInFactor
+        maxZoomLevel = self.scene.graphicsView.zoomRange[1]
+
+        # Get current scale factor.
+        oldMatrix: QMatrix = self.scene.graphicsView.matrix()
+        oldScaleFactor = oldMatrix.m11()
+        oldZoomLevel = maxZoomLevel + round(log(oldScaleFactor) / log(zoomInFactor))
+
+        # Fit in view and estimate new scale factor.
+        self.scene.graphicsView.fitInView(group, Qt.KeepAspectRatio)
+        newMatrix = self.scene.graphicsView.matrix()
+        newScaleFactor = newMatrix.m11()
+        newZoomLevel = min(
+            maxZoomLevel, maxZoomLevel + floor(log(newScaleFactor) / log(zoomInFactor))
+        )
+
+        # Restore old scale factor.
+        self.scene.graphicsView.setMatrix(oldMatrix)
+
+        # Apply new scale factor properly.
+        self.scene.graphicsView.zoom = newZoomLevel
+        newScale = pow(zoomInFactor, newZoomLevel - oldZoomLevel)
+        self.scene.graphicsView.scale(newScale, newScale)
+
+        # Center on nodes.
+        self.scene.graphicsView.centerOn(group)
+
+        for item in items:
+            group.removeFromGroup(item)
+            self.scene.graphicsScene.addItem(item)

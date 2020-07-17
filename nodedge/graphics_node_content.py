@@ -70,7 +70,7 @@ class GraphicsNodeContent(QWidget, Serializable):
         :type value: ``bool``
         """
 
-        self.node.scene.view.editingFlag = value
+        self.node.scene.graphicsView.editingFlag = value
 
     def serialize(self) -> OrderedDict:
         """ Default serialization method.

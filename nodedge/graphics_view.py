@@ -49,7 +49,7 @@ class GraphicsView(QGraphicsView):
 
         self.setScene(self.graphicsScene)
 
-        self.zoomInFactor: float = 1.75
+        self.zoomInFactor: float = 1.25
         self.zoomClamp: bool = True
         self.zoomStep: int = 1
         self.zoomRange: List[int] = [0, 10]
@@ -313,7 +313,7 @@ class GraphicsView(QGraphicsView):
             event.localPos(),
             event.screenPos(),
             Qt.LeftButton,
-            event.buttons() | -Qt.LeftButton,
+            event.buttons() | Qt.LeftButton,
             event.modifiers(),
         )
         super().mouseReleaseEvent(fake_event)
@@ -393,17 +393,24 @@ class GraphicsView(QGraphicsView):
         Overridden Qt's ``wheelEvent``.
         This handles zooming.
         """
+        zoomIn = event.angleDelta().y() > 0
+        self.updateZoom(zoomIn)
+        self.__logger.debug(
+            f"Scale: {self.matrix().m11()}, "
+            f"Zoom factor: {self.zoomInFactor}, "
+            f"Zoom level: {self.zoom}"
+        )
+
+    def updateZoom(self, zoomIn: bool = True):
         # Compute zoom factor
         zoomOutFactor = 1.0 / self.zoomInFactor
-
         # Compute zoom
-        if event.angleDelta().y() > 0:
+        if zoomIn:
             zoomFactor = self.zoomInFactor
             self.zoom += self.zoomStep
         else:
             zoomFactor = zoomOutFactor
             self.zoom -= self.zoomStep
-
         clamped = False
         if self.zoom < self.zoomRange[0]:
             self.zoom = self.zoomRange[0]
@@ -411,7 +418,6 @@ class GraphicsView(QGraphicsView):
         elif self.zoom > self.zoomRange[1]:
             self.zoom = self.zoomRange[1]
             clamped = True
-
         # Set scene scale
         if not clamped or self.zoomClamp is False:
             self.scale(zoomFactor, zoomFactor)

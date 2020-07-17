@@ -40,7 +40,7 @@ def test_sceneHasView(qtbot):
     editor = EditorWidget()
     qtbot.addWidget(editor)
 
-    assert isinstance(editor.scene.view, QGraphicsView)
+    assert isinstance(editor.scene.graphicsView, QGraphicsView)
 
 
 def test_emptySceneAddAndRemoveNode(emptyScene):
@@ -87,9 +87,9 @@ def test_addDropListener(qtbot):
     qtbot.addWidget(editor)
     scene = editor.scene
 
-    assert len(scene.view._dropListeners) == 0
+    assert len(scene.graphicsView._dropListeners) == 0
     scene.addDropListener(Node)
-    assert len(scene.view._dropListeners) > 0
+    assert len(scene.graphicsView._dropListeners) > 0
 
 
 # noinspection PyProtectedMember
@@ -188,9 +188,9 @@ def test_onSelectedItems(qtbot: QtBot):
 
     window.setActiveSubWindow(subWindow)
 
-    pos2 = editorWidget.scene.view.mapToScene(QPoint(-10, -10))
-    pos3 = editorWidget.scene.view.mapToScene(QPoint(10, 10))
-    editorWidget.scene.view.show()
+    pos2 = editorWidget.scene.graphicsView.mapToScene(QPoint(-10, -10))
+    pos3 = editorWidget.scene.graphicsView.mapToScene(QPoint(10, 10))
+    editorWidget.scene.graphicsView.show()
 
     # editorWidget.scene.graphicsScene.setFocus(Qt.ActiveWindowFocusReason)
     qtbot.mousePress(
@@ -212,7 +212,7 @@ def test_onSelectedItems(qtbot: QtBot):
     assert scene.selectedItems == []
     assert scene.lastSelectedItems == [node.graphicsNode]
 
-    editorWidget.scene.view.rubberBandDraggingRectangle = True
+    editorWidget.scene.graphicsView.rubberBandDraggingRectangle = True
     qtbot.mousePress(
         editorWidget, Qt.LeftButton, pos=QPoint(int(-pos2.x()), int(-pos2.y()))
     )

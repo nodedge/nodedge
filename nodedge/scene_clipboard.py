@@ -73,7 +73,7 @@ class SceneClipboard:
 
         # If cut (aka delete) remove selected items
         if delete:
-            self.scene.view.deleteSelected()
+            self.scene.graphicsView.deleteSelected()
             # Store history
             self.scene.history.store("Cut out selected items from scene")
 
@@ -89,7 +89,7 @@ class SceneClipboard:
         hashmap = {}
 
         # Calculate mouse scene position
-        view = self.scene.view
+        view = self.scene.graphicsView
         mouseScenePos = view.lastSceneMousePos
 
         # Calculate selected objects bounding box and center

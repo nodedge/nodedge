@@ -69,10 +69,10 @@ class EditorWidget(QWidget):
 
         self.setLayout(self.layout)
         self.scene: Scene = self.__class__.SceneClass()
-        self.view: GraphicsView = self.__class__.GraphicsViewClass(
+        self.graphicsView: GraphicsView = self.__class__.GraphicsViewClass(
             self.scene.graphicsScene, self
         )
-        self.layout.addWidget(self.view)
+        self.layout.addWidget(self.graphicsView)
 
     @property
     def hasName(self) -> bool:
@@ -237,7 +237,7 @@ class EditorWidget(QWidget):
         :param ev: Mouse release event
         :type ev: ``QMouseEvent``
         """
-        self.view.mouseReleaseEvent(ev)
+        self.graphicsView.mouseReleaseEvent(ev)
         super().mouseReleaseEvent(ev)
 
     def mousePressEvent(self, ev: QMouseEvent) -> None:
@@ -247,7 +247,7 @@ class EditorWidget(QWidget):
         :param ev: Mouse press event
         :type ev: ``QMouseEvent``
         """
-        self.view.mousePressEvent(ev)
+        self.graphicsView.mousePressEvent(ev)
         super().mousePressEvent(ev)
 
     def addDebugContent(self) -> None:
