@@ -88,6 +88,8 @@ class MdiWindow(EditorWindow):
             self.styleSheetFilename
         )
 
+        # self.setWindowFlag(Qt.FramelessWindowHint)
+
         self.timer = QTimer()
         self.timer.setTimerType(Qt.PreciseTimer)
         self.timer.setInterval(500)

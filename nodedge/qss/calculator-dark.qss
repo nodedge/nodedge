@@ -86,7 +86,7 @@ color:#eeeeee;
 QDockWidget{
 color:#dddddd;
 font-weight:bold;
-titlebar-close-icon:url(":icons/docktitle-close-btn-light.png");
+titlebar-close-icon:url("../../nodedge/resources/iconsModified/close_window_100.png");
 titlebar-normal-icon:url(":icons/docktitle-normal-btn-light.png");
 }
 

@@ -200,6 +200,11 @@ class EditorWindow(QMainWindow):
         self.fitInViewAct.setStatusTip("Fit content in view")
         self.fitInViewAct.triggered.connect(self.onFitInView)
 
+        self.generateCodeAct = QAction("Generate code", self)
+        self.generateCodeAct.setShortcut(QKeySequence("Ctrl+G"))
+        self.generateCodeAct.setStatusTip("Generate python code")
+        self.generateCodeAct.triggered.connect(self.onGenerateCode)
+
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
     def createMenus(self) -> None:
         """
@@ -540,5 +545,9 @@ class EditorWindow(QMainWindow):
         pass
 
     def onFitInView(self):
+        if self.currentEditorWidget is not None:
+            self.currentEditorWidget.graphicsView.graphicsScene.fitInView()
+
+    def onGenerateCode(self):
         if self.currentEditorWidget is not None:
             self.currentEditorWidget.graphicsView.graphicsScene.fitInView()

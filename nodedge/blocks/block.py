@@ -84,6 +84,9 @@ class Block(Node):
 
         try:
             self.checkInputsValidity()
+            # TODO: Implement evalInputs and checkInputsConsistency methods
+            # self.evalInputs()
+            # self.checkInputsConsistency()
             self.value = self.evalImplementation()
             self.isDirty = False
             self.isInvalid = False

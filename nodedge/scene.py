@@ -12,6 +12,7 @@ from typing import Callable, List, Optional, cast
 from PySide2.QtGui import QDragEnterEvent, QDropEvent
 from PySide2.QtWidgets import QGraphicsItem
 
+from nodedge.code_generator import CodeGenerator
 from nodedge.edge import Edge
 from nodedge.graphics_scene import GraphicsScene
 from nodedge.graphics_view import GraphicsView
@@ -49,6 +50,7 @@ class Scene(Serializable):
 
         self.history: SceneHistory = SceneHistory(self)
         self.clipboard: SceneClipboard = SceneClipboard(self)
+        self.codeGenerator: CodeGenerator = CodeGenerator(self)
 
         self._isModified: bool = False
         self.isModified: bool = False

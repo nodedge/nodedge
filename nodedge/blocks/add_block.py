@@ -28,3 +28,9 @@ class AddBlock(Block):
         self.value = result
 
         return self.value
+
+
+# TODO: make evalImplementation generic with respect to number of inputs
+# TODO: Find a way to extract exceptions from evalImplementation
+# TODO: Create a script to generate blocks from a dictionary (JSON / CSV / whatever)
+# TODO: Create a script to generate tests for blocks: list of Inputs and list of expected Outputs
