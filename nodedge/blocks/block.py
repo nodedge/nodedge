@@ -138,7 +138,7 @@ class EvaluationError(Exception):
     """
     :class:`~nodedge.block.EvaluationError` class
 
-    If a not cannot be evaluated, raise this error.
+    If a block cannot be evaluated, raise this error.
     """
 
     pass

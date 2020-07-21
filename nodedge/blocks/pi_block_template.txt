@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from operator import add
+from ${library} import ${function}
 
 from nodedge.blocks.block import Block, EvaluationError
-from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, OP_NODE_ADD, registerNode
+from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, ${op_block_string}, registerNode
 
 
-@registerNode(OP_NODE_ADD)
-class AddBlock(Block):
-    icon = f"{BLOCKS_ICONS_PATH}/add.png"
+@registerNode(${op_block_string})
+class ${block_name}Block(Block):
+    icon = f"{BLOCKS_ICONS_PATH}/${operation_name}.png"
     operationCode = OP_NODE_ADD
-    operationTitle = "Add"
-    contentLabel = "+"
+    operationTitle = "${block_name}"
+    contentLabel = "${operation_symbol}"
     contentLabelObjectName = "BlockBackground"
-    evalString = "add"
+    evalString = "${operation_name}"
 
     def evalImplementation(self):
         inputs = []
@@ -32,8 +32,3 @@ class AddBlock(Block):
         self.value = result
 
         return self.value
-
-# TODO: use join method instead ','.join(list_of_strings)
-# TODO: Find a way to extract exceptions from evalImplementation
-# TODO: Create a script to generate blocks from a dictionary (JSON / CSV / whatever)
-# TODO: Create a script to generate tests for blocks: list of Inputs and list of expected Outputs
