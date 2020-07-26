@@ -3,13 +3,16 @@
 from ${library} import ${function}
 
 from nodedge.blocks.block import Block, EvaluationError
-from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, ${op_block_string}, registerNode
-
+from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
+try:
+    from nodedge.blocks.block_config import ${op_block_string}
+except:
+    op_block_string = -1
 
 @registerNode(${op_block_string})
 class ${block_name}Block(Block):
     icon = f"{BLOCKS_ICONS_PATH}/${operation_name}.png"
-    operationCode = OP_NODE_ADD
+    operationCode = ${op_block_string}
     operationTitle = "${block_name}"
     contentLabel = "${operation_symbol}"
     contentLabelObjectName = "BlockBackground"
@@ -21,7 +24,7 @@ class ${block_name}Block(Block):
             inputs.append(self.inputNodeAt(i))
 
         try:
-            operation = f"{AddBlock.evalString}("
+            operation = f"{${block_name}Block.evalString}("
             for curr_input in inputs:
                 operation += f"{curr_input.eval()},"
             operation = operation[:-1] + f")"

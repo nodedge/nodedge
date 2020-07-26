@@ -24,6 +24,7 @@ recursive-include nodedge/qss *
 recursive-include nodedge/resources *
 recursive-include tests *
 recursive-include examples *
+recursive-include tools *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
 

@@ -33,7 +33,7 @@ class AddBlock(Block):
 
         return self.value
 
+
 # TODO: use join method instead ','.join(list_of_strings)
 # TODO: Find a way to extract exceptions from evalImplementation
-# TODO: Create a script to generate blocks from a dictionary (JSON / CSV / whatever)
 # TODO: Create a script to generate tests for blocks: list of Inputs and list of expected Outputs
