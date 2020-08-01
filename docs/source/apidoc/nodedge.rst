@@ -20,7 +20,7 @@ Submodules
    nodedge.graphics_edge
    nodedge.graphics_node
    nodedge.graphics_node_content
-   nodedge.graphics_node_title_item
+   nodedge.graphics_node_title_label
    nodedge.graphics_scene
    nodedge.graphics_socket
    nodedge.graphics_view

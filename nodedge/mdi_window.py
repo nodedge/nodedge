@@ -15,6 +15,7 @@ from PySide2.QtWidgets import (
     QMdiSubWindow,
     QMenu,
     QMessageBox,
+    QToolBar,
     QWidget,
 )
 
@@ -38,7 +39,6 @@ class MdiWindow(EditorWindow):
     def __init__(self) -> None:
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
-
         self.currentEditorWidgetChangedListeners: List[Callable] = []
 
         self.stylesheetLastModified: float = 0.0
@@ -192,12 +192,15 @@ class MdiWindow(EditorWindow):
         """
         Create the `File` and `Edit` toolbar containing few of their menu actions.
         """
-        self.fileToolBar = self.addToolBar("File")
+        self.fileToolBar: QToolBar = self.addToolBar("File")
+        self.fileToolBar.setMovable(False)
         self.fileToolBar.addAction(self.newAct)
         self.fileToolBar.addAction(self.openAct)
         self.fileToolBar.addAction(self.saveAct)
+        self.fileToolBar.addSeparator()
 
         self.editToolBar = self.addToolBar("Edit")
+        self.editToolBar.setMovable(False)
         self.editToolBar.addAction(self.cutAct)
         self.editToolBar.addAction(self.copyAct)
         self.editToolBar.addAction(self.pasteAct)
@@ -209,6 +212,8 @@ class MdiWindow(EditorWindow):
         `Window` menu allows to navigate between the sub-windows.
         `Help` menu allows to display know more about Nodedge.
         """
+        self.createHomeMenu()
+
         super().createMenus()
 
         self.createWindowMenu()
@@ -216,6 +221,21 @@ class MdiWindow(EditorWindow):
 
         # noinspection PyUnresolvedReferences
         self.editMenu.aboutToShow.connect(self.updateEditMenu)
+
+    # noinspection PyAttributeOutsideInit
+    def createHomeMenu(self):
+        self.homeMenu: QMenu = self.menuBar().addMenu(
+            QIcon("../../nodedge/resources/iconsModified/home_page_100.png"), "&Home"
+        )
+        self.homeMenu.aboutToShow.connect(self.openHome)
+
+    def openHome(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setInformativeText("It is not yet implemented.")
+        msg.setWindowTitle("Home page")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.exec_()
 
     # noinspection PyAttributeOutsideInit
     def createHelpMenu(self) -> None:

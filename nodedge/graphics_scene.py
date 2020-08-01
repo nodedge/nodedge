@@ -57,23 +57,22 @@ class GraphicsScene(QGraphicsScene):
 
     # noinspection PyAttributeOutsideInit
     def initStyle(self) -> None:
-        """Initialize ``QObjects`` like ``QColor``, ``QPten`` and ``QBrush``"""
-        self._colorBackground = QColor("#DFE0DC")
-        self._colorLight = QColor("#ffffff")
-        self._colorDark = QColor("#ffffff")
+        """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
+        self._colorBackground = QColor("#363A46")
+        self._colorLight = QColor("#666666")
+        self._colorDark = QColor("#999999")
 
-        self._penLight = QPen(self._colorLight)
-        self._penLight.setWidth(1)
+        self._penSmallSquares = QPen(self._colorLight, 0.3, Qt.DotLine)
 
-        self._penDark = QPen(self._colorDark)
-        self._penDark.setWidth(2)
+        self._penBigSquares = QPen(self._colorDark, 0.6)
+        self._penBigSquares.setDashPattern([2, 6])
 
     # noinspection PyAttributeOutsideInit
     def initSizes(self) -> None:
         """Set up internal attributes like `grid_size`, `scene_width` and
         `scene_height`. """
-        self.gridSize = 20
-        self.gridSquares = 5
+        self.gridSize = 15
+        self.gridSquares = 4
         self.sceneWidth = 64000
         self.sceneHeight = 64000
 
@@ -115,10 +114,10 @@ class GraphicsScene(QGraphicsScene):
                 linesLight.append(line)
 
         # Draw the lines
-        painter.setPen(self._penLight)
+        painter.setPen(self._penSmallSquares)
         painter.drawLines(linesLight)
 
-        painter.setPen(self._penDark)
+        painter.setPen(self._penBigSquares)
         painter.drawLines(linesDark)
 
     def dragMoveEvent(self, event: QGraphicsSceneDragDropEvent) -> None:

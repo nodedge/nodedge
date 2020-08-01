@@ -36,9 +36,7 @@ class GraphicsNodeContent(QWidget, Serializable):
 
         QWidget.__init__(self, parent)
         self.node: "Node" = node  # type: ignore
-
         self.initUI()
-        self.setAttribute(Qt.WA_TranslucentBackground)
 
     # noinspection PyAttributeOutsideInit
     def initUI(self):

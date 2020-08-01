@@ -12,10 +12,12 @@ from PySide2.QtWidgets import (
     QGraphicsItem,
     QGraphicsSceneHoverEvent,
     QGraphicsSceneMouseEvent,
+    QVBoxLayout,
+    QWidget,
 )
 
-from nodedge.graphics_node_content import GraphicsNodeContentProxy
-from nodedge.graphics_node_title_item import GraphicsNodeTitleItem
+from nodedge.graphics_node_content import GraphicsNodeContent, GraphicsNodeContentProxy
+from nodedge.graphics_node_title_label import GraphicsNodeTitleLabel
 from nodedge.graphics_scene import GraphicsScene
 
 
@@ -61,7 +63,7 @@ class GraphicsNode(QGraphicsItem):
     @title.setter
     def title(self, value):
         self._title = value
-        self.titleItem.setPlainText(self._title)
+        self.titleLabel.setText(self._title)
 
     @property
     def selectedState(self):
@@ -88,7 +90,6 @@ class GraphicsNode(QGraphicsItem):
         """
         self.initSizes()
         self.initStyle()
-        self.initTitle()
         self.initContent()
 
         self.setAcceptHoverEvents(True)
@@ -100,21 +101,7 @@ class GraphicsNode(QGraphicsItem):
         """
         Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``.
         """
-        self._titleColor: QColor = QColor(Qt.white)
-        self._colorHovered: QColor = QColor("#FF37A6FF")
-
-        self._titleFont: QFont = QFont("Ubuntu", 10)
-
-        self._penDefault: QPen = QPen(QColor("#7F000000"))
-        self._penDefault.setWidthF(2.0)
-        self._penSelected: QPen = QPen(QColor("#FFFFA637"))
-        self._penSelected.setWidthF(2.0)
-
-        self._penHovered: QPen = QPen(self._colorHovered)
-        self._penHovered.setWidthF(3.0)
-
-        self._brushTitle: QBrush = QBrush(QColor("#FF313131"))
-        self._brushBackground: QBrush = QBrush(QColor("#E3212121"))
+        pass
 
     # noinspection PyAttributeOutsideInit
     def initSizes(self) -> None:
@@ -130,19 +117,6 @@ class GraphicsNode(QGraphicsItem):
         self.titleVerticalPadding: float = 4.0
 
     # noinspection PyAttributeOutsideInit
-    def initTitle(self) -> None:
-        """
-        Set up the title Graphics representation: font, color, position, etc.
-        """
-        self.titleItem: GraphicsNodeTitleItem = GraphicsNodeTitleItem(self)
-        self.titleItem.setDefaultTextColor(self._titleColor)
-        self.titleItem.setFont(self._titleFont)
-        self.titleItem.setPos(self.titleHorizontalPadding, 0)
-        self.titleItem.setTextWidth(self.width - 2 * self.titleHorizontalPadding)
-
-        self.title = self.node.title
-
-    # noinspection PyAttributeOutsideInit
     def initContent(self) -> None:
         """
         Set up the
@@ -152,14 +126,16 @@ class GraphicsNode(QGraphicsItem):
         """
 
         if self.content is not None:
-            self.content.setGeometry(
-                int(self.edgePadding),
-                int(self.titleHeight + self.edgePadding),
-                int(self.width - 2 * self.edgePadding),
-                int(self.height - 2 * self.edgePadding - self.titleHeight),
-            )
+            self.content.setGeometry(0, 0, self.width, self.height)
             self.graphicsContentProxy = GraphicsNodeContentProxy(self)
-            self.graphicsContentProxy.setWidget(self.content)
+            widget = GraphicsNodeWidget()
+            widget.setGeometry(0, 0, self.width, self.height)
+            layout = GraphicsNodeVBoxLayout()
+            widget.setLayout(layout)
+            self.titleLabel = GraphicsNodeTitleLabel(self.title, widget)
+            layout.addWidget(self.titleLabel)
+            layout.addWidget(self.content)
+            self.graphicsContentProxy.setWidget(widget)
 
     def boundingRect(self):
         """
@@ -171,67 +147,7 @@ class GraphicsNode(QGraphicsItem):
         """
         Paint the rounded rectangular :class:`~nodedge.node.Node`.
         """
-        # title
-        pathTitle = QPainterPath()
-        pathTitle.setFillRule(Qt.WindingFill)
-        pathTitle.addRoundedRect(
-            0, 0, self.width, self.titleHeight, self.edgeRoundness, self.edgeRoundness
-        )
-        maxTopRect = max(self.titleHeight - self.edgeRoundness, self.titleHeight / 2.0)
-        maxHeightRect = min(self.edgeRoundness, self.titleHeight / 2.0)
-        pathTitle.addRect(0, maxTopRect, self.edgeRoundness, maxHeightRect)
-        pathTitle.addRect(
-            self.width - self.edgeRoundness,
-            maxTopRect,
-            self.edgeRoundness,
-            maxHeightRect,
-        )
-
-        painter.setPen(Qt.NoPen)
-        painter.setBrush(self._brushTitle)
-        painter.drawPath(pathTitle.simplified())
-
-        # content
-        pathContent = QPainterPath()
-        pathContent.setFillRule(Qt.WindingFill)
-        pathContent.addRoundedRect(
-            0,
-            self.titleHeight,
-            self.width,
-            self.height - self.titleHeight,
-            self.edgeRoundness,
-            self.edgeRoundness,
-        )
-        maxHeightRect = min(self.edgeRoundness, self.height / 2)
-        pathContent.addRect(0, self.titleHeight, self.edgeRoundness, maxHeightRect)
-        pathContent.addRect(
-            self.width - self.edgeRoundness,
-            self.titleHeight,
-            self.edgeRoundness,
-            maxHeightRect,
-        )
-        painter.setPen(Qt.NoPen)
-        painter.setBrush(self._brushBackground)
-        painter.drawPath(pathContent.simplified())
-
-        # outline
-        pathOutline = QPainterPath()
-        pathOutline.addRoundedRect(
-            -1,
-            -1,
-            self.width + 2,
-            self.height + 2,
-            self.edgeRoundness,
-            self.edgeRoundness,
-        )
-        painter.setBrush(Qt.NoBrush)
-
-        if self.hovered:
-            painter.setPen(self._penHovered)
-            painter.drawPath(pathOutline.simplified())
-
-        painter.setPen(self._penDefault if not self.isSelected() else self._penSelected)
-        painter.drawPath(pathOutline.simplified())
+        pass
 
     def mouseMoveEvent(self, event):
         """
@@ -306,3 +222,14 @@ class GraphicsNode(QGraphicsItem):
         Handle when the node has been selected.
         """
         self.node.scene.graphicsScene.itemSelected.emit()
+
+
+class GraphicsNodeWidget(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+
+class GraphicsNodeVBoxLayout(QVBoxLayout):
+    def __init__(self, parent=None):
+        super(GraphicsNodeVBoxLayout, self).__init__(parent)
+        self.setContentsMargins(0, 0, 0, 0)

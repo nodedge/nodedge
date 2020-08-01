@@ -36,3 +36,4 @@ recursive-exclude docs/build *
 
 include *.txt
 recursive-include nodedge *.cfg
+recursive-exclude ui/ *

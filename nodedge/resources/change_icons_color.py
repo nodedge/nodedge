@@ -14,6 +14,7 @@ def changeIconsColor(
     folderOutput: str = "icons",
     rgbOld: List[int] = (0, 0, 0),
     rgbNew: List[int] = (255, 255, 255),
+    maxAlpha: int = 210,
 ) -> bool:
     """
     function to remove icon prefix from all icons contained in "icons" folder.
@@ -30,7 +31,7 @@ def changeIconsColor(
             for y in range(height):
                 r, g, b, a = pixels[x, y]
                 if (r, g, b) == rgbOld:
-                    pixels[x, y] = (rgbNew[0], rgbNew[1], rgbNew[2], a)
+                    pixels[x, y] = (rgbNew[0], rgbNew[1], rgbNew[2], min(maxAlpha, a))
         im.save(folderOutput + "/" + filename)
 
     return True

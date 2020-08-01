@@ -23,3 +23,4 @@ _template/
 *.egg-info/
 .tox/
 examples/examples
+ui
