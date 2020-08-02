@@ -12,6 +12,7 @@ from typing import Optional, Union
 from PySide2.QtCore import QPointF, Qt
 from PySide2.QtGui import QColor, QPainterPath, QPen
 from PySide2.QtWidgets import (
+    QApplication,
     QGraphicsItem,
     QGraphicsPathItem,
     QGraphicsSceneHoverEvent,
@@ -108,23 +109,20 @@ class GraphicsEdge(QGraphicsPathItem):
         """
         Initialize ``QObject`` like ``QColor``, ``QPen`` and ``QBrush``
         """
-        self._defaultColor: QColor = QColor("#001000")
+        p = QApplication.palette()
+        self._defaultColor: QColor = p.dark().color()
         self._color: QColor = self._defaultColor
         self._colorSelected: QColor = QColor("#00ff00")
-        self._colorHovered: QColor = QColor("#FF37A6FF")
 
         self._pen: QPen = QPen(self._color)
-        self._pen.setWidthF(3.0)
+        self._pen.setWidthF(2.0)
 
         self._penSelected: QPen = QPen(self._colorSelected)
         self._penSelected.setWidthF(3.0)
 
         self._penDragging: QPen = QPen(self._color)
-        self._penDragging.setWidthF(3.0)
+        self._penDragging.setWidthF(2.0)
         self._penDragging.setStyle(Qt.DashLine)
-
-        self._penHovered: QPen = QPen(self._colorHovered)
-        self._penHovered.setWidthF(5.0)
 
         self.setZValue(-1)
 
@@ -164,7 +162,9 @@ class GraphicsEdge(QGraphicsPathItem):
         :param event: Qt's mouse hover event
         :type event: ``QGraphicsSceneHoverEvent``
         """
+        p = QApplication.palette()
         self.hovered = True
+        self._pen.setColor(p.highlight().color())
         self.update()
 
     def hoverLeaveEvent(self, event: QGraphicsSceneHoverEvent) -> None:
@@ -175,6 +175,8 @@ class GraphicsEdge(QGraphicsPathItem):
         :type event: ``QGraphicsSceneHoverEvent``
         """
         self.hovered = False
+        p = QApplication.palette()
+        self._pen.setColor(p.dark().color())
         self.update()
 
     def shape(self) -> QPainterPath:
@@ -196,10 +198,6 @@ class GraphicsEdge(QGraphicsPathItem):
         self.setPath(self.calcPath())
 
         painter.setBrush(Qt.NoBrush)
-
-        if self.hovered and self.edge.targetSocket is not None:
-            painter.setPen(self._penHovered)
-            painter.drawPath(self.path())
 
         if self.edge.targetSocket is None:
             painter.setPen(self._penDragging)

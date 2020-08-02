@@ -18,7 +18,7 @@ border:0;
 QMdiArea QTabBar::tab
 {
 font-size: 14px;
-height:30px;
+height:25px;
 }
 
 QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:selected,
@@ -29,10 +29,10 @@ background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,
     stop : 1 palette(dark));
 border-top-left-radius:0px;
 border-top-right-radius:0px;
-padding:2px 8px;
+padding:0px 8px;
 padding-top:0;
 padding-bottom:3px;
-min-width:8ex;
+min-width:8px;
 border:none;
 border-color:none;
 border-bottom:0;}
@@ -50,7 +50,8 @@ background:palette(highlight);
 QMdiArea QTabBar::close-button{
 image:url("../../nodedge/resources/iconsModified/close_window_100.png");
 subcontrol-position:right bottom;
-icon-size:16px;
+icon-size: 16px;
+padding: 0px;
 }
 
 QMdiArea QTabBar::close-button:!selected{
@@ -60,24 +61,21 @@ image:url("close_window_100.png");
 QDockWidget{
 font-size: 14px;
 color:palette(window-text);
-font-weight:bold;
+/*font-weight:bold;*/
 titlebar-close-icon:url("../../nodedge/resources/iconsModified/close_window_100.png");
 titlebar-normal-icon:url(":icons/docktitle-normal-btn-light.png");
 icon-size:25px;
 width:25px;
-}
-
-qDockWidget{
 border: 1px solid palette(highlight);
 }
 
 QDockWidget::title{
 background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 palette(mid),
 stop : 0.2 palette(mid),stop : 0.1 palette(mid));
-font-weight:bold;
 color: transparent;
 text-align: center;
 border: none;
+height:25px;
 }
 
 QDockWidget::title:hover{
@@ -97,6 +95,7 @@ background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,
 QDockWidget::close-button{
 image:url("../../nodedge/resources/iconsModified/close_window_100.png");
 icon-size: 25px;
+padding: 0px;
 }
 
 QMenuBar{
@@ -164,13 +163,14 @@ border:0;}
 
 QTableView::item{
 color:palette(text);
+padding-left: 10px;
 }
 
 QTableView::item:hover{
 background:palette(light);
 }
 
-QTable View::item:active:hover{
+QTableView::item:active:hover{
 color:palette(text);
 }
 
@@ -231,23 +231,24 @@ padding:1px 2px;
 }
 
 QGraphicsView {
-  selection-background-color: palette(light);
+selection-background-color: palette(light);
 }
 
 QTableWidget {
 background-color: palette(window);
-padding: 0px;
-gridline-color: palette(light);
+padding-left: 0px;
+gridline-color: palette(window);
 border-bottom: 1px solid palette(window);
 }
 
 QTableWidget::item{
 font-size: 14px;
-border-color: palette(window);
+/*border-color: palette(window);*/
 padding-left: 10px;
 padding-right: 10px;
-gridline-color: palette(window);
-border-left: 1px solid palette(light);
+padding-top: 0px;
+/*gridline-color: palette(window);*/
+/*border-left: 1px solid palette(light);*/
 }
 
 QTableWidget::item:selected{
@@ -256,7 +257,7 @@ background-color: palette(highlight);
 
 QHeaderView::section
 {
-border: 1px solid palette(light);
+border: 0px solid palette(light);
 background-color: palette(dark);
 }
 
@@ -341,6 +342,7 @@ GraphicsNodeContent QLabel#OutputBlockContent {
 
 GraphicsNodeContent QLineEdit#InputBlockContent {
 background: palette(light);
+qproperty-alignment: AlignLeft;
 width: 140px;
 height: 20px;
 margin-top: 5px;

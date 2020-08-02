@@ -140,9 +140,10 @@ class GraphicsCutLine(QGraphicsItem):
         super().__init__(parent)
 
         self.linePoints: List[QPointF] = []
-        self._pen: QPen = QPen(Qt.gray)
+        p = QApplication.palette()
+        self._pen: QPen = QPen(p.link().color())
         self._pen.setWidth(2)
-        self._pen.setDashPattern([3, 3])
+        self._pen.setDashPattern([2, 4])
 
         self.setZValue(2)
 

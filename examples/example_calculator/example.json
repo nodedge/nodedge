@@ -27,7 +27,7 @@
             "id": 1583747824656,
             "title": "Input",
             "posX": -347.0,
-            "posY": -24.0,
+            "posY": -22.0,
             "inputSockets": [],
             "outputSockets": [
                 {
@@ -196,8 +196,8 @@
         {
             "id": 1583749804960,
             "title": "Output",
-            "posX": 119.0,
-            "posY": -181.5,
+            "posX": 120.0,
+            "posY": -177.5,
             "inputSockets": [
                 {
                     "id": 1583749805200,
@@ -215,7 +215,7 @@
             "id": 1583749320560,
             "title": "Output",
             "posX": 115.0,
-            "posY": -53.5,
+            "posY": -49.5,
             "inputSockets": [
                 {
                     "id": 1583749804288,
@@ -233,7 +233,7 @@
             "id": 1583749320608,
             "title": "Output",
             "posX": 118.0,
-            "posY": 64.5,
+            "posY": 69.5,
             "inputSockets": [
                 {
                     "id": 1583749804528,

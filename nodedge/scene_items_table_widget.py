@@ -45,7 +45,6 @@ class SceneItemsTableWidget(QTableWidget):
         self.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
         self.verticalHeader().hide()
         self.setShowGrid(True)
-
         self.cellClicked.connect(self.onCellClicked)
         self.cellDoubleClicked.connect(self.onCellDoubleClicked)
 
@@ -81,6 +80,8 @@ class SceneItemsTableWidget(QTableWidget):
                     typeItem.setSelected(True)
                     posXItem.setSelected(True)
                     posYItem.setSelected(True)
+
+                self.setRowHeight(row, 30)
 
         super().update()
 
