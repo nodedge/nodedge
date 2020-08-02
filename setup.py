@@ -51,7 +51,7 @@ setup(
     keywords=KEYWORDS,
     description="Graphical editor for physical modeling and simulation.",
     url="https://www.nodedge.io",
-    version="0.2.2",
+    version="0.2.1",
     license="MIT",
     author="Anthony De Bortoli",
     author_email="anthony.debortoli@nodedge.io",

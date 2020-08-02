@@ -14,6 +14,12 @@ History
 ------------------
 * Cleaning and add documentation
 
+0.2.2 (2020-08-02)
+------------------
+* Improve style.
+* Add history dock widget.
+* Add scene items dock widget.
+* Fix crash after edge deletion.
 
 
 
