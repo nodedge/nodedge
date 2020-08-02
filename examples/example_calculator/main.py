@@ -22,8 +22,8 @@ if __name__ == "__main__":
     independence = QColor("#464B5B")
     white = QColor("#DDFFFFFF")
     blue = QColor("#007BFF")
-    spanishGray = QColor("#999999")
-    dimGray = QColor("#666666")
+    spanishGray = QColor("#8791AF")
+    dimGray = QColor("#6C748C")
 
     p.setColor(QPalette.AlternateBase, blue)
     p.setColor(QPalette.Base, charCoal)

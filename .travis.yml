@@ -14,6 +14,7 @@ language: python
 branches:
   only:
     - master
+    - /^v.*$/
 
 
 before_install:
@@ -47,9 +48,11 @@ jobs:
     - python: 3.6
       env: TOXENV=docs
 
+
 before_script:
   - "herbstluftwm &"
   - sleep 1
 
 script:
   - QT_DEBUG_PLUGINS=1 tox
+
