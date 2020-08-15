@@ -10,9 +10,9 @@ from nodedge.utils import dumpException
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))  # noqa: E402
 os.environ["QT_API"] = "pyside"
 
-if __name__ == "__main__":
-    app: QApplication = QApplication(sys.argv)
 
+def main():
+    app: QApplication = QApplication(sys.argv)
     QApplication.setStyle("Fusion")
     p = QApplication.palette()
     raisinBlackDark = QColor("#1B1D23")
@@ -24,7 +24,6 @@ if __name__ == "__main__":
     blue = QColor("#007BFF")
     spanishGray = QColor("#8791AF")
     dimGray = QColor("#6C748C")
-
     p.setColor(QPalette.AlternateBase, blue)
     p.setColor(QPalette.Base, charCoal)
     p.setColor(QPalette.BrightText, blue)
@@ -43,14 +42,16 @@ if __name__ == "__main__":
     p.setColor(QPalette.Window, charCoal)
     p.setColor(QPalette.WindowText, white)
     app.setPalette(p)
-
     window = MdiWindow()
-
     window.show()
-
-    window.openFile(f"{os.path.dirname(__file__)}/example.json")
-
+    window.openFile(
+        f"{os.path.dirname(__file__)}/../examples/calculator/calculator.json"
+    )
     try:
         sys.exit(app.exec_())
     except Exception as e:
         dumpException(e)
+
+
+if __name__ == "__main__":
+    main()

@@ -4,10 +4,7 @@ include HISTORY.rst
 include LICENSE
 include README.rst
 include requirements.txt
-exclude pyproject.toml
 include setup.py
-include Pipfile
-include Pipfile.lock
 include readthedocs.yml
 include mypy.ini
 include .bumpversion.cfg
@@ -20,7 +17,6 @@ include requirements_dev.txt
 include requirements_docs.txt
 include requirements_tests.txt
 include tox.ini
-include setup.cfg
 include .coveragerc
 
 recursive-include nodedge/qss *
@@ -30,10 +26,9 @@ recursive-include examples *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
 
-recursive-include docs *.md *.rst *.py Makefile make.bat *.jpg *.png *.gif
+recursive-include docs *.rst *.py Makefile make.bat *.png
 recursive-include docs/source/_templates *
 recursive-exclude docs/build *
 
 include *.txt
-recursive-include nodedge *.cfg
-recursive-exclude ui/ *
+recursive-include nodedge *
