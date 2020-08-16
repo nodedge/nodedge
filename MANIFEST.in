@@ -17,6 +17,7 @@ include requirements_dev.txt
 include requirements_docs.txt
 include requirements_tests.txt
 include tox.ini
+include pytest.ini
 include .coveragerc
 
 recursive-include nodedge/qss *

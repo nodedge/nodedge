@@ -1,1 +1,2 @@
+pyqtconsole
 PySide2==5.14.2.3

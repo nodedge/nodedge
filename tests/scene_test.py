@@ -20,7 +20,8 @@ def emptyScene(qtbot):
     window.show()
     qtbot.addWidget(editor)
 
-    return editor.scene
+    yield editor.scene
+    window.close()
 
 
 @pytest.fixture
@@ -41,6 +42,8 @@ def test_sceneHasView(qtbot):
     qtbot.addWidget(editor)
 
     assert isinstance(editor.scene.graphicsView, QGraphicsView)
+
+    window.close()
 
 
 def test_emptySceneAddAndRemoveNode(emptyScene):
@@ -91,6 +94,8 @@ def test_addDropListener(qtbot):
     scene.addDropListener(Node)
     assert len(scene.graphicsView._dropListeners) > 0
 
+    window.close()
+
 
 # noinspection PyProtectedMember
 def test_addItemsDeselectedListeners(qtbot):
@@ -114,6 +119,8 @@ def test_addItemSelectedListeners(qtbot):
     assert len(scene._itemSelectedListeners) == 0
     scene.addItemSelectedListener(Node)
     assert len(scene._itemSelectedListeners) > 0
+
+    window.close()
 
 
 def test_resetLastSelectedStates(filledScene):
@@ -156,6 +163,8 @@ def test_serializeSelected(qtbot):
     assert deserializedEdge.sourceSocket == deserializedNode.inputSockets[0]
     assert deserializedEdge.targetSocket == deserializedNode.outputSockets[0]
 
+    window.close()
+
 
 def test_itemAt(qtbot: QtBot):
     window = QMainWindow()
@@ -169,6 +178,8 @@ def test_itemAt(qtbot: QtBot):
 
     pos = pos
     assert scene.itemAt(pos).parentItem() == scene.nodes[0].graphicsNode
+
+    window.close()
 
 
 def test_onSelectedItems(qtbot: QtBot):
@@ -222,6 +233,11 @@ def test_onSelectedItems(qtbot: QtBot):
     assert scene.selectedItems == [node.graphicsNode]
     assert scene.lastSelectedItems == [node.graphicsNode]
 
+    # Simulate the scene is not modified
+    # to avoid opening a QMessageBox asking to save modifications.
+    scene.isModified = False
+    window.close()
+
 
 @pytest.mark.parametrize("execution_number", range(5))
 def test_undo_crash_without_details(execution_number, qtbot):
@@ -234,7 +250,6 @@ def test_undo_crash_without_details(execution_number, qtbot):
     scene.clear()
     scene.history.clear(storeInitialStamp=True)
     subWindow.show()
-    print(scene.history.stack)
     node = Node(scene, "", [1], [1])  # noqa: F841
     scene.history.store("Create new node")
     for i in range(5):
@@ -242,6 +257,5 @@ def test_undo_crash_without_details(execution_number, qtbot):
         scene.nodes[0].pos = pos
         scene.history.store("Change node position")
         scene.history.undo()
-        print(scene.history.currentStep)
 
-    print(scene.history.stackSize)
+    window.close()

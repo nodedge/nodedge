@@ -18,7 +18,8 @@ def emptyScene(qtbot):
     window.show()
     qtbot.addWidget(editor)
 
-    return editor.scene
+    yield editor.scene
+    window.close()
 
 
 @pytest.fixture

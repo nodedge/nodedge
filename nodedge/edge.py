@@ -7,6 +7,7 @@ from collections import OrderedDict
 from enum import IntEnum
 from typing import Callable, List, Optional
 
+from nodedge.connector import Socket
 from nodedge.graphics_edge import (
     GraphicsEdge,
     GraphicsEdgeBezier,
@@ -14,7 +15,6 @@ from nodedge.graphics_edge import (
     GraphicsEdgeDirect,
 )
 from nodedge.serializable import Serializable
-from nodedge.socket import Socket
 from nodedge.utils import dumpException
 
 

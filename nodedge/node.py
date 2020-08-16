@@ -11,11 +11,11 @@ from typing import Callable, Collection, List, Optional, Tuple, TypeVar, cast
 from PySide2.QtCore import QPoint, QPointF
 from PySide2.QtWidgets import QGraphicsSceneMouseEvent
 
+from nodedge.connector import Socket, SocketLocation
 from nodedge.edge import Edge
 from nodedge.graphics_node import GraphicsNode
 from nodedge.graphics_node_content import GraphicsNodeContent
 from nodedge.serializable import Serializable
-from nodedge.socket import Socket, SocketLocation
 from nodedge.utils import dumpException
 
 Pos = TypeVar("Pos", List, Tuple, QPoint, QPointF)

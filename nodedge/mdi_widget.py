@@ -23,11 +23,11 @@ from nodedge.blocks.block_config import (
     NODELISTWIDGET_MIMETYPE,
     getClassFromOperationCode,
 )
+from nodedge.connector import Socket
 from nodedge.edge import EdgeType
 from nodedge.editor_widget import EditorWidget
 from nodedge.graphics_view import EdgeDraggingMode
 from nodedge.node import Node
-from nodedge.socket import Socket
 from nodedge.utils import dumpException
 
 

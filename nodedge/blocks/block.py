@@ -7,8 +7,8 @@ from typing import Optional
 
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.blocks.graphics_block_content import GraphicsBlockContent
+from nodedge.connector import Socket, SocketLocation
 from nodedge.node import Node
-from nodedge.socket import Socket, SocketLocation
 from nodedge.utils import dumpException
 
 

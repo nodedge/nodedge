@@ -13,7 +13,11 @@ Submodules
 
 .. toctree::
 
+   nodedge.code_generator
+   nodedge.connector
    nodedge.edge
+   nodedge.edge_dragging
+   nodedge.edge_validators
    nodedge.editor_widget
    nodedge.editor_window
    nodedge.graphics_cut_line
@@ -24,6 +28,8 @@ Submodules
    nodedge.graphics_scene
    nodedge.graphics_socket
    nodedge.graphics_view
+   nodedge.history_list_widget
+   nodedge.mdi_area
    nodedge.mdi_widget
    nodedge.mdi_window
    nodedge.node
@@ -31,8 +37,8 @@ Submodules
    nodedge.scene
    nodedge.scene_clipboard
    nodedge.scene_history
+   nodedge.scene_items_table_widget
    nodedge.serializable
-   nodedge.socket
    nodedge.utils
 
 Module contents

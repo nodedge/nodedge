@@ -5,6 +5,7 @@ import logging
 import os
 from typing import Any, Callable, List, Optional, cast
 
+from pyqtconsole.console import PythonConsole
 from PySide2.QtCore import QSignalMapper, Qt, QTimer, Slot
 from PySide2.QtGui import QCloseEvent, QIcon, QKeySequence
 from PySide2.QtWidgets import (
@@ -115,6 +116,7 @@ class MdiWindow(EditorWindow):
         self.createNodesDock()
         self.createHistoryDock()
         self.createSceneItemsDock()
+        self.createPythonConsole()
 
         self.createActions()
         self.createMenus()
@@ -463,6 +465,21 @@ class MdiWindow(EditorWindow):
 
         self.addDockWidget(Qt.LeftDockWidgetArea, self.sceneItemsDock)
 
+    # noinspection PyAttributeOutsideInit
+    def createPythonConsole(self) -> None:
+        """
+        Create a python console embedded in a dock.
+        :return: ``None``
+        """
+        self.pythonConsoleWidget = PythonConsole()
+        self.pythonConsoleWidget.eval_in_thread()
+
+        self.pythonConsoleDock = QDockWidget("Python console")
+        self.pythonConsoleDock.setWidget(self.pythonConsoleWidget)
+        self.pythonConsoleDock.setFloating(False)
+
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.pythonConsoleDock)
+
     def closeEvent(self, event: QCloseEvent) -> None:
         """
         Qt's close event handle.
@@ -471,6 +488,7 @@ class MdiWindow(EditorWindow):
         :type event: ``QCloseEvent.py``
         :return: ``None``
         """
+        self.pythonConsoleWidget.close()
         self.mdiArea.closeAllSubWindows()
         if self.mdiArea.currentSubWindow():
             event.ignore()

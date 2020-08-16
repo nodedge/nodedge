@@ -48,7 +48,7 @@ background:palette(highlight);
 }
 
 QMdiArea QTabBar::close-button{
-image:url("nodedge/resources/iconsModified/close_window_100.png");
+image:url("resources/iconsModified/close_window_100.png");
 subcontrol-position:right bottom;
 icon-size: 16px;
 padding: 0px;
@@ -62,7 +62,7 @@ QDockWidget{
 font-size: 14px;
 color:palette(window-text);
 /*font-weight:bold;*/
-titlebar-close-icon:url("nodedge/resources/iconsModified/close_window_100.png");
+titlebar-close-icon:url("resources/iconsModified/close_window_100.png");
 titlebar-normal-icon:url(":icons/docktitle-normal-btn-light.png");
 icon-size:25px;
 width:25px;
@@ -93,7 +93,7 @@ background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,
 }
 
 QDockWidget::close-button{
-image:url("nodedge/resources/iconsModified/close_window_100.png");
+image:url("resources/iconsModified/close_window_100.png");
 icon-size: 25px;
 padding: 0px;
 }
@@ -294,7 +294,7 @@ background:palette(highlight);
 }
 
 QMenu{
-image:url("../../nodedge/resources/iconsModified/close_window_100.png");
+image:url("resources/iconsModified/close_window_100.png");
 }
 
 GraphicsNodeContent QFrame {

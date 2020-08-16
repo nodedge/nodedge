@@ -3,11 +3,11 @@ from PySide2.QtCore import QPointF
 from PySide2.QtWidgets import QMainWindow
 from pytestqt.qtbot import QtBot
 
+from nodedge.connector import SocketLocation
 from nodedge.edge import Edge
 from nodedge.editor_widget import EditorWidget
 from nodedge.node import Node
 from nodedge.scene import Scene
-from nodedge.socket import SocketLocation
 from nodedge.utils import dumpException
 
 
@@ -17,7 +17,8 @@ def emptyScene(qtbot):
     editor = EditorWidget(window)
     qtbot.addWidget(editor)
 
-    return editor.scene
+    yield editor.scene
+    window.close()
 
 
 @pytest.fixture

@@ -7,7 +7,9 @@ from nodedge.mdi_window import MdiWindow
 
 @pytest.fixture
 def emptyMdiWindow(qtbot: QtBot):
-    return MdiWindow()
+    mdiWindow = MdiWindow()
+    yield mdiWindow
+    mdiWindow.close()
 
 
 @pytest.fixture
@@ -15,7 +17,8 @@ def filledMdiWindow(qtbot):
     window = MdiWindow()
     window.show()
     subWindow = window.newFile()
-    return window
+    yield window
+    window.close()
 
 
 def test_newFile(emptyMdiWindow):
@@ -23,6 +26,7 @@ def test_newFile(emptyMdiWindow):
     emptyMdiWindow.mdiArea.setActiveSubWindow(subWindow)
 
     assert emptyMdiWindow.mdiArea.subWindowList() == [subWindow]
+    emptyMdiWindow.mdiArea.closeAllSubWindows()
 
 
 def test_setActiveSubWindow(qtbot: QtBot, filledMdiWindow: MdiWindow):

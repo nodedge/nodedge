@@ -490,7 +490,7 @@ class EditorWindow(QMainWindow):
         :rtype: ``bool``
         """
 
-        if not self.currentEditorWidget.isModified:
+        if self.currentEditorWidget is None or not self.currentEditorWidget.isModified:
             return True
 
         res = QMessageBox.warning(

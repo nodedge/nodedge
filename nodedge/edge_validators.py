@@ -18,7 +18,7 @@ file or on the application start with calling this:
 
 """
 
-from nodedge.socket import Socket
+from nodedge.connector import Socket
 
 DEBUG = False
 

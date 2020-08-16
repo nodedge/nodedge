@@ -9,9 +9,9 @@ from typing import Optional
 
 from PySide2.QtWidgets import QGraphicsItem
 
+from nodedge.connector import Socket
 from nodedge.edge import Edge, EdgeType
 from nodedge.graphics_socket import GraphicsSocket
-from nodedge.socket import Socket
 from nodedge.utils import dumpException
 
 
