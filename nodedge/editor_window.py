@@ -5,7 +5,7 @@ Editor window module containing :class:`~nodedge.editor_window.EditorWindow` cla
 import json
 import logging
 import os
-from typing import Optional, cast
+from typing import Callable, Optional, Union, cast
 
 from PySide2.QtCore import QPoint, QSettings, QSize, Qt
 from PySide2.QtGui import QClipboard, QCloseEvent, QGuiApplication, QKeySequence
@@ -140,70 +140,64 @@ class EditorWindow(QMainWindow):
         """
         Create basic `File` and `Edit` actions.
         """
-        self.newAct: QAction = QAction("&New", self)
-        self.newAct.setShortcut(QKeySequence("Ctrl+N"))
-        self.newAct.setStatusTip("Create new Nodedge graph")
-        self.newAct.triggered.connect(self.newFile)
 
-        self.openAct = QAction("&Open", self)
-        self.openAct.setShortcut(QKeySequence("Ctrl+O"))
-        self.openAct.setStatusTip("Open file")
-        self.openAct.triggered.connect(self.openFile)
+        self.newAct = self.createAction(
+            "&New", self.newFile, "Create new Nodedge graph", QKeySequence("Ctrl+N")
+        )
 
-        self.saveAct = QAction("&Save", self)
-        self.saveAct.setShortcut(QKeySequence("Ctrl+S"))
-        self.saveAct.setStatusTip("Save file")
-        self.saveAct.triggered.connect(self.saveFile)
+        self.openAct = self.createAction(
+            "&Open", self.openFile, "Open file", QKeySequence("Ctrl+O")
+        )
 
-        self.saveAsAct = QAction("Save &As", self)
-        self.saveAsAct.setShortcut(QKeySequence("Ctrl+Shift+S"))
-        self.saveAsAct.setStatusTip("Save file as...")
-        self.saveAsAct.triggered.connect(self.saveFileAs)
+        self.saveAct = self.createAction(
+            "&Save", self.saveFile, "Save file", QKeySequence("Ctrl+S")
+        )
 
-        self.quitAct = QAction("&Quit", self)
-        self.quitAct.setShortcut(QKeySequence("Ctrl+Q"))
-        self.quitAct.setStatusTip("Exit application")
-        self.quitAct.triggered.connect(self.quit)
+        self.saveAsAct = self.createAction(
+            "Save &As", self.saveFileAs, "Save file as...", QKeySequence("Ctrl+Shift+S")
+        )
 
-        self.undoAct = QAction("&Undo", self)
-        self.undoAct.setShortcut(QKeySequence("Ctrl+Z"))
-        self.undoAct.setStatusTip("Undo last operation")
-        self.undoAct.triggered.connect(self.undo)
+        self.quitAct = self.createAction(
+            "&Quit", self.quit, "Exit application", QKeySequence("Ctrl+Q")
+        )
 
-        self.redoAct = QAction("&Redo", self)
-        self.redoAct.setShortcut(QKeySequence("Ctrl+Shift+Z"))
-        self.redoAct.setStatusTip("Redo last operation")
-        self.redoAct.triggered.connect(self.redo)
+        self.undoAct = self.createAction(
+            "&Undo", self.undo, "Undo last operation", QKeySequence("Ctrl+Z")
+        )
 
-        self.cutAct = QAction("C&ut", self)
-        self.cutAct.setShortcut(QKeySequence("Ctrl+X"))
-        self.cutAct.setStatusTip("Cut selected items")
-        self.cutAct.triggered.connect(self.cut)
+        self.redoAct = self.createAction(
+            "&Redo", self.redo, "Redo last operation", QKeySequence("Ctrl+Shift+Z")
+        )
 
-        self.copyAct = QAction("&Copy", self)
-        self.copyAct.setShortcut(QKeySequence("Ctrl+C"))
-        self.copyAct.setStatusTip("Copy selected items")
-        self.copyAct.triggered.connect(self.copy)
+        self.cutAct = self.createAction(
+            "C&ut", self.cut, "Cut selected items", QKeySequence("Ctrl+X")
+        )
 
-        self.pasteAct = QAction("&Paste", self)
-        self.pasteAct.setShortcut(QKeySequence.Paste)
-        self.pasteAct.setStatusTip("Paste selected items")
-        self.pasteAct.triggered.connect(self.paste)
+        self.copyAct = self.createAction(
+            "&Copy", self.copy, "Copy selected items", QKeySequence("Ctrl+C")
+        )
 
-        self.deleteAct = QAction("&Delete", self)
-        self.deleteAct.setShortcut(QKeySequence("Del"))
-        self.deleteAct.setStatusTip("Delete selected items")
-        self.deleteAct.triggered.connect(self.delete)
+        self.pasteAct = self.createAction(
+            "&Paste", self.paste, "Paste selected items", QKeySequence.Paste
+        )
 
-        self.fitInViewAct = QAction("Fit in view", self)
-        self.fitInViewAct.setShortcut(QKeySequence(Qt.Key_Space))
-        self.fitInViewAct.setStatusTip("Fit content in view")
-        self.fitInViewAct.triggered.connect(self.onFitInView)
+        self.deleteAct = self.createAction(
+            "&Delete", self.delete, "Delete selected items", QKeySequence("Del")
+        )
 
-        self.generateCodeAct = QAction("Generate code", self)
-        self.generateCodeAct.setShortcut(QKeySequence("Ctrl+G"))
-        self.generateCodeAct.setStatusTip("Generate python code")
-        self.generateCodeAct.triggered.connect(self.onGenerateCode)
+        self.fitInViewAct = self.createAction(
+            "Fit in view",
+            self.onFitInView,
+            "Fit content in view",
+            QKeySequence(Qt.Key_Space),
+        )
+
+        self.generateCodeAct = self.createAction(
+            "Generate code",
+            self.onGenerateCode,
+            "Generate python code",
+            QKeySequence("Ctrl+G"),
+        )
 
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
     def createMenus(self) -> None:
@@ -551,3 +545,38 @@ class EditorWindow(QMainWindow):
     def onGenerateCode(self):
         if self.currentEditorWidget is not None:
             self.currentEditorWidget.graphicsView.graphicsScene.fitInView()
+
+    def createAction(
+        self,
+        name: str,
+        callback: Callable,
+        statusTip: Optional[str] = None,
+        shortcut: Union[None, str, QKeySequence] = None,
+    ) -> QAction:
+        """
+        Create an action for this window and add it to actions list.
+
+        :param name: action's name
+        :type name: ``str``
+        :param callback: function to be called when the action is triggered
+        :type callback: ``Callable``
+        :param statusTip: Description of the action displayed
+            at the bottom left of the :class:`~nodedge.editor_window.EditorWindow`.
+        :type statusTip: Optional[``str``]
+        :param shortcut: Keyboard shortcut to trigger the action.
+        :type shortcut: ``Optional[str]``
+        :return:
+        """
+        act = QAction(name, self)
+        act.triggered.connect(callback)
+
+        if statusTip is not None:
+            act.setStatusTip(statusTip)
+            act.setToolTip(statusTip)
+
+        if shortcut is not None:
+            act.setShortcut(QKeySequence(shortcut))
+
+        self.addAction(act)
+
+        return act

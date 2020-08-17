@@ -4,4 +4,4 @@ recommonmark
 sphinx
 sphinx-autodoc-typehints
 sphinx-autodoc-types
--e git+https://github.com/readthedocs/sphinx_rtd_theme#egg=sphinx-rtd-theme
+sphinx-rtd-theme

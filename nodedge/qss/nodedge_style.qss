@@ -359,13 +359,18 @@ GraphicsNodeWidget{
 background:palette(mid);
 }
 
-QToolBar::separator{
-border-right: 1px solid palette(light);
-padding:3px;
-width: 1px;
-height: 30px;
+QToolBar::separator {
+    border-right: 1px solid palette(light);
+    padding: 3px;
+    width: 1px;
+    height: 30px;
 }
 
-SceneItemsTableWidget{
-min-width: 300px;
+SceneItemsTableWidget {
+    min-width: 300px;
+}
+
+QToolTip {
+    background: palette(light);
+    color: palette(text);
 }

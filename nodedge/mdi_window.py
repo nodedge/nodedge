@@ -10,6 +10,7 @@ from PySide2.QtCore import QSignalMapper, Qt, QTimer, Slot
 from PySide2.QtGui import QCloseEvent, QIcon, QKeySequence
 from PySide2.QtWidgets import (
     QAction,
+    QDialog,
     QDockWidget,
     QFileDialog,
     QMdiArea,
@@ -142,37 +143,43 @@ class MdiWindow(EditorWindow):
         """
         super().createActions()
 
-        self.closeAct = QAction("Cl&ose", self)
-        self.closeAct.setStatusTip("Close the active window")
-        self.closeAct.triggered.connect(self.mdiArea.closeActiveSubWindow)
+        self.closeAct = self.createAction(
+            "Cl&ose", self.mdiArea.closeActiveSubWindow, "Close the active window"
+        )
 
-        self.closeAllAct = QAction("Close &All", self)
-        self.closeAllAct.setStatusTip("Close all the windows")
-        self.closeAllAct.triggered.connect(self.mdiArea.closeAllSubWindows)
+        self.closeAllAct = self.createAction(
+            "Close &All", self.mdiArea.closeAllSubWindows, "Close all the windows"
+        )
 
-        self.tileAct = QAction("&Tile", self)
-        self.tileAct.setStatusTip("Tile the windows")
-        self.tileAct.triggered.connect(self.mdiArea.tileSubWindows)
+        self.tileAct = self.createAction(
+            "&Tile", self.mdiArea.tileSubWindows, "Tile the windows"
+        )
 
-        self.cascadeAct = QAction("&Cascade", self)
-        self.cascadeAct.setStatusTip("Cascade the windows")
-        self.cascadeAct.triggered.connect(self.mdiArea.cascadeSubWindows)
+        self.cascadeAct = self.createAction(
+            "&Cascade", self.mdiArea.cascadeSubWindows, "Cascade the windows"
+        )
 
-        self.nextAct = QAction("Ne&xt", self)
-        self.nextAct.setShortcut(QKeySequence.NextChild)
-        self.nextAct.setStatusTip("Move the focus to the next window")
-        self.nextAct.triggered.connect(self.mdiArea.activateNextSubWindow)
+        self.nextAct = self.createAction(
+            "Ne&xt",
+            self.mdiArea.activateNextSubWindow,
+            "Move the focus to the next window",
+            QKeySequence.NextChild,
+        )
 
         # noinspection SpellCheckingInspection
-        self.previousAct = QAction("Pre&vious", self)
-        self.previousAct.setShortcut(QKeySequence.PreviousChild)
-        self.previousAct.setStatusTip("Move the focus to the previous window")
-        self.previousAct.triggered.connect(self.mdiArea.activatePreviousSubWindow)
+        self.previousAct = self.createAction(
+            "Pre&vious",
+            self.mdiArea.activatePreviousSubWindow,
+            "Move the focus to the previous window",
+            QKeySequence.PreviousChild,
+        )
 
-        self.nodeToolbarAct = QAction("&Node toolbar", self)
-        self.nodeToolbarAct.setShortcut(QKeySequence("ctrl+alt+n"))
-        self.nodeToolbarAct.setStatusTip("Enable/Disable the node toolbar")
-        self.nodeToolbarAct.triggered.connect(self.onNodesToolbarTriggered)
+        self.nodeToolbarAct = self.createAction(
+            "&Node toolbar",
+            self.onNodesToolbarTriggered,
+            "Enable/Disable the node toolbar",
+            QKeySequence("ctrl+alt+n"),
+        )
 
         self.nodeToolbarAct.setCheckable(True)
         self.nodeToolbarAct.setChecked(True)  # self.nodesDock.isVisible()
@@ -180,14 +187,23 @@ class MdiWindow(EditorWindow):
         self.separatorAct = QAction(self)
         self.separatorAct.setSeparator(True)
 
-        self.aboutAct: QAction = QAction("&About", self)
-        self.aboutAct.setStatusTip("Show the application's About box")
-        self.aboutAct.triggered.connect(self.about)
+        self.aboutAct = self.createAction(
+            "&About", self.about, "Show the application's About box"
+        )
 
-        self.debugAct = QAction("&Debug", self)
-        self.debugAct.setShortcut(QKeySequence("ctrl+alt+shift+d"))
-        self.debugAct.setStatusTip("Enable/Disable the debug mode")
-        self.debugAct.triggered.connect(self.onDebugSwitched)
+        self.debugAct = self.createAction(
+            "&Debug",
+            self.onDebugSwitched,
+            "Enable/Disable the debug mode",
+            QKeySequence("ctrl+alt+shift+d"),
+        )
+
+        self.showDialogActionsAct = self.createAction(
+            "Show dialog actions",
+            self.onShowDialogActions,
+            "Show available actions",
+            QKeySequence("ctrl+shift+a"),
+        )
 
     # noinspection PyAttributeOutsideInit
     def createToolBars(self) -> None:
@@ -640,3 +656,8 @@ class MdiWindow(EditorWindow):
     def onDebugSwitched(self):
         """Event called when the debug action is triggered."""
         pass
+
+    def onShowDialogActions(self):
+        self.__logger.info("")
+        dialog = QDialog()
+        dialog.show()
