@@ -292,7 +292,6 @@ class GraphicsNode(QGraphicsItem):
         It adds a highlighting boundary around this
         :class:`~nodedge.graphics_node.GraphicsNode`.
         """
-        p = QApplication.palette()
         self.hovered = True
         self.update()
 
