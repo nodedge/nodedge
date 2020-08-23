@@ -7,7 +7,7 @@ constants.
 
 import logging
 from collections import OrderedDict
-from enum import IntEnum
+from enum import Enum, IntEnum
 from typing import List, Optional
 
 from PySide2.QtCore import QPointF
@@ -23,6 +23,12 @@ class SocketLocation(IntEnum):
     RIGHT_TOP = 4  #: Right top
     RIGHT_CENTER = 5  #: Right center
     RIGHT_BOTTOM = 6  #: Right bottom
+
+
+class SocketType(Enum):
+    Any = 0
+    Number = 1
+    String = 2
 
 
 class Socket(Serializable):
@@ -266,6 +272,7 @@ class Socket(Serializable):
             self.id = data["id"]
         self.allowMultiEdges = data["allowMultiEdges"]
         self.socketType = data["socketType"]
+        self.location = data["location"]
         hashmap[data["id"]] = self
 
         return True

@@ -11,3 +11,6 @@ class GraphicsOutputBlockContent(GraphicsNodeContent):
         self.label: QLabel = QLabel("42", self)
         self.label.setAlignment(Qt.AlignLeft)
         self.label.setObjectName(self.node.contentLabelObjectName)
+
+    def updateIO(self):
+        pass

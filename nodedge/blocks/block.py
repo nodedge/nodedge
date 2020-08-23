@@ -41,14 +41,16 @@ class Block(Node):
         # A fresh block has not been evaluated yet. It means it is dirty.
         self.isDirty = True
 
+        self.graphicsNode.content.updateIO()
+
     # noinspection PyAttributeOutsideInit
     def initSettings(self):
         """
         Initialize the location of the input and output sockets.
         """
         super().initSettings()
-        self._inputSocketPosition = SocketLocation.LEFT_CENTER
-        self._outputSocketPosition = SocketLocation.RIGHT_CENTER
+        self._inputSocketPosition = SocketLocation.LEFT_TOP
+        self._outputSocketPosition = SocketLocation.RIGHT_TOP
 
     def onInputChanged(self, socket: Optional[Socket] = None) -> None:
         """
@@ -127,6 +129,7 @@ class Block(Node):
         res = super().deserialize(data, hashmap, restoreId)
         self.__logger.debug(f"Deserialized block {self.__class__.__name__}: {res}")
 
+        self.graphicsNode.content.updateIO()
         return res
 
 

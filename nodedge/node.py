@@ -106,7 +106,7 @@ class Node(Serializable):
         self.title: str = self._title
         self._socketSpacing: int = 22
         self._inputSocketPosition: SocketLocation = SocketLocation.LEFT_TOP
-        self._outputSocketPosition: SocketLocation = SocketLocation.RIGHT_BOTTOM
+        self._outputSocketPosition: SocketLocation = SocketLocation.RIGHT_TOP
         self._inputAllowMultiEdges: bool = False
         self._outputAllowMultiEdges: bool = True
         self.socketOffsets = {
@@ -635,6 +635,7 @@ class Node(Serializable):
                 for socket in self.inputSockets:
                     if socket.index == socketData["index"]:
                         found = socket
+                        found.socketType = socketData["socketType"]
                         break
                 if found is None:
                     self.__logger.debug(
@@ -678,6 +679,7 @@ class Node(Serializable):
                     # print("\t", socket, socket.index, "=?", socket_data['index'])
                     if socket.index == socketData["index"]:
                         found = socket
+                        found.socketType = socketData["socketType"]
                         break
                 if found is None:
                     self.__logger.debug(

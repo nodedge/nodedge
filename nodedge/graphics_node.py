@@ -9,14 +9,19 @@ from typing import Optional, cast
 from PySide2.QtCore import QRectF, Qt
 from PySide2.QtGui import QBrush, QColor, QFont, QPainterPath, QPen
 from PySide2.QtWidgets import (
+    QApplication,
+    QFrame,
     QGraphicsItem,
     QGraphicsSceneHoverEvent,
     QGraphicsSceneMouseEvent,
+    QHBoxLayout,
+    QLabel,
+    QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
 
-from nodedge.graphics_node_content import GraphicsNodeContent, GraphicsNodeContentProxy
+from nodedge.graphics_node_content import GraphicsNodeContentProxy
 from nodedge.graphics_node_title_label import GraphicsNodeTitleLabel
 from nodedge.graphics_scene import GraphicsScene
 
@@ -101,7 +106,22 @@ class GraphicsNode(QGraphicsItem):
         """
         Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``.
         """
-        pass
+        p = QApplication.palette()
+        self._titleColor: QColor = QColor(Qt.white)
+        self._colorHovered: QColor = p.alternateBase().color()
+
+        self._titleFont: QFont = QFont("Ubuntu", 10)
+
+        self._penDefault: QPen = QPen(QColor("#7F000000"))
+        self._penDefault.setWidthF(2.0)
+        self._penSelected: QPen = QPen(p.highlight().color())
+        self._penSelected.setWidthF(2.0)
+
+        self._penHovered: QPen = QPen(self._colorHovered)
+        self._penHovered.setWidthF(2.0)
+
+        self._brushTitle: QBrush = QBrush(QColor("#FF313131"))
+        self._brushBackground: QBrush = QBrush(QColor("#E3212121"))
 
     # noinspection PyAttributeOutsideInit
     def initSizes(self) -> None:
@@ -110,8 +130,8 @@ class GraphicsNode(QGraphicsItem):
         """
         self.width: int = 180
         self.height: int = 240
-        self.edgeRoundness: float = 5.0
-        self.edgePadding: float = 10.0
+        self.edgeRoundness: float = 0.0
+        self.edgePadding: float = 0.0
         self.titleHeight: float = 24.0
         self.titleHorizontalPadding: float = 4.0
         self.titleVerticalPadding: float = 4.0
@@ -132,8 +152,20 @@ class GraphicsNode(QGraphicsItem):
             widget.setGeometry(0, 0, self.width, self.height)
             layout = GraphicsNodeVBoxLayout()
             widget.setLayout(layout)
+
+            titleFrame = GraphicsNodeTitleFrame(widget)
+            titleFrame.setMaximumHeight(30)
+            titleLayout = QHBoxLayout()
+            titleLayout.setMargin(0)
+            titleFrame.setLayout(titleLayout)
             self.titleLabel = GraphicsNodeTitleLabel(self.title, widget)
-            layout.addWidget(self.titleLabel)
+            self.titleLabel.setSizePolicy(
+                QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+            )
+            self.statusLabel = GraphicsNodeStatusLabel()
+            titleLayout.addWidget(self.titleLabel)
+            titleLayout.addWidget(self.statusLabel)
+            layout.addWidget(titleFrame)
             layout.addWidget(self.content)
             self.graphicsContentProxy.setWidget(widget)
 
@@ -147,7 +179,67 @@ class GraphicsNode(QGraphicsItem):
         """
         Paint the rounded rectangular :class:`~nodedge.node.Node`.
         """
-        pass
+        # title
+        pathTitle = QPainterPath()
+        pathTitle.setFillRule(Qt.WindingFill)
+        pathTitle.addRoundedRect(
+            0, 0, self.width, self.titleHeight, self.edgeRoundness, self.edgeRoundness
+        )
+        maxTopRect = max(self.titleHeight - self.edgeRoundness, self.titleHeight / 2.0)
+        maxHeightRect = min(self.edgeRoundness, self.titleHeight / 2.0)
+        pathTitle.addRect(0, maxTopRect, self.edgeRoundness, maxHeightRect)
+        pathTitle.addRect(
+            self.width - self.edgeRoundness,
+            maxTopRect,
+            self.edgeRoundness,
+            maxHeightRect,
+        )
+
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self._brushTitle)
+        painter.drawPath(pathTitle.simplified())
+
+        # content
+        pathContent = QPainterPath()
+        pathContent.setFillRule(Qt.WindingFill)
+        pathContent.addRoundedRect(
+            0,
+            self.titleHeight,
+            self.width,
+            self.height - self.titleHeight,
+            self.edgeRoundness,
+            self.edgeRoundness,
+        )
+        maxHeightRect = min(self.edgeRoundness, self.height / 2)
+        pathContent.addRect(0, self.titleHeight, self.edgeRoundness, maxHeightRect)
+        pathContent.addRect(
+            self.width - self.edgeRoundness,
+            self.titleHeight,
+            self.edgeRoundness,
+            maxHeightRect,
+        )
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self._brushBackground)
+        painter.drawPath(pathContent.simplified())
+
+        # outline
+        pathOutline = QPainterPath()
+        pathOutline.addRoundedRect(
+            -1,
+            -1,
+            self.width + 2,
+            self.height + 2,
+            self.edgeRoundness,
+            self.edgeRoundness,
+        )
+        painter.setBrush(Qt.NoBrush)
+
+        if self.hovered:
+            painter.setPen(self._penHovered)
+            painter.drawPath(pathOutline.simplified())
+
+        painter.setPen(self._penDefault if not self.isSelected() else self._penSelected)
+        painter.drawPath(pathOutline.simplified())
 
     def mouseMoveEvent(self, event):
         """
@@ -200,6 +292,7 @@ class GraphicsNode(QGraphicsItem):
         It adds a highlighting boundary around this
         :class:`~nodedge.graphics_node.GraphicsNode`.
         """
+        p = QApplication.palette()
         self.hovered = True
         self.update()
 
@@ -233,3 +326,14 @@ class GraphicsNodeVBoxLayout(QVBoxLayout):
     def __init__(self, parent=None):
         super(GraphicsNodeVBoxLayout, self).__init__(parent)
         self.setContentsMargins(0, 0, 0, 0)
+        self.setSpacing(0)
+
+
+class GraphicsNodeTitleFrame(QFrame):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+
+class GraphicsNodeStatusLabel(QLabel):
+    def __init__(self, parent=None):
+        super().__init__(parent)

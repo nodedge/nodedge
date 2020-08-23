@@ -14,7 +14,7 @@
                     "id": 1583749280096,
                     "index": 0,
                     "allowMultiEdges": true,
-                    "location": 5,
+                    "location": 4,
                     "socketType": 1
                 }
             ],
@@ -34,7 +34,7 @@
                     "id": 1583749280960,
                     "index": 0,
                     "allowMultiEdges": true,
-                    "location": 5,
+                    "location": 4,
                     "socketType": 1
                 }
             ],
@@ -46,22 +46,22 @@
         {
             "id": 1583747825136,
             "title": "Add",
-            "posX": -94.25,
-            "posY": -298.75,
+            "posX": -49.25,
+            "posY": -296.75,
             "inputSockets": [
                 {
                     "id": 1583749317968,
                     "index": 0,
                     "allowMultiEdges": false,
-                    "location": 2,
-                    "socketType": 2
+                    "location": 1,
+                    "socketType": 1
                 },
                 {
                     "id": 1583749318064,
                     "index": 1,
                     "allowMultiEdges": false,
-                    "location": 2,
-                    "socketType": 2
+                    "location": 1,
+                    "socketType": 1
                 }
             ],
             "outputSockets": [
@@ -69,7 +69,7 @@
                     "id": 1583749318160,
                     "index": 0,
                     "allowMultiEdges": true,
-                    "location": 5,
+                    "location": 4,
                     "socketType": 1
                 }
             ],
@@ -79,22 +79,22 @@
         {
             "id": 1583749281056,
             "title": "Subtract",
-            "posX": -97.25,
-            "posY": -177.75,
+            "posX": -52.25,
+            "posY": -175.75,
             "inputSockets": [
                 {
                     "id": 1583749318304,
                     "index": 0,
                     "allowMultiEdges": false,
-                    "location": 2,
-                    "socketType": 2
+                    "location": 1,
+                    "socketType": 1
                 },
                 {
                     "id": 1583749318448,
                     "index": 1,
                     "allowMultiEdges": false,
-                    "location": 2,
-                    "socketType": 2
+                    "location": 1,
+                    "socketType": 1
                 }
             ],
             "outputSockets": [
@@ -102,7 +102,7 @@
                     "id": 1583749318544,
                     "index": 0,
                     "allowMultiEdges": true,
-                    "location": 5,
+                    "location": 4,
                     "socketType": 1
                 }
             ],
@@ -112,22 +112,22 @@
         {
             "id": 1583749318256,
             "title": "Multiply",
-            "posX": -97.25,
-            "posY": -49.75,
+            "posX": -52.25,
+            "posY": -47.75,
             "inputSockets": [
                 {
                     "id": 1583749318688,
                     "index": 0,
                     "allowMultiEdges": false,
-                    "location": 2,
-                    "socketType": 2
+                    "location": 1,
+                    "socketType": 1
                 },
                 {
                     "id": 1583749318832,
                     "index": 1,
                     "allowMultiEdges": false,
-                    "location": 2,
-                    "socketType": 2
+                    "location": 1,
+                    "socketType": 1
                 }
             ],
             "outputSockets": [
@@ -135,7 +135,7 @@
                     "id": 1583749318928,
                     "index": 0,
                     "allowMultiEdges": true,
-                    "location": 5,
+                    "location": 4,
                     "socketType": 1
                 }
             ],
@@ -145,22 +145,22 @@
         {
             "id": 1583749318640,
             "title": "Divide",
-            "posX": -102.25,
-            "posY": 69.25,
+            "posX": -57.25,
+            "posY": 71.25,
             "inputSockets": [
                 {
                     "id": 1583749319072,
                     "index": 0,
                     "allowMultiEdges": false,
-                    "location": 2,
-                    "socketType": 2
+                    "location": 1,
+                    "socketType": 1
                 },
                 {
                     "id": 1583749319216,
                     "index": 1,
                     "allowMultiEdges": false,
-                    "location": 2,
-                    "socketType": 2
+                    "location": 1,
+                    "socketType": 1
                 }
             ],
             "outputSockets": [
@@ -168,7 +168,7 @@
                     "id": 1583749319312,
                     "index": 0,
                     "allowMultiEdges": true,
-                    "location": 5,
+                    "location": 4,
                     "socketType": 1
                 }
             ],
@@ -178,14 +178,14 @@
         {
             "id": 1583749319792,
             "title": "Output",
-            "posX": 122.0,
-            "posY": -298.5,
+            "posX": 245.0,
+            "posY": -297.5,
             "inputSockets": [
                 {
                     "id": 1583749319888,
                     "index": 0,
                     "allowMultiEdges": false,
-                    "location": 2,
+                    "location": 1,
                     "socketType": 1
                 }
             ],
@@ -196,14 +196,14 @@
         {
             "id": 1583749804960,
             "title": "Output",
-            "posX": 120.0,
-            "posY": -177.5,
+            "posX": 243.0,
+            "posY": -176.5,
             "inputSockets": [
                 {
                     "id": 1583749805200,
                     "index": 0,
                     "allowMultiEdges": false,
-                    "location": 2,
+                    "location": 1,
                     "socketType": 1
                 }
             ],
@@ -214,14 +214,14 @@
         {
             "id": 1583749320560,
             "title": "Output",
-            "posX": 115.0,
-            "posY": -49.5,
+            "posX": 238.0,
+            "posY": -48.5,
             "inputSockets": [
                 {
                     "id": 1583749804288,
                     "index": 0,
                     "allowMultiEdges": false,
-                    "location": 2,
+                    "location": 1,
                     "socketType": 1
                 }
             ],
@@ -232,14 +232,14 @@
         {
             "id": 1583749320608,
             "title": "Output",
-            "posX": 118.0,
-            "posY": 69.5,
+            "posX": 241.0,
+            "posY": 70.5,
             "inputSockets": [
                 {
                     "id": 1583749804528,
                     "index": 0,
                     "allowMultiEdges": false,
-                    "location": 2,
+                    "location": 1,
                     "socketType": 1
                 }
             ],

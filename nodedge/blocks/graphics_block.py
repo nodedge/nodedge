@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-from PySide2.QtCore import QRectF
-from PySide2.QtGui import QImage
+from PySide2.QtGui import QImage, QPixmap
 
 from nodedge.graphics_node import GraphicsNode
 
@@ -11,12 +10,12 @@ class GraphicsBlock(GraphicsNode):
     # noinspection PyAttributeOutsideInit
     def initSizes(self):
         super().initSizes()
-        self.width = 160
+        self.width = 200
         self.height = 80
-        self.edgeRoundness = 10.0
+        self.edgeRoundness = 0.0
         self.edgePadding = 0.0
         self.titleHorizontalPadding = 8.0
-        self.titleVerticalPadding = 10.0
+        self.titleVerticalPadding = 18.0
 
     # noinspection PyAttributeOutsideInit
     def initStyle(self):
@@ -34,7 +33,9 @@ class GraphicsBlock(GraphicsNode):
             offset = 0.0
         if self.node.isInvalid:
             offset = 48.0
+        #
+        # painter.drawImage(
+        #     QRectF(-10.0, -10.0, 24.0, 24.0), self.icons, QRectF(offset, 0, 24.0, 24.0)
+        # )
 
-        painter.drawImage(
-            QRectF(-10.0, -10.0, 24.0, 24.0), self.icons, QRectF(offset, 0, 24.0, 24.0)
-        )
+        self.statusLabel.setPixmap(QPixmap(self.icons).copy(offset, 0, 24.0, 24.0))

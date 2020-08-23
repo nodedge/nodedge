@@ -6,7 +6,6 @@ Graphics input block content module containing
 
 from typing import Optional
 
-from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QLineEdit
 
 from nodedge.graphics_node_content import GraphicsNodeContent
@@ -24,6 +23,9 @@ class GraphicsInputBlockContent(GraphicsNodeContent):
         self.edit.setObjectName(self.node.contentLabelObjectName)
 
         self.edit.editingFinished.connect(self.onEditingFinished)
+
+    def updateIO(self):
+        pass
 
     def serialize(self):
         res = super().serialize()

@@ -1,7 +1,6 @@
 import pytest
 from PySide2.QtCore import QPointF
 from PySide2.QtWidgets import QMainWindow
-from pytestqt.qtbot import QtBot
 
 from nodedge.connector import SocketLocation
 from nodedge.edge import Edge
@@ -111,7 +110,7 @@ def test_markIsInvalid(undefinedNode: Node):
 
 def test_socketPos(undefinedNode: Node):
     a = undefinedNode.socketPos(0, SocketLocation.LEFT_TOP, 1)
-    assert a == QPointF(-1, 33)
+    assert a == QPointF(-1, 28)
 
 
 def test_remove(undefinedNode: Node, qtbot):
