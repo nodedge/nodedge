@@ -86,7 +86,8 @@ class Block(Node):
 
         try:
             self.checkInputsValidity()
-            # TODO: Implement evalInputs and checkInputsConsistency methods
+            # TODO: Implement evalInputs (to avoid repeating eval in specific blocks implementations)
+            # TODO: Implement checkInputsConsistency (to avoid division by 0, ...)
             # self.evalInputs()
             # self.checkInputsConsistency()
             self.value = self.evalImplementation()
@@ -137,7 +138,7 @@ class EvaluationError(Exception):
     """
     :class:`~nodedge.block.EvaluationError` class
 
-    If a not cannot be evaluated, raise this error.
+    If a block cannot be evaluated, raise this error.
     """
 
     pass

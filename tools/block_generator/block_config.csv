@@ -1,0 +1,12 @@
+library,function,op_block_string,operation_name,block_name,operation_symbol
+operator,add,OP_NODE_ADD,add,Addition,+
+operator,sub,OP_NODE_SUBTRACT,sub,Subtraction,-
+operator,mul,OP_NODE_MULTIPLY,mul,Multiplication,*
+operator,truediv,OP_NODE_DIVIDE,truediv,Division,/
+operator,mod,OP_NODE_MODULO,mod,Modulo,%
+operator,pow,OP_NODE_POWER,pow,Power,**
+operator,lt,OP_NODE_LESS,lt,Less,<
+operator,le,OP_NODE_LESS_EQUAL,le,Less or Equal,<=
+operator,eq,OP_NODE_EQUAL,eq,Equal,==
+operator,gt,OP_NODE_GREATER,gt,Greater,>
+operator,ge,OP_NODE_GREATER_EQUAL,ge,Greater or Equal,>=

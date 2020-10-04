@@ -16,11 +16,15 @@ class AddBlock(Block):
     evalString = "add"
 
     def evalImplementation(self):
-        i0 = self.inputNodeAt(0)
-        i1 = self.inputNodeAt(1)
+        inputs = []
+        for i in range(len(self.inputSockets)):
+            inputs.append(self.inputNodeAt(i))
 
         try:
-            operation = f"{AddBlock.evalString}({i0.eval()}, {i1.eval()})"
+            operation = f"{AddBlock.evalString}("
+            for curr_input in inputs:
+                operation += f"{curr_input.eval()},"
+            operation = operation[:-1] + ")"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)
@@ -30,7 +34,6 @@ class AddBlock(Block):
         return self.value
 
 
-# TODO: make evalImplementation generic with respect to number of inputs
+# TODO: use join method instead ','.join(list_of_strings)
 # TODO: Find a way to extract exceptions from evalImplementation
-# TODO: Create a script to generate blocks from a dictionary (JSON / CSV / whatever)
 # TODO: Create a script to generate tests for blocks: list of Inputs and list of expected Outputs

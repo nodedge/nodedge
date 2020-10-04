@@ -6,7 +6,7 @@ import os
 from typing import Any, Callable, List, Optional, cast
 
 from pyqtconsole.console import PythonConsole
-from PySide2.QtCore import QSignalMapper, Qt, QTimer, Slot
+from PySide2.QtCore import QSignalMapper, QSize, Qt, QTimer, Slot
 from PySide2.QtGui import QCloseEvent, QIcon, QKeySequence
 from PySide2.QtWidgets import (
     QAction,
@@ -81,6 +81,7 @@ class MdiWindow(EditorWindow):
             os.path.join(os.path.dirname(__file__), "resources/nodedge_logo.png")
         )
         self.setWindowIcon(self.icon)
+        self.setMinimumSize(QSize(880, 600))
 
         self.styleSheetFilename = os.path.join(
             os.path.dirname(__file__), "qss/nodedge_style.qss"
