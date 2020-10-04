@@ -125,8 +125,8 @@ def test_remove(undefinedNode: Node, qtbot):
 
 
 def test_markChildrenDirty(connectedNode: Node):
-    childNode = connectedNode.getChildrenNodes()[0]
-    grandChildNode = childNode.getChildrenNodes()[0]
+    childNode = connectedNode.getChildNodes()[0]
+    grandChildNode = childNode.getChildNodes()[0]
     assert childNode.isDirty is False
     connectedNode.markChildrenDirty(True)
     assert childNode.isDirty is True
@@ -134,8 +134,8 @@ def test_markChildrenDirty(connectedNode: Node):
 
 
 def test_markDescendantsDirty(connectedNode: Node):
-    childNode = connectedNode.getChildrenNodes()[0]
-    grandChildNode = childNode.getChildrenNodes()[0]
+    childNode = connectedNode.getChildNodes()[0]
+    grandChildNode = childNode.getChildNodes()[0]
     assert childNode.isDirty is False
     connectedNode.markDescendantsDirty(True)
     assert childNode.isDirty is True
@@ -143,8 +143,8 @@ def test_markDescendantsDirty(connectedNode: Node):
 
 
 def test_markChildrenInvalid(connectedNode: Node):
-    childNode = connectedNode.getChildrenNodes()[0]
-    grandChildNode = childNode.getChildrenNodes()[0]
+    childNode = connectedNode.getChildNodes()[0]
+    grandChildNode = childNode.getChildNodes()[0]
     assert childNode.isInvalid is False
     connectedNode.markChildrenInvalid(True)
     assert childNode.isInvalid is True
@@ -152,8 +152,8 @@ def test_markChildrenInvalid(connectedNode: Node):
 
 
 def test_markDescendantsInvalid(connectedNode: Node):
-    childNode = connectedNode.getChildrenNodes()[0]
-    grandChildNode = childNode.getChildrenNodes()[0]
+    childNode = connectedNode.getChildNodes()[0]
+    grandChildNode = childNode.getChildNodes()[0]
     assert childNode.isInvalid is False
     connectedNode.markDescendantsInvalid(True)
     assert childNode.isInvalid is True
@@ -176,15 +176,15 @@ def test_evalChildren(connectedNode: Node):
 
     connectedNode.evalChildren()
 
-    childNode = connectedNode.getChildrenNodes()[0]
-    grandChildNode = childNode.getChildrenNodes()[0]
+    childNode = connectedNode.getChildNodes()[0]
+    grandChildNode = childNode.getChildNodes()[0]
     assert childNode.isDirty is False
     assert childNode.isInvalid is False
     assert grandChildNode.isDirty is True
     assert grandChildNode.isInvalid is True
 
 
-def test_getChildrenNodes(emptyScene):
+def test_getChildNodes(emptyScene):
     node1 = Node(emptyScene, outputSocketTypes=[1])
     node2 = Node(emptyScene, inputSocketTypes=[1], outputSocketTypes=[1])
     node3 = Node(emptyScene, inputSocketTypes=[1])
@@ -196,13 +196,30 @@ def test_getChildrenNodes(emptyScene):
         emptyScene, node2.outputSockets[0], node3.inputSockets[0]
     )  # noqa: F841
 
-    assert node1.getChildrenNodes() == [node2]
+    assert node1.getChildNodes() == [node2]
     node2.remove()
-    assert node1.getChildrenNodes() == []
+    assert node1.getChildNodes() == []
+
+
+def test_getParentNodes(emptyScene):
+    node1 = Node(emptyScene, outputSocketTypes=[1])
+    node2 = Node(emptyScene, inputSocketTypes=[1], outputSocketTypes=[1])
+    node3 = Node(emptyScene, inputSocketTypes=[1])
+
+    edge12 = Edge(
+        emptyScene, node1.outputSockets[0], node2.inputSockets[0]
+    )  # noqa: F841
+    edge23 = Edge(
+        emptyScene, node2.outputSockets[0], node3.inputSockets[0]
+    )  # noqa: F841
+
+    assert node2.getParentNodes() == [node1]
+    node1.remove()
+    assert node2.getParentNodes() == []
 
 
 def test_inputNodeAt(connectedNode: Node):
-    childNode = connectedNode.getChildrenNodes()[0]
+    childNode = connectedNode.getChildNodes()[0]
 
     assert childNode.inputNodeAt(0) == connectedNode
 
@@ -213,8 +230,8 @@ def test_inputNodeAt(connectedNode: Node):
 
 def test_outputNodesAt(connectedNode: Node):
     scene = connectedNode.scene
-    childNode = connectedNode.getChildrenNodes()[0]
-    grandChildNode = childNode.getChildrenNodes()[0]
+    childNode = connectedNode.getChildNodes()[0]
+    grandChildNode = childNode.getChildNodes()[0]
 
     edge = Edge(scene, connectedNode.outputSockets[0], grandChildNode.inputSockets[0])
 

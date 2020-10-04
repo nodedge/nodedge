@@ -393,7 +393,7 @@ class Node(Serializable):
             ``False`` to un-dirty them.
         :type newValue: ``bool``
         """
-        for otherNode in self.getChildrenNodes():
+        for otherNode in self.getChildNodes():
             otherNode.isDirty = newValue
 
     def markDescendantsDirty(self, newValue: bool = True) -> None:
@@ -405,7 +405,7 @@ class Node(Serializable):
             ``False`` to un-dirty them.
         :type newValue: ``bool``
         """
-        for otherNode in self.getChildrenNodes():
+        for otherNode in self.getChildNodes():
             otherNode.isDirty = newValue
             otherNode.markChildrenDirty(newValue)
 
@@ -425,7 +425,7 @@ class Node(Serializable):
             them valid.
         :type newValue: ``bool``
         """
-        for otherNode in self.getChildrenNodes():
+        for otherNode in self.getChildNodes():
             otherNode.isInvalid = newValue
 
     def markDescendantsInvalid(self, newValue: bool = True) -> None:
@@ -438,7 +438,7 @@ class Node(Serializable):
         :type newValue: ``bool``
         """
 
-        for otherNode in self.getChildrenNodes():
+        for otherNode in self.getChildNodes():
             otherNode.isInvalid = newValue
             otherNode.markChildrenInvalid(newValue)
 
@@ -456,24 +456,52 @@ class Node(Serializable):
         """
         Evaluate children of this node
         """
-        for node in self.getChildrenNodes():
+        for node in self.getChildNodes():
             # TODO: Investigate if we want to evaluate all the children of the child
             node.eval()
 
-    def getChildrenNodes(self) -> List["Node"]:
+    def getChildNodes(self) -> List["Node"]:
         """
         Retrieve all children connected to this node outputs.
 
         :return: list of `Nodes` connected to this node from all outputs
         :rtype: List[:class:`~nodedge.node.Node`]
         """
-        if not self.outputSockets:
+        return self._getRelativeNodes("child")
+
+    def getParentNodes(self) -> List["Node"]:
+        """
+        Retrieve all parents connected to this node outputs.
+
+        :return: list of `Nodes` connected to this node from all inputs
+        :rtype: List[:class:`~nodedge.node.Node`]
+        """
+        return self._getRelativeNodes("parent")
+
+    def _getRelativeNodes(self, relationship: str) -> List["Node"]:
+        """
+        Protected method to get relative nodes.
+
+        :param relationship: "child" or "parent"
+        :type relationship: str
+        :return: relative nodes
+        :rtype: List[:class:`~nodedge.node.Node`]
+        """
+        if relationship == "child":
+            socketList: List[Socket] = self.outputSockets
+        elif relationship == "parent":
+            socketList = self.inputSockets
+        else:
+            raise NotImplementedError
+
+        if not socketList:
+            self.__logger.debug("Socket list is empty")
             return []
 
-        otherNodes = []
-        for outputSocket in self.outputSockets:
-            for edge in outputSocket.edges:
-                otherNode = edge.getOtherSocket(outputSocket).node
+        otherNodes: List["Node"] = []
+        for socket in socketList:
+            for edge in socket.edges:
+                otherNode = edge.getOtherSocket(socket).node
                 otherNodes.append(otherNode)
 
         return otherNodes

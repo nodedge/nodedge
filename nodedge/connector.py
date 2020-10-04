@@ -110,21 +110,6 @@ class Socket(Serializable):
         """
         return not self.isInput
 
-    def delete(self):
-        """
-        Delete this :class:`~nodedge.socket.Socket`
-        from :class:`~nodedge.scene.Scene`.
-        """
-        self.graphicsSocket.setParentItem(None)
-        self.node.scene.grScene.removeItem(self.graphicsSocket)
-        del self.graphicsSocket
-
-    def __repr__(self):
-        return (
-            f"0x{hex(id(self))[-4:]} Socket({self.index}, "
-            f"{self.location}, {self.socketType}, {self.allowMultiEdges})"
-        )
-
     @property
     def hasAnyEdge(self) -> bool:
         """
@@ -149,6 +134,21 @@ class Socket(Serializable):
             self.index, self.location, self.countOnThisNodeSide
         )
         return ret
+
+    def delete(self):
+        """
+        Delete this :class:`~nodedge.socket.Socket`
+        from :class:`~nodedge.scene.Scene`.
+        """
+        self.graphicsSocket.setParentItem(None)
+        self.node.scene.grScene.removeItem(self.graphicsSocket)
+        del self.graphicsSocket
+
+    def __repr__(self):
+        return (
+            f"0x{hex(id(self))[-4:]} Socket({self.index}, "
+            f"{self.location}, {self.socketType}, {self.allowMultiEdges})"
+        )
 
     def isConnected(self, edge: "Edge") -> bool:  # type: ignore
         """
