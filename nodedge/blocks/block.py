@@ -90,7 +90,6 @@ class Block(Node):
             # TODO: Implement checkInputsConsistency (to avoid division by 0, ...)
             # self.evalInputs()
             # self.checkInputsConsistency()
-            self.value = self.evalImplementation()
             self.isDirty = False
             self.isInvalid = False
             self.graphicsNode.setToolTip("")

@@ -12,12 +12,12 @@ from typing import Callable, List, Optional, cast
 from PySide2.QtGui import QDragEnterEvent, QDropEvent
 from PySide2.QtWidgets import QGraphicsItem
 
-from nodedge.code_generator import CodeGenerator
 from nodedge.edge import Edge
 from nodedge.graphics_scene import GraphicsScene
 from nodedge.graphics_view import GraphicsView
 from nodedge.node import Node
 from nodedge.scene_clipboard import SceneClipboard
+from nodedge.scene_coder import SceneCoder
 from nodedge.scene_history import SceneHistory
 from nodedge.serializable import Serializable
 from nodedge.utils import dumpException
@@ -50,7 +50,7 @@ class Scene(Serializable):
 
         self.history: SceneHistory = SceneHistory(self)
         self.clipboard: SceneClipboard = SceneClipboard(self)
-        self.codeGenerator: CodeGenerator = CodeGenerator(self)
+        self.coder: SceneCoder = SceneCoder(self)
 
         self._isModified: bool = False
         self.isModified: bool = False

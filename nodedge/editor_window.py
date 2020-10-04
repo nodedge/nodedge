@@ -542,7 +542,7 @@ class EditorWindow(QMainWindow):
 
     def onGenerateCode(self):
         if self.currentEditorWidget is not None:
-            self.currentEditorWidget.graphicsView.graphicsScene.fitInView()
+            self.currentEditorWidget.scene.coder.generateCode()
 
     def createAction(
         self,
