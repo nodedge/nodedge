@@ -19,6 +19,7 @@ from PySide2.QtWidgets import (
     QWidget,
 )
 
+from nodedge.application_styler import ApplicationStyler
 from nodedge.editor_widget import EditorWidget
 
 
@@ -61,6 +62,9 @@ class EditorWindow(QMainWindow):
         self.instance: QGuiApplication = cast(
             QGuiApplication, QGuiApplication.instance()
         )
+
+        self.styler = ApplicationStyler()
+
         self.clipboard: QClipboard = self.instance.clipboard()
 
         # Pycharm does not recognise resolve connect method so the inspection is

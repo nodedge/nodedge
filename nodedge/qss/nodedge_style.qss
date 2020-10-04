@@ -298,7 +298,7 @@ padding-bottom: 2px;
 }
 
 GraphicsNodeTitleLabel:hover{
-background:palette(highlight);
+    background: palette(dark);
 }
 
 QMenu{
