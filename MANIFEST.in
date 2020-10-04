@@ -34,3 +34,5 @@ recursive-exclude docs/build *
 
 include *.txt
 recursive-include nodedge *
+
+recursive-exclude logs *

@@ -47,12 +47,6 @@ class EditorWindow(QMainWindow):
 
         super().__init__(parent)
 
-        # noinspection SpellCheckingInspection
-        logging.basicConfig(
-            format="%(asctime)s|%(levelname).4s|%(filename)10s|"
-            "%(lineno).3s|%(message)s|%(funcName)s"
-        )
-
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.DEBUG)
 
