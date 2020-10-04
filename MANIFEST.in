@@ -9,6 +9,7 @@ include readthedocs.yml
 include mypy.ini
 include .bumpversion.cfg
 include CODE_OF_CONDUCT.md
+include logging.yaml
 
 include .flake8
 include .isort.cfg
