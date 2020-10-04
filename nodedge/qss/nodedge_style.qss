@@ -11,6 +11,7 @@ background:palette(dark);
 color:palette(window-text);
 }
 
+
 QTabWidget{
 border:0;
 }
@@ -59,14 +60,14 @@ image:url("close_window_100.png");
 }
 
 QDockWidget{
-font-size: 14px;
-color:palette(window-text);
-/*font-weight:bold;*/
-titlebar-close-icon:url("resources/iconsModified/close_window_100.png");
-titlebar-normal-icon:url(":icons/docktitle-normal-btn-light.png");
-icon-size:25px;
-width:25px;
-border: 1px solid palette(highlight);
+    font-size: 16px;
+    color: palette(window-text);
+    /*font-weight:bold;*/
+    titlebar-close-icon: url("resources/iconsModified/close_window_100.png");
+    titlebar-normal-icon: url(":icons/docktitle-normal-btn-light.png");
+    icon-size: 25px;
+    width: 25px;
+    border: 1px solid palette(highlight);
 }
 
 QDockWidget::title{
@@ -92,14 +93,16 @@ background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,
     stop : 1 palette(dark));
 }
 
-QDockWidget::close-button{
-image:url("resources/iconsModified/close_window_100.png");
-icon-size: 25px;
-padding: 0px;
+QDockWidget::close-button {
+    image: url("resources/iconsModified/close_window_100.png");
+    icon-size: 25px;
+    padding: 0px;
+    margin: 0px;
 }
 
-QMenuBar{
-background:palette(dark);
+QMenuBar {
+    background: palette(dark);
+    font-size: 16px;
 }
 
 QMenuBar::item{
@@ -132,9 +135,9 @@ height:1px;
 background:palette(light);
 }
 
-QToolButton{
-padding: 0px 1px;
-font-size: 14px;
+QToolButton {
+    padding: 0px 1px;
+    font-size: 16px;
 }
 
 QMenu:disabled,
@@ -174,11 +177,16 @@ QTableView::item:active:hover{
 color:palette(text);
 }
 
-QTableView::item:selected,QTableView::item:active:selected{
-color:palette(text);
-background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,
-stop : 0 palette(base),stop : 1 palette(highlight));
-border:0;}
+QTableView::item:selected,QTableView::item:active:selected {
+    color: palette(text);
+    background: qlineargradient(x1:0,
+    y1: 0,
+    x2: 0,
+    y2: 1,
+    stop: 0 palette(highlight),
+    stop: 1 palette(highlight));
+    border: 0;
+}
 
 QPushButton{
 border: 1px solid palette(light);
