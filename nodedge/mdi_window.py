@@ -488,7 +488,7 @@ class MdiWindow(EditorWindow):
         Create a python console embedded in a dock.
         :return: ``None``
         """
-        self.pythonConsoleWidget = PythonConsole()
+        self.pythonConsoleWidget = PythonConsole(formats=self.styler.consoleStyle)
         self.pythonConsoleWidget.eval_in_thread()
 
         self.pythonConsoleDock = QDockWidget("Python console")
@@ -505,12 +505,12 @@ class MdiWindow(EditorWindow):
         :type event: ``QCloseEvent.py``
         :return: ``None``
         """
-        self.pythonConsoleWidget.close()
         self.mdiArea.closeAllSubWindows()
         if self.mdiArea.currentSubWindow():
             event.ignore()
         else:
             self.writeSettings()
+            self.pythonConsoleWidget.close()
             event.accept()
 
     def newFile(self) -> QMdiSubWindow:
