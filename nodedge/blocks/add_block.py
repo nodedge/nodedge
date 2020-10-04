@@ -24,7 +24,7 @@ class AddBlock(Block):
             operation = f"{AddBlock.evalString}("
             for curr_input in inputs:
                 operation += f"{curr_input.eval()},"
-            operation = operation[:-1] + f")"
+            operation = operation[:-1] + ")"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)
