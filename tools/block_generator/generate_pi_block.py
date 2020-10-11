@@ -30,3 +30,6 @@ if __name__ == "__main__":
 
         template_file.close()
     infile.close()
+
+# TODO: Generate test for each block in a separated file
+# TODO: Create two folders for blocks: autogen and custom

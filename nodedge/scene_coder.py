@@ -29,59 +29,52 @@ class SceneCoder:
         varCount = 0
         functionOutputs: List = []
         varDict: Dict[str, Any] = {}
-        codingOrder: List[int] = []
+        codingOrder: List[Node] = []
+        outputNodes: List[Node] = []
 
-        serializedScene = self.scene.serialize()
-        # self.__logger.info(serializedScene)
-        serializedNodes = serializedScene["nodes"]
-        serializedEdges = serializedScene["edges"]
-        for node in serializedNodes:
-            operationCode = node["operationCode"]
-            nodeId = node["id"]
-            inputSockets = node["inputSockets"]
-            # self.__logger.info(inputSockets)
-            if operationCode == OP_NODE_OUTPUT:
-                inputSocketId = inputSockets[0]["id"]
-                codingOrder.append(nodeId)
-                previousBlockSocketId = None
-                for edge in serializedEdges:
-                    if inputSocketId == edge["target"]:
-                        previousBlockSocketId = edge["source"]
-                        break
-                    elif inputSocketId == edge["source"]:
-                        previousBlockSocketId = edge["target"]
-                        break
+        nodes = self.scene.nodes
+        edges = self.scene.edges
 
-                if previousBlockSocketId is None:
-                    raise ValueError(
-                        f"It is not possible to generate code: "
-                        f"block #{nodeId} is not connected"
-                    )
+        # check if scene is codable or it is incomplete (i.e., disconnected node)
+        # if codable: go ahead
+        # else: exit
 
-                previousBlockId = None
+        # find all output nodes
+        for node in nodes:
+            if node.operationCode is OP_NODE_OUTPUT:
+                outputNodes.append(node)
+        if not outputNodes:
+            # raise error: the scene has no output
+            pass
 
-                for otherNode in serializedNodes:
-                    otherNodeInputSocketIds = (
-                        socket["id"] for socket in otherNode["inputSockets"]
-                    )
-                    self.__logger.info(otherNodeInputSocketIds)
-                    if previousBlockSocketId in [
-                        *otherNode["inputSockets"],
-                        *otherNode["outputSockets"],
-                    ]:
-                        previousBlockId = otherNode["id"]
-                        break
+        # determine coding order
+        for outputNode in outputNodes:
+            # find complete hierarchy of an output node
+            nodesToAdd: List[Node] = self._appendHierarchyUntilRoot(
+                outputNode, codingOrder, []
+            )
 
-                if previousBlockId is None:
-                    raise ValueError(
-                        f"Socket #{previousBlockSocketId} has no " f"associated block."
-                    )
+            # reverse order of the nodes to add and append
+            if nodesToAdd:
+                nodesToAdd.reverse()
+                codingOrder.extend(nodesToAdd)
 
-                codingOrder.insert(0, previousBlockId)
+        # generate code
+        for node in codingOrder:
+            # implement in the Node class the generateCode method that return a str
+            node.generateCode()
 
         self.__logger.info(codingOrder)
 
+        return ""
 
-#
-# for node in self.scene.nodes:
-#     node.generateCode()
+    def _appendHierarchyUntilRoot(
+        self, currentNode: Node, appendedNodes: List[Node], nodesToAdd: List[Node]
+    ):
+        nodesToAdd.append(currentNode)
+        parentNodes = currentNode.getParentNodes()
+        if parentNodes:
+            for parent in parentNodes:
+                if parent not in appendedNodes and parent not in nodesToAdd:
+                    self._appendHierarchyUntilRoot(parent, appendedNodes, nodesToAdd)
+        return nodesToAdd
