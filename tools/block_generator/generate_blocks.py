@@ -17,7 +17,7 @@ if __name__ == "__main__":
         for row in reader:
 
             # Generate code
-            with open("pi_block_template.txt") as template_file:
+            with open("block_template.txt") as template_file:
                 input_data = template_file.read()
             template = Template(input_data)
 
