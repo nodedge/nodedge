@@ -785,10 +785,3 @@ class Node(Serializable):
         :type data: ``dict``
         """
         pass
-
-    def generateCode(self):
-        # TODO: implement
-        # This method should return a string var_X = operationString(*inputs)
-        # TODO: add operationString = '()' to Input and Output
-        string: str = ''
-        return string

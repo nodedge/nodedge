@@ -132,6 +132,14 @@ class Block(Node):
         self.graphicsNode.content.updateIO()
         return res
 
+    @staticmethod
+    def generateCode():
+        # TODO: implement
+        # This method should return a string var_X = operationString(*inputs)
+        # TODO: add operationString = '()' to Input and Output
+        string: str = ''
+        return string
+
 
 class EvaluationError(Exception):
     """
