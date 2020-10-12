@@ -3,9 +3,12 @@ import os.path
 from string import Template
 
 config_file = "block_config.csv"
-save_path = "../../nodedge/tools/block_generator/generated_blocks/"
+save_path = "./generated_blocks/"
 
 if __name__ == "__main__":
+    # Create folder for generated blocks
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
 
     # Read one line of the csv
     with open(config_file) as infile:
