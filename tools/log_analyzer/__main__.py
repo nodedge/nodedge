@@ -1,26 +1,36 @@
+import logging
 import sys
+import traceback
 
-from PySide2.QtGui import QColor, QPalette
 from PySide2.QtWidgets import QApplication
 
 from tools.log_analyzer.main_window import MainWindow
 
+
+def dumpException(e=None, file=None):
+    """
+    Print out an exception message with the traceback to the console.
+
+
+    :param e: Exception to print out
+    :type e: Exception
+    :param file: optional, file where the exception is dumped
+    :type file: ``str``
+    """
+    logging.warning(f"{e.__class__.__name__} Exception: {e}")
+    if file is not None:
+        traceback.print_tb(e.__traceback__, file=file)
+    else:
+        traceback.print_exc()
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    app.setStyle("Fusion")
-    p = app.palette()
-    p.setColor(QPalette.Window, QColor(53, 53, 53))
-    p.setColor(QPalette.Button, QColor(53, 53, 53))
-    p.setColor(QPalette.Highlight, QColor(142, 142, 142))
-    p.setColor(QPalette.ButtonText, QColor(255, 255, 255))
-    p.setColor(QPalette.WindowText, QColor(255, 255, 255))
-    app.setPalette(p)
-
-    window = MainWindow()
+    window = MainWindow(applicationName="MainWindowApplication")
     window.show()
 
     try:
         sys.exit(app.exec_())
     except Exception as e:
-        print(e)
+        dumpException(e)

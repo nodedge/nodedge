@@ -505,6 +505,7 @@ class MdiWindow(EditorWindow):
         :type event: ``QCloseEvent.py``
         :return: ``None``
         """
+        self.pythonConsoleWidget.close()
         self.mdiArea.closeAllSubWindows()
         if self.mdiArea.currentSubWindow():
             event.ignore()
