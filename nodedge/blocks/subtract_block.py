@@ -14,6 +14,8 @@ class SubtractBlock(Block):
     operationTitle = "Subtract"
     contentLabel = "-"
     contentLabelObjectName = "BlockBackground"
+    evalString = "sub"
+
 
     def evalImplementation(self):
         i0 = self.inputNodeAt(0)

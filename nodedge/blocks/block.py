@@ -3,7 +3,7 @@
 
 import logging
 from collections import OrderedDict
-from typing import Optional
+from typing import Optional, List
 
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.blocks.graphics_block_content import GraphicsBlockContent
@@ -24,6 +24,7 @@ class Block(Node):
     operationCode = 0
     contentLabel = ""
     contentLabelObjectName = "blockBackground"
+    evalString = ""
 
     GraphicsNodeClass = GraphicsBlock
     GraphicsNodeContentClass = GraphicsBlockContent
@@ -90,6 +91,7 @@ class Block(Node):
             # TODO: Implement checkInputsConsistency (to avoid division by 0, ...)
             # self.evalInputs()
             # self.checkInputsConsistency()
+            self.value = self.evalImplementation()
             self.isDirty = False
             self.isInvalid = False
             self.graphicsNode.setToolTip("")
@@ -132,13 +134,12 @@ class Block(Node):
         self.graphicsNode.content.updateIO()
         return res
 
-    @staticmethod
-    def generateCode():
-        # TODO: implement
+    def generateCode(self, currentVarIndex: int, inputVarIndexes: List[int]):
         # This method should return a string var_X = operationString(*inputs)
         # TODO: add operationString = '()' to Input and Output
-        string: str = ''
-        return string
+        generatedCode: str = 'var_' + str(currentVarIndex) + ' = ' + str(self.evalString) + "("
+        generatedCode += ', '.join([f"var_{str(index)}" for index in inputVarIndexes])
+        return generatedCode + ') \n'
 
 
 class EvaluationError(Exception):

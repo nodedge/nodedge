@@ -10,6 +10,8 @@ class DivideBlock(Block):
     operationTitle = "Divide"
     contentLabel = "/"
     contentLabelObjectName = "BlockBackground"
+    evalString = "truediv"
+
 
     def evalImplementation(self):
         i0 = self.inputNodeAt(0)

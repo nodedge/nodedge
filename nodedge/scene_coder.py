@@ -3,6 +3,7 @@
 Scene Coder module containing :class:`~nodedge.scene_coder.SceneCoder` class.
 """
 import logging
+import string
 from typing import Any, Dict, List
 
 from nodedge.blocks import *
@@ -25,15 +26,15 @@ class SceneCoder:
         :return: The function as a string
         :rtype: ``str``
         """
-        linesOfCode: List[str] = []
-        varCount = 0
-        functionOutputs: List = []
-        varDict: Dict[str, Any] = {}
+        # linesOfCode: List[str] = []
+        # functionOutputs: List = []
+        # varDict: Dict[str, Any] = {}
+
+        generatedCode: string = ""
         codingOrder: List[Node] = []
         outputNodes: List[Node] = []
 
         nodes = self.scene.nodes
-        edges = self.scene.edges
 
         # check if scene is codable or it is incomplete (i.e., disconnected node)
         # if codable: go ahead
@@ -60,13 +61,24 @@ class SceneCoder:
                 codingOrder.extend(nodesToAdd)
 
         # generate code
-        for node in codingOrder:
-            # implement in the Node class the generateCode method that return a str
-            node.generateCode()
+        for currentVarIndex, node in enumerate(codingOrder):
+            if node not in outputNodes:
+                inputNodes = node.getParentNodes()
+                inputVarIndexes = []
+                for inputNode in inputNodes:
+                    inputVarIndexes.append(codingOrder.index(inputNode))
+                generatedCode += node.generateCode(currentVarIndex, inputVarIndexes)
 
+        # add returned outputs
+        outputVarNames = []
+        for node in outputNodes:
+            inputNode = node.getParentNodes()
+            inputVarIndex = codingOrder.index(inputNode[0])
+            outputVarNames.append("var_" + str(inputVarIndex))
+        generatedCode += "return [" + ', '.join(outputVarNames) + "]"
         self.__logger.info(codingOrder)
 
-        return ""
+        return generatedCode
 
     def _appendHierarchyUntilRoot(
         self, currentNode: Node, appendedNodes: List[Node], nodesToAdd: List[Node]
