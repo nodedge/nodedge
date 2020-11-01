@@ -13,8 +13,6 @@ from PySide2.QtWidgets import (
     QDialog,
     QDockWidget,
     QFileDialog,
-    QLabel,
-    QMdiArea,
     QMdiSubWindow,
     QMenu,
     QMessageBox,
@@ -367,7 +365,10 @@ class MdiWindow(EditorWindow):
         Create a new sub window containing a
         :class:`~nodedge.editor_widget.EditorWidget`
         """
-        editor = childWidget if childWidget is not None else MdiWidget()
+        editor: MdiWidget = childWidget if childWidget is not None else MdiWidget()
+        editor.scene.coder.notConnectedSocket.connect(
+            self.onSceneCoderOutputSocketDisconnect
+        )
         subWindow = self.mdiArea.addSubWindow(editor)
 
         icon = QIcon(".")
@@ -654,6 +655,7 @@ class MdiWindow(EditorWindow):
         """Event called when the debug action is triggered."""
         pass
 
+    @Slot()
     def onShowDialogActions(self):
         self.__logger.info("")
         dialog = QDialog()
@@ -664,3 +666,16 @@ class MdiWindow(EditorWindow):
         self.statusMousePos.setText(f"[{pos.x()}, {pos.y()}]")
 
         super().mouseMoveEvent(event)
+
+    @Slot()
+    def onSceneCoderOutputSocketDisconnect(self) -> None:
+        """
+        Callback to deal with :class:`~nodedge.scene_coder.SceneCoder` warning.
+        :return: ``None``
+        """
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setInformativeText("One or more blocks are not connected.")
+        msg.setWindowTitle("Coder warning")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.exec_()

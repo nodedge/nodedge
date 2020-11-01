@@ -12,7 +12,6 @@ class DivideBlock(Block):
     contentLabelObjectName = "BlockBackground"
     evalString = "truediv"
 
-
     def evalImplementation(self):
         i0 = self.inputNodeAt(0)
         i1 = self.inputNodeAt(1)

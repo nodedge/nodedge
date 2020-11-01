@@ -3,21 +3,25 @@
 Scene Coder module containing :class:`~nodedge.scene_coder.SceneCoder` class.
 """
 import logging
-import string
-from typing import Any, Dict, List
+
+from PySide2.QtCore import Signal, QObject
 
 from nodedge.blocks import *
+from nodedge.connector import Socket
 from nodedge.node import Node
 
 
-class SceneCoder:
+class SceneCoder(QObject):
     """:class:`~nodedge.scene_coder.SceneCoder` class ."""
 
-    def __init__(self, scene: "Scene"):
+    notConnectedSocket = Signal()
+
+    def __init__(self, scene: "Scene", parent=None):  # type: ignore
         self.scene = scene
 
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
+        super().__init__(parent)
 
     def generateCode(self) -> str:
         """
@@ -26,17 +30,22 @@ class SceneCoder:
         :return: The function as a string
         :rtype: ``str``
         """
-        # linesOfCode: List[str] = []
-        # functionOutputs: List = []
-        # varDict: Dict[str, Any] = {}
-
-        generatedCode: string = ""
+        generatedCode: str = ""
         codingOrder: List[Node] = []
         outputNodes: List[Node] = []
 
         nodes = self.scene.nodes
 
         # check if scene is codable or it is incomplete (i.e., disconnected node)
+        for node in nodes:
+            outputSocket: Socket
+            for outputSocket in node.outputSockets:
+                if not outputSocket.hasAnyEdge:
+                    self.__logger.warning(
+                        f"Node {node.id} has a disconnected socket: {outputSocket.id}"
+                    )
+                    self.notConnectedSocket.emit()
+
         # if codable: go ahead
         # else: exit
 
@@ -64,18 +73,18 @@ class SceneCoder:
         for currentVarIndex, node in enumerate(codingOrder):
             if node not in outputNodes:
                 inputNodes = node.getParentNodes()
-                inputVarIndexes = []
+                inputVarIndexes: List[int] = []
                 for inputNode in inputNodes:
                     inputVarIndexes.append(codingOrder.index(inputNode))
                 generatedCode += node.generateCode(currentVarIndex, inputVarIndexes)
 
         # add returned outputs
-        outputVarNames = []
+        outputVarNames: List[str] = []
         for node in outputNodes:
             inputNode = node.getParentNodes()
             inputVarIndex = codingOrder.index(inputNode[0])
             outputVarNames.append("var_" + str(inputVarIndex))
-        generatedCode += "return [" + ', '.join(outputVarNames) + "]"
+        generatedCode += "return [" + ", ".join(outputVarNames) + "]"
         self.__logger.info(codingOrder)
 
         return generatedCode

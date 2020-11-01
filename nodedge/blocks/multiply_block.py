@@ -16,7 +16,6 @@ class MultiplyBlock(Block):
     contentLabelObjectName = "BlockBackground"
     evalString = "mul"
 
-
     def evalImplementation(self):
         i0 = self.inputNodeAt(0)
         i1 = self.inputNodeAt(1)

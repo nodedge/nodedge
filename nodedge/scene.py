@@ -50,7 +50,7 @@ class Scene(Serializable):
 
         self.history: SceneHistory = SceneHistory(self)
         self.clipboard: SceneClipboard = SceneClipboard(self)
-        self.coder: SceneCoder = SceneCoder(self)
+        self.coder: SceneCoder = SceneCoder(scene=self)
 
         self._isModified: bool = False
         self.isModified: bool = False
@@ -135,7 +135,7 @@ class Scene(Serializable):
 
     @property
     def silentSelectionEvents(self):
-        """"
+        """ "
         If this property is true, do not trigger onItemSelected when an item is selected
 
         :return: True is onItemSelected is not triggered when an item is selected
@@ -300,7 +300,7 @@ class Scene(Serializable):
 
     def clear(self) -> None:
         """Remove all `Nodes` from this `Scene`. This causes also to remove all
-        `Edges` """
+        `Edges`"""
         while len(self.nodes) > 0:
             self.nodes[0].remove()
 

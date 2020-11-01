@@ -42,5 +42,5 @@ class InputBlock(Block):
         return self.value
 
     def generateCode(self, currentVarIndex: int, inputVarIndexes: List[int]):
-        generatedCode: str = f'var_{str(currentVarIndex)} = {str(self.eval())} \n'
+        generatedCode: str = f"var_{str(currentVarIndex)} = {str(self.eval())}\n"
         return generatedCode

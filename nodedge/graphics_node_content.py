@@ -71,7 +71,7 @@ class GraphicsNodeContent(QWidget, Serializable):
         self.node.scene.graphicsView.editingFlag = value
 
     def serialize(self) -> OrderedDict:
-        """ Default serialization method.
+        """Default serialization method.
 
         It needs to be overridden for each node implementation.
 
@@ -87,7 +87,7 @@ class GraphicsNodeContent(QWidget, Serializable):
         *args,
         **kwargs
     ) -> bool:
-        """ Default deserialize method.
+        """Default deserialize method.
 
         It needs to be overridden for each node implementation.
 

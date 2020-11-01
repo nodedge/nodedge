@@ -31,7 +31,7 @@ def printError(*args):
 
 def edgeValidatorDebug(inputSocket: Socket, outputSocket: Socket) -> bool:
     """This will consider edge always valid, however writes bunch of debug stuff into
-    console """
+    console"""
     print("VALIDATING:")
     print(
         inputSocket,
