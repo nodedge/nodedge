@@ -7,12 +7,13 @@ from typing import Any, Callable, List, Optional, cast
 
 from pyqtconsole.console import PythonConsole
 from PySide2.QtCore import QSignalMapper, QSize, Qt, QTimer, Slot
-from PySide2.QtGui import QCloseEvent, QIcon, QKeySequence
+from PySide2.QtGui import QCloseEvent, QIcon, QKeySequence, QMouseEvent
 from PySide2.QtWidgets import (
     QAction,
     QDialog,
     QDockWidget,
     QFileDialog,
+    QLabel,
     QMdiArea,
     QMdiSubWindow,
     QMenu,
@@ -91,7 +92,7 @@ class MdiWindow(EditorWindow):
             self.styleSheetFilename
         )
 
-        # self.setWindowFlag(Qt.FramelessWindowHint)
+        self.setMouseTracking(True)
 
         self.timer = QTimer()
         self.timer.setTimerType(Qt.PreciseTimer)
@@ -100,12 +101,6 @@ class MdiWindow(EditorWindow):
         self.timer.start()
 
         self.mdiArea = MdiArea()
-        self.mdiArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.mdiArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.mdiArea.setViewMode(QMdiArea.TabbedView)
-        self.mdiArea.setDocumentMode(True)
-        self.mdiArea.setTabsClosable(True)
-        self.mdiArea.setTabsMovable(True)
         self.setCentralWidget(self.mdiArea)
 
         self.addCurrentEditorWidgetChangedListener(self.updateMenus)
@@ -134,8 +129,8 @@ class MdiWindow(EditorWindow):
         """
         Create the status bar describing Nodedge status and the mouse position.
         """
-        self.statusBar().showMessage("Ready")
         super().createStatusBar()
+        self.statusBar().showMessage("Ready")
 
     # noinspection PyArgumentList, PyAttributeOutsideInit
     def createActions(self) -> None:
@@ -505,6 +500,7 @@ class MdiWindow(EditorWindow):
         :type event: ``QCloseEvent.py``
         :return: ``None``
         """
+        self.pythonConsoleWidget.close()
         self.mdiArea.closeAllSubWindows()
         if self.mdiArea.currentSubWindow():
             event.ignore()
@@ -662,3 +658,9 @@ class MdiWindow(EditorWindow):
         self.__logger.info("")
         dialog = QDialog()
         dialog.show()
+
+    def mouseMoveEvent(self, event: QMouseEvent):
+        pos = event.pos()
+        self.statusMousePos.setText(f"[{pos.x()}, {pos.y()}]")
+
+        super().mouseMoveEvent(event)

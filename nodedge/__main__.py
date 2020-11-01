@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
 import os
 import sys
 
 from PySide2.QtWidgets import QApplication
 
+from nodedge.logger import highLightLoggingSetup, setupLogging
 from nodedge.mdi_window import MdiWindow
 from nodedge.utils import dumpException
 
@@ -12,6 +14,8 @@ os.environ["QT_API"] = "pyside"
 
 def main():
     app: QApplication = QApplication(sys.argv)
+    setupLogging()
+    highLightLoggingSetup()
 
     window = MdiWindow()
     window.show()

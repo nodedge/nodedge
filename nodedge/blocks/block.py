@@ -28,7 +28,7 @@ class Block(Node):
     GraphicsNodeClass = GraphicsBlock
     GraphicsNodeContentClass = GraphicsBlockContent
 
-    def __init__(self, scene, inputSocketTypes=(2, 2), outputSocketTypes=(1,)):
+    def __init__(self, scene, inputSocketTypes=(0, 2), outputSocketTypes=(1,)):
         super().__init__(
             scene, self.__class__.operationTitle, inputSocketTypes, outputSocketTypes
         )
