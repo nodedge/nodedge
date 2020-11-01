@@ -9,6 +9,7 @@ from typing import Optional, Union
 from PySide2.QtCore import QRectF, Qt
 from PySide2.QtGui import QBrush, QColor, QPainter, QPen
 from PySide2.QtWidgets import (
+    QApplication,
     QGraphicsItem,
     QGraphicsSceneHoverEvent,
     QStyleOptionGraphicsItem,
@@ -110,6 +111,15 @@ class GraphicsSocket(QGraphicsItem):
         painter.drawEllipse(
             -self.radius, -self.radius, 2 * self.radius, 2 * self.radius
         )
+
+        painter.setBrush(QBrush(QColor(QApplication.palette().Button)))
+        if not self.socket.hasAnyEdge:
+            painter.drawEllipse(
+                -int(self.radius * 0.5),
+                -int(self.radius * 0.5),
+                self.radius,
+                self.radius,
+            )
 
     def boundingRect(self) -> QRectF:
         """
