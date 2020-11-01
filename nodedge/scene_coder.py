@@ -36,7 +36,8 @@ class SceneCoder(QObject):
 
         nodes = self.scene.nodes
 
-        # check if scene is codable or it is incomplete (i.e., disconnected node)
+        # check if scene is incomplete (i.e., disconnected node)
+        # if yes, raise a warning, then go ahead
         for node in nodes:
             outputSocket: Socket
             for outputSocket in node.outputSockets:
@@ -46,8 +47,7 @@ class SceneCoder(QObject):
                     )
                     self.notConnectedSocket.emit()
 
-        # if codable: go ahead
-        # else: exit
+        # if scene is not codable: raise a warning and exit
 
         # find all output nodes
         for node in nodes:

@@ -135,8 +135,6 @@ class Block(Node):
         return res
 
     def generateCode(self, currentVarIndex: int, inputVarIndexes: List[int]):
-        # This method should return a string var_X = operationString(*inputs)
-        # TODO: add operationString = '()' to Input and Output
         generatedCode: str = (
             "var_" + str(currentVarIndex) + " = " + str(self.evalString) + "("
         )

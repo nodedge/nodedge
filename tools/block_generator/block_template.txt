@@ -17,6 +17,7 @@ class ${block_name}Block(Block):
     contentLabel = "${operation_symbol}"
     contentLabelObjectName = "BlockBackground"
     evalString = "${operation_name}"
+    library = "${library}"
 
     def evalImplementation(self):
         inputs = []
@@ -24,10 +25,8 @@ class ${block_name}Block(Block):
             inputs.append(self.inputNodeAt(i))
 
         try:
-            operation = f"{${block_name}Block.evalString}("
-            for curr_input in inputs:
-                operation += f"{curr_input.eval()},"
-            operation = operation[:-1] + f")"
+            evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
+            operation = f"{${block_name}Block.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)
