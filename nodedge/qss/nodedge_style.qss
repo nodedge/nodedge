@@ -171,6 +171,8 @@ padding-left: 10px;
 
 QTableView::item:hover{
 background:palette(light);
+padding-right: 0px;
+padding-left: 0px;
 }
 
 QTableView::item:active:hover{
