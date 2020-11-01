@@ -69,8 +69,8 @@ class GraphicsScene(QGraphicsScene):
 
     # noinspection PyAttributeOutsideInit
     def initSizes(self) -> None:
-        """Set up internal attributes like `grid_size`, `scene_width` and
-        `scene_height`. """
+        """Set up internal attributes like `gridSize`, `sceneWidth` and
+        `sceneHeight`. """
         self.gridSize = 15
         self.gridSquares = 4
         self.sceneWidth = 64000

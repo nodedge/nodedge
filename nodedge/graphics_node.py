@@ -264,6 +264,20 @@ class GraphicsNode(QGraphicsItem):
 
         # Handle when node moved
         if self._wasMoved:
+            clipSize = self.node.scene.graphicsScene.gridSize
+            pos = event.scenePos() - event.pos()
+            newX = pos.x() - pos.x() % clipSize
+            newY = pos.y() - pos.y() % clipSize
+
+            self.setPos(newX, newY)
+            graphicsScene: GraphicsScene = cast(GraphicsScene, self.scene())
+            for node in graphicsScene.scene.nodes:
+                if node.graphicsNode.isSelected():
+                    node.updateConnectedEdges()
+
+            self.__logger.debug(f"Current graphics node pos: {self.pos()}")
+            self.__logger.debug(f"Event pos: {event.scenePos()}")
+
             self._wasMoved = False
             self.node.scene.history.store("Move a node")
 
