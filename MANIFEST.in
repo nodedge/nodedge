@@ -37,3 +37,4 @@ include *.txt
 recursive-include nodedge *
 
 recursive-exclude logs *
+recursive-exclude demos *

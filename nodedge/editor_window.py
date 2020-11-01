@@ -276,7 +276,7 @@ class EditorWindow(QMainWindow):
 
         :return: ``None``
         """
-        self.__logger.debug(f"Clipboard changed: {self.clipboard.text()}")
+        self.__logger.debug(f"Clipboard changed: '{self.clipboard.text()}'")
 
     def OnScenePosChanged(self, x: float, y: float):
         """

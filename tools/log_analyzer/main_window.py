@@ -3,12 +3,23 @@
 Log analyzer module containing LogAnalyzer class.
 """
 import logging
+import os
+import sys
 from typing import Callable, Optional, Union, cast
 
-from PySide2.QtCore import QSettings, QSize
-from PySide2.QtGui import QCloseEvent, QGuiApplication, QKeySequence
-from PySide2.QtWidgets import QAction, QMainWindow, QMenu, QPlainTextEdit
+from PySide2.QtCore import QSettings, QSize, Qt
+from PySide2.QtGui import QCloseEvent, QGuiApplication, QIcon, QKeySequence, QMouseEvent
+from PySide2.QtWidgets import (
+    QAction,
+    QApplication,
+    QLabel,
+    QMainWindow,
+    QMenu,
+    QPlainTextEdit,
+    QToolBar,
+)
 
+from nodedge.utils import dumpException
 from tools.log_analyzer.application_styler import ApplicationStyler
 
 
@@ -17,7 +28,7 @@ class MainWindow(QMainWindow):
     MainWindow containing the analysis of the logs.
     """
 
-    def __init__(self, parent=None, applicationName: str = ""):
+    def __init__(self, parent=None, applicationName: str = "", iconPath=""):
         super().__init__(parent)
 
         logging.basicConfig(
@@ -27,6 +38,7 @@ class MainWindow(QMainWindow):
         )
 
         self.applicationName: str = applicationName
+        self.iconPath = iconPath
 
         self.textEdit = QPlainTextEdit()
         self.curFile = ""
@@ -41,6 +53,27 @@ class MainWindow(QMainWindow):
         self.createActions()
         self.createMenus()
 
+        self.initUI()
+        self.setMouseTracking(True)
+
+    # noinspection PyAttributeOutsideInit
+    def initUI(self) -> None:
+        """
+        Set up this ``QMainWindow``.
+
+        Create the mdi area, actions and menus
+        """
+        self.companyName = "Nodedge"
+        self.productName = "Nodedge"
+        self.icon = QIcon(os.path.join(os.path.dirname(__file__), self.iconPath))
+        self.setWindowIcon(self.icon)
+        self.setMinimumSize(QSize(880, 600))
+
+        self.createActions()
+        self.createMenus()
+        self.createToolBars()
+        self.createStatusBar()
+
     def sizeHint(self) -> QSize:
         """
         Qt's size hint handle.
@@ -50,7 +83,7 @@ class MainWindow(QMainWindow):
         """
         return QSize(800, 600)
 
-    def openFile(self, filename):
+    def openFile(self, filename: str):
         raise NotImplementedError
 
     def saveFile(self):
@@ -173,25 +206,31 @@ class MainWindow(QMainWindow):
         self.helpMenu: QMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.aboutAct)
 
-    @staticmethod
-    def getFileDialogDirectory() -> str:
+    # noinspection PyAttributeOutsideInit
+    def createToolBars(self) -> None:
         """
-        Returns starting directory for ``QFileDialog`` file open/save
+        Create the `File` and `Edit` toolbar containing few of their menu actions.
+        """
+        self.fileToolBar: QToolBar = self.addToolBar("File")
+        self.fileToolBar.setMovable(False)
+        self.fileToolBar.addAction(self.newAct)
+        self.fileToolBar.addAction(self.openAct)
+        self.fileToolBar.addAction(self.saveAct)
+        self.fileToolBar.addSeparator()
 
-        :return: starting directory for ``QFileDialog`` file open/save
-        :rtype: ``str``
-        """
-        return "../../log"
+        self.editToolBar = self.addToolBar("Edit")
+        self.editToolBar.setMovable(False)
+        self.editToolBar.addAction(self.cutAct)
+        self.editToolBar.addAction(self.copyAct)
+        self.editToolBar.addAction(self.pasteAct)
 
-    @staticmethod
-    def getFileDialogFilter() -> str:
+    def createStatusBar(self) -> None:
         """
-        Returns ``str`` standard file open/save filter for ``QFileDialog``
-
-        :return: standard file open/save filter for ``QFileDialog``
-        :rtype: ``str``
+        Create the status bar describing Nodedge status and the mouse position.
         """
-        return "Log (*.log);CSV (*.csv);All files (*)"
+        self.statusMousePos = QLabel("")
+        self.statusBar().addPermanentWidget(self.statusMousePos)
+        self.statusBar().showMessage("Ready")
 
     def createAction(
         self,
@@ -260,3 +299,21 @@ class MainWindow(QMainWindow):
         """
         self.writeSettings()
         event.accept()
+
+    def mouseMoveEvent(self, event: QMouseEvent):
+        pos = event.pos()
+        self.statusMousePos.setText(f"[{pos.x()}, {pos.y()}]")
+
+        super().mouseMoveEvent(event)
+
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+
+    window = MainWindow()
+    window.showMaximized()
+
+    try:
+        sys.exit(app.exec_())
+    except Exception as e:
+        dumpException(e)
