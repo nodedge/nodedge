@@ -1,34 +1,48 @@
 import csv
 import os.path
+import shutil
 from string import Template
 
-config_file = "block_config.csv"
-save_path = "./generated_blocks/"
+configFile = "block_config.csv"
+# save_path = "./generated_blocks/"
+savePath = "../../nodedge/blocks/autogen/"
 
 if __name__ == "__main__":
     # Create folder for generated blocks
-    if not os.path.exists(save_path):
-        os.makedirs(save_path)
+    if not os.path.exists(savePath):
+        os.makedirs(savePath)
+    else:
+        for filename in os.listdir(savePath):
+            filepath = os.path.join(savePath, filename)
+            for filename in os.listdir(savePath):
+                filepath = os.path.join(savePath, filename)
+                try:
+                    shutil.rmtree(filepath)
+                except OSError:
+                    os.remove(filepath)
 
     # Read one line of the csv
-    with open(config_file) as infile:
+    with open(configFile) as infile:
         reader = csv.DictReader(infile, delimiter=",")
 
         for row in reader:
 
             # Generate code
-            with open("block_template.txt") as template_file:
-                input_data = template_file.read()
-            template = Template(input_data)
+            with open("block_template.txt") as templateFile:
+                inputData = templateFile.read()
+            template = Template(inputData)
 
-            output_data = template.substitute(**row)
-            file_name = f"{row['operation_name']}_block.py"
-            file_path = os.path.join(save_path, file_name)
-            output_file = open(file_path, "w")
-            output_file.write(output_data)
-            output_file.close()
+            outputData = template.substitute(**row)
+            filename = f"{(row['operation_name'])}_block.py"
+            libraryPath = os.path.join(savePath, row["library"])
+            if not os.path.exists(libraryPath):
+                os.makedirs(libraryPath)
+            filePath = os.path.join(libraryPath, filename)
+            outputFile = open(filePath, "w")
+            outputFile.write(outputData)
+            outputFile.close()
 
-        template_file.close()
+        templateFile.close()
     infile.close()
 
 # TODO: Generate test for each block in a separated file

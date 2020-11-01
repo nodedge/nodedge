@@ -6,7 +6,7 @@ Submodules
 
 .. toctree::
 
-   nodedge.blocks.add_block
+   nodedge.blocks.addition_block
    nodedge.blocks.block
    nodedge.blocks.block_config
    nodedge.blocks.divide_block

@@ -1,19 +1,23 @@
 # -*- coding: utf-8 -*-
-import logging
-from operator import add
 
 from nodedge.blocks.block import Block, EvaluationError
-from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, OP_NODE_ADD, registerNode
+from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
+
+try:
+    from nodedge.blocks.block_config import OP_NODE_ADD
+except:
+    op_block_string = -1
 
 
 @registerNode(OP_NODE_ADD)
-class AddBlock(Block):
+class addBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/add.png"
     operationCode = OP_NODE_ADD
-    operationTitle = "Add"
+    operationTitle = "Addition"
     contentLabel = "+"
     contentLabelObjectName = "BlockBackground"
     evalString = "add"
+    library = "operator"
 
     def evalImplementation(self):
         inputs = []
@@ -21,10 +25,8 @@ class AddBlock(Block):
             inputs.append(self.inputNodeAt(i))
 
         try:
-            operation = f"{AddBlock.evalString}("
-            for curr_input in inputs:
-                operation += f"{curr_input.eval()},"
-            operation = operation[:-1] + ")"
+            evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
+            operation = f"{addBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)
@@ -32,8 +34,3 @@ class AddBlock(Block):
         self.value = result
 
         return self.value
-
-
-# TODO: use join method instead ','.join(list_of_strings)
-# TODO: Find a way to extract exceptions from evalImplementation
-# TODO: Create a script to generate tests for blocks: list of Inputs and list of expected Outputs

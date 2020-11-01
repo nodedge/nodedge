@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 
-from ${library} import ${function}
-
 from nodedge.blocks.block import Block, EvaluationError
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
+
 try:
-    from nodedge.blocks.block_config import ${op_block_string}
+    from nodedge.blocks.block_config import OP_NODE_EQUAL
 except:
     op_block_string = -1
 
-@registerNode(${op_block_string})
-class ${operation_name}Block(Block):
-    icon = f"{BLOCKS_ICONS_PATH}/${operation_name}.png"
-    operationCode = ${op_block_string}
-    operationTitle = "${block_name}"
-    contentLabel = "${operation_symbol}"
+
+@registerNode(OP_NODE_EQUAL)
+class eqBlock(Block):
+    icon = f"{BLOCKS_ICONS_PATH}/eq.png"
+    operationCode = OP_NODE_EQUAL
+    operationTitle = "Equal"
+    contentLabel = "=="
     contentLabelObjectName = "BlockBackground"
-    evalString = "${operation_name}"
-    library = "${library}"
+    evalString = "eq"
+    library = "operator"
 
     def evalImplementation(self):
         inputs = []
@@ -26,7 +26,7 @@ class ${operation_name}Block(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{${operation_name}Block.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{eqBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

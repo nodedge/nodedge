@@ -1,7 +1,7 @@
 import pytest
 from PySide2.QtWidgets import QMainWindow
 
-from nodedge.blocks import AddBlock, InputBlock, OutputBlock
+from nodedge.blocks import AdditionBlock, InputBlock, OutputBlock
 from nodedge.edge import Edge
 from nodedge.editor_widget import EditorWidget
 
@@ -23,7 +23,7 @@ def filledScene(emptyScene):
     inputBlock1.content.edit.setText(str(1))
     inputBlock2: InputBlock = InputBlock(emptyScene)  # noqa: F841
     inputBlock2.content.edit.setText(str(2))
-    addBlock: AddBlock = AddBlock(emptyScene)
+    addBlock: AdditionBlock = AdditionBlock(emptyScene)
     edgeIn1Add: Edge = Edge(
         emptyScene, inputBlock1.outputSockets[0], addBlock.inputSockets[0]
     )  # noqa: F841

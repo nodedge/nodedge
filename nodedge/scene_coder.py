@@ -64,7 +64,8 @@ class SceneCoder(QObject):
                 outputNode, codingOrder, []
             )
 
-            # reverse order of the nodes to add and append
+            # remove output node from the list, reverse order of the nodes to add and append
+            nodesToAdd.pop(0)
             if nodesToAdd:
                 nodesToAdd.reverse()
                 codingOrder.extend(nodesToAdd)
