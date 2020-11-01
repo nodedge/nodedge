@@ -205,6 +205,12 @@ class EditorWindow(QMainWindow):
         self.createFileMenu()
         self.createEditMenu()
         self.createViewMenu()
+        self.createCoderMenu()
+
+    # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
+    def createCoderMenu(self):
+        self.coderMenu: QMenu = self.menuBar().addMenu("&Coder")
+        self.coderMenu.addAction(self.generateCodeAct)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
     def createFileMenu(self):

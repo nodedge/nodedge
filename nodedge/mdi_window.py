@@ -5,7 +5,6 @@ import logging
 import os
 from typing import Any, Callable, List, Optional, cast
 
-from pyqtconsole.console import PythonConsole
 from PySide2.QtCore import QSignalMapper, QSize, Qt, QTimer, Slot
 from PySide2.QtGui import QCloseEvent, QIcon, QKeySequence, QMouseEvent
 from PySide2.QtWidgets import (
@@ -19,6 +18,7 @@ from PySide2.QtWidgets import (
     QToolBar,
     QWidget,
 )
+from pyqtconsole.console import PythonConsole
 
 from nodedge.editor_widget import EditorWidget
 from nodedge.editor_window import EditorWindow
@@ -216,6 +216,9 @@ class MdiWindow(EditorWindow):
         self.editToolBar.addAction(self.cutAct)
         self.editToolBar.addAction(self.copyAct)
         self.editToolBar.addAction(self.pasteAct)
+
+        self.coderToolbar = self.addToolBar("Coder")
+        self.coderToolbar.addAction(self.generateCodeAct)
 
     def createMenus(self) -> None:
         """
@@ -655,7 +658,7 @@ class MdiWindow(EditorWindow):
         """Event called when the debug action is triggered."""
         pass
 
-    @Slot()
+    @Slot()  # type: ignore
     def onShowDialogActions(self):
         self.__logger.info("")
         dialog = QDialog()
@@ -667,7 +670,7 @@ class MdiWindow(EditorWindow):
 
         super().mouseMoveEvent(event)
 
-    @Slot()
+    @Slot()  # type: ignore
     def onSceneCoderOutputSocketDisconnect(self) -> None:
         """
         Callback to deal with :class:`~nodedge.scene_coder.SceneCoder` warning.
