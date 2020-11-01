@@ -4,7 +4,6 @@ import shutil
 from string import Template
 
 configFile = "block_config.csv"
-# save_path = "./generated_blocks/"
 savePath = "../../nodedge/blocks/autogen/"
 
 if __name__ == "__main__":
