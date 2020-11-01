@@ -30,8 +30,13 @@ if __name__ == "__main__":
     window.openFile(f"{os.path.dirname(__file__)}/calculator.json")
 
     currentScene = window.currentEditorWidget.scene
-    currentSceneCode = SceneCoder(currentScene).generateCode()
+    coder = SceneCoder(currentScene)
+    orderedNodeList, currentSceneCode = coder.generateCode()
     print(currentSceneCode)
+
+    generatedFileString = coder.createFileFromGeneratedCode(
+        orderedNodeList, currentSceneCode
+    )
 
     try:
         sys.exit(app.exec_())

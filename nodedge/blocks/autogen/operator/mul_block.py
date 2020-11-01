@@ -10,7 +10,7 @@ except:
 
 
 @registerNode(OP_NODE_MULTIPLY)
-class mulBlock(Block):
+class MulBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/mul.png"
     operationCode = OP_NODE_MULTIPLY
     operationTitle = "Multiplication"
@@ -26,7 +26,7 @@ class mulBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{mulBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{MulBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

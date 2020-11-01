@@ -10,7 +10,7 @@ except:
 
 
 @registerNode(OP_NODE_SUBTRACT)
-class subBlock(Block):
+class SubBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/sub.png"
     operationCode = OP_NODE_SUBTRACT
     operationTitle = "Subtraction"
@@ -26,7 +26,7 @@ class subBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{subBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{SubBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

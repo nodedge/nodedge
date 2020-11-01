@@ -10,7 +10,7 @@ except:
 
 
 @registerNode(OP_NODE_MODULO)
-class modBlock(Block):
+class ModBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/mod.png"
     operationCode = OP_NODE_MODULO
     operationTitle = "Modulo"
@@ -26,7 +26,7 @@ class modBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{modBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{ModBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

@@ -10,7 +10,7 @@ except:
 
 
 @registerNode(OP_NODE_POWER)
-class powBlock(Block):
+class PowBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/pow.png"
     operationCode = OP_NODE_POWER
     operationTitle = "Power"
@@ -26,7 +26,7 @@ class powBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{powBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{PowBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

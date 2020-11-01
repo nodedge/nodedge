@@ -4,7 +4,7 @@ Scene Coder module containing :class:`~nodedge.scene_coder.SceneCoder` class.
 """
 import logging
 
-from PySide2.QtCore import Signal, QObject
+from PySide2.QtCore import QObject, Signal
 
 from nodedge.blocks import *
 from nodedge.connector import Socket
@@ -31,7 +31,7 @@ class SceneCoder(QObject):
         :rtype: ``str``
         """
         generatedCode: str = ""
-        codingOrder: List[Node] = []
+        orderedNodeList: List[Node] = []
         outputNodes: List[Node] = []
 
         nodes = self.scene.nodes
@@ -61,37 +61,69 @@ class SceneCoder(QObject):
         for outputNode in outputNodes:
             # find complete hierarchy of an output node
             nodesToAdd: List[Node] = self._appendHierarchyUntilRoot(
-                outputNode, codingOrder, []
+                outputNode, orderedNodeList, []
             )
 
             # remove output node from the list, reverse order of the nodes to add and append
             nodesToAdd.pop(0)
             if nodesToAdd:
                 nodesToAdd.reverse()
-                codingOrder.extend(nodesToAdd)
+                orderedNodeList.extend(nodesToAdd)
 
-        # generate code
-        for currentVarIndex, node in enumerate(codingOrder):
-            if node not in outputNodes:
-                inputNodes = node.getParentNodes()
-                inputVarIndexes: List[int] = []
-                for inputNode in inputNodes:
-                    inputVarIndexes.append(codingOrder.index(inputNode))
-                generatedCode += node.generateCode(currentVarIndex, inputVarIndexes)
+        # generate code for all nodes
+        for currentVarIndex, node in enumerate(orderedNodeList):
+            inputNodes = node.getParentNodes()
+            inputVarIndexes: List[int] = []
+            for inputNode in inputNodes:
+                inputVarIndexes.append(orderedNodeList.index(inputNode))
+            generatedCode += node.generateCode(currentVarIndex, inputVarIndexes)
 
-        # add returned outputs
+        # add returned output list
         outputVarNames: List[str] = []
         for node in outputNodes:
             inputNode = node.getParentNodes()
-            inputVarIndex = codingOrder.index(inputNode[0])
+            inputVarIndex = orderedNodeList.index(inputNode[0])
             outputVarNames.append("var_" + str(inputVarIndex))
         generatedCode += "return [" + ", ".join(outputVarNames) + "]"
-        self.__logger.info(codingOrder)
+        self.__logger.info(orderedNodeList)
 
-        return generatedCode
+        return orderedNodeList, generatedCode
+
+    def createFileFromGeneratedCode(self, orderedNodeList, generatedCode):
+        # add imports on top
+        importedLibraries = {}
+        for currentVarIndex, node in enumerate(orderedNodeList):
+            if node.evalString and node.library:
+                if node.library not in importedLibraries:
+                    importedLibraries[node.library] = []
+                importedLibraries[node.library].append(node.evalString)
+        generatedImport = ""
+
+        for key in importedLibraries.keys():
+            generatedImport += (
+                f"from {key} import {', '.join(importedLibraries[key])}\n"
+            )
+        generatedImport += "\n\n"
+
+        # put code into a function
+        functionName = self.scene.filename.split("/")[-1]
+        functionName = functionName.split(".")[0].lower()
+        generatedFunctionDef = f"def {functionName}():"
+        generatedFunctionCall = (
+            f"\n\n\nif __name__ == '__main__':\n    {functionName}()\n"
+        )
+
+        outputFileString = (
+                generatedImport
+                + generatedFunctionDef
+                + _indent_code(generatedCode)
+                + generatedFunctionCall
+        )
+
+        return outputFileString
 
     def _appendHierarchyUntilRoot(
-        self, currentNode: Node, appendedNodes: List[Node], nodesToAdd: List[Node]
+            self, currentNode: Node, appendedNodes: List[Node], nodesToAdd: List[Node]
     ):
         nodesToAdd.append(currentNode)
         parentNodes = currentNode.getParentNodes()
@@ -100,3 +132,10 @@ class SceneCoder(QObject):
                 if parent not in appendedNodes and parent not in nodesToAdd:
                     self._appendHierarchyUntilRoot(parent, appendedNodes, nodesToAdd)
         return nodesToAdd
+
+
+def _indent_code(string: str):
+    lines = string.split("\n")
+    indentedLines = ["\n    " + line for line in lines]
+    indentedCode = "".join(indentedLines)
+    return indentedCode

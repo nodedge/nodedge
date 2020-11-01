@@ -10,7 +10,7 @@ except:
 
 
 @registerNode(OP_NODE_LESS)
-class ltBlock(Block):
+class LtBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/lt.png"
     operationCode = OP_NODE_LESS
     operationTitle = "Less"
@@ -26,7 +26,7 @@ class ltBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{ltBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{LtBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

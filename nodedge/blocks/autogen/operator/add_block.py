@@ -10,7 +10,7 @@ except:
 
 
 @registerNode(OP_NODE_ADD)
-class addBlock(Block):
+class AddBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/add.png"
     operationCode = OP_NODE_ADD
     operationTitle = "Addition"
@@ -26,7 +26,7 @@ class addBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{addBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{AddBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

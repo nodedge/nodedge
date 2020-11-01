@@ -3,7 +3,7 @@
 
 import logging
 from collections import OrderedDict
-from typing import Optional, List
+from typing import List, Optional
 
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.blocks.graphics_block_content import GraphicsBlockContent
@@ -25,6 +25,7 @@ class Block(Node):
     contentLabel = ""
     contentLabelObjectName = "blockBackground"
     evalString = ""
+    library = ""
 
     GraphicsNodeClass = GraphicsBlock
     GraphicsNodeContentClass = GraphicsBlockContent

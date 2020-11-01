@@ -1,7 +1,8 @@
 import pytest
 from PySide2.QtWidgets import QMainWindow
 
-from nodedge.blocks import AdditionBlock, InputBlock, OutputBlock
+from nodedge.blocks import InputBlock, OutputBlock
+from nodedge.blocks.autogen.operator.add_block import AddBlock
 from nodedge.edge import Edge
 from nodedge.editor_widget import EditorWidget
 
@@ -23,7 +24,7 @@ def filledScene(emptyScene):
     inputBlock1.content.edit.setText(str(1))
     inputBlock2: InputBlock = InputBlock(emptyScene)  # noqa: F841
     inputBlock2.content.edit.setText(str(2))
-    addBlock: AdditionBlock = AdditionBlock(emptyScene)
+    addBlock: AddBlock = AddBlock(emptyScene)
     edgeIn1Add: Edge = Edge(
         emptyScene, inputBlock1.outputSockets[0], addBlock.inputSockets[0]
     )  # noqa: F841
@@ -42,9 +43,13 @@ def filledScene(emptyScene):
 
 
 def test_generateCode(filledScene):
-    expectedResult = "var_0 = 2.0\n" + \
-                     "var_1 = 1.0\n" + \
-                     "var_2 = add(var_1, var_0)\n" + \
-                     "return [var_2]"
+    expectedResult = (
+            "var_0 = 2.0\n"
+            + "var_1 = 1.0\n"
+            + "var_2 = add(var_1, var_0)\n"
+            + "return [var_2]"
+    )
 
-    assert filledScene.coder.generateCode() == expectedResult
+    _, generatedCode = filledScene.coder.generateCode()
+
+    assert generatedCode == expectedResult

@@ -10,7 +10,7 @@ except:
 
 
 @registerNode(OP_NODE_GREATER)
-class gtBlock(Block):
+class GtBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/gt.png"
     operationCode = OP_NODE_GREATER
     operationTitle = "Greater"
@@ -26,7 +26,7 @@ class gtBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{gtBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{GtBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

@@ -10,7 +10,7 @@ except:
 
 
 @registerNode(OP_NODE_LESS_EQUAL)
-class leBlock(Block):
+class LeBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/le.png"
     operationCode = OP_NODE_LESS_EQUAL
     operationTitle = "Less or Equal"
@@ -26,7 +26,7 @@ class leBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{leBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{LeBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

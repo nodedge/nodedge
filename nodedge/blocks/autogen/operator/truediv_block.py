@@ -10,7 +10,7 @@ except:
 
 
 @registerNode(OP_NODE_DIVIDE)
-class truedivBlock(Block):
+class TrueDivBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/truediv.png"
     operationCode = OP_NODE_DIVIDE
     operationTitle = "Division"
@@ -26,7 +26,7 @@ class truedivBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{truedivBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{TrueDivBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

@@ -10,7 +10,7 @@ except:
 
 
 @registerNode(OP_NODE_EQUAL)
-class eqBlock(Block):
+class EqBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/eq.png"
     operationCode = OP_NODE_EQUAL
     operationTitle = "Equal"
@@ -26,7 +26,7 @@ class eqBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{eqBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{EqBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

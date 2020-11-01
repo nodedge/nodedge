@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     # Read one line of the csv
     with open(configFile) as infile:
-        reader = csv.DictReader(infile, delimiter=",")
+        reader = csv.DictReader(infile, delimiter=";")
 
         for row in reader:
 
@@ -45,4 +45,3 @@ if __name__ == "__main__":
     infile.close()
 
 # TODO: Generate test for each block in a separated file
-# TODO: Create two folders for blocks: autogen and custom

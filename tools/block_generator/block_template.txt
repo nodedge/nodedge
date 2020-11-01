@@ -10,10 +10,10 @@ except:
     op_block_string = -1
 
 @registerNode(${op_block_string})
-class ${operation_name}Block(Block):
+class ${block_name}Block(Block):
     icon = f"{BLOCKS_ICONS_PATH}/${operation_name}.png"
     operationCode = ${op_block_string}
-    operationTitle = "${block_name}"
+    operationTitle = "${operation_title}"
     contentLabel = "${operation_symbol}"
     contentLabelObjectName = "BlockBackground"
     evalString = "${operation_name}"
@@ -26,7 +26,7 @@ class ${operation_name}Block(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{${operation_name}Block.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{${block_name}Block.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

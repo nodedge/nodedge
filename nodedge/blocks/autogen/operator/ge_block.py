@@ -10,7 +10,7 @@ except:
 
 
 @registerNode(OP_NODE_GREATER_EQUAL)
-class geBlock(Block):
+class GeBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/ge.png"
     operationCode = OP_NODE_GREATER_EQUAL
     operationTitle = "Greater or Equal"
@@ -26,7 +26,7 @@ class geBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{geBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{GeBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)
