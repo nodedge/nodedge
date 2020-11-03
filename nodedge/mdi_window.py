@@ -369,7 +369,7 @@ class MdiWindow(EditorWindow):
         :class:`~nodedge.editor_widget.EditorWidget`
         """
         editor: MdiWidget = childWidget if childWidget is not None else MdiWidget()
-        editor.scene.coder.notConnectedSocket.connect(
+        editor.scene.coder.notConnectedSocket.connect(  # type: ignore
             self.onSceneCoderOutputSocketDisconnect
         )
         subWindow = self.mdiArea.addSubWindow(editor)

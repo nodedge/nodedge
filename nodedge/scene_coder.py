@@ -3,10 +3,11 @@
 Scene Coder module containing :class:`~nodedge.scene_coder.SceneCoder` class.
 """
 import logging
+from typing import List, Tuple
 
 from PySide2.QtCore import QObject, Signal
 
-from nodedge.blocks import *
+from nodedge.blocks.block_config import OP_NODE_OUTPUT
 from nodedge.connector import Socket
 from nodedge.node import Node
 
@@ -23,7 +24,7 @@ class SceneCoder(QObject):
         self.__logger.setLevel(logging.INFO)
         super().__init__(parent)
 
-    def generateCode(self) -> str:
+    def generateCode(self) -> Tuple[List[Node], str]:
         """
         Generate a python function corresponding to the content of the scene.
 
@@ -45,7 +46,7 @@ class SceneCoder(QObject):
                     self.__logger.warning(
                         f"Node {node.id} has a disconnected socket: {outputSocket.id}"
                     )
-                    self.notConnectedSocket.emit()
+                    self.notConnectedSocket.emit()  # type: ignore
 
         # if scene is not codable: raise a warning and exit
 

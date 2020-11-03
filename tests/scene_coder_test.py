@@ -1,7 +1,8 @@
 import pytest
 from PySide2.QtWidgets import QMainWindow
 
-from nodedge.blocks import InputBlock, OutputBlock
+from nodedge.blocks.custom.input_block import InputBlock
+from nodedge.blocks.custom.output_block import OutputBlock
 from nodedge.blocks.autogen.operator.add_block import AddBlock
 from nodedge.edge import Edge
 from nodedge.editor_widget import EditorWidget
