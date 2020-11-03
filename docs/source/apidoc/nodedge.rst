@@ -29,6 +29,7 @@ Submodules
    nodedge.graphics_socket
    nodedge.graphics_view
    nodedge.history_list_widget
+   nodedge.logger
    nodedge.mdi_area
    nodedge.mdi_widget
    nodedge.mdi_window

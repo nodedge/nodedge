@@ -35,9 +35,7 @@ def setupLogging(
                 # noinspection PyProtectedMember
                 coloredlogs.install(
                     level=logging.getLogger().level,
-                    fmt=logging.getLogger()  # type: ignore
-                    .handlers[0]
-                    .formatter._fmt,
+                    fmt=logging.getLogger().handlers[0].formatter._fmt,  # type: ignore
                 )
             except Exception as e:
                 print(e)
