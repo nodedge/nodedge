@@ -1,7 +1,7 @@
-nodedge.blocks.input\_block
+nodedge.application\_styler
 ===========================
 
-.. automodule:: nodedge.blocks.input_block
+.. automodule:: nodedge.application_styler
    :members:
    :undoc-members:
    :show-inheritance:

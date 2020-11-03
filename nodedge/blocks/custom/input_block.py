@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from typing import List
+
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, OP_NODE_INPUT, registerNode
 from nodedge.blocks.graphics_block import GraphicsBlock
@@ -38,3 +40,7 @@ class InputBlock(Block):
         self.markDescendantsDirty(True)
 
         return self.value
+
+    def generateCode(self, currentVarIndex: int, inputVarIndexes: List[int]):
+        generatedCode: str = f"var_{str(currentVarIndex)} = {str(self.eval())}\n"
+        return generatedCode

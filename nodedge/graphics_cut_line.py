@@ -28,7 +28,7 @@ class CutLineMode(IntEnum):
 
 class CutLine:
     """
-        :class:`~nodedge.graphics_cut_line.CutLine` class.
+    :class:`~nodedge.graphics_cut_line.CutLine` class.
     """
 
     def __init__(self, graphicsView: "GraphicsView") -> None:  # type: ignore

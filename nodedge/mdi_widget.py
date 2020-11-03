@@ -98,7 +98,7 @@ class MdiWidget(EditorWidget):
 
     @staticmethod
     def getNodeClassFromData(data):
-        """ Get the node class associated with operation present in data.
+        """Get the node class associated with operation present in data.
 
         :param data: serialized :class:`~nodedge.node.Node` containing the operation
             code

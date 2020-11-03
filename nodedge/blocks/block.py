@@ -3,7 +3,7 @@
 
 import logging
 from collections import OrderedDict
-from typing import Optional
+from typing import List, Optional
 
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.blocks.graphics_block_content import GraphicsBlockContent
@@ -24,6 +24,8 @@ class Block(Node):
     operationCode = 0
     contentLabel = ""
     contentLabelObjectName = "blockBackground"
+    evalString = ""
+    library = ""
 
     GraphicsNodeClass = GraphicsBlock
     GraphicsNodeContentClass = GraphicsBlockContent
@@ -132,6 +134,13 @@ class Block(Node):
 
         self.graphicsNode.content.updateIO()
         return res
+
+    def generateCode(self, currentVarIndex: int, inputVarIndexes: List[int]):
+        generatedCode: str = (
+            "var_" + str(currentVarIndex) + " = " + str(self.evalString) + "("
+        )
+        generatedCode += ", ".join([f"var_{str(index)}" for index in inputVarIndexes])
+        return generatedCode + ")\n"
 
 
 class EvaluationError(Exception):

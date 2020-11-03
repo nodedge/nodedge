@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from typing import Dict, TypeVar
+from typing import Dict
 
 NODELISTWIDGET_MIMETYPE = "application/x-item"
 
@@ -10,14 +10,22 @@ OP_NODE_ADD = 3
 OP_NODE_SUBTRACT = 4
 OP_NODE_MULTIPLY = 5
 OP_NODE_DIVIDE = 6
+OP_NODE_MODULO = 7
+OP_NODE_POWER = 8
+OP_NODE_LESS = 9
+OP_NODE_LESS_EQUAL = 10
+OP_NODE_EQUAL = 11
+OP_NODE_GREATER = 12
+OP_NODE_GREATER_EQUAL = 13
 
 # BlockType = TypeVar("BlockType", bound=Block)
 BLOCKS: Dict[int, type] = {}
 
 BLOCKS_ICONS_PATH = f"{os.path.dirname(__file__)}/../resources/node_icons"
 
+
 # Way to register by function call
-# associateOperationCodeWithBlock(OP_NODE_ADD, AddBlock)
+# associateOperationCodeWithBlock(OP_NODE_ADD, AdditionBlock)
 
 
 class BlockConfigException(Exception):

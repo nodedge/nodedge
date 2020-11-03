@@ -48,7 +48,7 @@ class EditorWindow(QMainWindow):
         super().__init__(parent)
 
         self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.DEBUG)
+        self.__logger.setLevel(logging.INFO)
 
         self.companyName = "Nodedge"
         self.productName = "Editor"
@@ -205,6 +205,12 @@ class EditorWindow(QMainWindow):
         self.createFileMenu()
         self.createEditMenu()
         self.createViewMenu()
+        self.createCoderMenu()
+
+    # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
+    def createCoderMenu(self):
+        self.coderMenu: QMenu = self.menuBar().addMenu("&Coder")
+        self.coderMenu.addAction(self.generateCodeAct)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
     def createFileMenu(self):
@@ -542,7 +548,7 @@ class EditorWindow(QMainWindow):
 
     def onGenerateCode(self):
         if self.currentEditorWidget is not None:
-            self.currentEditorWidget.graphicsView.graphicsScene.fitInView()
+            self.currentEditorWidget.scene.coder.generateCode()
 
     def createAction(
         self,

@@ -5,7 +5,6 @@ import logging
 import os
 from typing import Any, Callable, List, Optional, cast
 
-from pyqtconsole.console import PythonConsole
 from PySide2.QtCore import QSignalMapper, QSize, Qt, QTimer, Slot
 from PySide2.QtGui import QCloseEvent, QIcon, QKeySequence, QMouseEvent
 from PySide2.QtWidgets import (
@@ -13,14 +12,13 @@ from PySide2.QtWidgets import (
     QDialog,
     QDockWidget,
     QFileDialog,
-    QLabel,
-    QMdiArea,
     QMdiSubWindow,
     QMenu,
     QMessageBox,
     QToolBar,
     QWidget,
 )
+from pyqtconsole.console import PythonConsole
 
 from nodedge.editor_widget import EditorWidget
 from nodedge.editor_window import EditorWindow
@@ -219,6 +217,9 @@ class MdiWindow(EditorWindow):
         self.editToolBar.addAction(self.copyAct)
         self.editToolBar.addAction(self.pasteAct)
 
+        self.coderToolbar = self.addToolBar("Coder")
+        self.coderToolbar.addAction(self.generateCodeAct)
+
     def createMenus(self) -> None:
         """
         Create `Window` and `Help` menus.
@@ -367,7 +368,10 @@ class MdiWindow(EditorWindow):
         Create a new sub window containing a
         :class:`~nodedge.editor_widget.EditorWidget`
         """
-        editor = childWidget if childWidget is not None else MdiWidget()
+        editor: MdiWidget = childWidget if childWidget is not None else MdiWidget()
+        editor.scene.coder.notConnectedSocket.connect(  # type: ignore
+            self.onSceneCoderOutputSocketDisconnect
+        )
         subWindow = self.mdiArea.addSubWindow(editor)
 
         icon = QIcon(".")
@@ -654,6 +658,7 @@ class MdiWindow(EditorWindow):
         """Event called when the debug action is triggered."""
         pass
 
+    @Slot()  # type: ignore
     def onShowDialogActions(self):
         self.__logger.info("")
         dialog = QDialog()
@@ -664,3 +669,16 @@ class MdiWindow(EditorWindow):
         self.statusMousePos.setText(f"[{pos.x()}, {pos.y()}]")
 
         super().mouseMoveEvent(event)
+
+    @Slot()  # type: ignore
+    def onSceneCoderOutputSocketDisconnect(self) -> None:
+        """
+        Callback to deal with :class:`~nodedge.scene_coder.SceneCoder` warning.
+        :return: ``None``
+        """
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setInformativeText("One or more blocks are not connected.")
+        msg.setWindowTitle("Coder warning")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.exec_()

@@ -19,7 +19,7 @@
                 }
             ],
             "content": {
-                "value": "1"
+                "value": "10"
             },
             "operationCode": 1
         },
@@ -39,7 +39,7 @@
                 }
             ],
             "content": {
-                "value": "1"
+                "value": "3"
             },
             "operationCode": 1
         },
@@ -246,6 +246,57 @@
             "outputSockets": [],
             "content": {},
             "operationCode": 2
+        },
+        {
+            "id": 64719888,
+            "title": "Modulo",
+            "posX": -60.0,
+            "posY": 185.0,
+            "inputSockets": [
+                {
+                    "id": 74608816,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 2
+                },
+                {
+                    "id": 74609296,
+                    "index": 1,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 2
+                }
+            ],
+            "outputSockets": [
+                {
+                    "id": 74611312,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {},
+            "operationCode": 7
+        },
+        {
+            "id": 192604048,
+            "title": "Output",
+            "posX": 246.0,
+            "posY": 187.0,
+            "inputSockets": [
+                {
+                    "id": 192605008,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [],
+            "content": {},
+            "operationCode": 2
         }
     ],
     "edges": [
@@ -320,6 +371,24 @@
             "edgeType": 3,
             "source": 1583749319312,
             "target": 1583749804528
+        },
+        {
+            "id": 83443312,
+            "edgeType": 3,
+            "source": 74608816,
+            "target": 1583749280096
+        },
+        {
+            "id": 64719984,
+            "edgeType": 3,
+            "source": 74609296,
+            "target": 1583749280960
+        },
+        {
+            "id": 192603792,
+            "edgeType": 3,
+            "source": 74611312,
+            "target": 192605008
         }
     ]
 }

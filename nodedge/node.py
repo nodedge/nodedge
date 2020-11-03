@@ -471,7 +471,7 @@ class Node(Serializable):
 
     def getParentNodes(self) -> List["Node"]:
         """
-        Retrieve all parents connected to this node outputs.
+        Retrieve all parents connected to this node inputs.
 
         :return: list of `Nodes` connected to this node from all inputs
         :rtype: List[:class:`~nodedge.node.Node`]

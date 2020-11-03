@@ -19,7 +19,7 @@ class GraphicsInputBlockContent(GraphicsNodeContent):
 
     # noinspection PyAttributeOutsideInit
     def initUI(self):
-        self.edit = QLineEdit("1", self)
+        self.edit: QLineEdit = QLineEdit("1", self)
         self.edit.setObjectName(self.node.contentLabelObjectName)
 
         self.edit.editingFinished.connect(self.onEditingFinished)
