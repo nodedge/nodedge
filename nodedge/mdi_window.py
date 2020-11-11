@@ -25,7 +25,7 @@ from nodedge.editor_window import EditorWindow
 from nodedge.history_list_widget import HistoryListWidget
 from nodedge.mdi_area import MdiArea
 from nodedge.mdi_widget import MdiWidget
-from nodedge.node_list_widget import NodeListWidget
+from nodedge.node_tree_widget import NodeTreeWidget
 from nodedge.scene_items_table_widget import SceneItemsTableWidget
 from nodedge.utils import loadStyleSheets
 
@@ -436,13 +436,13 @@ class MdiWindow(EditorWindow):
         """
         Create Nodes dock.
         """
-        self.nodesListWidget = NodeListWidget()
-        self.nodesListWidget.itemsPressed.connect(  # type: ignore
+        self.nodesTreeWidget = NodeTreeWidget()
+        self.nodesTreeWidget.itemsPressed.connect(  # type: ignore
             self.showItemsInStatusBar
         )
 
         self.nodesDock = QDockWidget("Nodes")
-        self.nodesDock.setWidget(self.nodesListWidget)
+        self.nodesDock.setWidget(self.nodesTreeWidget)
         self.nodesDock.setFloating(False)
 
         self.addDockWidget(Qt.RightDockWidgetArea, self.nodesDock)

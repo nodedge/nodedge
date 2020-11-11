@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""Node list widget module containing
-:class:`~nodedge.node_list_widget.NodeListWidget` class. """
+"""Node tree widget module containing
+:class:`~nodedge.node_tree_widget.NodeTreeWidget` class. """
 
 import logging
 from typing import Optional
@@ -16,18 +16,24 @@ from PySide2.QtCore import (
     Signal,
 )
 from PySide2.QtGui import QDrag, QIcon, QMouseEvent, QPixmap
-from PySide2.QtWidgets import QAbstractItemView, QListWidget, QListWidgetItem, QWidget
+from PySide2.QtWidgets import QAbstractItemView, QTreeWidget, QTreeWidgetItem, QWidget
 
 from nodedge import DEBUG_ITEMS_PRESSED
 from nodedge.blocks.block_config import *
 from nodedge.utils import dumpException, widgetsAt
 
+NODETREEWIDGET_MIMETYPE = "application/x-item"
 
-class NodeListWidget(QListWidget):
+COLUMNS = {
+    "Name": 0,
+}
+
+
+class NodeTreeWidget(QTreeWidget):
     """
-    Node list widget class.
+    Node tree widget class.
 
-    The list widget contains the declaration of all the available nodes.
+    The tree widget contains the declaration of all the available nodes.
     """
 
     itemsPressed = Signal(list)
@@ -44,11 +50,13 @@ class NodeListWidget(QListWidget):
         self.__logger.setLevel(logging.INFO)
 
         self.initUI()
+        self.setSortingEnabled(True)
+        self.setHeaderLabels(list(COLUMNS.keys()))
 
     # noinspection PyAttributeOutsideInit
     def initUI(self) -> None:
         """
-        Set up this :class:`~nodedge.node_list_widget.NodeListWidget` with its icon
+        Set up this :class:`~nodedge.node_tree_widget.NodeTreeWidget` with its icon
         and :class:`~nodedge.node.Node`.
         """
 
@@ -62,7 +70,7 @@ class NodeListWidget(QListWidget):
 
     def addNodes(self) -> None:
         """
-        Add available :class:`~nodedge.node.Node` s in the list widget.
+        Add available :class:`~nodedge.node.Node` s in the tree widget.
         """
         # associateOperationCodeWithBlock(operationCode, blockClass)
 
@@ -71,45 +79,68 @@ class NodeListWidget(QListWidget):
 
         for key in keys:
             node = getClassFromOperationCode(key)
-            self.addNode(node.operationTitle, node.icon, node.operationCode)
+            self.addNode(
+                node.operationTitle, node.icon, node.operationCode, node.library
+            )
 
-    def addNode(self, name, iconPath: Optional[str] = None, operationCode: int = 0):
+    def addNode(
+        self,
+        name: str,
+        iconPath: Optional[str] = None,
+        operationCode: int = 0,
+        libraryName: str = "",
+    ):
         """
-        Add a :class:`~nodedge.node.Node` in the list widget.
+        Add a :class:`~nodedge.node.Node` in the tree widget.
         """
-        item = QListWidgetItem(name, self)
+
+        item = QTreeWidgetItem()
+        item.setText(0, name)
         pixmap = QPixmap(iconPath) if iconPath else "."
         # TODO: Investigate QIcon constructor
-        item.setIcon(QIcon(pixmap))  # type: ignore
-        item.setSizeHint(self.iconsSize)
+        item.setIcon(0, QIcon(pixmap))  # type: ignore
+        item.setSizeHint(0, self.iconsSize)
 
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
 
-        item.setData(Qt.UserRole, pixmap)
-        item.setData(Qt.UserRole + 1, operationCode)
+        item.setData(0, Qt.UserRole, pixmap)
+        item.setData(0, Qt.UserRole + 1, operationCode)
+
+        libraryName = libraryName.capitalize()
+        if libraryName == "":
+            self.addTopLevelItem(item)
+        else:
+            items = self.findItems(libraryName, Qt.MatchExactly)
+            if not items:
+                libraryItem = QTreeWidgetItem()
+                libraryItem.setText(0, libraryName)
+                self.addTopLevelItem(libraryItem)
+                libraryItem.addChild(item)
+            else:
+                items[0].addChild(item)
 
     def startDrag(self, *args, **kwargs) -> None:
         """
-        Serialize data when a user start dragging a node from the list, to be able to
+        Serialize data when a user start dragging a node from the tree, to be able to
         instantiate it later.
         """
         try:
             item = self.currentItem()
-            operationCode = item.data(Qt.UserRole + 1)
+            operationCode = item.data(0, Qt.UserRole + 1)
             self.__logger.debug(
-                f"Dragging text ({item.text()}) and code ({operationCode})"
+                f"Dragging text ({item.text(0)}) and code ({operationCode})"
             )
-            pixmap = QPixmap(item.data(Qt.UserRole))
+            pixmap = QPixmap(item.data(0, Qt.UserRole))
 
             itemData = QByteArray()
             dataStream = QDataStream(itemData, QIODevice.WriteOnly)
             # left operand works fine with QDataStream
             dataStream << pixmap
             dataStream.writeInt32(operationCode)
-            dataStream.writeQString(item.text())
+            dataStream.writeQString(item.text(0))
 
             mimeData = QMimeData()
-            mimeData.setData(NODELISTWIDGET_MIMETYPE, itemData)
+            mimeData.setData(NODETREEWIDGET_MIMETYPE, itemData)
 
             drag = QDrag(self)
             drag.setMimeData(mimeData)
@@ -122,6 +153,11 @@ class NodeListWidget(QListWidget):
             dumpException(e)
 
     def mousePressEvent(self, e: QMouseEvent) -> None:
+        """
+        Handle Qt's mouse press event.
+        :param e: `QMouseEvent`
+        :return: ``None``
+        """
         if DEBUG_ITEMS_PRESSED:
             pos = e.globalPos()
             itemsPressed = [w.__class__.__name__ for w in widgetsAt(pos)]

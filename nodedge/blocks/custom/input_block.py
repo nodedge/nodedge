@@ -14,6 +14,7 @@ class InputBlock(Block):
     operationTitle = "Input"
     contentLabel = "In"
     contentLabelObjectName = "InputBlockContent"
+    library = "input/output"
 
     def __init__(self, scene, inputSocketTypes=(2, 2), outputSocketTypes=(1,)):
         super().__init__(scene, inputSocketTypes=[], outputSocketTypes=(1,))

@@ -18,16 +18,13 @@ from PySide2.QtGui import (
 from PySide2.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
 
 from nodedge.blocks.block import Block
-from nodedge.blocks.block_config import (
-    BLOCKS,
-    NODELISTWIDGET_MIMETYPE,
-    getClassFromOperationCode,
-)
+from nodedge.blocks.block_config import BLOCKS, getClassFromOperationCode
 from nodedge.connector import Socket
 from nodedge.edge import EdgeType
 from nodedge.editor_widget import EditorWidget
 from nodedge.graphics_view import EdgeDraggingMode
 from nodedge.node import Node
+from nodedge.node_tree_widget import NODETREEWIDGET_MIMETYPE
 from nodedge.utils import dumpException
 
 
@@ -148,7 +145,7 @@ class MdiWidget(EditorWidget):
             being dragged
         :return: QDragEnterEvent
         """
-        if not event.mimeData().hasFormat(NODELISTWIDGET_MIMETYPE):
+        if not event.mimeData().hasFormat(NODETREEWIDGET_MIMETYPE):
             self.__logger.warning(
                 f"Dragging denied: Wrong Mime format ({event.mimeData().formats()})"
             )
@@ -168,14 +165,14 @@ class MdiWidget(EditorWidget):
             dropped.
         :type event: QDropEvent.py
         """
-        if not event.mimeData().hasFormat(NODELISTWIDGET_MIMETYPE):
+        if not event.mimeData().hasFormat(NODETREEWIDGET_MIMETYPE):
             event.ignore()
             self.__logger.warning(
                 f"Dropping denied: Wrong Mime format ({event.mimeData().formats()})"
             )
             return
 
-        eventData = event.mimeData().data(NODELISTWIDGET_MIMETYPE)
+        eventData = event.mimeData().data(NODETREEWIDGET_MIMETYPE)
         dataStream = QDataStream(eventData, QIODevice.ReadOnly)
         pixmap: QPixmap = QPixmap()
 
