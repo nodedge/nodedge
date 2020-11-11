@@ -219,6 +219,7 @@ class MdiWindow(EditorWindow):
 
         self.coderToolbar = self.addToolBar("Coder")
         self.coderToolbar.addAction(self.generateCodeAct)
+        self.coderToolbar.addAction(self.runSceneAct)
 
     def createMenus(self) -> None:
         """
