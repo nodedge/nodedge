@@ -5,6 +5,7 @@ import logging
 import os
 from typing import Any, Callable, List, Optional, cast
 
+from pyqtconsole.console import PythonConsole
 from PySide2.QtCore import QSignalMapper, QSize, Qt, QTimer, Slot
 from PySide2.QtGui import QCloseEvent, QIcon, QKeySequence, QMouseEvent
 from PySide2.QtWidgets import (
@@ -18,7 +19,6 @@ from PySide2.QtWidgets import (
     QToolBar,
     QWidget,
 )
-from pyqtconsole.console import PythonConsole
 
 from nodedge.editor_widget import EditorWidget
 from nodedge.editor_window import EditorWindow

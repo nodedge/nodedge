@@ -469,7 +469,7 @@ class EditorWindow(QMainWindow):
         return ""
 
     @staticmethod
-    def getFileDialogFilter():
+    def getFileDialogFilter() -> str:
         """
         Returns ``str`` standard file open/save filter for ``QFileDialog``
 

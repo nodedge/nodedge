@@ -115,16 +115,16 @@ class SceneCoder(QObject):
         )
 
         outputFileString = (
-                generatedImport
-                + generatedFunctionDef
-                + _indent_code(generatedCode)
-                + generatedFunctionCall
+            generatedImport
+            + generatedFunctionDef
+            + _indent_code(generatedCode)
+            + generatedFunctionCall
         )
 
         return outputFileString
 
     def _appendHierarchyUntilRoot(
-            self, currentNode: Node, appendedNodes: List[Node], nodesToAdd: List[Node]
+        self, currentNode: Node, appendedNodes: List[Node], nodesToAdd: List[Node]
     ):
         nodesToAdd.append(currentNode)
         parentNodes = currentNode.getParentNodes()
