@@ -1,6 +1,14 @@
 nodedge.blocks package
 ======================
 
+Subpackages
+-----------
+
+.. toctree::
+
+   nodedge.blocks.autogen
+   nodedge.blocks.custom
+
 Submodules
 ----------
 

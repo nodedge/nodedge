@@ -1,7 +1,7 @@
-nodedge.node\_list\_widget
+nodedge.node\_tree\_widget
 ==========================
 
-.. automodule:: nodedge.node_list_widget
+.. automodule:: nodedge.node_tree_widget
    :members:
    :undoc-members:
    :show-inheritance:
