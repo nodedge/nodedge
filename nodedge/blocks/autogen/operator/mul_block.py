@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
-
+import logging
 from operator import mul
 
 from nodedge.blocks.block import Block, EvaluationError
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
 
+_LOG = logging.getLogger(__name__)
+
 try:
     from nodedge.blocks.block_config import OP_NODE_MULTIPLY
-except:
+except NameError as e:
+    _LOG.warning(f"Not registered block: {__name__}")
+    _LOG.warning(e)
     op_block_string = -1
 
 

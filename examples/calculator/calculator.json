@@ -250,8 +250,8 @@
         {
             "id": 64719888,
             "title": "Modulo",
-            "posX": -60.0,
-            "posY": 185.0,
+            "posX": -45.0,
+            "posY": 120.0,
             "inputSockets": [
                 {
                     "id": 74608816,
@@ -283,8 +283,8 @@
         {
             "id": 192604048,
             "title": "Output",
-            "posX": 246.0,
-            "posY": 187.0,
+            "posX": 240.0,
+            "posY": 120.0,
             "inputSockets": [
                 {
                     "id": 192605008,
