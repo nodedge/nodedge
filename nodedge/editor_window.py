@@ -197,6 +197,10 @@ class EditorWindow(QMainWindow):
             QKeySequence("Ctrl+G"),
         )
 
+        self.runSceneAct = self.createAction(
+            "Run scene", self.onRunScene, "Solve ODE model", QKeySequence("Ctrl+R")
+        )
+
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
     def createMenus(self) -> None:
         """
@@ -209,6 +213,7 @@ class EditorWindow(QMainWindow):
 
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
     def createCoderMenu(self):
+        """Create coder menu, containing code generation action."""
         self.coderMenu: QMenu = self.menuBar().addMenu("&Coder")
         self.coderMenu.addAction(self.generateCodeAct)
 
@@ -541,12 +546,18 @@ class EditorWindow(QMainWindow):
         pass
 
     def onFitInView(self):
+        """Handle `fitInView` action trigger."""
         if self.currentEditorWidget is not None:
             self.currentEditorWidget.graphicsView.graphicsScene.fitInView()
 
     def onGenerateCode(self):
+        """Handle `generateCode` action trigger."""
         if self.currentEditorWidget is not None:
             self.currentEditorWidget.scene.coder.generateCode()
+
+    def onRunScene(self):
+        """Handle `runScene` action trigger."""
+        self.__logger.debug("Running model")
 
     def createAction(
         self,
