@@ -9,9 +9,8 @@ _LOG = logging.getLogger(__name__)
 
 try:
     from nodedge.blocks.block_config import OP_NODE_DIVIDE
-except NameError as e:
+except NameError:
     _LOG.warning(f"Not registered block: {__name__}")
-    _LOG.warning(e)
     op_block_string = -1
 
 
