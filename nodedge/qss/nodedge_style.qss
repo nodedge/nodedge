@@ -166,17 +166,18 @@ border:0;}
 
 QTableView::item{
 color:palette(text);
-padding-left: 10px;
-}
-
-QTableView::item:hover{
-background:palette(light);
 padding-right: 0px;
 padding-left: 0px;
 }
 
+QTableView::item:hover{
+background:palette(light);
+}
+
 QTableView::item:active:hover{
 color:palette(text);
+padding-right: 0px;
+padding-left: 0px;
 }
 
 QTableView::item:selected,QTableView::item:active:selected {
@@ -188,6 +189,8 @@ QTableView::item:selected,QTableView::item:active:selected {
     stop: 0 palette(highlight),
     stop: 1 palette(highlight));
     border: 0;
+    padding-right: 0px;
+    padding-left: 0px;
 }
 
 QPushButton{
@@ -253,12 +256,11 @@ border-bottom: 1px solid palette(window);
 
 QTableWidget::item{
 font-size: 14px;
-/*border-color: palette(window);*/
-padding-left: 10px;
-padding-right: 10px;
+border-color: palette(window);
 padding-top: 0px;
-/*gridline-color: palette(window);*/
-/*border-left: 1px solid palette(light);*/
+gridline-color: palette(window);
+border-left: 1px solid palette(light);
+border-bottom: 1px solid palette(light);
 }
 
 QTableWidget::item:selected{
