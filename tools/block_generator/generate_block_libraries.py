@@ -3,6 +3,8 @@ import os.path
 import shutil
 from string import Template
 from typing import Dict, List
+from black import format_str, FileMode
+
 
 configFile = "block_config.csv"
 savePath = "../../nodedge/blocks/autogen/"
@@ -24,6 +26,7 @@ def _generate_init_files(libraryDict):
         initFileString += f"from .{lib} import *\n"
     initFilePath = os.path.join(savePath, initFilename)
     initFile = open(initFilePath, "w")
+    initFileString = format_str(initFileString, mode=FileMode())
     initFile.write(initFileString)
     initFile.close()
 
@@ -34,14 +37,13 @@ def _generate_init_files(libraryDict):
             initFileString += f"from .{blockName}_block import *\n"
         initFilePath = os.path.join(savePath, lib, initFilename)
         initFile = open(initFilePath, "w")
+        initFileString = format_str(initFileString, mode=FileMode())
         initFile.write(initFileString)
         initFile.close()
 
 
-if __name__ == "__main__":
-
+def main():
     libraries: Dict[str, List[str]] = {}
-
     # Create `autogen` folder for generated block libraries
     if not os.path.exists(savePath):
         os.makedirs(savePath)
@@ -54,11 +56,10 @@ if __name__ == "__main__":
                     shutil.rmtree(filepath)
                 except OSError:
                     os.remove(filepath)
-
-    # Read one line (corresponding to one block) from the csv
     with open(configFile) as infile:
         reader = csv.DictReader(infile, delimiter=";")
 
+        # Read one line (corresponding to one block) from the csv
         for row in reader:
 
             # Save block in dictionary
@@ -78,6 +79,7 @@ if __name__ == "__main__":
             template = Template(inputData)
 
             outputData = template.substitute(**row)
+            outputData = format_str(outputData, mode=FileMode())
             filename = f"{(row['function'])}_block.py"
             libraryPath = os.path.join(savePath, row["library"])
             if not os.path.exists(libraryPath):
@@ -89,7 +91,10 @@ if __name__ == "__main__":
 
         templateFile.close()
     infile.close()
-
     _generate_init_files(libraries)
+
+
+if __name__ == "__main__":
+    main()
 
 # TODO: Generate test for each block in a separated file
