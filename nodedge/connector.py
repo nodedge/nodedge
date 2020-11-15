@@ -25,7 +25,7 @@ class SocketLocation(IntEnum):
     RIGHT_BOTTOM = 6  #: Right bottom
 
 
-class SocketType(Enum):
+class SocketType(IntEnum):
     Any = 0
     Number = 1
     String = 2

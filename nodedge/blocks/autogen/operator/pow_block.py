@@ -5,6 +5,7 @@ from operator import pow
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_exception import EvaluationError
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
+from nodedge.connector import SocketType
 
 _LOG = logging.getLogger(__name__)
 
@@ -24,6 +25,8 @@ class PowBlock(Block):
     contentLabelObjectName = "BlockBackground"
     evalString = "pow"
     library = "operator"
+    inputSocketTypes = (SocketType.Number, SocketType.Number,)
+    outputSocketTypes = (SocketType.Number,)
 
     def evalImplementation(self):
         inputs = []

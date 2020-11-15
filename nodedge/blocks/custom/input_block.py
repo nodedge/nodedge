@@ -6,6 +6,8 @@ from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, OP_NODE_INPUT, regist
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.blocks.graphics_input_block_content import GraphicsInputBlockContent
 
+from nodedge.connector import SocketType
+
 
 @registerNode(OP_NODE_INPUT)
 class InputBlock(Block):
@@ -16,7 +18,7 @@ class InputBlock(Block):
     contentLabelObjectName = "InputBlockContent"
     library = "input/output"
     inputSocketTypes = ()
-    outputSocketTypes = (0,)
+    outputSocketTypes = (SocketType.Any,)
 
     def __init__(self, scene):
         super().__init__(scene,

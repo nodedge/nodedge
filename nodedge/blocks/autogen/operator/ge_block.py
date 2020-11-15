@@ -5,6 +5,7 @@ from operator import ge
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_exception import EvaluationError
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
+from nodedge.connector import SocketType
 
 _LOG = logging.getLogger(__name__)
 
@@ -24,6 +25,8 @@ class GeBlock(Block):
     contentLabelObjectName = "BlockBackground"
     evalString = "ge"
     library = "operator"
+    inputSocketTypes = (SocketType.Number, SocketType.Number,)
+    outputSocketTypes = (SocketType.Number,)
 
     def evalImplementation(self):
         inputs = []

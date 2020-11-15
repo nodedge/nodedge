@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from nodedge.blocks.block import Block
-from nodedge.blocks import EvaluationError
+from nodedge.blocks.block_exception import EvaluationError
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, OP_NODE_OUTPUT, registerNode
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.blocks.graphics_output_block_content import GraphicsOutputBlockContent
+
+from nodedge.connector import SocketType
 
 
 @registerNode(OP_NODE_OUTPUT)
@@ -14,7 +16,7 @@ class OutputBlock(Block):
     contentLabel = "Out"
     contentLabelObjectName = "OutputBlockContent"
     library = "input/output"
-    inputSocketTypes = (0,)
+    inputSocketTypes = (SocketType.Any,)
     outputSocketTypes = ()
 
     # noinspection PyAttributeOutsideInit

@@ -9,7 +9,7 @@ from nodedge.blocks.block_exception import EvaluationError, MissInputError, Redu
 
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.blocks.graphics_block_content import GraphicsBlockContent
-from nodedge.connector import Socket, SocketLocation
+from nodedge.connector import Socket, SocketLocation, SocketType
 from nodedge.node import Node
 from nodedge.utils import dumpException
 
@@ -28,8 +28,8 @@ class Block(Node):
     contentLabelObjectName = "blockBackground"
     evalString = ""
     library = ""
-    inputSocketTypes = (0, 2)
-    outputSocketTypes = (1,)
+    inputSocketTypes = (SocketType.Any, SocketType.Any)
+    outputSocketTypes = (SocketType.Any,)
 
     GraphicsNodeClass = GraphicsBlock
     GraphicsNodeContentClass = GraphicsBlockContent
