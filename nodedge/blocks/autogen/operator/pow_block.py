@@ -27,8 +27,13 @@ class PowBlock(Block):
     contentLabelObjectName = "BlockBackground"
     evalString = "pow"
     library = "operator"
-    inputSocketTypes: List[SocketType] = [SocketType.Number, SocketType.Number,]
-    outputSocketTypes: List[SocketType] = [SocketType.Number,]
+    inputSocketTypes: List[SocketType] = [
+        SocketType.Number,
+        SocketType.Number,
+    ]
+    outputSocketTypes: List[SocketType] = [
+        SocketType.Number,
+    ]
 
     def evalImplementation(self):
         inputs = []

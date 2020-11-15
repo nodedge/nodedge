@@ -5,7 +5,11 @@ import logging
 from collections import OrderedDict
 from typing import List, Optional
 
-from nodedge.blocks.block_exception import EvaluationError, MissInputError, RedundantInputError
+from nodedge.blocks.block_exception import (
+    EvaluationError,
+    MissInputError,
+    RedundantInputError,
+)
 
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.blocks.graphics_block_content import GraphicsBlockContent
@@ -29,7 +33,9 @@ class Block(Node):
     evalString = ""
     library = ""
     inputSocketTypes: List[SocketType] = [SocketType.Any, SocketType.Any]
-    outputSocketTypes: List[SocketType] = [SocketType.Any,]
+    outputSocketTypes: List[SocketType] = [
+        SocketType.Any,
+    ]
 
     GraphicsNodeClass = GraphicsBlock
     GraphicsNodeContentClass = GraphicsBlockContent
@@ -39,7 +45,7 @@ class Block(Node):
             scene,
             self.__class__.operationTitle,
             self.__class__.inputSocketTypes,
-            self.__class__.outputSocketTypes
+            self.__class__.outputSocketTypes,
         )
 
         self.__logger = logging.getLogger(__file__)

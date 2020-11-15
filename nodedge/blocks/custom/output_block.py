@@ -18,7 +18,9 @@ class OutputBlock(Block):
     contentLabel = "Out"
     contentLabelObjectName = "OutputBlockContent"
     library = "input/output"
-    inputSocketTypes: List[SocketType] = [SocketType.Any,]
+    inputSocketTypes: List[SocketType] = [
+        SocketType.Any,
+    ]
     outputSocketTypes: List[SocketType] = []
 
     # noinspection PyAttributeOutsideInit

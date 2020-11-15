@@ -27,8 +27,13 @@ class GeBlock(Block):
     contentLabelObjectName = "BlockBackground"
     evalString = "ge"
     library = "operator"
-    inputSocketTypes: List[SocketType] = [SocketType.Number, SocketType.Number,]
-    outputSocketTypes: List[SocketType] = [SocketType.Number,]
+    inputSocketTypes: List[SocketType] = [
+        SocketType.Number,
+        SocketType.Number,
+    ]
+    outputSocketTypes: List[SocketType] = [
+        SocketType.Number,
+    ]
 
     def evalImplementation(self):
         inputs = []
