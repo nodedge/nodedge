@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
+from typing import List
+
 import logging
 from operator import lt
 
-from nodedge.blocks.block import Block, EvaluationError
+from nodedge.blocks.block import Block
+from nodedge.blocks.block_exception import EvaluationError
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
+from nodedge.connector import SocketType
 
 _LOG = logging.getLogger(__name__)
 
@@ -16,13 +20,20 @@ except NameError:
 
 @registerNode(OP_NODE_LESS)
 class LtBlock(Block):
-    icon = f"{BLOCKS_ICONS_PATH}/lt.png"
+    icon = f"{BLOCKS_ICONS_PATH}/less_than_100.png"
     operationCode = OP_NODE_LESS
     operationTitle = "Less"
     contentLabel = "<"
     contentLabelObjectName = "BlockBackground"
     evalString = "lt"
     library = "operator"
+    inputSocketTypes: List[SocketType] = [
+        SocketType.Number,
+        SocketType.Number,
+    ]
+    outputSocketTypes: List[SocketType] = [
+        SocketType.Number,
+    ]
 
     def evalImplementation(self):
         inputs = []
