@@ -5,6 +5,8 @@ import logging
 from collections import OrderedDict
 from typing import List, Optional
 
+from nodedge.blocks.block_exception import EvaluationError, MissInputError, RedundantInputError
+
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.blocks.graphics_block_content import GraphicsBlockContent
 from nodedge.connector import Socket, SocketLocation
@@ -26,13 +28,18 @@ class Block(Node):
     contentLabelObjectName = "blockBackground"
     evalString = ""
     library = ""
+    inputSocketTypes = (0, 2)
+    outputSocketTypes = (1,)
 
     GraphicsNodeClass = GraphicsBlock
     GraphicsNodeContentClass = GraphicsBlockContent
 
     def __init__(self, scene, inputSocketTypes=(0, 2), outputSocketTypes=(1,)):
         super().__init__(
-            scene, self.__class__.operationTitle, inputSocketTypes, outputSocketTypes
+            scene,
+            self.__class__.operationTitle,
+            self.__class__.inputSocketTypes,
+            self.__class__.outputSocketTypes
         )
 
         self.__logger = logging.getLogger(__file__)
@@ -141,34 +148,3 @@ class Block(Node):
         )
         generatedCode += ", ".join([f"var_{str(index)}" for index in inputVarIndexes])
         return generatedCode + ")\n"
-
-
-class EvaluationError(Exception):
-    """
-    :class:`~nodedge.block.EvaluationError` class
-
-    If a block cannot be evaluated, raise this error.
-    """
-
-    pass
-
-
-class MissInputError(EvaluationError):
-    """
-    :class:`~nodedge.block.MissInputError` class
-
-    If an input is missing to a block, preventing it to be evaluated, raise this error.
-    """
-
-    pass
-
-
-class RedundantInputError(EvaluationError):
-    """
-    :class:`~nodedge.block.RedundantInputError` class
-
-    If two different inputs are connected to a single input socket of a block,
-    raise this error.
-    """
-
-    pass

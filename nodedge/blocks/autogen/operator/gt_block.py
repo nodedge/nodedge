@@ -2,7 +2,8 @@
 import logging
 from operator import gt
 
-from nodedge.blocks.block import Block, EvaluationError
+from nodedge.blocks.block import Block
+from nodedge.blocks.block_exception import EvaluationError
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
 
 _LOG = logging.getLogger(__name__)

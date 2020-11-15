@@ -10,3 +10,4 @@ operator;le;Le;OP_NODE_LESS_EQUAL;Less or Equal;<=;less_or_equal_100
 operator;eq;Eq;OP_NODE_EQUAL;Equal;==;equal_sign_100
 operator;gt;Gt;OP_NODE_GREATER;Greater;>;more_than_100
 operator;ge;Ge;OP_NODE_GREATER_EQUAL;Greater or Equal;>=;more_or_equal_100
+k
