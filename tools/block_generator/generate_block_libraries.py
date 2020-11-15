@@ -12,7 +12,7 @@ initFilename = "__init__.py"
 def _prepend_socket_type(types_string):
     types_string = types_string[1:-1]  # remove parenthesis
     types_list = types_string.split(',')
-    types_string = "(" + ", ".join(["SocketType." + currType for currType in types_list]) + ",)"
+    types_string = "[" + ", ".join(["SocketType." + currType for currType in types_list]) + ",]"
 
     return types_string
 

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from typing import List
+
 import logging
 from operator import ge
 
@@ -25,8 +27,8 @@ class GeBlock(Block):
     contentLabelObjectName = "BlockBackground"
     evalString = "ge"
     library = "operator"
-    inputSocketTypes = (SocketType.Number, SocketType.Number,)
-    outputSocketTypes = (SocketType.Number,)
+    inputSocketTypes: List[SocketType] = [SocketType.Number, SocketType.Number,]
+    outputSocketTypes: List[SocketType] = [SocketType.Number,]
 
     def evalImplementation(self):
         inputs = []

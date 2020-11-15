@@ -17,8 +17,8 @@ class InputBlock(Block):
     contentLabel = "In"
     contentLabelObjectName = "InputBlockContent"
     library = "input/output"
-    inputSocketTypes = ()
-    outputSocketTypes = (SocketType.Any,)
+    inputSocketTypes: List[SocketType] = []
+    outputSocketTypes: List[SocketType] = [SocketType.Any,]
 
     def __init__(self, scene):
         super().__init__(scene,

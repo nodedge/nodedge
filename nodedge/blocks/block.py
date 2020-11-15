@@ -28,8 +28,8 @@ class Block(Node):
     contentLabelObjectName = "blockBackground"
     evalString = ""
     library = ""
-    inputSocketTypes = (SocketType.Any, SocketType.Any)
-    outputSocketTypes = (SocketType.Any,)
+    inputSocketTypes: List[SocketType] = [SocketType.Any, SocketType.Any]
+    outputSocketTypes: List[SocketType] = [SocketType.Any,]
 
     GraphicsNodeClass = GraphicsBlock
     GraphicsNodeContentClass = GraphicsBlockContent

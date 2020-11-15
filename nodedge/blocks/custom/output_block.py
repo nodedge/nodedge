@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from typing import List
+
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_exception import EvaluationError
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, OP_NODE_OUTPUT, registerNode
@@ -16,8 +18,8 @@ class OutputBlock(Block):
     contentLabel = "Out"
     contentLabelObjectName = "OutputBlockContent"
     library = "input/output"
-    inputSocketTypes = (SocketType.Any,)
-    outputSocketTypes = ()
+    inputSocketTypes: List[SocketType] = [SocketType.Any,]
+    outputSocketTypes: List[SocketType] = []
 
     # noinspection PyAttributeOutsideInit
     def initInnerClasses(self):

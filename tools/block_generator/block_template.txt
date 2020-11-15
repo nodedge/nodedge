@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from typing import List
+
 import logging
 from ${library} import ${function}
 
@@ -25,8 +27,8 @@ class ${block_name}Block(Block):
     contentLabelObjectName = "BlockBackground"
     evalString = "${function}"
     library = "${library}"
-    inputSocketTypes = ${input_socket_types}
-    outputSocketTypes = ${output_socket_types}
+    inputSocketTypes: List[SocketType] = ${input_socket_types}
+    outputSocketTypes: List[SocketType] = ${output_socket_types}
 
     def evalImplementation(self):
         inputs = []
