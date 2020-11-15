@@ -16,7 +16,7 @@ except NameError:
 
 @registerNode(OP_NODE_GREATER)
 class GtBlock(Block):
-    icon = f"{BLOCKS_ICONS_PATH}/gt.png"
+    icon = f"{BLOCKS_ICONS_PATH}/more_than_100.png"
     operationCode = OP_NODE_GREATER
     operationTitle = "Greater"
     contentLabel = ">"

@@ -16,7 +16,7 @@ except NameError:
 
 @registerNode(OP_NODE_SUBTRACT)
 class SubBlock(Block):
-    icon = f"{BLOCKS_ICONS_PATH}/sub.png"
+    icon = f"{BLOCKS_ICONS_PATH}/subtract_100.png"
     operationCode = OP_NODE_SUBTRACT
     operationTitle = "Subtraction"
     contentLabel = "-"

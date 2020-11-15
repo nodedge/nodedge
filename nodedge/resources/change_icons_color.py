@@ -11,7 +11,7 @@ from PIL import Image
 
 def changeIconsColor(
     folderInput: str = "icons",
-    folderOutput: str = "icons",
+    folderOutput: str = "iconsModified",
     rgbOld: List[int] = (0, 0, 0),
     rgbNew: List[int] = (255, 255, 255),
     maxAlpha: int = 210,

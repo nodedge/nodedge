@@ -32,7 +32,7 @@ if __name__ == "__main__":
             template = Template(inputData)
 
             outputData = template.substitute(**row)
-            filename = f"{(row['operation_name'])}_block.py"
+            filename = f"{(row['function'])}_block.py"
             libraryPath = os.path.join(savePath, row["library"])
             if not os.path.exists(libraryPath):
                 os.makedirs(libraryPath)

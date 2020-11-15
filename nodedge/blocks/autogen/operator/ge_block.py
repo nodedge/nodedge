@@ -16,7 +16,7 @@ except NameError:
 
 @registerNode(OP_NODE_GREATER_EQUAL)
 class GeBlock(Block):
-    icon = f"{BLOCKS_ICONS_PATH}/ge.png"
+    icon = f"{BLOCKS_ICONS_PATH}/more_or_equal_100.png"
     operationCode = OP_NODE_GREATER_EQUAL
     operationTitle = "Greater or Equal"
     contentLabel = ">="

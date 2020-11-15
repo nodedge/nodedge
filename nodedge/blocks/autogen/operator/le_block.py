@@ -16,7 +16,7 @@ except NameError:
 
 @registerNode(OP_NODE_LESS_EQUAL)
 class LeBlock(Block):
-    icon = f"{BLOCKS_ICONS_PATH}/le.png"
+    icon = f"{BLOCKS_ICONS_PATH}/less_or_equal_100.png"
     operationCode = OP_NODE_LESS_EQUAL
     operationTitle = "Less or Equal"
     contentLabel = "<="

@@ -16,7 +16,7 @@ except NameError:
 
 @registerNode(OP_NODE_EQUAL)
 class EqBlock(Block):
-    icon = f"{BLOCKS_ICONS_PATH}/eq.png"
+    icon = f"{BLOCKS_ICONS_PATH}/equal_sign_100.png"
     operationCode = OP_NODE_EQUAL
     operationTitle = "Equal"
     contentLabel = "=="

@@ -16,7 +16,7 @@ except NameError:
 
 @registerNode(OP_NODE_POWER)
 class PowBlock(Block):
-    icon = f"{BLOCKS_ICONS_PATH}/pow.png"
+    icon = f"{BLOCKS_ICONS_PATH}/square_number_100.png"
     operationCode = OP_NODE_POWER
     operationTitle = "Power"
     contentLabel = "**"

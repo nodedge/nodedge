@@ -16,7 +16,7 @@ except NameError:
 
 @registerNode(OP_NODE_ADD)
 class AddBlock(Block):
-    icon = f"{BLOCKS_ICONS_PATH}/add.png"
+    icon = f"{BLOCKS_ICONS_PATH}/plus_math_100.png"
     operationCode = OP_NODE_ADD
     operationTitle = "Addition"
     contentLabel = "+"

@@ -16,7 +16,7 @@ except NameError:
 
 @registerNode(OP_NODE_LESS)
 class LtBlock(Block):
-    icon = f"{BLOCKS_ICONS_PATH}/lt.png"
+    icon = f"{BLOCKS_ICONS_PATH}/less_than_100.png"
     operationCode = OP_NODE_LESS
     operationTitle = "Less"
     contentLabel = "<"

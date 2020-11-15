@@ -16,7 +16,7 @@ except NameError:
 
 @registerNode(OP_NODE_MULTIPLY)
 class MulBlock(Block):
-    icon = f"{BLOCKS_ICONS_PATH}/mul.png"
+    icon = f"{BLOCKS_ICONS_PATH}/multiply_100.png"
     operationCode = OP_NODE_MULTIPLY
     operationTitle = "Multiplication"
     contentLabel = "*"

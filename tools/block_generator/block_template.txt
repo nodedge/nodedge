@@ -16,12 +16,12 @@ except NameError:
 
 @registerNode(${op_block_string})
 class ${block_name}Block(Block):
-    icon = f"{BLOCKS_ICONS_PATH}/${operation_name}.png"
+    icon = f"{BLOCKS_ICONS_PATH}/${icon_filename}.png"
     operationCode = ${op_block_string}
     operationTitle = "${operation_title}"
     contentLabel = "${operation_symbol}"
     contentLabelObjectName = "BlockBackground"
-    evalString = "${operation_name}"
+    evalString = "${function}"
     library = "${library}"
 
     def evalImplementation(self):

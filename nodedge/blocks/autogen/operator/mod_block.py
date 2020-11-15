@@ -16,7 +16,7 @@ except NameError:
 
 @registerNode(OP_NODE_MODULO)
 class ModBlock(Block):
-    icon = f"{BLOCKS_ICONS_PATH}/mod.png"
+    icon = f"{BLOCKS_ICONS_PATH}/percentage_100.png"
     operationCode = OP_NODE_MODULO
     operationTitle = "Modulo"
     contentLabel = "%"

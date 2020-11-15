@@ -16,7 +16,7 @@ except NameError:
 
 @registerNode(OP_NODE_DIVIDE)
 class TrueDivBlock(Block):
-    icon = f"{BLOCKS_ICONS_PATH}/truediv.png"
+    icon = f"{BLOCKS_ICONS_PATH}/divide_100.png"
     operationCode = OP_NODE_DIVIDE
     operationTitle = "Division"
     contentLabel = "/"
