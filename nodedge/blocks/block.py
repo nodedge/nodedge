@@ -10,11 +10,11 @@ from nodedge.blocks.block_exception import (
     MissInputError,
     RedundantInputError,
 )
-
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.blocks.graphics_block_content import GraphicsBlockContent
-from nodedge.connector import Socket, SocketLocation, SocketType
+from nodedge.connector import Socket, SocketLocation
 from nodedge.node import Node
+from nodedge.socket_type import SocketType
 from nodedge.utils import dumpException
 
 

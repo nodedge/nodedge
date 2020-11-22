@@ -5,8 +5,7 @@ from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, OP_NODE_INPUT, registerNode
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.blocks.graphics_input_block_content import GraphicsInputBlockContent
-
-from nodedge.connector import SocketType
+from nodedge.socket_type import SocketType
 
 
 @registerNode(OP_NODE_INPUT)

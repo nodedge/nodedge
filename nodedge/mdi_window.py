@@ -26,6 +26,7 @@ from nodedge.history_list_widget import HistoryListWidget
 from nodedge.mdi_area import MdiArea
 from nodedge.mdi_widget import MdiWidget
 from nodedge.node_tree_widget import NodeTreeWidget
+from nodedge.scene_item_detail_widget import SceneItemDetailWidget
 from nodedge.scene_items_table_widget import SceneItemsTableWidget
 from nodedge.utils import loadStyleSheets
 
@@ -108,6 +109,7 @@ class MdiWindow(EditorWindow):
         self.windowMapper = QSignalMapper(self)
         self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
 
+        self.createSceneItemDetailDock()
         self.createNodesDock()
         self.createHistoryDock()
         self.createSceneItemsDock()
@@ -381,6 +383,7 @@ class MdiWindow(EditorWindow):
         editor.scene.history.addHistoryModifiedListener(
             self.sceneItemsTableWidget.update
         )
+        editor.scene.addItemSelectedListener(self.sceneItemDetailsWidget.update)
         editor.addCloseEventListener(self.onSubWindowClosed)
 
         return subWindow
@@ -430,6 +433,19 @@ class MdiWindow(EditorWindow):
 
         if window:
             self.mdiArea.setActiveSubWindow(window)
+
+    # noinspection PyAttributeOutsideInit
+    def createSceneItemDetailDock(self) -> None:
+        """
+        Create Item detail dock.
+        """
+        self.sceneItemDetailsWidget = SceneItemDetailWidget(self)
+
+        self.sceneItemDetailsDock = QDockWidget("Item details")
+        self.sceneItemDetailsDock.setWidget(self.sceneItemDetailsWidget)
+        self.sceneItemDetailsDock.setFloating(False)
+
+        self.addDockWidget(Qt.RightDockWidgetArea, self.sceneItemDetailsDock)
 
     # noinspection PyAttributeOutsideInit
     def createNodesDock(self) -> None:
@@ -624,9 +640,6 @@ class MdiWindow(EditorWindow):
             graphicsScene.itemsPressed.connect(  # type: ignore
                 self.showItemsInStatusBar
             )
-            # self.currentEditorWidget.scene.graphicsScene.itemSelected.connect(
-            #     self.sceneItemsTableWidget.onSceneItemSelected
-            # )
 
     def checkStylesheet(self) -> None:
         """

@@ -16,6 +16,7 @@ from nodedge.edge import Edge
 from nodedge.graphics_node import GraphicsNode
 from nodedge.graphics_node_content import GraphicsNodeContent
 from nodedge.serializable import Serializable
+from nodedge.socket_type import SocketType
 from nodedge.utils import dumpException
 
 Pos = TypeVar("Pos", List, Tuple, QPoint, QPointF)
@@ -64,6 +65,8 @@ class Node(Serializable):
         super().__init__()
         self._title: str = title
         self.scene: "Scene" = scene  # type: ignore
+        self.inputSocketTypes = inputSocketTypes
+        self.outputSocketTypes = outputSocketTypes
 
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
@@ -119,7 +122,10 @@ class Node(Serializable):
         }
 
     def initSockets(
-        self, inputs: Collection[int], outputs: Collection[int], reset: bool = True
+        self,
+        inputs: Collection[SocketType],
+        outputs: Collection[SocketType],
+        reset: bool = True,
     ) -> None:
         """
         Create input and output sockets.
@@ -663,7 +669,7 @@ class Node(Serializable):
                 for socket in self.inputSockets:
                     if socket.index == socketData["index"]:
                         found = socket
-                        found.socketType = socketData["socketType"]
+                        found.socketType = SocketType(socketData["socketType"])
                         break
                 if found is None:
                     self.__logger.debug(
@@ -678,7 +684,7 @@ class Node(Serializable):
                         node=self,
                         index=socketData["index"],
                         location=socketData["location"],
-                        socketType=socketData["socketType"],
+                        socketType=SocketType(socketData["socketType"]),
                         countOnThisNodeSide=numberOfInputs,
                         isInput=True,
                     )
@@ -707,7 +713,7 @@ class Node(Serializable):
                     # print("\t", socket, socket.index, "=?", socket_data['index'])
                     if socket.index == socketData["index"]:
                         found = socket
-                        found.socketType = socketData["socketType"]
+                        found.socketType = SocketType(socketData["socketType"])
                         break
                 if found is None:
                     self.__logger.debug(

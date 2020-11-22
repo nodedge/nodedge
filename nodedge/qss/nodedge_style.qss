@@ -405,3 +405,8 @@ GraphicsNodeTitleFrame {
 GraphicsNodeStatusLabel {
     background: palette(dark);
 }
+
+GraphicsNodeTypeLabel {
+    background: palette(dark);
+    color: palette(light);
+}

@@ -7,13 +7,14 @@ constants.
 
 import logging
 from collections import OrderedDict
-from enum import Enum, IntEnum
+from enum import IntEnum
 from typing import List, Optional
 
 from PySide2.QtCore import QPointF
 
 from nodedge.graphics_socket import GraphicsSocket
 from nodedge.serializable import Serializable
+from nodedge.socket_type import SocketType
 
 
 class SocketLocation(IntEnum):
@@ -23,12 +24,6 @@ class SocketLocation(IntEnum):
     RIGHT_TOP = 4  #: Right top
     RIGHT_CENTER = 5  #: Right center
     RIGHT_BOTTOM = 6  #: Right bottom
-
-
-class SocketType(IntEnum):
-    Any = 0
-    Number = 1
-    String = 2
 
 
 class Socket(Serializable):
@@ -43,7 +38,7 @@ class Socket(Serializable):
         node: "Node",  # type: ignore # noqa: F821
         index: int = 0,
         location: int = SocketLocation.LEFT_TOP,
-        socketType: int = 1,
+        socketType: SocketType = SocketType.Any,
         allowMultiEdges: bool = True,
         countOnThisNodeSide: int = 1,
         isInput: bool = False,
@@ -74,7 +69,7 @@ class Socket(Serializable):
         self.countOnThisNodeSide: int = countOnThisNodeSide
         self.isInput: bool = isInput
 
-        self._socketType: int = socketType
+        self._socketType: SocketType = socketType
         self.allowMultiEdges: bool = allowMultiEdges
 
         self.__logger = logging.getLogger(__file__)
@@ -86,11 +81,11 @@ class Socket(Serializable):
         self.edges: List["Edge"] = []  # type: ignore
 
     @property
-    def socketType(self) -> int:
+    def socketType(self) -> SocketType:
         return self._socketType
 
     @socketType.setter
-    def socketType(self, newValue: int):
+    def socketType(self, newValue: SocketType):
         """
         Change the socket type
 
@@ -253,7 +248,7 @@ class Socket(Serializable):
                 ("index", self.index),
                 ("allowMultiEdges", self.allowMultiEdges),
                 ("location", self.location),
-                ("socketType", self.socketType),
+                ("socketType", self.socketType.value),
             ]
         )
 
@@ -271,7 +266,7 @@ class Socket(Serializable):
         if restoreId:
             self.id = data["id"]
         self.allowMultiEdges = data["allowMultiEdges"]
-        self.socketType = data["socketType"]
+        self.socketType = SocketType(data["socketType"])
         self.location = data["location"]
         hashmap[data["id"]] = self
 

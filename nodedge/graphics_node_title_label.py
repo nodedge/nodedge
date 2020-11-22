@@ -13,3 +13,13 @@ class GraphicsNodeTitleLabel(QLabel):
     def __init__(self, text, graphicsNodeWidget: QWidget) -> None:
         super().__init__(text, graphicsNodeWidget)
         self.graphicsNodeWidget = graphicsNodeWidget
+
+
+class GraphicsNodeTypeLabel(QLabel):
+    """
+    :class:`~nodedge.graphics_node_title_label.GraphicsNodeTypeLabel` class.
+    """
+
+    def __init__(self, text, graphicsNodeWidget: QWidget) -> None:
+        super().__init__(text, graphicsNodeWidget)
+        self.graphicsNodeWidget = graphicsNodeWidget

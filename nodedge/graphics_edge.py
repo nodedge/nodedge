@@ -274,7 +274,7 @@ class GraphicsEdge(QGraphicsPathItem):
             targetSocketType = self.edge.targetSocket.socketType
             if sourceSocketType != targetSocketType:
                 return False
-            self.changeColor(getSocketColor(sourceSocketType))
+            self.changeColor(getSocketColor(sourceSocketType.value))
         except Exception as e:
             dumpException(e)
         return True

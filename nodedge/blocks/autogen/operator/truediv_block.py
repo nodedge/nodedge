@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-from typing import List
-
 import logging
 from operator import truediv
+from typing import List
 
 from nodedge.blocks.block import Block
-from nodedge.blocks.block_exception import EvaluationError
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
-from nodedge.connector import SocketType
+from nodedge.blocks.block_exception import EvaluationError
+from nodedge.socket_type import SocketType
 
 _LOG = logging.getLogger(__name__)
 

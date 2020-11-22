@@ -22,7 +22,10 @@ from PySide2.QtWidgets import (
 )
 
 from nodedge.graphics_node_content import GraphicsNodeContentProxy
-from nodedge.graphics_node_title_label import GraphicsNodeTitleLabel
+from nodedge.graphics_node_title_label import (
+    GraphicsNodeTitleLabel,
+    GraphicsNodeTypeLabel,
+)
 from nodedge.graphics_scene import GraphicsScene
 
 
@@ -69,6 +72,14 @@ class GraphicsNode(QGraphicsItem):
     def title(self, value):
         self._title = value
         self.titleLabel.setText(self._title)
+
+    @property
+    def type(self):
+        return (
+            self.node.__class__.operationTitle
+            if "Block" in self.node.__class__.__name__
+            else "undefined"
+        )
 
     @property
     def selectedState(self):
@@ -162,8 +173,10 @@ class GraphicsNode(QGraphicsItem):
             self.titleLabel.setSizePolicy(
                 QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             )
+            self.typeLabel = GraphicsNodeTypeLabel(self.type, widget)
             self.statusLabel = GraphicsNodeStatusLabel()
             titleLayout.addWidget(self.titleLabel)
+            titleLayout.addWidget(self.typeLabel)
             titleLayout.addWidget(self.statusLabel)
             layout.addWidget(titleFrame)
             layout.addWidget(self.content)

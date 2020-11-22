@@ -13,6 +13,7 @@ from PySide2.QtGui import QDragEnterEvent, QDropEvent
 from PySide2.QtWidgets import QGraphicsItem
 
 from nodedge.edge import Edge
+from nodedge.graphics_node import GraphicsNode
 from nodedge.graphics_scene import GraphicsScene
 from nodedge.graphics_view import GraphicsView
 from nodedge.node import Node
@@ -123,6 +124,15 @@ class Scene(Serializable):
         """
 
         return self.graphicsScene.selectedItems()
+
+    @property
+    def selectedNode(self) -> Optional[Node]:
+        ret = None
+        if len(self.selectedItems) == 1:
+            if isinstance(self.selectedItems[0], GraphicsNode):
+                ret = self.selectedItems[0].node
+
+        return ret
 
     @property
     def graphicsView(self) -> GraphicsView:

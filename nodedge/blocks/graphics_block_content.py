@@ -2,8 +2,8 @@
 from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QHBoxLayout, QListWidget, QListWidgetItem, QSizePolicy
 
-from nodedge.connector import SocketType
 from nodedge.graphics_node_content import GraphicsNodeContent
+from nodedge.socket_type import SocketType
 
 
 class GraphicsBlockContent(GraphicsNodeContent):
@@ -37,16 +37,24 @@ class GraphicsBlockContent(GraphicsNodeContent):
         self.listOutputs.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.hLayout.addWidget(self.listOutputs)
 
-    def updateIO(self):
-        self.listInputs.clear()
-        for input in self.node.inputSockets:
-            inputItem = QListWidgetItem(SocketType(input.socketType).name)
-            self.listInputs.addItem(inputItem)
-            inputItem.setFlags(inputItem.flags() & ~Qt.ItemIsUserCheckable)
+    def updateIO(self) -> None:
+        """
+        Write the types on the sockets in front of the sockets.
 
-        self.listOutputs.clear()
-        for output in self.node.outputSockets:
-            outputItem = QListWidgetItem(SocketType(output.socketType).name)
-            self.listOutputs.addItem(outputItem)
-            outputItem.setTextAlignment(Qt.AlignRight)
-            outputItem.setFlags(outputItem.flags() & ~Qt.ItemIsUserCheckable)
+        Unused for now as it is not ergonomic to see as much as type on the screen.
+        :return: ``None``
+        """
+
+        # self.listInputs.clear()
+        # for input in self.node.inputSockets:
+        #     inputItem = QListWidgetItem(SocketType(input.socketType).name)
+        #     self.listInputs.addItem(inputItem)
+        #     inputItem.setFlags(inputItem.flags() & ~Qt.ItemIsUserCheckable)
+        #
+        # self.listOutputs.clear()
+        # for output in self.node.outputSockets:
+        #     outputItem = QListWidgetItem(SocketType(output.socketType).name)
+        #     self.listOutputs.addItem(outputItem)
+        #     outputItem.setTextAlignment(Qt.AlignRight)
+        #     outputItem.setFlags(outputItem.flags() & ~Qt.ItemIsUserCheckable)
+        pass

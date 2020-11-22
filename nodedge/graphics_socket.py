@@ -16,6 +16,8 @@ from PySide2.QtWidgets import (
     QWidget,
 )
 
+from nodedge.socket_type import SocketType
+
 SOCKET_COLORS = [
     QColor("#FFFF7700"),
     QColor("#FF52e220"),
@@ -62,7 +64,7 @@ class GraphicsSocket(QGraphicsItem):
         """
         Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``.
         """
-        self._colorBackground: QColor = getSocketColor(self.socketType)
+        self._colorBackground: QColor = getSocketColor(self.socketType.value)
         self._colorOutline: QColor = QColor("#FF000000")
         self._colorHovered: QColor = QColor("#FF37A6FF")
 
@@ -81,18 +83,18 @@ class GraphicsSocket(QGraphicsItem):
         self.outlineWidth = 1.0
 
     @property
-    def socketType(self) -> int:
+    def socketType(self) -> SocketType:
         """
 
         :return: socket type
-        :rtype: ``int``
+        :rtype: ``SocketType``
         """
-        return int(self.socket.socketType)
+        return self.socket.socketType
 
     # noinspection PyAttributeOutsideInit
     def updateSocketType(self) -> None:
         """Change the Socket Type."""
-        self._colorBackground = getSocketColor(self.socketType)
+        self._colorBackground = getSocketColor(self.socketType.value)
         self._brush = QBrush(self._colorBackground)
         self.update()
 
