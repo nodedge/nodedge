@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
-from nodedge.blocks.block import Block, EvaluationError
+from typing import List
+
+from nodedge.blocks.block import Block
+from nodedge.blocks.block_exception import EvaluationError
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, OP_NODE_OUTPUT, registerNode
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.blocks.graphics_output_block_content import GraphicsOutputBlockContent
+
+from nodedge.connector import SocketType
 
 
 @registerNode(OP_NODE_OUTPUT)
@@ -13,9 +18,10 @@ class OutputBlock(Block):
     contentLabel = "Out"
     contentLabelObjectName = "OutputBlockContent"
     library = "input/output"
-
-    def __init__(self, scene, inputSocketTypes=(2, 2), outputSocketTypes=(1,)):
-        super().__init__(scene, inputSocketTypes=(1,), outputSocketTypes=[])
+    inputSocketTypes: List[SocketType] = [
+        SocketType.Any,
+    ]
+    outputSocketTypes: List[SocketType] = []
 
     # noinspection PyAttributeOutsideInit
     def initInnerClasses(self):

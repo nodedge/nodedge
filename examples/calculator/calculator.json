@@ -248,39 +248,6 @@
             "operationCode": 2
         },
         {
-            "id": 64719888,
-            "title": "Modulo",
-            "posX": -45.0,
-            "posY": 120.0,
-            "inputSockets": [
-                {
-                    "id": 74608816,
-                    "index": 0,
-                    "allowMultiEdges": false,
-                    "location": 1,
-                    "socketType": 2
-                },
-                {
-                    "id": 74609296,
-                    "index": 1,
-                    "allowMultiEdges": false,
-                    "location": 1,
-                    "socketType": 2
-                }
-            ],
-            "outputSockets": [
-                {
-                    "id": 74611312,
-                    "index": 0,
-                    "allowMultiEdges": true,
-                    "location": 4,
-                    "socketType": 1
-                }
-            ],
-            "content": {},
-            "operationCode": 7
-        },
-        {
             "id": 192604048,
             "title": "Output",
             "posX": 240.0,
@@ -297,6 +264,39 @@
             "outputSockets": [],
             "content": {},
             "operationCode": 2
+        },
+        {
+            "id": 212486384,
+            "title": "Modulo",
+            "posX": -45.0,
+            "posY": 120.0,
+            "inputSockets": [
+                {
+                    "id": 212486416,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                },
+                {
+                    "id": 212486480,
+                    "index": 1,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [
+                {
+                    "id": 212486512,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {},
+            "operationCode": 7
         }
     ],
     "edges": [
@@ -373,22 +373,28 @@
             "target": 1583749804528
         },
         {
-            "id": 83443312,
+            "id": 86093808,
             "edgeType": 3,
-            "source": 74608816,
-            "target": 1583749280096
+            "source": 212486512,
+            "target": 192605008
         },
         {
-            "id": 64719984,
+            "id": 212555888,
             "edgeType": 3,
-            "source": 74609296,
+            "source": 212486480,
             "target": 1583749280960
         },
         {
-            "id": 192603792,
+            "id": 212628112,
+            "edgeType": 2,
+            "source": 1583749280960,
+            "target": null
+        },
+        {
+            "id": 79788528,
             "edgeType": 3,
-            "source": 74611312,
-            "target": 192605008
+            "source": 1583749280096,
+            "target": 212486416
         }
     ]
 }

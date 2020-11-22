@@ -510,19 +510,17 @@ class EditorWindow(QMainWindow):
         Read the permanent profile settings for this application.
         """
         settings = QSettings(self.companyName, self.productName)
-        pos: QPoint = cast(QPoint, settings.value("pos", QPoint(200, 200)))
-        size: QSize = cast(QSize, settings.value("size", QSize(400, 400)))
+        self.restoreGeometry(settings.value("geometry"))
+        self.restoreState(settings.value("windowState"))
         self.debugMode = settings.value("debug", False)
-        self.move(pos)
-        self.resize(size)
 
     def writeSettings(self):
         """
         Write the permanent profile settings for this application.
         """
         settings = QSettings(self.companyName, self.productName)
-        settings.setValue("pos", self.pos())
-        settings.setValue("size", self.size())
+        settings.setValue("geometry", self.saveGeometry())
+        settings.setValue("windowState", self.saveState())
         settings.setValue("debug", self.debugMode)
 
     def beforeSaveFileAs(
