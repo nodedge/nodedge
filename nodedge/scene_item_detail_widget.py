@@ -15,7 +15,7 @@ class SceneItemDetailWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent
-        self.layout = QGridLayout()
+        self.layout: QGridLayout = QGridLayout()
         self.layout.setAlignment(Qt.AlignTop)
         self.setAutoFillBackground(True)
 
@@ -37,7 +37,10 @@ class SceneItemDetailWidget(QWidget):
         stringLabel.setAlignment(Qt.AlignTop)
         stringLabel.setFixedHeight(30)
 
-        valueWidget: QWidget = QLineEdit("") if edit is True else QLabel("")
+        if edit is True:
+            valueWidget: QWidget = QLineEdit("")
+        else:
+            valueWidget = QLabel("")
 
         valueWidget.setSizePolicy(
             QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)

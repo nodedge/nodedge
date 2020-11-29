@@ -89,7 +89,8 @@ class GraphicsSocket(QGraphicsItem):
         :return: socket type
         :rtype: ``SocketType``
         """
-        return self.socket.socketType
+
+        return self.socket.socketType  # type: ignore
 
     # noinspection PyAttributeOutsideInit
     def updateSocketType(self) -> None:

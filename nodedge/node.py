@@ -48,8 +48,8 @@ class Node(Serializable):
         self,
         scene: "Scene",  # type: ignore
         title: str = "Undefined node",
-        inputSocketTypes: Collection[int] = (),
-        outputSocketTypes: Collection[int] = (),
+        inputSocketTypes: Collection[SocketType] = (),
+        outputSocketTypes: Collection[SocketType] = (),
     ):
         """
         :param scene: reference to the :class:`~nodedge.scene.Scene`
@@ -57,16 +57,16 @@ class Node(Serializable):
         :param title: node title shown in scene
         :type title: ``str``
         :param inputSocketTypes: list of types of the input `Sockets`
-        :type inputSocketTypes: ``Collection[int]``
+        :type inputSocketTypes: ``Collection[SocketType]``
         :param outputSocketTypes: list of types of the output `Sockets`
-        :type outputSocketTypes: ``Collection[int]``
+        :type outputSocketTypes: ``Collection[SocketType]``
         """
 
         super().__init__()
         self._title: str = title
         self.scene: "Scene" = scene  # type: ignore
-        self.inputSocketTypes = inputSocketTypes
-        self.outputSocketTypes = outputSocketTypes
+        self.inputSocketTypes: Collection[SocketType] = inputSocketTypes
+        self.outputSocketTypes: Collection[SocketType] = outputSocketTypes
 
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)

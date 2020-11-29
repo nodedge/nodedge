@@ -23,6 +23,7 @@ from nodedge.edge import Edge, EdgeType
 from nodedge.graphics_view import GraphicsView
 from nodedge.node import Node
 from nodedge.scene import InvalidFile, Scene
+from nodedge.socket_type import SocketType
 from nodedge.utils import dumpException
 
 
@@ -269,13 +270,22 @@ class EditorWidget(QWidget):
         :class:`~nodedge.edge.Edge`.
         """
         node1 = Node(
-            self.scene, "Node 1", inputSocketTypes=[1, 2, 3], outputSocketTypes=[1]
+            self.scene,
+            "Node 1",
+            inputSocketTypes=[SocketType.Any, SocketType.Number, SocketType.String],
+            outputSocketTypes=[SocketType.Any],
         )
         node2 = Node(
-            self.scene, "Node 2", inputSocketTypes=[1, 2, 3], outputSocketTypes=[1]
+            self.scene,
+            "Node 2",
+            inputSocketTypes=[SocketType.Any, SocketType.Number, SocketType.String],
+            outputSocketTypes=[SocketType.Any],
         )
         node3 = Node(
-            self.scene, "Node 3", inputSocketTypes=[1, 2, 3], outputSocketTypes=[1]
+            self.scene,
+            "Node 3",
+            inputSocketTypes=[SocketType.Any, SocketType.Number, SocketType.String],
+            outputSocketTypes=[SocketType.Any],
         )
 
         node1.pos = (-350, -250)
