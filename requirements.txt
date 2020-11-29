@@ -1,4 +1,5 @@
 coloredlogs
+h5py
 pyqtconsole
 PySide2==5.14.2.3
 PyYAML

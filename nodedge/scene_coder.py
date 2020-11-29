@@ -86,7 +86,7 @@ class SceneCoder(QObject):
             inputVarIndex = orderedNodeList.index(inputNode[0])
             outputVarNames.append("var_" + str(inputVarIndex))
         generatedCode += "return [" + ", ".join(outputVarNames) + "]"
-        self.__logger.info(orderedNodeList)
+        self.__logger.debug(orderedNodeList)
 
         return orderedNodeList, generatedCode
 

@@ -39,8 +39,10 @@ Submodules
    nodedge.scene_clipboard
    nodedge.scene_coder
    nodedge.scene_history
+   nodedge.scene_item_detail_widget
    nodedge.scene_items_table_widget
    nodedge.serializable
+   nodedge.socket_type
    nodedge.utils
 
 Module contents

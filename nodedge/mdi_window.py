@@ -61,7 +61,7 @@ class MdiWindow(EditorWindow):
         """
         activeSubWindow = self.mdiArea.activeSubWindow()
         if (
-            activeSubWindow is not None  # type: ignore
+            activeSubWindow is not None
             and activeSubWindow.widget() is not None
             and isinstance(activeSubWindow.widget(), EditorWidget)
         ):
