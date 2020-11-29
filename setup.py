@@ -71,6 +71,13 @@ CLASSIFIERS = [
 
 PLATFORMS = ["Windows", "Linux", "Mac OS-X", "Unix"]
 
+PROJECT_URLS = {
+    "Documentation": "https://nodedge.readthedocs.io/en/latest/",
+    "Say Thanks!": "http://saythanks.io/to/example",
+    "Source": "https://github.com/nodedge/nodedge",
+    "Tracker": "https://github.com/nodedge/nodedge/issues",
+}
+
 setup(
     name="nodedge",
     keywords=KEYWORDS,
@@ -87,10 +94,14 @@ setup(
     long_description_content_type="text/x-rst",
     platforms=PLATFORMS,
     packages=find_packages(include="nodedge*", exclude=["tests"]),
+    include_package_data=True,
+    package_data={"": ["*.qss"]},
+    exclude_package_data={"": ["*/icons/*", "*.pyc"]},
     setup_requires=setup_requirements,
     test_suite="tests",
     cmdclass={"test": PyTest},
     tests_require=test_requirements,
     zip_safe=False,
     entry_points={"console_scripts": ["nodedge = nodedge.__main__:main"]},
+    project_urls=PROJECT_URLS,
 )
