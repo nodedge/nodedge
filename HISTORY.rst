@@ -21,5 +21,13 @@ History
 * Add scene items dock widget.
 * Fix crash after edge deletion.
 
+0.2.3 (2020-11-29)
+------------------
+* Add embedded python console.
+* Add scene code generation.
+* Add more mathematical blocks.
+* Refine style and node displacement.
+* Add item details widget.
+
 
 
