@@ -11,6 +11,7 @@ from nodedge.edge import Edge
 from nodedge.editor_widget import EditorWidget
 from nodedge.mdi_window import MdiWindow
 from nodedge.node import Node
+from nodedge.socket_type import SocketType
 
 
 @pytest.fixture
@@ -26,7 +27,7 @@ def emptyScene(qtbot):
 
 @pytest.fixture
 def filledScene(emptyScene):
-    node = Node(emptyScene, "", [1], [1])  # noqa: F841
+    node = Node(emptyScene, "", [SocketType.Any], [SocketType.Any])  # noqa: F841
     edge = Edge(emptyScene, node.inputSockets[0], node.outputSockets[0])  # noqa: F841
 
     return emptyScene
@@ -138,7 +139,7 @@ def test_serializeSelected(qtbot):
     editor = EditorWidget(window)
     qtbot.addWidget(editor)
     scene = editor.scene
-    node = Node(scene, "", [1], [1])  # noqa: F841
+    node = Node(scene, "", [SocketType.Any], [SocketType.Any])  # noqa: F841
     edge = Edge(scene, node.inputSockets[0], node.outputSockets[0])  # noqa: F841
 
     graphicsEdge = edge.graphicsEdge
@@ -171,7 +172,7 @@ def test_itemAt(qtbot: QtBot):
     editor = EditorWidget(window)
     qtbot.addWidget(editor)
     scene = editor.scene
-    node = Node(scene, "", [1], [1])  # noqa: F841
+    node = Node(scene, "", [SocketType.Any], [SocketType.Any])  # noqa: F841
     pos = QPoint(10, 10)
     node.pos = pos
     edge = Edge(scene, node.inputSockets[0], node.outputSockets[0])  # noqa: F841
@@ -191,7 +192,7 @@ def test_onSelectedItems(qtbot: QtBot):
     scene = editorWidget.scene
     scene.clear()
     subWindow.show()
-    node = Node(scene, "", [1], [1])  # noqa: F841
+    node = Node(scene, "", [SocketType.Any], [SocketType.Any])  # noqa: F841
     pos = QPoint(10, 10)
     node.pos = pos
 
@@ -250,7 +251,7 @@ def test_undo_crash_without_details(execution_number, qtbot):
     scene.clear()
     scene.history.clear(storeInitialStamp=True)
     subWindow.show()
-    node = Node(scene, "", [1], [1])  # noqa: F841
+    node = Node(scene, "", [SocketType.Any], [SocketType.Any])  # noqa: F841
     scene.history.store("Create new node")
     for i in range(5):
         pos = QPointF(random() * 100000, random() * 100000)

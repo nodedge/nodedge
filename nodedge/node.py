@@ -739,7 +739,7 @@ class Node(Serializable):
                         node=self,
                         index=socketData["index"],
                         location=socketData["location"],
-                        socketType=socketData["socketType"],
+                        socketType=SocketType(socketData["socketType"]),
                         countOnThisNodeSide=numberOfOutputs,
                         isInput=False,
                     )

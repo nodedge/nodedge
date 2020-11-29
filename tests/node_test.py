@@ -7,6 +7,7 @@ from nodedge.edge import Edge
 from nodedge.editor_widget import EditorWidget
 from nodedge.node import Node
 from nodedge.scene import Scene
+from nodedge.socket_type import SocketType
 from nodedge.utils import dumpException
 
 
@@ -22,16 +23,20 @@ def emptyScene(qtbot):
 
 @pytest.fixture
 def undefinedNode(emptyScene: Scene) -> Node:
-    node = Node(emptyScene, inputSocketTypes=[1])  # noqa: F841
+    node = Node(emptyScene, inputSocketTypes=[SocketType.Any])  # noqa: F841
 
     return emptyScene.nodes[0]
 
 
 @pytest.fixture
 def connectedNode(emptyScene: Scene) -> Node:
-    node1 = Node(emptyScene, outputSocketTypes=[1])
-    node2 = Node(emptyScene, inputSocketTypes=[1], outputSocketTypes=[1])
-    node3 = Node(emptyScene, inputSocketTypes=[1])
+    node1 = Node(emptyScene, outputSocketTypes=[SocketType.Any])
+    node2 = Node(
+        emptyScene,
+        inputSocketTypes=[SocketType.Any],
+        outputSocketTypes=[SocketType.Any],
+    )
+    node3 = Node(emptyScene, inputSocketTypes=[SocketType.Any])
 
     edge12 = Edge(
         emptyScene, node1.outputSockets[0], node2.inputSockets[0]
@@ -185,9 +190,13 @@ def test_evalChildren(connectedNode: Node):
 
 
 def test_getChildNodes(emptyScene):
-    node1 = Node(emptyScene, outputSocketTypes=[1])
-    node2 = Node(emptyScene, inputSocketTypes=[1], outputSocketTypes=[1])
-    node3 = Node(emptyScene, inputSocketTypes=[1])
+    node1 = Node(emptyScene, outputSocketTypes=[SocketType.Any])
+    node2 = Node(
+        emptyScene,
+        inputSocketTypes=[SocketType.Any],
+        outputSocketTypes=[SocketType.Any],
+    )
+    node3 = Node(emptyScene, inputSocketTypes=[SocketType.Any])
 
     edge12 = Edge(
         emptyScene, node1.outputSockets[0], node2.inputSockets[0]
@@ -202,9 +211,13 @@ def test_getChildNodes(emptyScene):
 
 
 def test_getParentNodes(emptyScene):
-    node1 = Node(emptyScene, outputSocketTypes=[1])
-    node2 = Node(emptyScene, inputSocketTypes=[1], outputSocketTypes=[1])
-    node3 = Node(emptyScene, inputSocketTypes=[1])
+    node1 = Node(emptyScene, outputSocketTypes=[SocketType.Any])
+    node2 = Node(
+        emptyScene,
+        inputSocketTypes=[SocketType.Any],
+        outputSocketTypes=[SocketType.Any],
+    )
+    node3 = Node(emptyScene, inputSocketTypes=[SocketType.Any])
 
     edge12 = Edge(
         emptyScene, node1.outputSockets[0], node2.inputSockets[0]
