@@ -232,13 +232,14 @@ QLabel{
 color:palette(text);
 }
 
-QLineEdit,QTextEdit{
+QTextEdit{
 color:palette(light);
 background:palette(window);
 }
 
 QLineEdit{
-border:1px solid palette(light);
+border:1px solid palette(button-text);
+background:palette(window);
 border-radius:2px;
 padding:1px 2px;
 }

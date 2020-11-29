@@ -135,6 +135,10 @@ class Scene(Serializable):
         return ret
 
     @property
+    def selectedNodes(self) -> List[Node]:
+        return [item for item in self.selectedItems if isinstance(item, GraphicsNode)]
+
+    @property
     def graphicsView(self) -> GraphicsView:
         """Shortcut for returning `Scene` ``QGraphicsView``
 

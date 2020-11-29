@@ -203,9 +203,22 @@ class Node(Serializable):
         return self._title
 
     @title.setter
-    def title(self, value: str) -> None:
-        self._title = value
-        self.graphicsNode.title = value
+    def title(self, newTitle: str) -> None:
+        otherNodes = self.scene.nodes.copy()
+        if self in self.scene.nodes:
+            otherNodes.remove(self)
+        alreadyExistingNames = [node.title for node in otherNodes]
+
+        while newTitle in alreadyExistingNames:
+            if newTitle[-1].isnumeric():
+                newLastCharacter = str(int(newTitle[-1]) + 1)
+                newTitle = newTitle[:-1]
+                newTitle += newLastCharacter
+            else:
+                newTitle += "1"
+
+        self._title = newTitle
+        self.graphicsNode.title = newTitle
 
     @property
     def pos(self):
