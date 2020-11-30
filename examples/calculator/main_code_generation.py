@@ -31,12 +31,11 @@ if __name__ == "__main__":
 
     currentScene = window.currentEditorWidget.scene
     coder = SceneCoder(currentScene)
-    orderedNodeList, currentSceneCode = coder.generateCode()
-    print(currentSceneCode)
-
-    generatedFileString = coder.createFileFromGeneratedCode(
-        orderedNodeList, currentSceneCode
-    )
+    # orderedNodeList, currentSceneCode = coder.generateCode()
+    # generatedFileString = coder.createFileFromGeneratedCode(
+    #     orderedNodeList, currentSceneCode
+    # )
+    generatedFileString = coder.createFile()
 
     try:
         sys.exit(app.exec_())
