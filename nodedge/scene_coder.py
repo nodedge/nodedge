@@ -123,6 +123,11 @@ class SceneCoder(QObject):
 
         return outputFileString
 
+    def createFile(self) -> str:
+        orderedNodeList, generatedCode = self.generateCode()
+        fileString = self.createFileFromGeneratedCode(orderedNodeList, generatedCode)
+        return fileString
+
     def _appendHierarchyUntilRoot(
         self, currentNode: Node, appendedNodes: List[Node], nodesToAdd: List[Node]
     ):
