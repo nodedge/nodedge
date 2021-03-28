@@ -1,5 +1,7 @@
 coloredlogs
-h5py
+h5py==2.10.0
+numpy
 pyqtconsole
+pyqtgraph
 PySide2==5.14.2.3
 PyYAML
