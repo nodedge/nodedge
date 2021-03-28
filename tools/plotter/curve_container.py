@@ -17,3 +17,5 @@ class CurveContainer(QWidget):
         self.mainLayout.addWidget(self.graph)
         self.curveItem = CurveItem()
         self.graph.addItem(self.curveItem)
+
+        self.graph.showGrid(x=True, y=True)

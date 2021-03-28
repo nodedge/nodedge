@@ -8,21 +8,15 @@ import sys
 
 import h5py
 import numpy as np
-from h5py import Dataset, Group
-from PySide2.QtCore import Qt
-from PySide2.QtWidgets import (
-    QApplication,
-    QDockWidget,
-    QFileDialog,
-    QTreeWidget,
-    QTreeWidgetItem,
-)
+from PySide2.QtCore import Qt, Slot
+from PySide2.QtWidgets import QApplication, QDockWidget, QFileDialog, QInputDialog
 
 from nodedge.utils import dumpException
 from tools.main_window_template.main_window import MainWindow
 from tools.main_window_template.mdi_area import MdiArea
 from tools.plotter.curve_container import CurveContainer
 from tools.plotter.utils import getAllH5Keys
+from tools.plotter.variable_tree_widget import DatasetTreeWidget
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -35,7 +29,8 @@ class PlotterWindow(MainWindow):
         self.mdiArea = MdiArea()
         self.setCentralWidget(self.mdiArea)
 
-        self.variableTree = QTreeWidget()
+        self.variableTree = DatasetTreeWidget()
+        self.variableTree.datasetDoubleClicked.connect(self.plotData)
         self.variableTreeDock = QDockWidget("Variables")
         self.variableTreeDock.setWidget(self.variableTree)
         self.variableTreeDock.setFloating(False)
@@ -53,49 +48,47 @@ class PlotterWindow(MainWindow):
 
         extension = filename.split(".")[-1]
         if extension == "hdf5":
-            file = self.loadHdf5(filename)
+            self.file = self.loadHdf5(filename)
         elif extension == "csv":
-            file = self.loadCsv(filename)
+            self.file = self.loadCsv(filename)
         else:
             return NotImplementedError
 
         # Get hdf5 key tree
-        allKeys = getAllH5Keys(file)
-        # Remove first key "/"
-        allKeys = allKeys[1::]
+        allKeys, allTypes = getAllH5Keys(self.file)
 
-        # Create QTreeWidgetItems and store them in a dictionary
-        self.variableDict = {}
-        for key in allKeys:
-            itemTitle = key[1::].split("/")[-1]
-            item = QTreeWidgetItem()
-            item.setText(0, itemTitle)
-            self.variableDict.update({key: item})
+        self.variableTree.updateVariables(allKeys, allTypes)
 
-        # Populate the TreeWidget
-        for key in self.variableDict.keys():
-            # Keys always start with "/", so remove it
-            splitKey = key[1::].split("/")
-            # Case 1: Top level items
-            if len(splitKey) == 1:
-                self.variableTree.addTopLevelItem(self.variableDict[key])
-            # Case 2: Child level items
-            else:
-                parentItemName = "/" + "/".join(splitKey[0:-1])
-                parentItem = self.variableDict[parentItemName]
-                parentItem.addChild(self.variableDict[key])
+        self.plotData("sim_data/pos_k_i")
 
+        return self.file
+
+    @Slot(str)
+    def plotData(self, datasetName: str):
         # Select data to plot
-        ax = 0
-        agent = 0
-        pos_k = np.array(file.get("sim_data/pos_k_i"))[ax, :, agent]
+        data = np.array(self.file.get(datasetName))
+        shape = data.shape
+        indices = [0 for _ in range(len(shape) - 1)]
+        logger.debug(f"{datasetName} ({shape})is going to be plotted.")
+
+        for dim, length in enumerate(shape[0:-1]):
+            index, okPressed = QInputDialog.getInt(
+                self, "Index", "Index:", 0, 0, length - 1, 1
+            )
+            indices[dim] = index
+
+            if okPressed is False:
+                return
+
+        plottedData = data[indices]
+        for i in indices:
+            plottedData = plottedData[i]
 
         widget = CurveContainer()
-        widget.curveItem.setHDF5(pos_k)
+        widget.curveItem.setHDF5(plottedData)
         subWindow = self.mdiArea.addSubWindow(widget)
+        subWindow.setWindowTitle(datasetName)
         subWindow.showMaximized()
-
-        return file
 
     def loadCsv(self, filename):
         raise NotImplementedError

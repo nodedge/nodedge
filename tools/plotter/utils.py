@@ -4,6 +4,7 @@ import random
 import sys
 import time
 import traceback
+from enum import IntEnum
 from functools import partial
 
 import h5py
@@ -13,16 +14,26 @@ from PySide2.QtCore import QFile
 from PySide2.QtWidgets import QApplication
 
 
+class H5Types(IntEnum):
+    GROUP = 1
+    DATASET = 2
+
+
 def getAllH5Keys(obj):
     "Recursively find all keys in an h5py.Group."
     keys = (obj.name,)
+    types = (H5Types.GROUP,)
     if isinstance(obj, h5py.Group):
         for key, value in obj.items():
             if isinstance(value, h5py.Group):
-                keys = keys + getAllH5Keys(value)
+                k, t = getAllH5Keys(value)
+                keys += k
+                types += t
             else:
-                keys = keys + (value.name,)
-    return keys
+                keys += (value.name,)
+                types += (H5Types.DATASET,)
+
+    return keys, types
 
 
 def timestamp():
