@@ -83,7 +83,7 @@ class EditorWidget(QWidget):
 
         :rtype: ``bool``
         """
-        return self.filename is not None
+        return self.filename is not ""
 
     @property
     def shortName(self) -> str:
