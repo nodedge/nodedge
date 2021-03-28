@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Editor widget module containing :class:`~nodedge.editor_widget.EditorWidget` class.
+Mdi widget module containing :class:`~nodedge.mdi_widget.MdiWidget` class.
 """
 import logging
 from typing import Callable, List, Optional
@@ -38,8 +38,6 @@ class MdiWidget(EditorWidget):
 
     def __init__(self):
         super().__init__()
-
-        self.filename: str = ""
 
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
