@@ -38,6 +38,7 @@ class MainWindow(QMainWindow):
         )
 
         self.applicationName: str = applicationName
+        self.setWindowTitle(self.applicationName)
         self.iconPath = iconPath
 
         self.textEdit = QPlainTextEdit()
