@@ -20,11 +20,14 @@ branches:
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y xvfb herbstluftwm
+  - python -m pip install -U pip
 
 install:
   - "export DISPLAY=:99.0"
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX +render -noreset"
   - sleep 3
+  - pip install -U pip
+  - pip install setuptools_rust
   - pip install tox
 
 jobs:
@@ -54,6 +57,5 @@ before_script:
   - sleep 1
 
 script:
-  - pip install --upgrade pip
   - QT_DEBUG_PLUGINS=1 tox
 
