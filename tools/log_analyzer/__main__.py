@@ -5,7 +5,6 @@ import traceback
 from PySide2.QtWidgets import QApplication
 
 from tools.log_analyzer.log_analyzer_window import LogAnalyzerWindow
-from tools.log_analyzer.main_window import MainWindow
 
 
 def dumpException(e=None, file=None):
