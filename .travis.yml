@@ -54,5 +54,5 @@ before_script:
   - sleep 1
 
 script:
-  - QT_DEBUG_PLUGINS=1 tox
+  - CRYPTOGRAPHY_DONT_BUILD_RUST=1 QT_DEBUG_PLUGINS=1 tox
 
