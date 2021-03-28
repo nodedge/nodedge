@@ -20,7 +20,7 @@ from PySide2.QtWidgets import (
 )
 
 from nodedge.utils import dumpException
-from tools.log_analyzer.application_styler import ApplicationStyler
+from tools.main_window_template.application_styler import ApplicationStyler
 
 
 class MainWindow(QMainWindow):

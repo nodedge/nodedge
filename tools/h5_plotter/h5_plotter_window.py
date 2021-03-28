@@ -1,29 +1,28 @@
-import csv
+# -*- coding: utf-8 -*-
+"""
+h5_plotter_window.py module containing :class:`~nodedge.h5_plotter_window.py.<ClassName>` class.
+"""
+
 import logging
 import sys
 
-from PySide2.QtGui import QStandardItem, QStandardItemModel
-from PySide2.QtWidgets import QApplication, QFileDialog, QMdiArea, QTableView
+import h5py
+from PySide2.QtWidgets import QApplication, QFileDialog
 
 from nodedge.utils import dumpException
-from tools.log_analyzer.main_window import MainWindow
-from tools.log_analyzer.mdi_area import MdiArea
+from tools.main_window_template.main_window import MainWindow
+from tools.main_window_template.mdi_area import MdiArea
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-class LogAnalyzerWindow(MainWindow):
+class H5PlotterWindow(MainWindow):
     def __init__(self, parent=None):
-        super().__init__(parent, applicationName="Analyzer")
+        super().__init__(parent, applicationName="H5 Plotter")
 
-        self.model = QStandardItemModel(self)
-
-        self.tableView = QTableView(self)
-        self.tableView.setModel(self.model)
-        self.tableView.horizontalHeader().setStretchLastSection(True)
-
-        self.setCentralWidget(self.tableView)
+        self.mdiArea = MdiArea()
+        self.setCentralWidget(self.mdiArea)
 
     def openFile(self, filename: str = ""):
         logger.debug(filename)
@@ -31,17 +30,14 @@ class LogAnalyzerWindow(MainWindow):
             filename, _ = QFileDialog.getOpenFileName(
                 parent=self,
                 caption="Open graph from file",
-                dir=LogAnalyzerWindow.getFileDialogDirectory(),
-                filter=LogAnalyzerWindow.getFileDialogFilter(),
+                dir=H5PlotterWindow.getFileDialogDirectory(),
+                filter=H5PlotterWindow.getFileDialogFilter(),
             )
 
         self.loadCsv(filename)
 
-    def loadCsv(self, fileName):
-        with open(fileName, "r") as fileInput:
-            for row in csv.reader(fileInput, delimiter="|", quotechar="'"):
-                items = [QStandardItem(field) for field in row]
-                self.model.appendRow(items)
+    def loadH5File(self, fileName):
+        raise NotImplementedError
 
     @staticmethod
     def getFileDialogDirectory() -> str:
@@ -67,7 +63,7 @@ class LogAnalyzerWindow(MainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    window = LogAnalyzerWindow()
+    window = H5PlotterWindow()
     window.showMaximized()
 
     try:
