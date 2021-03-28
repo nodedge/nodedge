@@ -39,6 +39,8 @@ class MdiWidget(EditorWidget):
     def __init__(self):
         super().__init__()
 
+        self.filename: str = ""
+
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
 
