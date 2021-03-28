@@ -5,3 +5,5 @@ bump2version
 pillow
 pre-commit
 wheel
+scipy
+matpotlib

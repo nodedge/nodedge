@@ -15,6 +15,7 @@ OP_NODE_LESS_EQUAL = 10
 OP_NODE_EQUAL = 11
 OP_NODE_GREATER = 12
 OP_NODE_GREATER_EQUAL = 13
+OP_NODE_INTEGRAL = 14
 
 # BlockType = TypeVar("BlockType", bound=Block)
 BLOCKS: Dict[int, type] = {}
@@ -76,3 +77,5 @@ def getClassFromOperationCode(operationCode):
 #     print_classes()
 #
 #
+
+# TODO: automate the assignment of the operation code
