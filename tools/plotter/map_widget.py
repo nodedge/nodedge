@@ -7,9 +7,9 @@ import pyqtgraph as pg
 from PySide2.QtCore import QTimer, Signal
 from PySide2.QtWidgets import QApplication, QMainWindow
 
-from tools.h5_plotter.circle_item import CircleItem
-from tools.h5_plotter.utils import loadStyleSheets
 from tools.main_window_template.application_styler import ApplicationStyler
+from tools.plotter.circle_item import CircleItem
+from tools.plotter.utils import loadStyleSheets
 
 
 class MapWidget(pg.PlotWidget):
@@ -105,7 +105,7 @@ if __name__ == "__main__":
     appStyler = ApplicationStyler()
     pg.setConfigOption("background", app.palette().dark())
     styleSheetFilename = os.path.join(
-        os.path.dirname(__file__), "qss/h5_plotter_style.qss"
+        os.path.dirname(__file__), "qss/plotter_style.qss"
     )
     loadStyleSheets(styleSheetFilename)
     mapWidget = MapWidget()

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-h5_plotter_window.py module containing :class:`~nodedge.h5_plotter_window.py.<ClassName>` class.
+plotter_window.py module containing :class:`~nodedge.plotter_window.py.<ClassName>` class.
 """
 
 import logging

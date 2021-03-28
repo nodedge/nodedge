@@ -19,9 +19,9 @@ from PySide2.QtWidgets import (
     QWidget,
 )
 
-from tools.h5_plotter.time_axis_item import TimeAxisItem
-from tools.h5_plotter.utils import get_random_string, loadStyleSheets, timestamp
 from tools.main_window_template.application_styler import ApplicationStyler
+from tools.plotter.time_axis_item import TimeAxisItem
+from tools.plotter.utils import get_random_string, loadStyleSheets, timestamp
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     pg.setConfigOption("background", app.palette().dark())
     # pg.setConfigOption("foreground", "w")
     styleSheetFilename = os.path.join(
-        os.path.dirname(__file__), "qss/h5_plotter_style.qss"
+        os.path.dirname(__file__), "qss/plotter_style.qss"
     )
     loadStyleSheets(styleSheetFilename)
     mdiArea = QMdiArea()

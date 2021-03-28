@@ -4,7 +4,7 @@ import pyqtgraph as pg
 from PySide2.QtCore import QTimer, Signal
 from PySide2.QtWidgets import QApplication
 
-from tools.h5_plotter.bar_graph_item import BarGraphItem
+from tools.plotter.bar_graph_item import BarGraphItem
 
 
 class BarGraphWidget(pg.PlotWidget):

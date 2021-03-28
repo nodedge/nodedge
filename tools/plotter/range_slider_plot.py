@@ -7,8 +7,8 @@ import pyqtgraph as pg
 from pyqtgraph.Qt import QtGui
 from PySide2.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 
-from tools.h5_plotter.utils import loadStyleSheets
 from tools.main_window_template.application_styler import ApplicationStyler
+from tools.plotter.utils import loadStyleSheets
 
 
 class RangeSliderPlot(QWidget):
@@ -97,7 +97,7 @@ if __name__ == "__main__":
     appStyler = ApplicationStyler()
     pg.setConfigOption("background", app.palette().dark())
     styleSheetFilename = os.path.join(
-        os.path.dirname(__file__), "qss/h5_plotter_style.qss"
+        os.path.dirname(__file__), "qss/plotter_style.qss"
     )
     loadStyleSheets(styleSheetFilename)
     mapWidget = RangeSliderPlot()

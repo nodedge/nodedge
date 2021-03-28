@@ -2,7 +2,7 @@
 import pyqtgraph as pg
 from pyqtgraph.examples.syntax import QColor
 
-from tools.h5_plotter.utils import get_blue_scale_color
+from tools.plotter.utils import get_blue_scale_color
 
 
 class BarGraphItem(pg.BarGraphItem):
