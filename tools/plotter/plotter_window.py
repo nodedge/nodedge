@@ -8,90 +8,24 @@ import sys
 
 import h5py
 import numpy as np
-import pyqtgraph as pg
-from PySide2.QtWidgets import QApplication, QFileDialog
+from h5py import Dataset, Group
+from PySide2.QtCore import Qt
+from PySide2.QtWidgets import (
+    QApplication,
+    QDockWidget,
+    QFileDialog,
+    QTreeWidget,
+    QTreeWidgetItem,
+)
 
 from nodedge.utils import dumpException
 from tools.main_window_template.main_window import MainWindow
 from tools.main_window_template.mdi_area import MdiArea
+from tools.plotter.curve_container import CurveContainer
+from tools.plotter.utils import getAllH5Keys
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-
-
-# Parameters
-MAX_NUM_SAMPLES = 10000
-
-
-class HDF5Plot(pg.PlotCurveItem):
-    def __init__(self, *args, **kwds):
-        self.hdf5 = None
-        self.limit = MAX_NUM_SAMPLES  # maximum number of samples to be plotted
-        pg.PlotCurveItem.__init__(self, *args, **kwds)
-
-    def setHDF5(self, data):
-        self.hdf5 = data
-        self.updateHDF5Plot()
-
-    def viewRangeChanged(self):
-        self.updateHDF5Plot()
-
-    def updateHDF5Plot(self):
-        if self.hdf5 is None:
-            self.setData([])
-            return
-
-        vb = self.getViewBox()
-        if vb is None:
-            return  # no ViewBox yet
-
-        # Determine what data range must be read from HDF5
-        xrange = vb.viewRange()[0]
-        start = max(0, int(xrange[0]) - 1)
-        stop = min(len(self.hdf5), int(xrange[1] + 2))
-
-        # Decide by how much we should downsample
-        ds = int((stop - start) / self.limit) + 1
-
-        if ds == 1:
-            # Small enough to display with no intervention.
-            visible = self.hdf5[start:stop]
-            scale = 1
-        else:
-            # Here convert data into a down-sampled array suitable for visualizing.
-            # Must do this piecewise to limit memory usage.
-            samples = 1 + ((stop - start) // ds)
-            visible = np.zeros(samples * 2, dtype=self.hdf5.dtype)
-            sourcePtr = start
-            targetPtr = 0
-
-            # read data in chunks of ~1M samples
-            chunkSize = (1000000 // ds) * ds
-            while sourcePtr < stop - 1:
-                chunk = self.hdf5[sourcePtr : min(stop, sourcePtr + chunkSize)]
-                sourcePtr += len(chunk)
-
-                # reshape chunk to be integral multiple of ds
-                chunk = chunk[: (len(chunk) // ds) * ds].reshape(len(chunk) // ds, ds)
-
-                # compute max and min
-                chunkMax = chunk.max(axis=1)
-                chunkMin = chunk.min(axis=1)
-
-                # interleave min and max into plot data to preserve envelope shape
-                visible[targetPtr : targetPtr + chunk.shape[0] * 2 : 2] = chunkMin
-                visible[
-                    1 + targetPtr : 1 + targetPtr + chunk.shape[0] * 2 : 2
-                ] = chunkMax
-                targetPtr += chunk.shape[0] * 2
-
-            visible = visible[:targetPtr]
-            scale = ds * 0.5
-
-        self.setData(visible)  # update the plot
-        self.setPos(start, 0)  # shift to match starting index
-        self.resetTransform()
-        self.scale(scale, 1)  # scale to match downsampling
 
 
 class PlotterWindow(MainWindow):
@@ -101,8 +35,14 @@ class PlotterWindow(MainWindow):
         self.mdiArea = MdiArea()
         self.setCentralWidget(self.mdiArea)
 
+        self.variableTree = QTreeWidget()
+        self.variableTreeDock = QDockWidget("Variables")
+        self.variableTreeDock.setWidget(self.variableTree)
+        self.variableTreeDock.setFloating(False)
+
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.variableTreeDock)
+
     def openFile(self, filename: str = ""):
-        logger.debug(filename)
         if filename in ["", None, False]:
             filename, _ = QFileDialog.getOpenFileName(
                 parent=self,
@@ -113,13 +53,49 @@ class PlotterWindow(MainWindow):
 
         extension = filename.split(".")[-1]
         if extension == "hdf5":
-            f = self.loadHdf5(filename)
+            file = self.loadHdf5(filename)
         elif extension == "csv":
-            f = self.loadCsv(filename)
+            file = self.loadCsv(filename)
         else:
             return NotImplementedError
 
-        return f
+        # Get hdf5 key tree
+        allKeys = getAllH5Keys(file)
+        # Remove first key "/"
+        allKeys = allKeys[1::]
+
+        # Create QTreeWidgetItems and store them in a dictionary
+        self.variableDict = {}
+        for key in allKeys:
+            itemTitle = key[1::].split("/")[-1]
+            item = QTreeWidgetItem()
+            item.setText(0, itemTitle)
+            self.variableDict.update({key: item})
+
+        # Populate the TreeWidget
+        for key in self.variableDict.keys():
+            # Keys always start with "/", so remove it
+            splitKey = key[1::].split("/")
+            # Case 1: Top level items
+            if len(splitKey) == 1:
+                self.variableTree.addTopLevelItem(self.variableDict[key])
+            # Case 2: Child level items
+            else:
+                parentItemName = "/" + "/".join(splitKey[0:-1])
+                parentItem = self.variableDict[parentItemName]
+                parentItem.addChild(self.variableDict[key])
+
+        # Select data to plot
+        ax = 0
+        agent = 0
+        pos_k = np.array(file.get("sim_data/pos_k_i"))[ax, :, agent]
+
+        widget = CurveContainer()
+        widget.curveItem.setHDF5(pos_k)
+        subWindow = self.mdiArea.addSubWindow(widget)
+        subWindow.showMaximized()
+
+        return file
 
     def loadCsv(self, filename):
         raise NotImplementedError
@@ -157,17 +133,6 @@ if __name__ == "__main__":
 
     # Open file
     f = window.openFile()
-
-    # Select data to plot
-    ax = 0
-    agent = 0
-    pos_k = np.array(f.get("sim_data/pos_k_i"))[ax, :, agent]
-
-    # Create and plot the curve
-    curve = HDF5Plot()
-    curve.setHDF5(pos_k)
-    plt = pg.plot()
-    plt.addItem(curve)
 
     try:
         sys.exit(app.exec_())

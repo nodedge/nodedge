@@ -6,10 +6,23 @@ import time
 import traceback
 from functools import partial
 
+import h5py
 import numpy as np
 from pyqtgraph.examples.syntax import QColor
 from PySide2.QtCore import QFile
 from PySide2.QtWidgets import QApplication
+
+
+def getAllH5Keys(obj):
+    "Recursively find all keys in an h5py.Group."
+    keys = (obj.name,)
+    if isinstance(obj, h5py.Group):
+        for key, value in obj.items():
+            if isinstance(value, h5py.Group):
+                keys = keys + getAllH5Keys(value)
+            else:
+                keys = keys + (value.name,)
+    return keys
 
 
 def timestamp():
