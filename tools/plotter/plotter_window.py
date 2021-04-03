@@ -64,7 +64,7 @@ class PlotterWindow(MainWindow):
 
         return self.file
 
-    @Slot(str)
+    @Slot(str)  # type: ignore
     def plotData(self, datasetName: str):
         # Select data to plot
         data = np.array(self.file.get(datasetName))

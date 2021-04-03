@@ -3,6 +3,7 @@
 VariableTreeWidget.py module containing :class:`~nodedge.VariableTreeWidget.py.<ClassName>` class.
 """
 import logging
+from typing import Optional
 
 from PySide2.QtCore import Qt, Signal, Slot
 from PySide2.QtWidgets import QTreeWidget, QTreeWidgetItem
@@ -34,20 +35,20 @@ class DatasetTreeWidget(QTreeWidget):
 
         self.itemDoubleClicked.connect(self.onItemClicked)
 
-    @Slot(str)
+    @Slot(str)  # type: ignore
     def onItemClicked(self, item: QTreeWidgetItem):
         self.__logger.debug(
             f"{item.text(COLUMNS['Name'])} "
             f"({item.text(COLUMNS['Type'])}) has been double clicked."
         )
         if item.text(COLUMNS["Type"]) == "Dataset":
-            parent = item.parent()
+            parent: Optional[QTreeWidgetItem] = item.parent()
             fullDatasetName = item.text(COLUMNS["Name"])
             while parent is not None:
                 parentName = parent.text(COLUMNS["Name"])
                 fullDatasetName = parentName + "/" + fullDatasetName
                 parent = parent.parent()
-            self.datasetDoubleClicked.emit(fullDatasetName)
+            self.datasetDoubleClicked.emit(fullDatasetName)  # type: ignore
 
     def onHeaderClicked(self, index):
         self.sortItems(index, Qt.AscendingOrder)

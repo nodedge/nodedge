@@ -16,8 +16,7 @@ class MapWidget(pg.PlotWidget):
     valuesUpdated = Signal()
 
     def __init__(
-        self,
-        simulatedData=True,
+        self, simulatedData=True,
     ):
         xAxis = pg.AxisItem(orientation="bottom")
         xAxis.setTickSpacing(1, 0.1)
@@ -103,7 +102,7 @@ if __name__ == "__main__":
     window = QMainWindow()
 
     appStyler = ApplicationStyler()
-    pg.setConfigOption("background", app.palette().dark())
+    pg.setConfigOption("background", app.palette().dark())  # type: ignore
     styleSheetFilename = os.path.join(
         os.path.dirname(__file__), "qss/plotter_style.qss"
     )

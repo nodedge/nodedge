@@ -9,8 +9,8 @@ from functools import partial
 
 import h5py
 import numpy as np
-from PySide2.QtGui import QColor
 from PySide2.QtCore import QFile
+from PySide2.QtGui import QColor
 from PySide2.QtWidgets import QApplication
 
 
@@ -20,7 +20,14 @@ class H5Types(IntEnum):
 
 
 def getAllH5Keys(obj):
-    "Recursively find all keys in an h5py.Group."
+    """
+    Recursively find all keys (groups/datasets) in an ``h5py.Group``.
+    Keys always start with a backslash and can belong to the root layer or any sublayer.
+
+    :param obj: an ``h5py.Group``
+    :return: keys, types
+    :rtype: ``tuple(str)``, ``tuple(H5Types)``
+    """
     keys = (obj.name,)
     types = (H5Types.GROUP,)
     if isinstance(obj, h5py.Group):

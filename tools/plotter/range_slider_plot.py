@@ -95,7 +95,7 @@ if __name__ == "__main__":
     window = QMainWindow()
 
     appStyler = ApplicationStyler()
-    pg.setConfigOption("background", app.palette().dark())
+    pg.setConfigOption("background", app.palette().dark())  # type: ignore
     styleSheetFilename = os.path.join(
         os.path.dirname(__file__), "qss/plotter_style.qss"
     )
