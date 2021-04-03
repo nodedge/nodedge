@@ -51,9 +51,6 @@ class MainWindow(QMainWindow):
         )
         self.readSettings()
 
-        self.createActions()
-        self.createMenus()
-
         self.initUI()
         self.setMouseTracking(True)
 

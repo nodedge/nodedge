@@ -8,6 +8,7 @@ import sys
 
 import h5py
 import numpy as np
+from pyqtgraph.dockarea import Dock, DockArea
 from PySide2.QtCore import Qt, Slot
 from PySide2.QtWidgets import QApplication, QDockWidget, QFileDialog, QInputDialog
 
@@ -26,7 +27,7 @@ class PlotterWindow(MainWindow):
     def __init__(self, parent=None):
         super().__init__(parent, applicationName="Plotter")
 
-        self.mdiArea = MdiArea()
+        self.mdiArea = DockArea()
         self.setCentralWidget(self.mdiArea)
 
         self.variableTree = DatasetTreeWidget()
@@ -86,7 +87,9 @@ class PlotterWindow(MainWindow):
 
         widget = CurveContainer()
         widget.curveItem.setHDF5(plottedData)
-        subWindow = self.mdiArea.addSubWindow(widget)
+        d1 = Dock("Dock1", size=(1, 1))
+        d1.addWidget(widget)
+        subWindow = self.mdiArea.addDock(d1)
         subWindow.setWindowTitle(datasetName)
         subWindow.showMaximized()
 
