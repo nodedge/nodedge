@@ -9,7 +9,7 @@ from functools import partial
 
 import h5py
 import numpy as np
-from pyqtgraph.examples.syntax import QColor
+from PySide2.QtGui import QColor
 from PySide2.QtCore import QFile
 from PySide2.QtWidgets import QApplication
 
