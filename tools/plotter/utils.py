@@ -19,19 +19,20 @@ class H5Types(IntEnum):
     DATASET = 2
 
 
-def getAllH5Keys(obj):
+def getAllH5Keys(hdf5Object):
     """
     Recursively find all keys (groups/datasets) in an ``h5py.Group``.
     Keys always start with a backslash and can belong to the root layer or any sublayer.
 
-    :param obj: an ``h5py.Group``
+    :param hdf5Object: HDF5 object
+    :type hdf5Object: Union[``h5py.Group``, ``h5py.Dataset``]
     :return: keys, types
-    :rtype: ``tuple(str)``, ``tuple(H5Types)``
+    :rtype: tuple(Union[tuple(`str`), tuple(`H5Types`)])
     """
-    keys = (obj.name,)
+    keys = (hdf5Object.name,)
     types = (H5Types.GROUP,)
-    if isinstance(obj, h5py.Group):
-        for key, value in obj.items():
+    if isinstance(hdf5Object, h5py.Group):
+        for key, value in hdf5Object.items():
             if isinstance(value, h5py.Group):
                 k, t = getAllH5Keys(value)
                 keys += k
