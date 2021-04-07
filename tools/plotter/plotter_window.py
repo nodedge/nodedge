@@ -8,15 +8,15 @@ import sys
 
 import h5py
 import numpy as np
+import pandas as pd
 from pyqtgraph.dockarea import Dock, DockArea
 from PySide2.QtCore import Qt, Slot
 from PySide2.QtWidgets import QApplication, QDockWidget, QFileDialog, QInputDialog
 
 from nodedge.utils import dumpException
 from tools.main_window_template.main_window import MainWindow
-from tools.main_window_template.mdi_area import MdiArea
 from tools.plotter.curve_container import CurveContainer
-from tools.plotter.utils import getAllH5Keys
+from tools.plotter.utils import getAllH5Keys, InstanceCounterMeta
 from tools.plotter.variable_tree_widget import DatasetTreeWidget
 
 logger = logging.getLogger(__name__)
@@ -60,7 +60,7 @@ class PlotterWindow(MainWindow):
 
         self.variableTree.updateVariables(allKeys, allTypes)
 
-        self.plotData("sim_data/pos_k_i")
+        # self.plotData("sim_data/pos_k_i")
 
         return self.file
 
@@ -70,11 +70,14 @@ class PlotterWindow(MainWindow):
         data = np.array(self.file.get(datasetName))
         shape = data.shape
         indices = [0 for _ in range(len(shape) - 1)]
-        logger.debug(f"{datasetName} ({shape})is going to be plotted.")
+        logger.debug(f"{datasetName} {shape} is going to be plotted.")
 
         for dim, length in enumerate(shape[0:-1]):
-            index, okPressed = QInputDialog.getInt(
-                self, "Index", "Index:", 0, 0, length - 1, 1
+            dialog = QInputDialog()
+            # Resize to fit content length. See this link:
+            # https://forum.qt.io/topic/113184/qinputdialog-set-the-font-for-qplaintextedit-and-qlabel-separately
+            index, okPressed = dialog.getInt(
+                self, "Index selection", f"Index for dim {dim}:", 0, 0, length - 1, 1
             )
             indices[dim] = index
 
@@ -119,6 +122,21 @@ class PlotterWindow(MainWindow):
         :rtype: ``str``
         """
         return "HDF5 (*.hdf5);;CSV (*.csv);;All files (*)"
+
+
+# Metaclass for counting:
+# https://stackoverflow.com/questions/8628123/counting-instances-of-a-class/47610553
+# Solve metaclass conflicts:
+# https://stackoverflow.com/questions/11276037/resolving-metaclass-conflicts/61350480#61350480
+class mCountedDock(type(Dock), metaclass=InstanceCounterMeta):
+    pass
+
+
+class CountedDock(Dock, metaclass=mCountedDock):
+
+    def __init__(self):
+        self.id = next(self.__class__._ids)
+        self.dock = Dock.__init__(self, name=f"Plot{self.id}", size=(1, 1))
 
 
 if __name__ == "__main__":

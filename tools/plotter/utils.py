@@ -6,6 +6,7 @@ import time
 import traceback
 from enum import IntEnum
 from functools import partial
+import itertools
 
 import h5py
 import numpy as np
@@ -113,6 +114,15 @@ def get_color_between(color1: QColor, color2: QColor, value):
     color3.setRgbF(*rgb3.tolist())
 
     return color3
+
+
+class InstanceCounterMeta(type):
+    """
+    Metaclass to make instance counter not share count with descendants.
+    """
+    def __init__(cls, name, bases, attrs):
+        super().__init__(name, bases, attrs)
+        cls._ids = itertools.count(1)
 
 
 get_blue_scale_color = partial(get_color_between, QColor("#CAF0F8"), QColor("#03045E"))
