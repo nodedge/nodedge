@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 # import datetime
+import itertools
 import random
 import sys
 import time
 import traceback
 from enum import IntEnum
 from functools import partial
-import itertools
 
 import h5py
 import numpy as np
