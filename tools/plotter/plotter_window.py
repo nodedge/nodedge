@@ -49,18 +49,19 @@ class PlotterWindow(MainWindow):
 
         extension = filename.split(".")[-1]
         if extension == "hdf5":
+            # Load hdf5 file
             self.file = self.loadHdf5(filename)
+
+            # Get hdf5 key tree
+            allKeys, allTypes = getAllH5Keys(self.file)
+            self.variableTree.updateVariables(allKeys, allTypes)
+
         elif extension == "csv":
+            # Load csv file
             self.file = self.loadCsv(filename)
+
         else:
             return NotImplementedError
-
-        # Get hdf5 key tree
-        allKeys, allTypes = getAllH5Keys(self.file)
-
-        self.variableTree.updateVariables(allKeys, allTypes)
-
-        # self.plotData("sim_data/pos_k_i")
 
         return self.file
 
@@ -90,14 +91,17 @@ class PlotterWindow(MainWindow):
 
         widget = CurveContainer()
         widget.curveItem.setHDF5(plottedData)
-        d1 = Dock("Dock1", size=(1, 1))
+        d1 = CountedDock()
+        # Change label text
+        # d1.label.setText("New label")
         d1.addWidget(widget)
         subWindow = self.mdiArea.addDock(d1)
         subWindow.setWindowTitle(datasetName)
         subWindow.showMaximized()
 
     def loadCsv(self, filename):
-        raise NotImplementedError
+        dataFrame = pd.read_csv(filename)
+        return dataFrame
 
     def loadHdf5(self, filename):
         f = h5py.File(filename, "r")
