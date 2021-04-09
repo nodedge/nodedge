@@ -20,7 +20,7 @@ class H5Types(IntEnum):
     DATASET = 2
 
 
-def getAllH5Keys(hdf5Object):
+def getAllKeysHdf5(hdf5Object):
     """
     Recursively find all keys (groups/datasets) in an ``h5py.Group``.
     Keys always start with a backslash and can belong to the root layer or any sublayer.
@@ -35,7 +35,7 @@ def getAllH5Keys(hdf5Object):
     if isinstance(hdf5Object, h5py.Group):
         for key, value in hdf5Object.items():
             if isinstance(value, h5py.Group):
-                k, t = getAllH5Keys(value)
+                k, t = getAllKeysHdf5(value)
                 keys += k
                 types += t
             else:

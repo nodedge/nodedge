@@ -16,7 +16,7 @@ from PySide2.QtWidgets import QApplication, QDockWidget, QFileDialog, QInputDial
 from nodedge.utils import dumpException
 from tools.main_window_template.main_window import MainWindow
 from tools.plotter.curve_container import CurveContainer
-from tools.plotter.utils import getAllH5Keys, InstanceCounterMeta
+from tools.plotter.utils import getAllKeysHdf5, InstanceCounterMeta
 from tools.plotter.variable_tree_widget import DatasetTreeWidget
 
 logger = logging.getLogger(__name__)
@@ -53,20 +53,54 @@ class PlotterWindow(MainWindow):
             self.file = self.loadHdf5(filename)
 
             # Get hdf5 key tree
-            allKeys, allTypes = getAllH5Keys(self.file)
-            self.variableTree.updateVariables(allKeys, allTypes)
+            allKeys, allTypes = getAllKeysHdf5(self.file)
+            self.variableTree.updateVariablesHdf5(allKeys, allTypes)
 
         elif extension == "csv":
             # Load csv file
             self.file = self.loadCsv(filename)
 
+            # Get csv key tree
+            allKeys = self.file.keys()
+            self.variableTree.updateVariablesCsv(allKeys)
         else:
             return NotImplementedError
 
         return self.file
 
     @Slot(str)  # type: ignore
-    def plotData(self, datasetName: str):
+    def plotData(self, variableName: str):
+
+        if isinstance(self.file, h5py.File):
+            self.plotDataHdf5(variableName)
+        elif isinstance(self.file, pd.core.frame.DataFrame):
+            self.plotDataCsv(variableName)
+        else:
+            raise NotImplementedError
+
+    def loadCsv(self, filename):
+        dataFrame = pd.read_csv(filename)
+        return dataFrame
+
+    def loadHdf5(self, filename):
+        f = h5py.File(filename, "r")
+        return f
+
+    def plotDataCsv(self, variableName):
+        # Select data to plot
+        data = np.array(self.file[variableName])
+
+        widget = CurveContainer()
+        widget.curveItem.setHDF5(data)
+        d1 = CountedDock()
+        # Change label text
+        # d1.label.setText("New label")
+        d1.addWidget(widget)
+        subWindow = self.mdiArea.addDock(d1)
+        subWindow.setWindowTitle(variableName)
+        subWindow.showMaximized()
+
+    def plotDataHdf5(self, datasetName):
         # Select data to plot
         data = np.array(self.file.get(datasetName))
         shape = data.shape
@@ -98,14 +132,6 @@ class PlotterWindow(MainWindow):
         subWindow = self.mdiArea.addDock(d1)
         subWindow.setWindowTitle(datasetName)
         subWindow.showMaximized()
-
-    def loadCsv(self, filename):
-        dataFrame = pd.read_csv(filename)
-        return dataFrame
-
-    def loadHdf5(self, filename):
-        f = h5py.File(filename, "r")
-        return f
 
     @staticmethod
     def getFileDialogDirectory() -> str:

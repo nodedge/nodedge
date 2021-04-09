@@ -37,10 +37,12 @@ class DatasetTreeWidget(QTreeWidget):
 
     @Slot(str)  # type: ignore
     def onItemClicked(self, item: QTreeWidgetItem):
+        # onItemClickedHdf5()
         self.__logger.debug(
             f"{item.text(COLUMNS['Name'])} "
             f"({item.text(COLUMNS['Type'])}) has been double clicked."
         )
+        fullDatasetName = COLUMNS["Name"]
         if item.text(COLUMNS["Type"]) == "Dataset":
             parent: Optional[QTreeWidgetItem] = item.parent()
             fullDatasetName = item.text(COLUMNS["Name"])
@@ -48,12 +50,12 @@ class DatasetTreeWidget(QTreeWidget):
                 parentName = parent.text(COLUMNS["Name"])
                 fullDatasetName = parentName + "/" + fullDatasetName
                 parent = parent.parent()
-            self.datasetDoubleClicked.emit(fullDatasetName)  # type: ignore
+        self.datasetDoubleClicked.emit(fullDatasetName)  # type: ignore
 
     def onHeaderClicked(self, index):
         self.sortItems(index, Qt.AscendingOrder)
 
-    def updateVariables(self, allKeys, allTypes):
+    def updateVariablesHdf5(self, allKeys, allTypes):
         # Remove first key "/"
         allKeys = allKeys[1::]
         allTypes = allTypes[1::]
@@ -79,3 +81,19 @@ class DatasetTreeWidget(QTreeWidget):
                 parentItemName = "/" + "/".join(splitKey[0:-1])
                 parentItem = self.variableDict[parentItemName]
                 parentItem.addChild(self.variableDict[key])
+
+    def updateVariablesCsv(self, allKeys):
+
+        # Create QTreeWidgetItems and store them in a dictionary
+        self.variableDict = {}
+        for ind, key in enumerate(allKeys):
+            itemTitle = key
+            item = QTreeWidgetItem()
+            item.setText(COLUMNS["Name"], itemTitle)
+            item.setText(COLUMNS["Type"], H5TYPES_TO_STR[H5Types.DATASET])
+            self.variableDict.update({key: item})
+
+        # Populate the TreeWidget:
+        # For a csv, keys are always top level
+        for key in self.variableDict.keys():
+            self.addTopLevelItem(self.variableDict[key])
