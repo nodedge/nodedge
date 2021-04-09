@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 # import datetime
+import itertools
 import random
 import sys
 import time
 import traceback
 from enum import IntEnum
 from functools import partial
-import itertools
 
 import h5py
 import numpy as np
@@ -120,6 +120,7 @@ class InstanceCounterMeta(type):
     """
     Metaclass to make instance counter not share count with descendants.
     """
+
     def __init__(cls, name, bases, attrs):
         super().__init__(name, bases, attrs)
         cls._ids = itertools.count(1)

@@ -16,7 +16,7 @@ from PySide2.QtWidgets import QApplication, QDockWidget, QFileDialog, QInputDial
 from nodedge.utils import dumpException
 from tools.main_window_template.main_window import MainWindow
 from tools.plotter.curve_container import CurveContainer
-from tools.plotter.utils import getAllKeysHdf5, InstanceCounterMeta
+from tools.plotter.utils import InstanceCounterMeta, getAllKeysHdf5
 from tools.plotter.variable_tree_widget import DatasetTreeWidget
 
 logger = logging.getLogger(__name__)
@@ -163,7 +163,6 @@ class mCountedDock(type(Dock), metaclass=InstanceCounterMeta):
 
 
 class CountedDock(Dock, metaclass=mCountedDock):
-
     def __init__(self):
         self.id = next(self.__class__._ids)
         self.dock = Dock.__init__(self, name=f"Plot{self.id}", size=(1, 1))
