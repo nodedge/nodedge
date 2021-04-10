@@ -4,83 +4,105 @@ import sys
 
 import numpy as np
 import pyqtgraph as pg
+from pyqtgraph.dockarea import Dock, DockArea
 from pyqtgraph.Qt import QtGui
-from PySide2.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
+from PySide2.QtCore import Qt, Signal
+from PySide2.QtWidgets import (
+    QApplication,
+    QDockWidget,
+    QMainWindow,
+    QVBoxLayout,
+    QWidget,
+)
 
 from tools.main_window_template.application_styler import ApplicationStyler
 from tools.plotter.utils import loadStyleSheets
 
 
+class RangedPlot(pg.PlotWidget):
+    linearRegionChanged = Signal(list)
+
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.linearRegion = pg.LinearRegionItem(
+            [0, 0], brush=QtGui.QBrush(QtGui.QColor(0, 0, 255, 10))
+        )
+        self.addItem(self.linearRegion)
+        self.linearRegion.setZValue(-10)
+        self.viewRange = (0, 0)
+
+        self.sigRangeChanged.connect(self.updateRange)
+        self.linearRegion.sigRegionChangeFinished.connect(self.onLinearRegionChanged)
+
+        x = np.arange(15)
+        y = np.random.rand(15)
+
+        self.plot(x=x, y=y)
+
+    def onLinearRegionChanged(self):
+        self.linearRegion.setZValue(10)
+        minX = self.linearRegion.getRegion()
+        self.linearRegionChanged.emit(minX)
+
+    def updateRange(self, window, viewRange):
+        self.viewRange = viewRange[0]
+
+    def updateView(self, minMaxX):
+        self.setXRange(minMaxX[0], minMaxX[1])
+
+    def updateLinearRegion(self, minMaxList):
+        self.linearRegion.setRegion(minMaxList)
+
+
 class RangeSliderPlot(QWidget):
-    def __init__(self, x=None, y=None, crosshair=False, *args):
+    sliderRangeChanged = Signal(list)
+    sliderRangeChangeFinished = Signal(list)
+
+    def __init__(self, x=None, y=None, crosshair=False, linkedPlots=[], *args):
         super().__init__(*args)
 
         self.vlayout = QVBoxLayout()
         self.setLayout(self.vlayout)
-        self.mainPlot: pg.PlotWidget = pg.PlotWidget()
-
-        self.mainPlotRange = (0, 0)
-        if x is None:
-            if y is None:
-                x = np.arange(15)
-                y = np.random.rand(15)
-            else:
-                x = np.arange(len(y))
-        self.mainPlot.plot(x=x, y=y)
-        self.linearRegion = pg.LinearRegionItem(
-            [0, 0], brush=QtGui.QBrush(QtGui.QColor(0, 0, 255, 10))
-        )
-        self.mainPlot.addItem(self.linearRegion)
-        self.linearRegion.setZValue(-10)
-
-        self.vlayout.addWidget(self.mainPlot)
-
         self.sliderPlot = pg.PlotWidget()
         self.sliderPlot.setMaximumHeight(50)
-        self.sliderPlot.plot(x, np.zeros(len(x)))
-        self.sliderPlot.hideAxis("bottom")
         self.sliderPlot.hideAxis("left")
         self.sliderLinearRegion = pg.LinearRegionItem(
-            [0, 0], brush=QtGui.QBrush(QtGui.QColor(0, 0, 255, 50))
+            [0, 0], brush=QtGui.QBrush(QtGui.QColor(0, 123, 255, 255))
         )
         self.sliderPlot.addItem(self.sliderLinearRegion)
         self.sliderLinearRegion.setZValue(-10)
+        self.sliderLinearRegion.sigRegionChangeFinished.connect(
+            self.onRegionChangeFinished
+        )
         self.vlayout.addWidget(self.sliderPlot)
 
-        self.linearRegion.sigRegionChanged.connect(self.updateSliderRegion)
-        self.mainPlot.sigRangeChanged.connect(self.updateMainPlotRange)
-        self.sliderLinearRegion.sigRegionChanged.connect(self.updateLinearRegion)
-        self.sliderLinearRegion.sigRegionChangeFinished.connect(self.updateMainPlot)
+        # if crosshair:
+        #     self.vLine = pg.InfiniteLine()
+        #     self.hLine = pg.InfiniteLine(angle=0)
+        #     self.mainPlot.addItem(self.vLine)
+        #     self.mainPlot.addItem(self.hLine)
+        #     self.mainPlot.scene().sigMouseMoved.connect(self.mouseMoved)
 
-        if crosshair:
-            self.vLine = pg.InfiniteLine()
-            self.hLine = pg.InfiniteLine(angle=0)
-            self.mainPlot.addItem(self.vLine)
-            self.mainPlot.addItem(self.hLine)
-            proxy = pg.SignalProxy(
-                self.mainPlot.scene().sigMouseMoved, rateLimit=60, slot=self.mouseMoved
-            )
-            self.mainPlot.scene().sigMouseMoved.connect(self.mouseMoved)
+    def linkPlot(self, rangedPlot: RangedPlot):
+        # rangedPlot.linearRegion.sigRegionChanged.connect(self.updateSliderRegion)
+        rangedPlot.linearRegionChanged.connect(self.updateSliderRegion)
+        self.sliderLinearRegion.sigRegionChanged.connect(self.onSliderRegionChanged)
+        self.sliderRangeChanged.connect(rangedPlot.updateLinearRegion)
+        self.sliderRangeChangeFinished.connect(rangedPlot.updateView)
+        self.sliderPlot.setXRange(rangedPlot.viewRange[0], rangedPlot.viewRange[1])
 
-    def updateSliderRegion(self):
-        self.linearRegion.setZValue(10)
-        minX, maxX = self.linearRegion.getRegion()
-        mainPlotRange = self.mainPlotRange
-        self.sliderLinearRegion.setRegion((minX, maxX))
-        self.mainPlot.setXRange(mainPlotRange[0], mainPlotRange[1], padding=0)
-
-    def updateMainPlotRange(self, window, viewRange):
-        self.mainPlotRange = viewRange[0]
-
-    def updateLinearRegion(self):
+    def onRegionChangeFinished(self):
         self.sliderLinearRegion.setZValue(10)
         minX, maxX = self.sliderLinearRegion.getRegion()
-        self.linearRegion.setRegion((minX, maxX))
+        self.sliderRangeChangeFinished.emit([minX, maxX])
 
-    def updateMainPlot(self):
+    def onSliderRegionChanged(self):
         self.sliderLinearRegion.setZValue(10)
         minX, maxX = self.sliderLinearRegion.getRegion()
-        self.mainPlot.setXRange(minX, maxX)
+        self.sliderRangeChanged.emit([minX, maxX])
+
+    def updateSliderRegion(self, minMaxX):
+        self.sliderLinearRegion.setRegion(minMaxX)
 
     def mouseMoved(self, evt):
         pos = evt
@@ -100,7 +122,16 @@ if __name__ == "__main__":
         os.path.dirname(__file__), "qss/plotter_style.qss"
     )
     loadStyleSheets(styleSheetFilename)
-    mapWidget = RangeSliderPlot()
-    window.setCentralWidget(mapWidget)
+    dockArea = DockArea()
+    dock = Dock("MEOW")
+    dockArea.addDock(dock)
+    rangedPlot = RangedPlot()
+    dock.addWidget(rangedPlot)
+    window.setCentralWidget(dock)
+    dockWidget = QDockWidget()
+    rangeSliderPlot = RangeSliderPlot()
+    dockWidget.setWidget(rangeSliderPlot)
+    window.addDockWidget(Qt.BottomDockWidgetArea, dockWidget)
+    rangeSliderPlot.linkPlot(rangedPlot)
     window.showMaximized()
     app.exec_()

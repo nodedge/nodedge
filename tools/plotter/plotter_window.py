@@ -3,14 +3,12 @@
 plotter_window.py module containing :class:`~nodedge.plotter_window.py.<ClassName>` class.
 """
 
-import ast
 import logging
 import sys
 
 import h5py
 import numpy as np
 import pandas as pd
-from pyqtgraph.dockarea import DockArea
 from PySide2.QtCore import QSize, Qt, Slot
 from PySide2.QtWidgets import QApplication, QDockWidget, QFileDialog, QInputDialog
 
@@ -18,6 +16,7 @@ from nodedge.utils import dumpException
 from tools.main_window_template.main_window import MainWindow
 from tools.plotter.countable_dock import CountableDock
 from tools.plotter.curve_container import CurveContainer
+from tools.plotter.plot_area import PlotArea
 from tools.plotter.sized_input_dialog import SizedInputDialog
 from tools.plotter.utils import getAllKeysHdf5
 from tools.plotter.variable_tree_widget import DatasetTreeWidget
@@ -30,8 +29,8 @@ class PlotterWindow(MainWindow):
     def __init__(self, parent=None):
         super().__init__(parent, applicationName="Plotter")
 
-        self.mdiArea = DockArea()
-        self.setCentralWidget(self.mdiArea)
+        self.plotArea = PlotArea()
+        self.setCentralWidget(self.plotArea)
 
         self.variableTree = DatasetTreeWidget()
         self.variableTree.datasetDoubleClicked.connect(self.plotData)
@@ -137,10 +136,10 @@ class PlotterWindow(MainWindow):
         widget.curveItem.setHDF5(dataToBePlotted)
         countableDock = CountableDock()
         countableDock.addWidget(widget)
-        subWindow = self.mdiArea.addDock(countableDock)
+        subWindow = self.plotArea.workbooks[0].addDock(countableDock, "bottom")
         subWindow.setTitle(dockTitle)
-        # subWindow.setWindowTitle(datasetName)
-        # subWindow.showMaximized()
+        subWindow.setWindowTitle(datasetName)
+        subWindow.showMaximized()
 
     @staticmethod
     def getFileDialogDirectory() -> str:
