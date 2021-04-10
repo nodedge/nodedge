@@ -40,7 +40,9 @@ class PlotterWindow(MainWindow):
         self.setCorner(Qt.TopRightCorner, Qt.RightDockWidgetArea)
 
         self.variableTree = VariableTreeWidget()
-        self.variableTree.datasetDoubleClicked.connect(self.plotData)
+        self.variableTree.variableDoubleClicked.connect(self.plotData)
+        self.variableTree.variableCtrlClicked.connect(self.onVariableCtrlClicked)
+        self.variableTree.variableShiftClicked.connect(self.onVariableShiftClicked)
         self.variableTreeDock = QDockWidget("Variables")
         self.variableTreeDock.setWidget(self.variableTree)
         self.variableTreeDock.setFloating(False)
@@ -81,13 +83,21 @@ class PlotterWindow(MainWindow):
 
         return self.file
 
+    def onVariableShiftClicked(self, variableName):
+        print("shift")
+        self.plotData(variableName, option="appendInSheet")
+
+    def onVariableCtrlClicked(self, variableName):
+        print("ctrl")
+        self.plotData(variableName, option="newWorkbook")
+
     @Slot(str)  # type: ignore
-    def plotData(self, variableName: str):
+    def plotData(self, variableName: str, option=None):
 
         if isinstance(self.file, h5py.File):
-            self.plotDataHdf5(variableName)
+            self.plotDataHdf5(variableName, option)
         elif isinstance(self.file, pd.core.frame.DataFrame):
-            self.plotDataCsv(variableName)
+            self.plotDataCsv(variableName, option)
         else:
             raise NotImplementedError
 
@@ -99,7 +109,7 @@ class PlotterWindow(MainWindow):
         f = h5py.File(filename, "r")
         return f
 
-    def plotDataCsv(self, variableName):
+    def plotDataCsv(self, variableName, option=None):
         # Select data to plot
         data = np.array(self.file[variableName])
 
@@ -119,7 +129,7 @@ class PlotterWindow(MainWindow):
         dock = currentSubwindow.widget().addDock(countableDock, "bottom")
         dock.setTitle(variableName)
 
-    def plotDataHdf5(self, datasetName):
+    def plotDataHdf5(self, datasetName, option=None):
         # Select data to plot
         data = np.array(self.file.get(datasetName))
         shape = data.shape
@@ -133,7 +143,9 @@ class PlotterWindow(MainWindow):
             indices, okPressed = dialog.getText(
                 self,
                 f"Index selection",
-                f"The selected dataset has dimensions: {shape}. \nEnter below the indices to be plotted. \n\nExample: [1,:]",
+                f"The selected dataset has dimensions: {shape}. \n"
+                f"Enter below the indices to be plotted. \n\n"
+                f"Example: [1,:]",
                 text=defaultText,
             )
 
@@ -152,19 +164,41 @@ class PlotterWindow(MainWindow):
             dataToBePlotted = data
             dockTitle = datasetName
 
-        widget: CurveContainer = CurveContainer()
-        widget.curveItem.setDataPoints(dataToBePlotted)
-        self.rangeSliderPlot.linkPlot(widget.graph)
-        countableDock = CountableDock()
-        countableDock.addWidget(widget)
-        currentSubwindow = self.plotArea.mdiArea.currentSubWindow()
-        # The first subwindow is not active, so find it manually.
-        if currentSubwindow is None:
-            if not self.plotArea.mdiArea.subWindowList():
-                self.plotArea.addWorkbook("Untitled")
-            currentSubwindow = self.plotArea.mdiArea.subWindowList()[0]
-        dock = currentSubwindow.widget().addDock(countableDock, "bottom")
-        dock.setTitle(dockTitle)
+        if option is None:
+            widget: CurveContainer = CurveContainer()
+            widget.curveItem.setDataPoints(dataToBePlotted)
+            self.rangeSliderPlot.linkPlot(widget.graph)
+            countableDock = CountableDock()
+            countableDock.addWidget(widget)
+            currentSubwindow = self.plotArea.mdiArea.currentSubWindow()
+            # The first subwindow is not active, so find it manually.
+            if currentSubwindow is None:
+                if not self.plotArea.mdiArea.subWindowList():
+                    self.plotArea.addWorkbook("Untitled")
+                currentSubwindow = self.plotArea.mdiArea.subWindowList()[0]
+            dock = currentSubwindow.widget().addDock(countableDock, "bottom")
+            dock.setTitle(dockTitle)
+        elif option is "appendInSheet":
+            currentSubwindow = self.plotArea.mdiArea.currentSubWindow()
+            # The first subwindow is not active, so find it manually.
+            if currentSubwindow is None:
+                if not self.plotArea.mdiArea.subWindowList():
+                    self.plotArea.addWorkbook("Untitled")
+                currentSubwindow = self.plotArea.mdiArea.subWindowList()[0]
+            keys = list(currentSubwindow.widget().docks.data.keys())
+            currentSubwindow.widget().docks[keys[-1]].widgets[0].graph.plot(
+                dataToBePlotted
+            )
+        elif option is "newWorkbook":
+            self.plotArea.addWorkbook("Untitled")
+            currentSubwindow = self.plotArea.mdiArea.subWindowList()[-1]
+            widget: CurveContainer = CurveContainer()
+            widget.curveItem.setDataPoints(dataToBePlotted)
+            self.rangeSliderPlot.linkPlot(widget.graph)
+            countableDock = CountableDock()
+            countableDock.addWidget(widget)
+            dock = currentSubwindow.widget().addDock(countableDock, "bottom")
+            dock.setTitle(dockTitle)
 
     @staticmethod
     def getFileDialogDirectory() -> str:

@@ -23,7 +23,9 @@ H5TYPES_TO_STR = {
 
 
 class VariableTreeWidget(QTreeWidget):
-    datasetDoubleClicked = Signal(str)
+    variableDoubleClicked = Signal(str)
+    variableCtrlClicked = Signal(str)
+    variableShiftClicked = Signal(str)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -51,7 +53,7 @@ class VariableTreeWidget(QTreeWidget):
                 parentName = parent.text(COLUMNS["Name"])
                 fullDatasetName = parentName + "/" + fullDatasetName
                 parent = parent.parent()
-        self.datasetDoubleClicked.emit(fullDatasetName)  # type: ignore
+        self.variableDoubleClicked.emit(fullDatasetName)  # type: ignore
 
     def onHeaderClicked(self, index):
         self.sortItems(index, Qt.AscendingOrder)
@@ -99,20 +101,31 @@ class VariableTreeWidget(QTreeWidget):
         for key in self.variableDict.keys():
             self.addTopLevelItem(self.variableDict[key])
 
-    def mousePressEvent(self, event: QMouseEvent):
-        super().mousePressEvent(event)
+    def mouseReleaseEvent(self, event: QMouseEvent):
+        super().mouseReleaseEvent(event)
         l = [item.text(COLUMNS["Name"]) for item in self.selectedItems()]
         self.__logger.debug(l)
         mod = event.modifiers()
         self.__logger.debug(mod)
 
         eventButton: Qt.MouseButton = event.button()
-        eventType: QEvent.Type = event.type()
-        eventGlobalPos = event.pos()
+        pos = event.pos()
+        item = self.itemAt(pos)
+        fullVariableName = self.getFullName(item)
         eventModifiers: Qt.KeyboardModifiers = event.modifiers()
-        if (
-            eventType == QEvent.MouseButtonPress
-            and eventButton == Qt.LeftButton
-            and eventModifiers & Qt.ControlModifier
-        ):
-            pass
+        if eventButton == Qt.LeftButton and eventModifiers & Qt.ControlModifier:
+            self.variableCtrlClicked.emit(fullVariableName)
+        elif eventButton == Qt.LeftButton and eventModifiers & Qt.ShiftModifier:
+            self.variableShiftClicked.emit(fullVariableName)
+
+    def getFullName(self, item):
+        fullDatasetName = COLUMNS["Name"]
+        if item.text(COLUMNS["Type"]) == "Dataset":
+            parent: Optional[QTreeWidgetItem] = item.parent()
+            fullDatasetName = item.text(COLUMNS["Name"])
+            while parent is not None:
+                parentName = parent.text(COLUMNS["Name"])
+                fullDatasetName = parentName + "/" + fullDatasetName
+                parent = parent.parent()
+
+        return fullDatasetName
