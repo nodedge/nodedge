@@ -34,6 +34,8 @@ class RangedPlot(pg.PlotWidget):
         self.sigRangeChanged.connect(self.updateRange)
         self.linearRegion.sigRegionChangeFinished.connect(self.onLinearRegionChanged)
 
+        self.numberOfColors = 10
+
     def onLinearRegionChanged(self):
         self.linearRegion.setZValue(10)
         minX = self.linearRegion.getRegion()
@@ -47,6 +49,12 @@ class RangedPlot(pg.PlotWidget):
 
     def updateLinearRegion(self, minMaxList):
         self.linearRegion.setRegion(minMaxList)
+
+    def plot(self, *args, **kargs):
+        numberOfCurves = len(self.getPlotItem().curves)
+        self.getPlotItem().plot(
+            *args, pen=(numberOfCurves + 1, self.numberOfColors), **kargs
+        )
 
 
 class RangeSliderPlot(QWidget):
@@ -131,7 +139,9 @@ if __name__ == "__main__":
     dock = Dock("MEOW")
     dockArea.addDock(dock)
     rangedPlot = RangedPlot()
-    rangedPlot.plot([0, 10], [1, 2])
+    for i in range(10):
+        rangedPlot.plot([0, 10], [i, i])
+    rangedPlot.getPlotItem().removeItem(rangedPlot.getPlotItem().curves[0])
     dock.addWidget(rangedPlot)
     window.setCentralWidget(dock)
     dockWidget = QDockWidget()
