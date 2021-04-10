@@ -110,7 +110,7 @@ class PlotterWindow(MainWindow):
         # Change label text
         # d1.label.setText("New label")
         d1.addWidget(widget)
-        dock = self.mdiArea.addDock(d1)
+        dock = self.plotArea.addDock(d1)
         dock.setTitle(variableName)
 
     def plotDataHdf5(self, datasetName):
@@ -151,7 +151,13 @@ class PlotterWindow(MainWindow):
         self.rangeSliderPlot.linkPlot(widget.graph)
         countableDock = CountableDock()
         countableDock.addWidget(widget)
-        dock = self.plotArea.workbooks[0].addDock(countableDock, "bottom")
+        currentSubwindow = self.plotArea.mdiArea.currentSubWindow()
+        # The first subwindow is not active, so find it manually.
+        if currentSubwindow is None:
+            if not self.plotArea.mdiArea.subWindowList():
+                self.plotArea.addWorkbook("Untitled")
+                currentSubwindow = self.plotArea.mdiArea.subWindowList()[0]
+        dock = currentSubwindow.widget().addDock(countableDock, "bottom")
         dock.setTitle(dockTitle)
 
     @staticmethod
@@ -174,6 +180,9 @@ class PlotterWindow(MainWindow):
         """
         return "HDF5 (*.hdf5);;CSV (*.csv);;All files (*)"
 
+    def newFile(self):
+        self.plotArea.addWorkbook()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
@@ -182,7 +191,7 @@ if __name__ == "__main__":
     window.showMaximized()
 
     # Open file
-    f = window.openFile()
+    # f = window.openFile()
 
     try:
         sys.exit(app.exec_())
