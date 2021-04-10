@@ -22,12 +22,10 @@ class PlotArea(QWidget):
         self.setLayout(self.layout)
 
         self.mdiArea = MdiArea(parent)
-        self.rangeSlider = RangeSliderPlot()
         self.workbooks = []
         self.addWorkbook()
 
         self.layout.addWidget(self.mdiArea)
-        # self.layout.addWidget(self.rangeSlider)
 
     def addWorkbook(self):
         dockArea = DockArea()

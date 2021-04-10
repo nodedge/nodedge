@@ -17,9 +17,10 @@ from tools.main_window_template.main_window import MainWindow
 from tools.plotter.countable_dock import CountableDock
 from tools.plotter.curve_container import CurveContainer
 from tools.plotter.plot_area import PlotArea
+from tools.plotter.range_slider_plot import RangeSliderPlot
 from tools.plotter.sized_input_dialog import SizedInputDialog
 from tools.plotter.utils import getAllKeysHdf5
-from tools.plotter.variable_tree_widget import DatasetTreeWidget
+from tools.plotter.variable_tree_widget import VariableTreeWidget
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -32,13 +33,23 @@ class PlotterWindow(MainWindow):
         self.plotArea = PlotArea()
         self.setCentralWidget(self.plotArea)
 
-        self.variableTree = DatasetTreeWidget()
+        # Make sure left and right docks have higher priority than top and bottom docks
+        self.setCorner(Qt.BottomLeftCorner, Qt.LeftDockWidgetArea)
+        self.setCorner(Qt.TopLeftCorner, Qt.LeftDockWidgetArea)
+        self.setCorner(Qt.BottomRightCorner, Qt.RightDockWidgetArea)
+        self.setCorner(Qt.TopRightCorner, Qt.RightDockWidgetArea)
+
+        self.variableTree = VariableTreeWidget()
         self.variableTree.datasetDoubleClicked.connect(self.plotData)
         self.variableTreeDock = QDockWidget("Variables")
         self.variableTreeDock.setWidget(self.variableTree)
         self.variableTreeDock.setFloating(False)
-
         self.addDockWidget(Qt.LeftDockWidgetArea, self.variableTreeDock)
+
+        self.rangeSliderPlot = RangeSliderPlot()
+        self.rangeSliderDock = QDockWidget("Timeline")
+        self.rangeSliderDock.setWidget(self.rangeSliderPlot)
+        self.addDockWidget(Qt.BottomDockWidgetArea, self.rangeSliderDock)
 
     def openFile(self, filename: str = ""):
         if filename in ["", None, False]:
@@ -93,20 +104,22 @@ class PlotterWindow(MainWindow):
         data = np.array(self.file[variableName])
 
         widget = CurveContainer()
-        widget.curveItem.setHDF5(data)
+        widget.curveItem.setDataPoints(data)
+        self.rangeSliderPlot.linkPlot(widget.graph)
         d1 = CountableDock()
         # Change label text
         # d1.label.setText("New label")
         d1.addWidget(widget)
-        subWindow = self.mdiArea.addDock(d1)
-        subWindow.setWindowTitle(variableName)
-        subWindow.showMaximized()
+        dock = self.mdiArea.addDock(d1)
+        dock.setTitle(variableName)
 
     def plotDataHdf5(self, datasetName):
         # Select data to plot
         data = np.array(self.file.get(datasetName))
         shape = data.shape
         logger.debug(f"{datasetName} {shape} is going to be plotted.")
+        listZeros = ["0" for _ in range(len(shape) - 1)]
+        defaultText = "[" + ", ".join(listZeros) + ", :]"
 
         if len(shape) > 1:
 
@@ -115,6 +128,7 @@ class PlotterWindow(MainWindow):
                 self,
                 f"Index selection",
                 f"The selected dataset has dimensions: {shape}. \nEnter below the indices to be plotted. \n\nExample: [1,:]",
+                text=defaultText,
             )
 
             if not okPressed:
@@ -132,14 +146,13 @@ class PlotterWindow(MainWindow):
             dataToBePlotted = data
             dockTitle = datasetName
 
-        widget = CurveContainer()
-        widget.curveItem.setHDF5(dataToBePlotted)
+        widget: CurveContainer = CurveContainer()
+        widget.curveItem.setDataPoints(dataToBePlotted)
+        self.rangeSliderPlot.linkPlot(widget.graph)
         countableDock = CountableDock()
         countableDock.addWidget(widget)
-        subWindow = self.plotArea.workbooks[0].addDock(countableDock, "bottom")
-        subWindow.setTitle(dockTitle)
-        subWindow.setWindowTitle(datasetName)
-        subWindow.showMaximized()
+        dock = self.plotArea.workbooks[0].addDock(countableDock, "bottom")
+        dock.setTitle(dockTitle)
 
     @staticmethod
     def getFileDialogDirectory() -> str:

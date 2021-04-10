@@ -20,7 +20,7 @@ class CountableDock(Dock, metaclass=CountableDockMeta):
         self.o = "horizontal"
         self.force = True
 
-    def setOrientation(self, o="auto", force=False):
+    def setOrientation(self, o="horizontal", force=True):
         super().setOrientation(o, force)
 
     def resizeEvent(self, ev):

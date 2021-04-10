@@ -5,7 +5,8 @@ VariableTreeWidget.py module containing :class:`~nodedge.VariableTreeWidget.py.<
 import logging
 from typing import Optional
 
-from PySide2.QtCore import Qt, Signal, Slot
+from PySide2.QtCore import QEvent, Qt, Signal, Slot
+from PySide2.QtGui import QMouseEvent
 from PySide2.QtWidgets import QTreeWidget, QTreeWidgetItem
 
 from tools.plotter.utils import H5Types
@@ -21,7 +22,7 @@ H5TYPES_TO_STR = {
 }
 
 
-class DatasetTreeWidget(QTreeWidget):
+class VariableTreeWidget(QTreeWidget):
     datasetDoubleClicked = Signal(str)
 
     def __init__(self, parent=None):
@@ -97,3 +98,21 @@ class DatasetTreeWidget(QTreeWidget):
         # For a csv, keys are always top level
         for key in self.variableDict.keys():
             self.addTopLevelItem(self.variableDict[key])
+
+    def mousePressEvent(self, event: QMouseEvent):
+        super().mousePressEvent(event)
+        l = [item.text(COLUMNS["Name"]) for item in self.selectedItems()]
+        self.__logger.debug(l)
+        mod = event.modifiers()
+        self.__logger.debug(mod)
+
+        eventButton: Qt.MouseButton = event.button()
+        eventType: QEvent.Type = event.type()
+        eventGlobalPos = event.pos()
+        eventModifiers: Qt.KeyboardModifiers = event.modifiers()
+        if (
+            eventType == QEvent.MouseButtonPress
+            and eventButton == Qt.LeftButton
+            and eventModifiers & Qt.ControlModifier
+        ):
+            pass

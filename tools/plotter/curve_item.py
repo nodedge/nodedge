@@ -11,21 +11,21 @@ MAX_NUM_SAMPLES = 10000
 
 class CurveItem(pg.PlotCurveItem):
     def __init__(self, *args, **kwds):
-        self.hdf5 = None
+        self.dataPoints = None
         self.limit = MAX_NUM_SAMPLES  # maximum number of samples to be plotted
         pg.PlotCurveItem.__init__(self, *args, **kwds)
 
-    def setHDF5(self, data):
-        self.hdf5 = data
+    def setDataPoints(self, dataPoints):
+        self.dataPoints = dataPoints
         vb = self.getViewBox()
-        vb.setRange(xRange=range(0, len(data)))
-        self.updateHDF5Plot()
+        vb.setRange(xRange=range(0, len(dataPoints)))
+        self.updatePlot()
 
     def viewRangeChanged(self):
-        self.updateHDF5Plot()
+        self.updatePlot()
 
-    def updateHDF5Plot(self):
-        if self.hdf5 is None:
+    def updatePlot(self):
+        if self.dataPoints is None:
             self.setData([])
             return
 
@@ -33,30 +33,30 @@ class CurveItem(pg.PlotCurveItem):
         if vb is None:
             return  # no ViewBox yet
 
-        # Determine what data range must be read from HDF5
+        # Determine what data range must be read from the dataset
         xrange = vb.viewRange()[0]
         start = max(0, int(xrange[0]) - 1)
-        stop = min(len(self.hdf5), int(xrange[1] + 2))
+        stop = min(len(self.dataPoints), int(xrange[1] + 2))
 
         # Decide by how much we should downsample
         ds = int((stop - start) / self.limit) + 1
 
         if ds == 1:
             # Small enough to display with no intervention.
-            visible = self.hdf5[start:stop]
+            visible = self.dataPoints[start:stop]
             scale = 1
         else:
             # Here convert data into a down-sampled array suitable for visualizing.
             # Must do this piecewise to limit memory usage.
             samples = 1 + ((stop - start) // ds)
-            visible = np.zeros(samples * 2, dtype=self.hdf5.dtype)
+            visible = np.zeros(samples * 2, dtype=self.dataPoints.dtype)
             sourcePtr = start
             targetPtr = 0
 
             # read data in chunks of ~1M samples
             chunkSize = (1000000 // ds) * ds
             while sourcePtr < stop - 1:
-                chunk = self.hdf5[sourcePtr : min(stop, sourcePtr + chunkSize)]
+                chunk = self.dataPoints[sourcePtr : min(stop, sourcePtr + chunkSize)]
                 sourcePtr += len(chunk)
 
                 # reshape chunk to be integral multiple of ds

@@ -2,7 +2,6 @@
 import os
 import sys
 
-import numpy as np
 import pyqtgraph as pg
 from pyqtgraph.dockarea import Dock, DockArea
 from pyqtgraph.Qt import QtGui
@@ -34,11 +33,6 @@ class RangedPlot(pg.PlotWidget):
         self.sigRangeChanged.connect(self.updateRange)
         self.linearRegion.sigRegionChangeFinished.connect(self.onLinearRegionChanged)
 
-        x = np.arange(15)
-        y = np.random.rand(15)
-
-        self.plot(x=x, y=y)
-
     def onLinearRegionChanged(self):
         self.linearRegion.setZValue(10)
         minX = self.linearRegion.getRegion()
@@ -66,6 +60,7 @@ class RangeSliderPlot(QWidget):
         self.sliderPlot = pg.PlotWidget()
         self.sliderPlot.setMaximumHeight(50)
         self.sliderPlot.hideAxis("left")
+        self.sliderPlot.setMouseEnabled(False)
         self.sliderLinearRegion = pg.LinearRegionItem(
             [0, 0], brush=QtGui.QBrush(QtGui.QColor(0, 123, 255, 255))
         )
