@@ -29,6 +29,7 @@ class RangedPlot(pg.PlotWidget):
         self.addItem(self.linearRegion)
         self.linearRegion.setZValue(-10)
         self.viewRange = (0, 0)
+        self.getPlotItem().getViewBox().suggestPadding = lambda *_: 0.005
 
         self.sigRangeChanged.connect(self.updateRange)
         self.linearRegion.sigRegionChangeFinished.connect(self.onLinearRegionChanged)
@@ -71,6 +72,9 @@ class RangeSliderPlot(QWidget):
         )
         self.vlayout.addWidget(self.sliderPlot)
 
+        self.viewRange = [0, 1]
+        self.sliderPlot.setXRange(self.viewRange[0], self.viewRange[1])
+
         # if crosshair:
         #     self.vLine = pg.InfiniteLine()
         #     self.hLine = pg.InfiniteLine(angle=0)
@@ -84,7 +88,8 @@ class RangeSliderPlot(QWidget):
         self.sliderLinearRegion.sigRegionChanged.connect(self.onSliderRegionChanged)
         self.sliderRangeChanged.connect(rangedPlot.updateLinearRegion)
         self.sliderRangeChangeFinished.connect(rangedPlot.updateView)
-        self.sliderPlot.setXRange(rangedPlot.viewRange[0], rangedPlot.viewRange[1])
+        self.viewRange = rangedPlot.viewRange
+        self.sliderPlot.setXRange(rangedPlot.viewRange[0], rangedPlot.viewRange[1], 0)
 
     def onRegionChangeFinished(self):
         self.sliderLinearRegion.setZValue(10)
@@ -94,6 +99,11 @@ class RangeSliderPlot(QWidget):
     def onSliderRegionChanged(self):
         self.sliderLinearRegion.setZValue(10)
         minX, maxX = self.sliderLinearRegion.getRegion()
+        if minX < self.viewRange[0]:
+            minX = self.viewRange[0]
+        if maxX > self.viewRange[1]:
+            maxX = self.viewRange[1]
+        self.sliderLinearRegion.setRegion((minX, maxX))
         self.sliderRangeChanged.emit([minX, maxX])
 
     def updateSliderRegion(self, minMaxX):
@@ -121,6 +131,7 @@ if __name__ == "__main__":
     dock = Dock("MEOW")
     dockArea.addDock(dock)
     rangedPlot = RangedPlot()
+    rangedPlot.plot([0, 10], [1, 2])
     dock.addWidget(rangedPlot)
     window.setCentralWidget(dock)
     dockWidget = QDockWidget()
