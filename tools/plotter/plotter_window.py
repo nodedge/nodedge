@@ -115,7 +115,7 @@ class PlotterWindow(MainWindow):
         if currentSubwindow is None:
             if not self.plotArea.mdiArea.subWindowList():
                 self.plotArea.addWorkbook("Untitled")
-                currentSubwindow = self.plotArea.mdiArea.subWindowList()[0]
+            currentSubwindow = self.plotArea.mdiArea.subWindowList()[0]
         dock = currentSubwindow.widget().addDock(countableDock, "bottom")
         dock.setTitle(variableName)
 
@@ -162,7 +162,7 @@ class PlotterWindow(MainWindow):
         if currentSubwindow is None:
             if not self.plotArea.mdiArea.subWindowList():
                 self.plotArea.addWorkbook("Untitled")
-                currentSubwindow = self.plotArea.mdiArea.subWindowList()[0]
+            currentSubwindow = self.plotArea.mdiArea.subWindowList()[0]
         dock = currentSubwindow.widget().addDock(countableDock, "bottom")
         dock.setTitle(dockTitle)
 
