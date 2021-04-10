@@ -106,11 +106,17 @@ class PlotterWindow(MainWindow):
         widget = CurveContainer()
         widget.curveItem.setDataPoints(data)
         self.rangeSliderPlot.linkPlot(widget.graph)
-        d1 = CountableDock()
+        countableDock = CountableDock()
         # Change label text
         # d1.label.setText("New label")
-        d1.addWidget(widget)
-        dock = self.plotArea.addDock(d1)
+        countableDock.addWidget(widget)
+        currentSubwindow = self.plotArea.mdiArea.currentSubWindow()
+        # The first subwindow is not active, so find it manually.
+        if currentSubwindow is None:
+            if not self.plotArea.mdiArea.subWindowList():
+                self.plotArea.addWorkbook("Untitled")
+                currentSubwindow = self.plotArea.mdiArea.subWindowList()[0]
+        dock = currentSubwindow.widget().addDock(countableDock, "bottom")
         dock.setTitle(variableName)
 
     def plotDataHdf5(self, datasetName):
