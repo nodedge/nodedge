@@ -110,7 +110,7 @@ class PlotterWindow(MainWindow):
         # Change label text
         # d1.label.setText("New label")
         d1.addWidget(widget)
-        dock = self.mdiArea.addDock(d1)
+        dock = self.plotArea.workbooks[0].addDock(d1)
         dock.setTitle(variableName)
 
     def plotDataHdf5(self, datasetName):
