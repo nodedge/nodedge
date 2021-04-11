@@ -11,7 +11,7 @@ import h5py
 import numpy as np
 import pandas as pd
 from PySide2.QtCore import QSize, Qt, Slot
-from PySide2.QtWidgets import QApplication, QDockWidget, QFileDialog, QInputDialog
+from PySide2.QtWidgets import QApplication, QDockWidget, QFileDialog
 
 from nodedge.utils import dumpException
 from tools.main_window_template.main_window import MainWindow
