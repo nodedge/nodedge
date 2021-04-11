@@ -97,10 +97,16 @@ class RangedPlot(pg.PlotWidget):
         self.__logger.debug(self.dataXRange)
 
     def keyReleaseEvent(self, ev: QKeyEvent):
+        super().keyPressEvent(ev)
         key = ev.key()
+        mod = ev.modifiers()
 
         if key == Qt.Key_Space:
             self.getViewBox().autoRange()
+        elif key == Qt.Key_Plus and mod & Qt.ControlModifier:
+            self.getViewBox().scaleBy(s=(0.8, 0.8))
+        elif key == Qt.Key_Minus and mod & Qt.ControlModifier:
+            self.getViewBox().scaleBy(s=(1.2, 1.2))
 
 
 class RangeSliderPlot(QWidget):
