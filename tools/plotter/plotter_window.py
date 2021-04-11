@@ -24,7 +24,7 @@ from tools.plotter.utils import getAllKeysHdf5
 from tools.plotter.variable_tree_widget import VariableTreeWidget
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 
 class PlottingOption(IntEnum):

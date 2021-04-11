@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 import os
 import sys
 
@@ -23,6 +24,10 @@ class RangedPlot(pg.PlotWidget):
 
     def __init__(self, *args):
         super().__init__(*args)
+
+        self.__logger = logging.getLogger(__file__)
+        self.__logger.setLevel(logging.INFO)
+
         self.linearRegion = pg.LinearRegionItem(
             [0, 0], brush=QtGui.QBrush(QtGui.QColor(0, 0, 255, 10))
         )
@@ -36,6 +41,8 @@ class RangedPlot(pg.PlotWidget):
 
         self.numberOfColors = 10
 
+        self.dataXRange = [1e9, -1e9]
+
     def onLinearRegionChanged(self):
         self.linearRegion.setZValue(10)
         minX = self.linearRegion.getRegion()
@@ -45,6 +52,12 @@ class RangedPlot(pg.PlotWidget):
         self.viewRange = viewRange[0]
 
     def updateView(self, minMaxX):
+        if minMaxX[0] < self.dataXRange[0]:
+            return
+        if minMaxX[1] > self.dataXRange[1]:
+            return
+
+        self.__logger.debug(minMaxX)
         self.setXRange(minMaxX[0], minMaxX[1])
 
     def updateLinearRegion(self, minMaxList):
@@ -55,6 +68,20 @@ class RangedPlot(pg.PlotWidget):
         self.getPlotItem().plot(
             *args, pen=(numberOfCurves + 1, self.numberOfColors), **kargs
         )
+
+        lastCurve = self.getPlotItem().curves[-1]
+        lastCurveXMax = max(lastCurve.xData)
+        lastCurveXMin = min(lastCurve.xData)
+
+        if lastCurveXMin < self.dataXRange[0]:
+            self.dataXRange[0] = lastCurveXMin
+
+        if lastCurveXMax > self.dataXRange[1]:
+            self.dataXRange[1] = lastCurveXMax
+
+        self.getViewBox().setLimits(xMin=self.dataXRange[0], xMax=self.dataXRange[1])
+
+        self.__logger.debug(self.dataXRange)
 
 
 class RangeSliderPlot(QWidget):
