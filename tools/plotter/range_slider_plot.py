@@ -7,6 +7,7 @@ import pyqtgraph as pg
 from pyqtgraph.dockarea import Dock, DockArea
 from pyqtgraph.Qt import QtGui
 from PySide2.QtCore import Qt, Signal
+from PySide2.QtGui import QKeyEvent
 from PySide2.QtWidgets import (
     QApplication,
     QDockWidget,
@@ -16,6 +17,7 @@ from PySide2.QtWidgets import (
 )
 
 from tools.main_window_template.application_styler import ApplicationStyler
+from tools.plotter.curve_item import CurveItem
 from tools.plotter.utils import loadStyleSheets
 
 
@@ -65,9 +67,20 @@ class RangedPlot(pg.PlotWidget):
 
     def plot(self, *args, **kargs):
         numberOfCurves = len(self.getPlotItem().curves)
-        self.getPlotItem().plot(
-            *args, pen=(numberOfCurves + 1, self.numberOfColors), **kargs
+
+        curveItem = CurveItem(
+            pen=(numberOfCurves + 1, self.numberOfColors), clickable=True
         )
+        self.addItem(curveItem)
+        curveItem.setDataPoints(*args)
+
+        def clicked(curve):
+            if curve.clicked:
+                curve.setShadowPen(pg.mkPen((70, 70, 30), width=6, cosmetic=True))
+            else:
+                curve.setShadowPen(pg.mkPen((70, 70, 30), width=0, cosmetic=True))
+
+        curveItem.sigClicked.connect(clicked)
 
         lastCurve = self.getPlotItem().curves[-1]
         lastCurveXMax = max(lastCurve.xData)
@@ -82,6 +95,12 @@ class RangedPlot(pg.PlotWidget):
         self.getViewBox().setLimits(xMin=self.dataXRange[0], xMax=self.dataXRange[1])
 
         self.__logger.debug(self.dataXRange)
+
+    def keyReleaseEvent(self, ev: QKeyEvent):
+        key = ev.key()
+
+        if key == Qt.Key_Space:
+            self.getViewBox().autoRange()
 
 
 class RangeSliderPlot(QWidget):

@@ -101,9 +101,12 @@ class PlotterWindow(MainWindow):
         self,
         variableName: str,
         option: PlottingOption = PlottingOption.ADD_NEW_WORKSHEET,
+        indices=None,
     ):
 
-        dataToBePlotted, fullDatasetName = self.selectDataToBePlotted(variableName)
+        dataToBePlotted, fullDatasetName = self.selectDataToBePlotted(
+            variableName, indices
+        )
 
         # Select current subwindow
         currentSubwindow = self.selectSubwindow(option)
@@ -115,9 +118,11 @@ class PlotterWindow(MainWindow):
         dock.widgets[0].graph.plot(dataToBePlotted)
         self.rangeSliderPlot.linkPlot(dock.widgets[0].graph)
 
-    def selectDataToBePlotted(self, variableName):
+    def selectDataToBePlotted(self, variableName, indices=None):
         if isinstance(self.file, h5py.File):
-            dataToBePlotted, fullDatasetName = self.extractDataFromHdf5(variableName)
+            dataToBePlotted, fullDatasetName = self.extractDataFromHdf5(
+                variableName, indices
+            )
         elif isinstance(self.file, pd.core.frame.DataFrame):
             dataToBePlotted = np.array(self.file[variableName])
             fullDatasetName = variableName
@@ -173,7 +178,7 @@ class PlotterWindow(MainWindow):
         f = h5py.File(filename, "r")
         return f
 
-    def extractDataFromHdf5(self, datasetName):
+    def extractDataFromHdf5(self, datasetName, indices=None):
         data = np.array(self.file.get(datasetName))
         shape = data.shape
         logger.debug(f"{datasetName} {shape} is going to be plotted.")
@@ -182,18 +187,19 @@ class PlotterWindow(MainWindow):
 
         if len(shape) > 1:
 
-            dialog = SizedInputDialog(self, QSize(400, 200))
-            indices, okPressed = dialog.getText(
-                self,
-                f"Index selection",
-                f"The selected dataset has dimensions: {shape}. \n"
-                f"Enter below the indices to be plotted. \n\n"
-                f"Example: [1,:]",
-                text=defaultText,
-            )
+            if indices is None:
+                dialog = SizedInputDialog(self, QSize(400, 200))
+                indices, okPressed = dialog.getText(
+                    self,
+                    f"Index selection",
+                    f"The selected dataset has dimensions: {shape}. \n"
+                    f"Enter below the indices to be plotted. \n\n"
+                    f"Example: [1,:]",
+                    text=defaultText,
+                )
 
-            if not okPressed:
-                return
+                if not okPressed:
+                    return
 
             try:
                 toBeEvaluated = "data" + indices
@@ -240,7 +246,8 @@ if __name__ == "__main__":
     window.showMaximized()
 
     # Open file
-    # f = window.openFile()
+    f = window.openFile("../../data/test.hdf5")
+    window.plotData("sim_data/pos_k_i_dt", indices="[0,0,:]")
 
     try:
         sys.exit(app.exec_())

@@ -111,6 +111,8 @@ class VariableTreeWidget(QTreeWidget):
         eventButton: Qt.MouseButton = event.button()
         pos = event.pos()
         item = self.itemAt(pos)
+        if item is None:
+            return
         fullVariableName = self.getFullName(item)
         eventModifiers: Qt.KeyboardModifiers = event.modifiers()
         if eventButton == Qt.LeftButton and eventModifiers & Qt.ControlModifier:

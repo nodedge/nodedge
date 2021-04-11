@@ -122,3 +122,24 @@ class PaletteGrid(_PaletteBase):
                 row += 1
 
         self.setLayout(palette)
+
+
+class _ExampleWindow(QtWidgets.QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        palette = PaletteGrid(
+            "17undertones"
+        )  # or PaletteHorizontal, or PaletteVertical
+        palette.selected.connect(self.show_selected_color)
+        self.setCentralWidget(palette)
+
+    def show_selected_color(self, c):
+        print("Selected: {}".format(c))
+
+
+if __name__ == "__main__":
+    app = QtWidgets.QApplication([])
+    w = _ExampleWindow()
+    w.show()
+    app.exec_()

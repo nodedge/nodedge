@@ -4,8 +4,11 @@ ${FILE_NAME} module containing :class:`~nodedge.${FILE_NAME}.<ClassName>` class.
 """
 import numpy as np
 import pyqtgraph as pg
-
 # Parameters
+from PySide2.QtCore import Qt
+from PySide2.QtGui import QColor
+from PySide2.QtWidgets import QAction, QColorDialog, QInputDialog
+
 MAX_NUM_SAMPLES = 10000
 
 
@@ -14,6 +17,12 @@ class CurveItem(pg.PlotCurveItem):
         self.dataPoints = None
         self.limit = MAX_NUM_SAMPLES  # maximum number of samples to be plotted
         pg.PlotCurveItem.__init__(self, *args, **kwds)
+
+        self.setClickable(True, 5)
+
+        self.clicked = False
+        self.initialized = False
+        self.curveName = "Unnamed"
 
     def setDataPoints(self, dataPoints):
         self.dataPoints = dataPoints
@@ -80,3 +89,34 @@ class CurveItem(pg.PlotCurveItem):
         self.setPos(start, 0)  # shift to match starting index
         self.resetTransform()
         self.scale(scale, 1)  # scale to match downsampling
+
+    def mouseClickEvent(self, event):
+        super().mouseClickEvent(event)
+        self.clicked = not self.clicked
+
+        eventButton: Qt.MouseButton = event.button()
+        eventModifiers: Qt.KeyboardModifiers = event.modifiers()
+        if eventButton == Qt.RightButton and not self.initialized:
+            menu = self.getViewBox().menu
+            renameAction: QAction = QAction("Rename", menu)
+            menu.addAction(renameAction)
+            renameAction.triggered.connect(self.setName)
+            colorAction: QAction = QAction("Color", menu)
+            menu.addAction(colorAction)
+            colorAction.triggered.connect(self.setColor)
+            self.initialized = True
+
+    def setName(self):
+        self.curveName = QInputDialog.getText(
+            None, "Set Name", "Enter the curve name below:", text=self.curveName
+        )
+
+    def setColor(self):
+        colorDialog = QColorDialog()
+        # TODO: Add custom palette as standard color
+        # colorDialog.setOption(QColorDialog.DontUseNativeDialog)
+        # colorDialog.setStandardColor(0, QColor("g"))
+        color = colorDialog.getColor()
+        if not color.isValid():
+            return
+        self.setPen(pg.mkPen(color, width=1, cosmetic=True))
