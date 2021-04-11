@@ -5,6 +5,7 @@ plotter_window.py module containing :class:`~nodedge.plotter_window.py.<ClassNam
 
 import logging
 import sys
+from enum import IntEnum
 
 import h5py
 import numpy as np
@@ -24,6 +25,12 @@ from tools.plotter.variable_tree_widget import VariableTreeWidget
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+
+
+class PlottingOption(IntEnum):
+    ADD_NEW_WORKSHEET = 1  #:
+    APPEND_IN_CURRENT_WORKSHEET = 2  #:
+    ADD_NEW_WORKBOOK = 3  #:
 
 
 class PlotterWindow(MainWindow):
@@ -84,22 +91,79 @@ class PlotterWindow(MainWindow):
         return self.file
 
     def onVariableShiftClicked(self, variableName):
-        print("shift")
-        self.plotData(variableName, option="appendInSheet")
+        self.plotData(variableName, option=PlottingOption.APPEND_IN_CURRENT_WORKSHEET)
 
     def onVariableCtrlClicked(self, variableName):
-        print("ctrl")
-        self.plotData(variableName, option="newWorkbook")
+        self.plotData(variableName, option=PlottingOption.ADD_NEW_WORKBOOK)
 
     @Slot(str)  # type: ignore
-    def plotData(self, variableName: str, option=None):
+    def plotData(
+        self,
+        variableName: str,
+        option: PlottingOption = PlottingOption.ADD_NEW_WORKSHEET,
+    ):
 
+        dataToBePlotted, fullDatasetName = self.selectDataToBePlotted(variableName)
+
+        # Select current subwindow
+        currentSubwindow = self.selectSubwindow(option)
+
+        # Select dock where to plot
+        dock = self.selectDock(currentSubwindow, option)
+
+        dock.setTitle(fullDatasetName)
+        dock.widgets[0].graph.plot(dataToBePlotted)
+        self.rangeSliderPlot.linkPlot(dock.widgets[0].graph)
+
+    def selectDataToBePlotted(self, variableName):
         if isinstance(self.file, h5py.File):
-            self.plotDataHdf5(variableName, option)
+            dataToBePlotted, fullDatasetName = self.extractDataFromHdf5(variableName)
         elif isinstance(self.file, pd.core.frame.DataFrame):
-            self.plotDataCsv(variableName, option)
+            dataToBePlotted = np.array(self.file[variableName])
+            fullDatasetName = variableName
         else:
             raise NotImplementedError
+        return dataToBePlotted, fullDatasetName
+
+    def selectDock(self, currentSubwindow, option):
+        keys = list(currentSubwindow.widget().docks.data.keys())
+        if (
+            option is PlottingOption.ADD_NEW_WORKBOOK
+            or option is PlottingOption.ADD_NEW_WORKSHEET
+            or (option is PlottingOption.APPEND_IN_CURRENT_WORKSHEET and not keys)
+        ):
+            widget: CurveContainer = CurveContainer()
+            countableDock = CountableDock()
+            countableDock.addWidget(widget)
+            dock = currentSubwindow.widget().addDock(countableDock, "bottom")
+        elif option is PlottingOption.APPEND_IN_CURRENT_WORKSHEET:
+            dock = currentSubwindow.widget().docks[keys[-1]]
+        else:
+            raise NotImplementedError
+        return dock
+
+    def selectSubwindow(self, option):
+        currentSubwindow = self.plotArea.mdiArea.currentSubWindow()
+        if option is PlottingOption.ADD_NEW_WORKBOOK or (
+            (
+                option is PlottingOption.APPEND_IN_CURRENT_WORKSHEET
+                or option is PlottingOption.ADD_NEW_WORKSHEET
+            )
+            and currentSubwindow is None
+            and not self.plotArea.mdiArea.subWindowList()
+        ):
+            self.plotArea.addWorkbook("Untitled")
+            currentSubwindow = self.plotArea.mdiArea.subWindowList()[-1]
+        elif (
+            option == PlottingOption.ADD_NEW_WORKSHEET
+            or option is PlottingOption.APPEND_IN_CURRENT_WORKSHEET
+        ):
+            # The first subwindow is not active, so find it manually.
+            if currentSubwindow is None:
+                currentSubwindow = self.plotArea.mdiArea.subWindowList()[-1]
+        else:
+            raise NotImplementedError
+        return currentSubwindow
 
     def loadCsv(self, filename):
         dataFrame = pd.read_csv(filename)
@@ -109,28 +173,7 @@ class PlotterWindow(MainWindow):
         f = h5py.File(filename, "r")
         return f
 
-    def plotDataCsv(self, variableName, option=None):
-        # Select data to plot
-        data = np.array(self.file[variableName])
-
-        widget = CurveContainer()
-        widget.curveItem.setDataPoints(data)
-        self.rangeSliderPlot.linkPlot(widget.graph)
-        countableDock = CountableDock()
-        # Change label text
-        # d1.label.setText("New label")
-        countableDock.addWidget(widget)
-        currentSubwindow = self.plotArea.mdiArea.currentSubWindow()
-        # The first subwindow is not active, so find it manually.
-        if currentSubwindow is None:
-            if not self.plotArea.mdiArea.subWindowList():
-                self.plotArea.addWorkbook("Untitled")
-            currentSubwindow = self.plotArea.mdiArea.subWindowList()[0]
-        dock = currentSubwindow.widget().addDock(countableDock, "bottom")
-        dock.setTitle(variableName)
-
-    def plotDataHdf5(self, datasetName, option=None):
-        # Select data to plot
+    def extractDataFromHdf5(self, datasetName):
         data = np.array(self.file.get(datasetName))
         shape = data.shape
         logger.debug(f"{datasetName} {shape} is going to be plotted.")
@@ -158,47 +201,13 @@ class PlotterWindow(MainWindow):
             except SyntaxError:
                 return
 
-            dockTitle = datasetName + indices
+            fullDatasetName = datasetName + indices
 
         else:
             dataToBePlotted = data
-            dockTitle = datasetName
+            fullDatasetName = datasetName
 
-        if option is None:
-            widget: CurveContainer = CurveContainer()
-            widget.curveItem.setDataPoints(dataToBePlotted)
-            self.rangeSliderPlot.linkPlot(widget.graph)
-            countableDock = CountableDock()
-            countableDock.addWidget(widget)
-            currentSubwindow = self.plotArea.mdiArea.currentSubWindow()
-            # The first subwindow is not active, so find it manually.
-            if currentSubwindow is None:
-                if not self.plotArea.mdiArea.subWindowList():
-                    self.plotArea.addWorkbook("Untitled")
-                currentSubwindow = self.plotArea.mdiArea.subWindowList()[0]
-            dock = currentSubwindow.widget().addDock(countableDock, "bottom")
-            dock.setTitle(dockTitle)
-        elif option is "appendInSheet":
-            currentSubwindow = self.plotArea.mdiArea.currentSubWindow()
-            # The first subwindow is not active, so find it manually.
-            if currentSubwindow is None:
-                if not self.plotArea.mdiArea.subWindowList():
-                    self.plotArea.addWorkbook("Untitled")
-                currentSubwindow = self.plotArea.mdiArea.subWindowList()[0]
-            keys = list(currentSubwindow.widget().docks.data.keys())
-            currentSubwindow.widget().docks[keys[-1]].widgets[0].graph.plot(
-                dataToBePlotted
-            )
-        elif option is "newWorkbook":
-            self.plotArea.addWorkbook("Untitled")
-            currentSubwindow = self.plotArea.mdiArea.subWindowList()[-1]
-            widget: CurveContainer = CurveContainer()
-            widget.curveItem.setDataPoints(dataToBePlotted)
-            self.rangeSliderPlot.linkPlot(widget.graph)
-            countableDock = CountableDock()
-            countableDock.addWidget(widget)
-            dock = currentSubwindow.widget().addDock(countableDock, "bottom")
-            dock.setTitle(dockTitle)
+        return dataToBePlotted, fullDatasetName
 
     @staticmethod
     def getFileDialogDirectory() -> str:

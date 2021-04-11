@@ -68,7 +68,6 @@ class PlotArea(QWidget):
         # plot itself. To find the subwindow, iterate through its parents.
         while not isinstance(subwindow, QMdiSubWindow):
             subwindow = subwindow.parentWidget()
-        print(f"MEOW: {subwindow}")
 
         nameDialog = QInputDialog()
         newTitle, okPressed = nameDialog.getText(
