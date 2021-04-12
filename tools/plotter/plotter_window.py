@@ -10,7 +10,9 @@ from enum import IntEnum
 import h5py
 import numpy as np
 import pandas as pd
+from pyqtgraph.dockarea import DockArea
 from PySide2.QtCore import QSize, Qt, Slot
+from PySide2.QtGui import QKeySequence
 from PySide2.QtWidgets import QApplication, QDockWidget, QFileDialog
 
 from nodedge.utils import dumpException
@@ -19,6 +21,7 @@ from tools.plotter.countable_dock import CountableDock
 from tools.plotter.curve_container import CurveContainer
 from tools.plotter.plot_area import PlotArea
 from tools.plotter.range_slider_plot import RangeSliderPlot
+from tools.plotter.ranged_plot import RangedPlot
 from tools.plotter.sized_input_dialog import SizedInputDialog
 from tools.plotter.utils import getAllKeysHdf5
 from tools.plotter.variable_tree_widget import VariableTreeWidget
@@ -61,6 +64,9 @@ class PlotterWindow(MainWindow):
         self.addDockWidget(Qt.BottomDockWidgetArea, self.rangeSliderDock)
 
     def openFile(self, filename: str = ""):
+        self.variableTree.clear()
+        # TODO: Clear all curves
+
         if filename in ["", None, False]:
             filename, _ = QFileDialog.getOpenFileName(
                 parent=self,
@@ -115,7 +121,7 @@ class PlotterWindow(MainWindow):
         dock = self.selectDock(currentSubwindow, option)
 
         dock.setTitle(fullDatasetName)
-        dock.widgets[0].graph.plot(dataToBePlotted)
+        dock.widgets[0].graph.plot(dataToBePlotted, name=fullDatasetName)
         self.rangeSliderPlot.linkPlot(dock.widgets[0].graph)
 
     def selectDataToBePlotted(self, variableName, indices=None):
@@ -234,6 +240,42 @@ class PlotterWindow(MainWindow):
         :rtype: ``str``
         """
         return "HDF5 (*.hdf5);;CSV (*.csv);;All files (*)"
+
+    def createActions(self) -> None:
+        super().createActions()
+
+        self.openWorkspaceAct = self.createAction(
+            "&Open workspace",
+            self.openWorkspace,
+            "Open workspace",
+            QKeySequence("Ctrl+Shift+o"),
+        )
+
+    def createFileMenu(self):
+        super().createFileMenu()
+        self.fileMenu.addAction(self.openWorkspaceAct)
+
+    def createToolBars(self) -> None:
+        super().createToolBars()
+        self.fileToolBar.addAction(self.openWorkspaceAct)
+
+    def openWorkspace(self):
+        pass
+
+    def saveFile(self):
+        for workbook in self.plotArea.mdiArea.subWindowList():
+            dockArea: DockArea = workbook.widget()
+            print(dockArea.saveState())
+            keys = list(dockArea.docks.data.keys())
+            for key in keys:
+                dock = dockArea.docks[key]
+                graph: RangedPlot = dock.widgets[0].graph
+                print(graph.saveState())
+                plotItem = graph.getPlotItem()
+                print(plotItem.saveState())
+
+    def saveFileAs(self):
+        raise NotImplementedError
 
     def newFile(self):
         self.plotArea.addWorkbook()

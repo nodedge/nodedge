@@ -6,7 +6,7 @@ import pyqtgraph as pg
 from PySide2.QtWidgets import QVBoxLayout, QWidget
 
 from tools.plotter.curve_item import CurveItem
-from tools.plotter.range_slider_plot import RangedPlot
+from tools.plotter.ranged_plot import RangedPlot
 
 
 class CurveContainer(QWidget):
