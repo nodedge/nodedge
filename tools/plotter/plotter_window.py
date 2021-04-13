@@ -76,7 +76,7 @@ class PlotterWindow(MainWindow):
             )
 
         extension = filename.split(".")[-1]
-        if extension == "hdf5":
+        if extension == "hdf5" or extension == "h5":
             # Load hdf5 file
             self.file = self.loadHdf5(filename)
 
