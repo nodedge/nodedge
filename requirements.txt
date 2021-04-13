@@ -1,5 +1,6 @@
 coloredlogs
 h5py==2.10.0
+pandas
 numpy
 pyqtconsole
 pyqtgraph
