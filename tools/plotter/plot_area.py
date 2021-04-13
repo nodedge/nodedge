@@ -19,6 +19,7 @@ from PySide2.QtWidgets import (
 from nodedge.utils import dumpException
 from tools.main_window_template.mdi_area import MdiArea
 from tools.plotter.range_slider_plot import RangeSliderPlot
+from tools.plotter.worksheet_area import WorksheetArea
 
 
 class PlotArea(QWidget):
@@ -47,7 +48,7 @@ class PlotArea(QWidget):
             if not okPressed:
                 return
 
-        dockArea = DockArea()
+        dockArea = WorksheetArea()
         self.workbooks.append(dockArea)
         subwindow = self.mdiArea.addSubWindow(dockArea)
         subwindow.setWindowTitle(workbookname)

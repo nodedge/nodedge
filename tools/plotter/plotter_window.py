@@ -2,18 +2,19 @@
 """
 plotter_window.py module containing :class:`~nodedge.plotter_window.py.<ClassName>` class.
 """
-
+import json
 import logging
+import os
 import sys
 from enum import IntEnum
 
 import h5py
+import numpy
 import numpy as np
 import pandas as pd
-from pyqtgraph.dockarea import DockArea
 from PySide2.QtCore import QSize, Qt, Slot
 from PySide2.QtGui import QKeySequence
-from PySide2.QtWidgets import QApplication, QDockWidget, QFileDialog
+from PySide2.QtWidgets import QApplication, QDockWidget, QFileDialog, QMdiSubWindow
 
 from nodedge.utils import dumpException
 from tools.main_window_template.main_window import MainWindow
@@ -21,13 +22,10 @@ from tools.plotter.countable_dock import CountableDock
 from tools.plotter.curve_container import CurveContainer
 from tools.plotter.plot_area import PlotArea
 from tools.plotter.range_slider_plot import RangeSliderPlot
-from tools.plotter.ranged_plot import RangedPlot
 from tools.plotter.sized_input_dialog import SizedInputDialog
-from tools.plotter.utils import getAllKeysHdf5
+from tools.plotter.utils import convert, getAllKeysHdf5
 from tools.plotter.variable_tree_widget import VariableTreeWidget
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+from tools.plotter.worksheet_area import WorksheetArea
 
 
 class PlottingOption(IntEnum):
@@ -39,6 +37,9 @@ class PlottingOption(IntEnum):
 class PlotterWindow(MainWindow):
     def __init__(self, parent=None):
         super().__init__(parent, applicationName="Plotter")
+
+        self.__logger = logging.getLogger(__name__)
+        self.__logger.setLevel(logging.DEBUG)
 
         self.plotArea = PlotArea()
         self.setCentralWidget(self.plotArea)
@@ -62,6 +63,12 @@ class PlotterWindow(MainWindow):
         self.rangeSliderDock = QDockWidget("Timeline")
         self.rangeSliderDock.setWidget(self.rangeSliderPlot)
         self.addDockWidget(Qt.BottomDockWidgetArea, self.rangeSliderDock)
+
+        self.workspaceName: str = ""
+
+    @property
+    def hasWorkspaceName(self):
+        return self.workspaceName is not ""
 
     def openFile(self, filename: str = ""):
         self.variableTree.clear()
@@ -187,7 +194,7 @@ class PlotterWindow(MainWindow):
     def extractDataFromHdf5(self, datasetName, indices=None):
         data = np.array(self.file.get(datasetName))
         shape = data.shape
-        logger.debug(f"{datasetName} {shape} is going to be plotted.")
+        self.__logger.debug(f"{datasetName} {shape} is going to be plotted.")
         listZeros = ["0" for _ in range(len(shape) - 1)]
         defaultText = "[" + ", ".join(listZeros) + ", :]"
 
@@ -241,6 +248,26 @@ class PlotterWindow(MainWindow):
         """
         return "HDF5 (*.hdf5);;CSV (*.csv);;All files (*)"
 
+    @staticmethod
+    def getWorkspaceDirectory() -> str:
+        """
+        Returns starting directory for ``QFileDialog`` file open/save
+
+        :return: starting directory for ``QFileDialog`` file open/save
+        :rtype: ``str``
+        """
+        return "workspace"
+
+    @staticmethod
+    def getWorkspaceFilter() -> str:
+        """
+        Returns ``str`` standard file open/save filter for ``QFileDialog``
+
+        :return: standard file open/save filter for ``QFileDialog``
+        :rtype: ``str``
+        """
+        return "JSON (*.json);;All files (*)"
+
     def createActions(self) -> None:
         super().createActions()
 
@@ -259,23 +286,65 @@ class PlotterWindow(MainWindow):
         super().createToolBars()
         self.fileToolBar.addAction(self.openWorkspaceAct)
 
-    def openWorkspace(self):
-        pass
+    def openWorkspace(self, filename):
+        self.plotArea.mdiArea.closeAllSubWindows()
+        if filename in ["", None, False]:
+            filename, _ = QFileDialog.getOpenFileName(
+                parent=self,
+                caption="Open workspace from file",
+                dir=PlotterWindow.getWorkspaceDirectory(),
+                filter=PlotterWindow.getWorkspaceFilter(),
+            )
 
-    def saveFile(self):
+        with open(filename) as file:
+            rawData = file.read()
+            try:
+                data = json.loads(rawData, encoding="utf-8")
+                self.workspaceName = filename
+                for key in data:
+                    worksheetArea = WorksheetArea()
+                    worksheetArea.restoreState(data[key])
+                    self.plotArea.mdiArea.addSubWindow(worksheetArea)
+            except json.JSONDecodeError:
+                raise ValueError(
+                    f"{os.path.basename(filename)} is not a valid JSON file"
+                )
+            except Exception as e:
+                dumpException(e)
+
+    def saveFile(self, fileName: str = ""):
+        if not isinstance(fileName, str):
+            fileName = ""
+        self.__logger.debug("Saving graph")
+        if not self.hasWorkspaceName:
+            self.workspaceName, _ = QFileDialog.getSaveFileName(
+                parent=self,
+                caption="Save graph to file",
+                dir=PlotterWindow.getWorkspaceDirectory() + fileName,
+                filter=PlotterWindow.getWorkspaceFilter(),
+            )
+
+            if self.workspaceName is "":
+                return
+
+        state = {}
+        workbook: QMdiSubWindow
         for workbook in self.plotArea.mdiArea.subWindowList():
-            dockArea: DockArea = workbook.widget()
-            print(dockArea.saveState())
-            keys = list(dockArea.docks.data.keys())
-            for key in keys:
-                dock = dockArea.docks[key]
-                graph: RangedPlot = dock.widgets[0].graph
-                print(graph.saveState())
-                plotItem = graph.getPlotItem()
-                print(plotItem.saveState())
+            worksheetArea: WorksheetArea = workbook.widget()
+            worksheetAreaState = worksheetArea.saveState()
+            self.__logger.debug(worksheetAreaState)
+            state[f"{workbook.windowTitle()}"] = worksheetAreaState
+
+        self.__logger.debug(state)
+
+        with open(self.workspaceName, "w") as file:
+            file.write(json.dumps(state, indent=4, default=convert))
+            self.__logger.info(f"Saving to {self.workspaceName} was successful.")
 
     def saveFileAs(self):
-        raise NotImplementedError
+        workspaceName = self.workspaceName
+        self.workspaceName = ""
+        self.saveFile(workspaceName)
 
     def newFile(self):
         self.plotArea.addWorkbook()

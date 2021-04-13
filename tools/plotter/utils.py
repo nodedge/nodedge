@@ -9,6 +9,7 @@ from enum import IntEnum
 from functools import partial
 
 import h5py
+import numpy
 import numpy as np
 from PySide2.QtCore import QFile
 from PySide2.QtGui import QColor
@@ -124,6 +125,14 @@ class InstanceCounterMeta(type):
     def __init__(cls, name, bases, attrs):
         super().__init__(name, bases, attrs)
         cls._ids = itertools.count(1)
+
+
+def convert(o):
+    if isinstance(o, numpy.int32):
+        return int(o)
+    elif isinstance(o, numpy.int64):
+        return int(o)
+    raise TypeError
 
 
 get_blue_scale_color = partial(get_color_between, QColor("#CAF0F8"), QColor("#03045E"))

@@ -108,7 +108,8 @@ class RangedPlot(pg.PlotWidget):
     def saveState(self):
         state = super().saveState()
         state["curveNames"] = self.curveNames
+        return state
 
     def restoreState(self, state):
         super().restoreState(state)
-        self.restoreCurves.emit(self)
+        self.curveNames = state["curveNames"]
