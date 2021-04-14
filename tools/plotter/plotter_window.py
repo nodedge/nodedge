@@ -102,9 +102,7 @@ class PlotterWindow(MainWindow):
             allKeys = self.file.keys()
             self.variableTree.updateVariablesCsv(allKeys)
         else:
-            return NotImplementedError
-
-        return self.file
+            return
 
     def onVariableShiftClicked(self, variableName):
         self.plotData(variableName, option=PlottingOption.APPEND_IN_CURRENT_WORKSHEET)
@@ -390,8 +388,9 @@ if __name__ == "__main__":
     window.showMaximized()
 
     # Open file
-    f = window.openFile("../../data/test.hdf5")
+    window.openFile("../../data/test.hdf5")
     window.plotData("sim_data/pos_k_i_dt", indices="[0,0,:]")
+    # window.plotData("/cf1/pos")
 
     try:
         sys.exit(app.exec_())
