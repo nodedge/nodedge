@@ -80,13 +80,13 @@ class PlotterWindow(MainWindow):
         if filename in ["", None, False]:
             filename, _ = QFileDialog.getOpenFileName(
                 parent=self,
-                caption="Open graph from file",
+                caption="Open file",
                 dir=PlotterWindow.getFileDialogDirectory(),
                 filter=PlotterWindow.getFileDialogFilter(),
             )
 
         extension = filename.split(".")[-1]
-        if extension == "hdf5" or extension == "h5":
+        if extension == "hdf5" or extension == "h5" or extension == "he5":
             # Load hdf5 file
             self.file = self.loadHdf5(filename)
 
