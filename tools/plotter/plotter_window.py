@@ -9,7 +9,6 @@ import sys
 from enum import IntEnum
 
 import h5py
-import numpy
 import numpy as np
 import pandas as pd
 from PySide2.QtCore import QSize, Qt, Slot
@@ -22,6 +21,7 @@ from tools.plotter.countable_dock import CountableDock
 from tools.plotter.curve_container import CurveContainer
 from tools.plotter.plot_area import PlotArea
 from tools.plotter.range_slider_plot import RangeSliderPlot
+from tools.plotter.ranged_plot import RangedPlot
 from tools.plotter.sized_input_dialog import SizedInputDialog
 from tools.plotter.utils import convert, getAllKeysHdf5
 from tools.plotter.variable_tree_widget import VariableTreeWidget
@@ -32,6 +32,7 @@ class PlottingOption(IntEnum):
     ADD_NEW_WORKSHEET = 1  #:
     APPEND_IN_CURRENT_WORKSHEET = 2  #:
     ADD_NEW_WORKBOOK = 3  #:
+    ADD_IN_GIVEN_WORKSHEET = 4
 
 
 class PlotterWindow(MainWindow):
@@ -65,6 +66,8 @@ class PlotterWindow(MainWindow):
         self.addDockWidget(Qt.BottomDockWidgetArea, self.rangeSliderDock)
 
         self.workspaceName: str = ""
+
+        self.file = None
 
     @property
     def hasWorkspaceName(self):
@@ -115,23 +118,38 @@ class PlotterWindow(MainWindow):
         variableName: str,
         option: PlottingOption = PlottingOption.ADD_NEW_WORKSHEET,
         indices=None,
+        worksheet=None,
     ):
 
+        if variableName[-1] == "]":
+            fullVariableName = variableName
+            variableName, indices = fullVariableName.split("[")
+            indices = "[" + indices
         dataToBePlotted, fullDatasetName = self.selectDataToBePlotted(
             variableName, indices
         )
 
-        # Select current subwindow
-        currentSubwindow = self.selectSubwindow(option)
+        if not option is PlottingOption.ADD_IN_GIVEN_WORKSHEET:
+            # Select current subwindow
+            currentSubwindow = self.selectSubwindow(option)
 
-        # Select dock where to plot
-        dock = self.selectDock(currentSubwindow, option)
+            # Select dock where to plot
+            dock = self.selectDock(currentSubwindow, option)
+            dock.setTitle(fullDatasetName)
+            worksheet = dock.widgets[0].graph
 
-        dock.setTitle(fullDatasetName)
-        dock.widgets[0].graph.plot(dataToBePlotted, name=fullDatasetName)
-        self.rangeSliderPlot.linkPlot(dock.widgets[0].graph)
+        worksheet.plot(dataToBePlotted, name=fullDatasetName)
+        self.rangeSliderPlot.linkPlot(worksheet)
 
     def selectDataToBePlotted(self, variableName, indices=None):
+        # If no file has been opened yet, do nothing
+        if self.file is None:
+            if indices is not None:
+                fullDatasetName = variableName + indices
+            else:
+                fullDatasetName = variableName
+            return np.array([0]), fullDatasetName
+
         if isinstance(self.file, h5py.File):
             dataToBePlotted, fullDatasetName = self.extractDataFromHdf5(
                 variableName, indices
@@ -143,7 +161,7 @@ class PlotterWindow(MainWindow):
             raise NotImplementedError
         return dataToBePlotted, fullDatasetName
 
-    def selectDock(self, currentSubwindow, option):
+    def selectDock(self, currentSubwindow, option, dock=None):
         keys = list(currentSubwindow.widget().docks.data.keys())
         if (
             option is PlottingOption.ADD_NEW_WORKBOOK
@@ -156,6 +174,9 @@ class PlotterWindow(MainWindow):
             dock = currentSubwindow.widget().addDock(countableDock, "bottom")
         elif option is PlottingOption.APPEND_IN_CURRENT_WORKSHEET:
             dock = currentSubwindow.widget().docks[keys[-1]]
+        elif option is PlottingOption.ADD_IN_GIVEN_WORKSHEET:
+            if dock is None:
+                self.__logger.debug(f"Given dock {dock} is not valid.")
         else:
             raise NotImplementedError
         return dock
@@ -179,6 +200,8 @@ class PlotterWindow(MainWindow):
             # The first subwindow is not active, so find it manually.
             if currentSubwindow is None:
                 currentSubwindow = self.plotArea.mdiArea.subWindowList()[-1]
+        elif option is PlottingOption.ADD_IN_GIVEN_WORKSHEET:
+            return None
         else:
             raise NotImplementedError
         return currentSubwindow
@@ -303,14 +326,24 @@ class PlotterWindow(MainWindow):
                 self.workspaceName = filename
                 for key in data:
                     worksheetArea = WorksheetArea()
+                    worksheetArea.restoreCurves.connect(self.restoreCurve)
                     worksheetArea.restoreState(data[key])
                     self.plotArea.mdiArea.addSubWindow(worksheetArea)
+
             except json.JSONDecodeError:
                 raise ValueError(
                     f"{os.path.basename(filename)} is not a valid JSON file"
                 )
             except Exception as e:
                 dumpException(e)
+
+    def restoreCurve(self, worksheet: RangedPlot):
+        for curveName in worksheet.curveNames:
+            self.plotData(
+                curveName,
+                option=PlottingOption.ADD_IN_GIVEN_WORKSHEET,
+                worksheet=worksheet,
+            )
 
     def saveFile(self, fileName: str = ""):
         if not isinstance(fileName, str):

@@ -14,9 +14,11 @@ class CountableDockMeta(type(Dock), metaclass=InstanceCounterMeta):
 
 
 class CountableDock(Dock, metaclass=CountableDockMeta):
-    def __init__(self):
+    def __init__(self, name):
         self.id = next(self.__class__._ids)
-        self.dock = Dock.__init__(self, name=f"Plot{self.id}", size=(1, 1))
+        if name is None:
+            name = f"Plot{self.id}"
+        Dock.__init__(self, name=name, size=(1, 1))
         self.o = "horizontal"
         self.force = True
 

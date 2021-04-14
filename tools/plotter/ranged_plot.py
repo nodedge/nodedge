@@ -28,7 +28,7 @@ class RangedPlot(pg.PlotWidget):
         self.addItem(self.linearRegion)
         self.linearRegion.setZValue(-10)
         self.viewRange = (0, 0)
-        self.getPlotItem().getViewBox().suggestPadding = lambda *_: 0.005
+        self.getPlotItem().getViewBox().suggestPadding = lambda *_: 0.007
 
         self.sigRangeChanged.connect(self.updateRange)
         self.linearRegion.sigRegionChangeFinished.connect(self.onLinearRegionChanged)
@@ -36,6 +36,7 @@ class RangedPlot(pg.PlotWidget):
         self.numberOfColors = 10
 
         self.dataXRange = [1e9, -1e9]
+        self.dataYRange = [1e9, -1e9]
         self.getPlotItem().addLegend()
 
         self.curveNames = []
@@ -63,7 +64,8 @@ class RangedPlot(pg.PlotWidget):
     def plot(self, data, name=None):
         numberOfCurves = len(self.getPlotItem().curves)
 
-        self.curveNames.append(name)
+        if name not in self.curveNames:
+            self.curveNames.append(name)
 
         curveItem = CurveItem(
             pen=(numberOfCurves + 1, self.numberOfColors), clickable=True, name=name
@@ -83,11 +85,20 @@ class RangedPlot(pg.PlotWidget):
         lastCurveXMax = max(lastCurve.xData)
         lastCurveXMin = min(lastCurve.xData)
 
+        lastCurveYMax = max(lastCurve.yData)
+        lastCurveYMin = min(lastCurve.yData)
+
         if lastCurveXMin < self.dataXRange[0]:
             self.dataXRange[0] = lastCurveXMin
 
         if lastCurveXMax > self.dataXRange[1]:
             self.dataXRange[1] = lastCurveXMax
+
+        if lastCurveYMin < self.dataYRange[0]:
+            self.dataYRange[0] = lastCurveYMin
+
+        if lastCurveYMax > self.dataYRange[1]:
+            self.dataYRange[1] = lastCurveYMax
 
         self.getViewBox().setLimits(xMin=self.dataXRange[0], xMax=self.dataXRange[1])
 
@@ -99,7 +110,8 @@ class RangedPlot(pg.PlotWidget):
         mod = ev.modifiers()
 
         if key == Qt.Key_Space:
-            self.getViewBox().autoRange()
+            self.setXRange(self.dataXRange[0], self.dataXRange[1])
+            self.setYRange(self.dataYRange[0], self.dataYRange[1])
         elif key == Qt.Key_Plus and mod & Qt.ControlModifier:
             self.getViewBox().scaleBy(s=(0.8, 0.8))
         elif key == Qt.Key_Minus and mod & Qt.ControlModifier:
@@ -113,3 +125,4 @@ class RangedPlot(pg.PlotWidget):
     def restoreState(self, state):
         super().restoreState(state)
         self.curveNames = state["curveNames"]
+        self.restoreCurves.emit(self)
