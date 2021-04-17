@@ -20,9 +20,11 @@ class CurveItem(pg.PlotCurveItem):
 
         self.setClickable(True, 5)
 
-        self.clicked = False
-        self.initialized = False
         self.curveName = "Unnamed"
+        self.color: QColor = self.opts["pen"].color()
+        self.style: Qt.PenStyle = self.opts["pen"].style()
+        self.width: float = self.opts["pen"].widthF()
+        self.highlighted: bool = False
 
     def setDataPoints(self, dataPoints):
         self.dataPoints = dataPoints
@@ -90,33 +92,37 @@ class CurveItem(pg.PlotCurveItem):
         self.resetTransform()
         self.scale(scale, 1)  # scale to match downsampling
 
-    def mouseClickEvent(self, event):
-        super().mouseClickEvent(event)
-        self.clicked = not self.clicked
+    def mouseClickEvent(self, ev):
+        super().mouseClickEvent(ev)
+        buttons = ev.button()
+        modifiers = ev.modifiers()
 
-        eventButton: Qt.MouseButton = event.button()
-        eventModifiers: Qt.KeyboardModifiers = event.modifiers()
-        if eventButton == Qt.RightButton and not self.initialized:
-            menu = self.getViewBox().menu
-            renameAction: QAction = QAction("Rename", menu)
-            menu.addAction(renameAction)
-            renameAction.triggered.connect(self.setName)
-            colorAction: QAction = QAction("Color", menu)
-            menu.addAction(colorAction)
-            colorAction.triggered.connect(self.setColor)
-            self.initialized = True
+        print(buttons)
+        print(modifiers)
 
-    def setName(self):
-        self.curveName = QInputDialog.getText(
-            None, "Set Name", "Enter the curve name below:", text=self.curveName
-        )
+        if buttons == Qt.LeftButton and Qt.ControlModifier & modifiers:
+            print("Hello!")
+            self.highlighted = not self.highlighted
 
-    def setColor(self):
-        colorDialog = QColorDialog()
-        # TODO: Add custom palette as standard color
-        # colorDialog.setOption(QColorDialog.DontUseNativeDialog)
-        # colorDialog.setStandardColor(0, QColor("g"))
-        color = colorDialog.getColor()
-        if not color.isValid():
-            return
-        self.setPen(pg.mkPen(color, width=1, cosmetic=True))
+            if self.highlighted:
+                self.setWidth(self.width * 3)
+            else:
+                self.setWidth(self.width / 3)
+
+    def setStyle(self, style: Qt.PenStyle):
+        self.style = style
+        pen = pg.mkPen(self.color, cosmetic=True, style=self.style)
+        pen.setWidthF(self.width)
+        self.setPen(pen)
+
+    def setColor(self, color: QColor):
+        self.color = color
+        pen = pg.mkPen(self.color, cosmetic=True, style=self.style)
+        pen.setWidthF(self.width)
+        self.setPen(pen)
+
+    def setWidth(self, width: float):
+        self.width = width
+        pen = pg.mkPen(self.color, cosmetic=True, style=self.style)
+        pen.setWidthF(self.width)
+        self.setPen(pen)

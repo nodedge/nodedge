@@ -403,8 +403,8 @@ if __name__ == "__main__":
     # FIXME: delete the following. Only for dev.
     # Open file
     # window.openWorkspace("workspace/example.json")
-    # window.openFile("../../data/test.hdf5")
-    # window.plotData("sim_data/pos_k_i_dt", indices="[0,0,:]")
+    window.openFile("../../data/test.hdf5")
+    window.plotData("sim_data/pos_k_i_dt", indices="[0,0,:]")
     # window.plotData("/cf1/pos")
 
     try:

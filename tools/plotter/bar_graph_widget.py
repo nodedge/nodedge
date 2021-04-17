@@ -83,7 +83,7 @@ class BarGraphWidget(pg.PlotWidget):
                     b = self.bars.brushes
                     b[i] = pg.QtGui.QColor(255, 255, 255)
                     self.bars.setAttr(brushes=b)
-                    print("clicked on bar " + str(i))
+                    self.__logger.debug("clicked on bar " + str(i))
                     ev.accept()
         super().mousePressEvent(ev)
 

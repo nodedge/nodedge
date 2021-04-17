@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import logging
+
 from pyqtgraph.dockarea import Dock
 from PySide2.QtWidgets import QApplication
 
@@ -16,6 +18,9 @@ class CountableDockMeta(type(Dock), metaclass=InstanceCounterMeta):
 
 class CountableDock(Dock, metaclass=CountableDockMeta):
     def __init__(self, name):
+        self.__logger = logging.getLogger(__name__)
+        self.__logger.setLevel(logging.DEBUG)
+
         self.id = next(self.__class__._ids)
         if name is None:
             name = f"Plot{self.id}"
@@ -29,7 +34,6 @@ class CountableDock(Dock, metaclass=CountableDockMeta):
         colorHex = p.midlight().color().name()
         fg = colorHex
         bg = colorHex
-        print(colorHex)
         border = colorHex
         self.label.setStyleSheet(
             """DockLabel {
