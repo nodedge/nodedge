@@ -7,7 +7,8 @@ import logging
 import pyqtgraph as pg
 from PySide2 import QtGui
 from PySide2.QtCore import Qt, Signal
-from PySide2.QtGui import QKeyEvent
+from PySide2.QtGui import QColor, QKeyEvent
+from PySide2.QtWidgets import QApplication
 
 from tools.plotter.curve_item import CurveItem
 
@@ -22,13 +23,17 @@ class RangedPlot(pg.PlotWidget):
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
 
-        self.linearRegion = pg.LinearRegionItem(
-            [0, 0], brush=QtGui.QBrush(QtGui.QColor(0, 0, 255, 10))
-        )
+        p = QApplication.palette()
+        brushColor = p.highlight().color().setAlpha(250)
+        pen = p.text().color()
+        self.linearRegion = pg.LinearRegionItem([0, 0], brush=brushColor, pen=pen)
         self.addItem(self.linearRegion)
         self.linearRegion.setZValue(-10)
         self.viewRange = (0, 0)
         self.getPlotItem().getViewBox().suggestPadding = lambda *_: 0.007
+
+        p = QApplication.palette()
+        self.setBackground(p.base())
 
         self.sigRangeChanged.connect(self.updateRange)
         self.linearRegion.sigRegionChangeFinished.connect(self.onLinearRegionChanged)
@@ -38,6 +43,7 @@ class RangedPlot(pg.PlotWidget):
         self.dataXRange = [1e9, -1e9]
         self.dataYRange = [1e9, -1e9]
         self.getPlotItem().addLegend()
+        self.getPlotItem().legend
 
         self.curveNames = []
         self.curves = {}
@@ -64,7 +70,6 @@ class RangedPlot(pg.PlotWidget):
 
     def plot(self, data, name=None):
         numberOfCurves = len(self.getPlotItem().curves)
-        print(len(data))
 
         self.updateMinMaxData(data)
 
@@ -82,17 +87,18 @@ class RangedPlot(pg.PlotWidget):
             curveItem = self.curves[name]
             curveItem.setDataPoints(data)
 
-        def clicked(curve):
-            if curve.clicked:
-                curve.setShadowPen(pg.mkPen((70, 70, 30), width=6, cosmetic=True))
-            else:
-                curve.setShadowPen(pg.mkPen((70, 70, 30), width=0, cosmetic=True))
-
-        curveItem.sigClicked.connect(clicked)
+        curveItem.sigClicked.connect(self.clicked)
 
         self.getViewBox().setLimits(xMin=self.dataXRange[0], xMax=self.dataXRange[1])
 
         self.__logger.debug(self.dataXRange)
+
+    def clicked(self, curve):
+        self.clickedCurve: CurveItem = curve
+        if curve.clicked:
+            curve.setShadowPen(pg.mkPen((70, 70, 30), width=6, cosmetic=True))
+        else:
+            curve.setShadowPen(pg.mkPen((70, 70, 30), width=0, cosmetic=True))
 
     def updateMinMaxData(self, data):
         lastCurveXMax = len(data)
@@ -120,6 +126,14 @@ class RangedPlot(pg.PlotWidget):
             self.getViewBox().scaleBy(s=(0.8, 0.8))
         elif key == Qt.Key_Minus and mod & Qt.ControlModifier:
             self.getViewBox().scaleBy(s=(1.2, 1.2))
+        elif key == Qt.Key_D and self.clickedCurve is not None:
+            self.clickedCurve.clear()
+            curveNameList = list(self.curves.keys())
+            curvesList = list(self.curves.values())
+            index = curvesList.index(self.clickedCurve)
+            self.curveNames.pop(index)
+            self.curves.pop(curveNameList[index])
+            self.removeItem(self.clickedCurve)
 
     def saveState(self):
         state = super().saveState()

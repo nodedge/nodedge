@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from pyqtgraph.dockarea import Dock
+from PySide2.QtWidgets import QApplication
 
 from tools.plotter.utils import InstanceCounterMeta
 
@@ -21,6 +22,20 @@ class CountableDock(Dock, metaclass=CountableDockMeta):
         Dock.__init__(self, name=name, size=(1, 1))
         self.o = "horizontal"
         self.force = True
+
+    def updateStyle(self):
+        r = "3px"
+        p = QApplication.palette()
+        colorHex = p.midlight().color().name()
+        fg = colorHex
+        bg = colorHex
+        print(colorHex)
+        border = colorHex
+        self.label.setStyleSheet(
+            """DockLabel {
+                background-color : %s;}"""
+            % colorHex
+        )
 
     def setOrientation(self, o="horizontal", force=True):
         super().setOrientation(o, force)
