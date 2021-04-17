@@ -12,7 +12,7 @@ from nodedge.connector import SocketType
 _LOG = logging.getLogger(__name__)
 
 try:
-    from nodedge.blocks.block_config import OP_NODE_COMPUTE_ABSOLUTE
+    from nodedge.blocks.op_node import OP_NODE_COMPUTE_ABSOLUTE
 except NameError:
     _LOG.warning(f"Not registered block: {__name__}")
     op_block_string = -1

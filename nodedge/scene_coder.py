@@ -9,7 +9,7 @@ from typing import List, Tuple
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QFileDialog
 
-from nodedge.blocks.block_config import OP_NODE_OUTPUT
+from nodedge.blocks import OP_NODE_OUTPUT
 from nodedge.connector import Socket
 from nodedge.node import Node
 from nodedge.utils import indentCode
