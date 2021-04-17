@@ -40,6 +40,7 @@ class RangedPlot(pg.PlotWidget):
         self.getPlotItem().addLegend()
 
         self.curveNames = []
+        self.curves = {}
 
     def onLinearRegionChanged(self):
         self.linearRegion.setZValue(10)
@@ -63,15 +64,23 @@ class RangedPlot(pg.PlotWidget):
 
     def plot(self, data, name=None):
         numberOfCurves = len(self.getPlotItem().curves)
+        print(len(data))
 
-        if name not in self.curveNames:
+        self.updateMinMaxData(data)
+
+        if name not in self.curves.keys():
             self.curveNames.append(name)
-
-        curveItem = CurveItem(
-            pen=(numberOfCurves + 1, self.numberOfColors), clickable=True, name=name
-        )
-        self.addItem(curveItem)
-        curveItem.setDataPoints(data)
+            idx = self.curveNames.index(name)
+            curveItem = CurveItem(
+                pen=(idx, self.numberOfColors), clickable=True, name=name
+            )
+            self.addItem(curveItem)
+            self.curves[name] = curveItem
+            curveItem.setDataPoints(data)
+        else:
+            idx = self.curveNames.index(name)
+            curveItem = self.curves[name]
+            curveItem.setDataPoints(data)
 
         def clicked(curve):
             if curve.clicked:
@@ -81,28 +90,23 @@ class RangedPlot(pg.PlotWidget):
 
         curveItem.sigClicked.connect(clicked)
 
-        lastCurve = self.getPlotItem().curves[-1]
-        lastCurveXMax = max(lastCurve.xData)
-        lastCurveXMin = min(lastCurve.xData)
-
-        lastCurveYMax = max(lastCurve.yData)
-        lastCurveYMin = min(lastCurve.yData)
-
-        if lastCurveXMin < self.dataXRange[0]:
-            self.dataXRange[0] = lastCurveXMin
-
-        if lastCurveXMax > self.dataXRange[1]:
-            self.dataXRange[1] = lastCurveXMax
-
-        if lastCurveYMin < self.dataYRange[0]:
-            self.dataYRange[0] = lastCurveYMin
-
-        if lastCurveYMax > self.dataYRange[1]:
-            self.dataYRange[1] = lastCurveYMax
-
         self.getViewBox().setLimits(xMin=self.dataXRange[0], xMax=self.dataXRange[1])
 
         self.__logger.debug(self.dataXRange)
+
+    def updateMinMaxData(self, data):
+        lastCurveXMax = len(data)
+        lastCurveXMin = 0
+        lastCurveYMax = max(data)
+        lastCurveYMin = min(data)
+        if lastCurveXMin < self.dataXRange[0]:
+            self.dataXRange[0] = lastCurveXMin
+        if lastCurveXMax > self.dataXRange[1]:
+            self.dataXRange[1] = lastCurveXMax
+        if lastCurveYMin < self.dataYRange[0]:
+            self.dataYRange[0] = lastCurveYMin
+        if lastCurveYMax > self.dataYRange[1]:
+            self.dataYRange[1] = lastCurveYMax
 
     def keyReleaseEvent(self, ev: QKeyEvent):
         super().keyPressEvent(ev)

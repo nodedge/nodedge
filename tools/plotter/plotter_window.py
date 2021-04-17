@@ -104,6 +104,19 @@ class PlotterWindow(MainWindow):
         else:
             return
 
+        subWindowList = self.plotArea.mdiArea.subWindowList()
+        for subWindow in subWindowList:
+            keys = list(subWindow.widget().docks.data.keys())
+            for k in keys:
+                dock = subWindow.widget().docks[k]
+                graph = dock.widgets[0]
+                for curve in graph.curveNames:
+                    self.plotData(
+                        curve,
+                        option=PlottingOption.ADD_IN_GIVEN_WORKSHEET,
+                        worksheet=graph,
+                    )
+
     def onVariableShiftClicked(self, variableName):
         self.plotData(variableName, option=PlottingOption.APPEND_IN_CURRENT_WORKSHEET)
 
@@ -167,7 +180,7 @@ class PlotterWindow(MainWindow):
             or (option is PlottingOption.APPEND_IN_CURRENT_WORKSHEET and not keys)
         ):
             widget: CurveContainer = CurveContainer()
-            countableDock = CountableDock()
+            countableDock = CountableDock("")
             countableDock.addWidget(widget)
             dock = currentSubwindow.widget().addDock(countableDock, "bottom")
         elif option is PlottingOption.APPEND_IN_CURRENT_WORKSHEET:
@@ -387,7 +400,9 @@ if __name__ == "__main__":
     window = PlotterWindow()
     window.showMaximized()
 
+    # FIXME: delete the following. Only for dev.
     # Open file
+    # window.openWorkspace("workspace/example.json")
     window.openFile("../../data/test.hdf5")
     window.plotData("sim_data/pos_k_i_dt", indices="[0,0,:]")
     # window.plotData("/cf1/pos")
