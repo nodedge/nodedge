@@ -194,7 +194,6 @@ class RangedPlot(pg.PlotWidget):
             curveNameList = list(self.curves.keys())
             curvesList = list(self.curves.values())
             index = curvesList.index(self.clickedCurve)
-            self.curveNames.pop(index)
             self.curves.pop(curveNameList[index])
             self.removeItem(self.clickedCurve)
 
