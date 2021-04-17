@@ -10,3 +10,6 @@ operator;le;Le;OP_NODE_LESS_EQUAL;Less or Equal;<=;less_or_equal_100;(Number,Num
 operator;eq;Eq;OP_NODE_EQUAL;Equal;==;equal_sign_100;(Number,Number);(Number)
 operator;gt;Gt;OP_NODE_GREATER;Greater;>;more_than_100;(Number,Number);(Number)
 operator;ge;Ge;OP_NODE_GREATER_EQUAL;Greater or Equal;>=;more_or_equal_100;(Number,Number);(Number)
+operator;floordiv;FloorDiv;OP_NODE_FLOOR_DIVIDE;Floor division;//;floor_100;(Number,Number);(Number)
+operator;abs;Abs;OP_NODE_COMPUTE_ABSOLUTE;Absolute value;;absolute_100;(Number);(Number)
+

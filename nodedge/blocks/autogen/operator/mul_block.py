@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-import logging
-from operator import mul
 from typing import List
 
+import logging
+from operator import mul
+
 from nodedge.blocks.block import Block
-from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
 from nodedge.blocks.block_exception import EvaluationError
-from nodedge.socket_type import SocketType
+from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
+from nodedge.connector import SocketType
 
 _LOG = logging.getLogger(__name__)
 
