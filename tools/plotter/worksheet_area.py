@@ -4,6 +4,7 @@ worksheet_area.py module containing :class:`~nodedge.worksheet_area.py.<ClassNam
 """
 from pyqtgraph.dockarea import Dock, DockArea
 from PySide2.QtCore import Signal
+from PySide2.QtWidgets import QWidget
 
 from tools.plotter.countable_dock import CountableDock
 from tools.plotter.ranged_plot import RangedPlot
@@ -43,3 +44,7 @@ class WorksheetArea(DockArea):
             rangedPlot.restoreState(graphState)
             dock.addWidget(rangedPlot)
             dock.setTitle(rangedPlot.curveNames[0])
+
+    def mouseReleaseEvent(self, ev):
+        QWidget.mouseReleaseEvent(self, ev)
+        print("Mew")

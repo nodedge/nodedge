@@ -7,6 +7,7 @@ import logging
 import os
 import sys
 from enum import IntEnum
+from typing import Optional
 
 import h5py
 import numpy as np
@@ -44,6 +45,7 @@ class PlotterWindow(MainWindow):
 
         self.plotArea = PlotArea()
         self.setCentralWidget(self.plotArea)
+        self.plotArea.mdiArea.subWindowActivated.connect(self.onSubWindowActivated)
 
         # Make sure left and right docks have higher priority than top and bottom docks
         self.setCorner(Qt.BottomLeftCorner, Qt.LeftDockWidgetArea)
@@ -68,6 +70,12 @@ class PlotterWindow(MainWindow):
         self.workspaceName: str = ""
 
         self.file = None
+        self.lastSelectedGraph: Optional[RangedPlot] = None
+
+    def onSubWindowActivated(self, subwindow):
+        self.__logger.debug(subwindow)
+        # Reset last selected graph
+        self.lastSelectedGraph = None
 
     @property
     def hasWorkspaceName(self):
@@ -140,7 +148,13 @@ class PlotterWindow(MainWindow):
             variableName, indices
         )
 
-        if not option is PlottingOption.ADD_IN_GIVEN_WORKSHEET:
+        if option in [
+            PlottingOption.ADD_NEW_WORKBOOK,
+            PlottingOption.ADD_NEW_WORKSHEET,
+        ] or (
+            option is PlottingOption.APPEND_IN_CURRENT_WORKSHEET
+            and self.lastSelectedGraph is None
+        ):
             # Select current subwindow
             currentSubwindow = self.selectSubwindow(option)
 
@@ -148,9 +162,16 @@ class PlotterWindow(MainWindow):
             dock = self.selectDock(currentSubwindow, option)
             dock.setTitle(fullDatasetName)
             worksheet = dock.widgets[0].graph
+        elif option is PlottingOption.APPEND_IN_CURRENT_WORKSHEET:
+            worksheet = self.lastSelectedGraph
 
         worksheet.plot(dataToBePlotted, name=fullDatasetName)
+        worksheet.selected.connect(self.onGraphSelected)
         self.rangeSliderPlot.linkPlot(worksheet)
+
+    def onGraphSelected(self, graph):
+        self.__logger.debug(f"Selected graph: {graph}")
+        self.lastSelectedGraph = graph
 
     def selectDataToBePlotted(self, variableName, indices=None):
         # If no file has been opened yet, do nothing

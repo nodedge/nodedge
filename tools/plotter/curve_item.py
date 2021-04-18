@@ -97,11 +97,7 @@ class CurveItem(pg.PlotCurveItem):
         buttons = ev.button()
         modifiers = ev.modifiers()
 
-        print(buttons)
-        print(modifiers)
-
         if buttons == Qt.LeftButton and Qt.ControlModifier & modifiers:
-            print("Hello!")
             self.highlighted = not self.highlighted
 
             if self.highlighted:

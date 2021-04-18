@@ -7,7 +7,6 @@ from collections import OrderedDict
 from typing import Optional
 
 import pyqtgraph as pg
-from pyqtgraph import PlotItem, ViewBox
 from PySide2.QtCore import Qt, Signal
 from PySide2.QtGui import QBrush, QKeyEvent
 from PySide2.QtWidgets import QAction, QApplication, QColorDialog, QInputDialog
@@ -18,6 +17,7 @@ from tools.plotter.curve_item import CurveItem
 class RangedPlot(pg.PlotWidget):
     linearRegionChanged = Signal(list)
     restoreCurves = Signal(object)
+    selected = Signal(object)
 
     def __init__(self, *args):
         super().__init__(*args)
@@ -199,7 +199,7 @@ class RangedPlot(pg.PlotWidget):
 
     def saveState(self):
         state = super().saveState()
-        state["curveNames"] = self.curveNames
+        state["curveNames"] = list(self.curves.keys())
         return state
 
     def restoreState(self, state):
@@ -222,8 +222,6 @@ class RangedPlot(pg.PlotWidget):
             highlightColor = p.text().color()
             highlightColor.setAlpha(40)
 
-            print(self.clickedCurve)
-
             if self.clickedCurve is not None:
                 self.clickedCurve.setShadowPen(
                     pg.mkPen(highlightColor, width=6, cosmetic=True)
@@ -232,3 +230,5 @@ class RangedPlot(pg.PlotWidget):
             super().mouseReleaseEvent(ev)
 
         self.__logger.debug(self.clickedCurve)
+
+        self.selected.emit(self)

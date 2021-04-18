@@ -4,8 +4,7 @@ plot_area.py module containing :class:`~nodedge.plot_area.py.<ClassName>` class.
 """
 import sys
 
-from pyqtgraph.dockarea import DockArea
-from PySide2.QtGui import QCursor, QMouseEvent
+from PySide2.QtGui import QCursor
 from PySide2.QtWidgets import (
     QAction,
     QApplication,
