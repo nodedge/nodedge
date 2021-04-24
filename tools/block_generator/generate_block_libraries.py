@@ -6,8 +6,10 @@ from typing import Dict, List
 
 from black import FileMode, format_str
 
-configFile = "block_config.csv"
-savePath = "../../nodedge/blocks/autogen/"
+lib = "numpy"
+configFile = "numpy_block_config.csv"
+savePath = "../../nodedge/blocks/autogen"
+overwrite = False
 initFilename = "__init__.py"
 
 
@@ -46,18 +48,18 @@ def _generate_init_files(libraryDict):
 
 def main():
     libraries: Dict[str, List[str]] = {}
-    # Create `autogen` folder for generated block libraries
+    # Create `autogen/<lib>` folder for generated block libraries
     if not os.path.exists(savePath):
         os.makedirs(savePath)
+    # `autogen` lib already exists
     else:
-        for filename in os.listdir(savePath):
-            filepath = os.path.join(savePath, filename)
-            for filename in os.listdir(savePath):
-                filepath = os.path.join(savePath, filename)
-                try:
-                    shutil.rmtree(filepath)
-                except OSError:
-                    os.remove(filepath)
+        # Delete lib to be overwritten
+        if overwrite:
+            libpath = os.path.join(savePath, lib)
+            try:
+                shutil.rmtree(libpath)
+            except OSError:
+                os.remove(libpath)
     with open(configFile) as infile:
         reader = csv.DictReader(infile, delimiter=";")
 
@@ -84,11 +86,11 @@ def main():
 
             outputData = template.substitute(**row)
             outputData = format_str(outputData, mode=FileMode())
-            filename = f"{(row['function'])}_block.py"
+            folder = f"{(row['function'])}_block.py"
             libraryPath = os.path.join(savePath, row["library"])
             if not os.path.exists(libraryPath):
                 os.makedirs(libraryPath)
-            filePath = os.path.join(libraryPath, filename)
+            filePath = os.path.join(libraryPath, folder)
             outputFile = open(filePath, "w")
             outputFile.write(outputData)
             outputFile.close()
