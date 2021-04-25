@@ -12,16 +12,16 @@ from nodedge.connector import SocketType
 _LOG = logging.getLogger(__name__)
 
 try:
-    from nodedge.blocks.op_node import OP_NODE_GREATER_EQUAL
+    from nodedge.blocks.op_node import OP_NODE_OPERATOR_GREATER_EQUAL
 except NameError:
     _LOG.warning(f"Not registered block: {__name__}")
     op_block_string = -1
 
 
-@registerNode(OP_NODE_GREATER_EQUAL)
+@registerNode(OP_NODE_OPERATOR_GREATER_EQUAL)
 class GeBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/more_or_equal_100.png"
-    operationCode = OP_NODE_GREATER_EQUAL
+    operationCode = OP_NODE_OPERATOR_GREATER_EQUAL
     operationTitle = "Greater or Equal"
     contentLabel = ">="
     contentLabelObjectName = "BlockBackground"

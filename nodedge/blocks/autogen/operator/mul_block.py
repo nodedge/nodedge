@@ -12,16 +12,16 @@ from nodedge.connector import SocketType
 _LOG = logging.getLogger(__name__)
 
 try:
-    from nodedge.blocks.op_node import OP_NODE_MULTIPLY
+    from nodedge.blocks.op_node import OP_NODE_OPERATOR_MULTIPLY
 except NameError:
     _LOG.warning(f"Not registered block: {__name__}")
     op_block_string = -1
 
 
-@registerNode(OP_NODE_MULTIPLY)
+@registerNode(OP_NODE_OPERATOR_MULTIPLY)
 class MulBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/multiply_100.png"
-    operationCode = OP_NODE_MULTIPLY
+    operationCode = OP_NODE_OPERATOR_MULTIPLY
     operationTitle = "Multiplication"
     contentLabel = "*"
     contentLabelObjectName = "BlockBackground"

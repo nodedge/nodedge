@@ -12,17 +12,17 @@ from nodedge.connector import SocketType
 _LOG = logging.getLogger(__name__)
 
 try:
-    from nodedge.blocks.op_node import OP_NODE_COMPUTE_ABSOLUTE
+    from nodedge.blocks.op_node import OP_NODE_OPERATOR_ABSOLUTE
 except NameError:
     _LOG.warning(f"Not registered block: {__name__}")
     op_block_string = -1
 
 
-@registerNode(OP_NODE_COMPUTE_ABSOLUTE)
+@registerNode(OP_NODE_OPERATOR_ABSOLUTE)
 class AbsBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/absolute_100.png"
-    operationCode = OP_NODE_COMPUTE_ABSOLUTE
-    operationTitle = "Absolute value"
+    operationCode = OP_NODE_OPERATOR_ABSOLUTE
+    operationTitle = "Abs. value"
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "abs"

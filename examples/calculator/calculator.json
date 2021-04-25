@@ -6,7 +6,7 @@
         {
             "id": 1583748004592,
             "title": "Input",
-            "posX": -375.0,
+            "posX": -510.0,
             "posY": -330.0,
             "inputSockets": [],
             "outputSockets": [
@@ -26,7 +26,7 @@
         {
             "id": 1583747824656,
             "title": "Input1",
-            "posX": -375.0,
+            "posX": -515.0,
             "posY": -225.0,
             "inputSockets": [],
             "outputSockets": [
@@ -178,7 +178,7 @@
         {
             "id": 1583749319792,
             "title": "Output",
-            "posX": 240.0,
+            "posX": 495.0,
             "posY": -330.0,
             "inputSockets": [
                 {
@@ -196,7 +196,7 @@
         {
             "id": 1583749804960,
             "title": "Output1",
-            "posX": 240.0,
+            "posX": 498.0,
             "posY": -210.0,
             "inputSockets": [
                 {
@@ -214,7 +214,7 @@
         {
             "id": 1583749320560,
             "title": "Output2",
-            "posX": 240.0,
+            "posX": 498.0,
             "posY": -105.0,
             "inputSockets": [
                 {
@@ -232,7 +232,7 @@
         {
             "id": 1583749320608,
             "title": "Output3",
-            "posX": 240.0,
+            "posX": 498.0,
             "posY": 15.0,
             "inputSockets": [
                 {
@@ -250,7 +250,7 @@
         {
             "id": 192604048,
             "title": "Output4",
-            "posX": 240.0,
+            "posX": 498.0,
             "posY": 120.0,
             "inputSockets": [
                 {
@@ -327,7 +327,7 @@
         {
             "id": 140474823730792,
             "title": "Input2",
-            "posX": -375.0,
+            "posX": -525.0,
             "posY": 225.0,
             "inputSockets": [],
             "outputSockets": [
@@ -347,7 +347,7 @@
         {
             "id": 140476592970272,
             "title": "Output5",
-            "posX": 240.0,
+            "posX": 498.0,
             "posY": 225.0,
             "inputSockets": [
                 {

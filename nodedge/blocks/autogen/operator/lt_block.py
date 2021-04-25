@@ -12,16 +12,16 @@ from nodedge.connector import SocketType
 _LOG = logging.getLogger(__name__)
 
 try:
-    from nodedge.blocks.op_node import OP_NODE_LESS
+    from nodedge.blocks.op_node import OP_NODE_OPERATOR_LESS
 except NameError:
     _LOG.warning(f"Not registered block: {__name__}")
     op_block_string = -1
 
 
-@registerNode(OP_NODE_LESS)
+@registerNode(OP_NODE_OPERATOR_LESS)
 class LtBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/less_than_100.png"
-    operationCode = OP_NODE_LESS
+    operationCode = OP_NODE_OPERATOR_LESS
     operationTitle = "Less"
     contentLabel = "<"
     contentLabelObjectName = "BlockBackground"

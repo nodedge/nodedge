@@ -12,16 +12,16 @@ from nodedge.connector import SocketType
 _LOG = logging.getLogger(__name__)
 
 try:
-    from nodedge.blocks.op_node import OP_NODE_ADD
+    from nodedge.blocks.op_node import OP_NODE_OPERATOR_ADD
 except NameError:
     _LOG.warning(f"Not registered block: {__name__}")
     op_block_string = -1
 
 
-@registerNode(OP_NODE_ADD)
+@registerNode(OP_NODE_OPERATOR_ADD)
 class AddBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/plus_math_100.png"
-    operationCode = OP_NODE_ADD
+    operationCode = OP_NODE_OPERATOR_ADD
     operationTitle = "Addition"
     contentLabel = "+"
     contentLabelObjectName = "BlockBackground"
