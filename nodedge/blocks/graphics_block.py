@@ -10,7 +10,7 @@ class GraphicsBlock(GraphicsNode):
     # noinspection PyAttributeOutsideInit
     def initSizes(self):
         super().initSizes()
-        self.width = 200
+        self.width = 450
         self.height = 80
         self.edgeRoundness = 0.0
         self.edgePadding = 0.0

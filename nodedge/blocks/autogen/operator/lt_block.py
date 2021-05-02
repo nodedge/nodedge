@@ -1,26 +1,27 @@
 # -*- coding: utf-8 -*-
-import logging
-from operator import lt
 from typing import List
 
+import logging
+from operator import lt
+
 from nodedge.blocks.block import Block
-from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
 from nodedge.blocks.block_exception import EvaluationError
-from nodedge.socket_type import SocketType
+from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
+from nodedge.connector import SocketType
 
 _LOG = logging.getLogger(__name__)
 
 try:
-    from nodedge.blocks.block_config import OP_NODE_LESS
+    from nodedge.blocks.op_node import OP_NODE_OPERATOR_LESS
 except NameError:
     _LOG.warning(f"Not registered block: {__name__}")
     op_block_string = -1
 
 
-@registerNode(OP_NODE_LESS)
+@registerNode(OP_NODE_OPERATOR_LESS)
 class LtBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/less_than_100.png"
-    operationCode = OP_NODE_LESS
+    operationCode = OP_NODE_OPERATOR_LESS
     operationTitle = "Less"
     contentLabel = "<"
     contentLabelObjectName = "BlockBackground"
