@@ -1,0 +1,331 @@
+QFrame,QDialog,QMainWindow{
+background:palette(window);
+}
+
+QSplitter,QMainWindow::separator{
+background:palette(dark);
+}
+
+QStatusBar{
+background:palette(dark);
+color:palette(window-text);
+}
+
+
+QTabWidget{
+border:0;
+}
+
+QMdiArea QTabBar::tab
+{
+font-size: 14px;
+height:25px;
+}
+
+QMdiArea QTabBar::tab:top:!selected,QMdiArea QTabBar::tab:top:selected,
+QMdiArea QTabBar::tab:top:!selected:hover{
+background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,
+    stop : 0 palette(dark),
+    stop : 0.2 palette(dark),
+    stop : 1 palette(dark));
+border-top-left-radius:0px;
+border-top-right-radius:0px;
+padding:0px 8px;
+padding-top:0;
+padding-bottom:3px;
+min-width:8px;
+border:none;
+border-color:none;
+border-bottom:0;}
+
+QMdiArea QTabBar::tab:top:selected{
+background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 palette(mid),
+stop : 0.2 palette(mid),stop : 0.1 palette(mid));
+font-weight: bold;
+}
+
+QMdiArea QTabBar::tab:top:hover{
+background:palette(highlight);
+}
+
+QMdiArea QTabBar::close-button{
+image:url("resources/iconsModified/close_window_100.png");
+subcontrol-position:right bottom;
+icon-size: 16px;
+padding: 0px;
+}
+
+QMdiArea QTabBar::close-button:!selected{
+image:url("close_window_100.png");
+}
+
+QDockWidget{
+    font-size: 16px;
+    color: palette(window-text);
+    /*font-weight:bold;*/
+    titlebar-close-icon: url("resources/iconsModified/close_window_100.png");
+    titlebar-normal-icon: url(":icons/docktitle-normal-btn-light.png");
+    icon-size: 25px;
+    width: 25px;
+    border: 1px solid palette(highlight);
+}
+
+QDockWidget::title{
+background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 palette(mid),
+stop : 0.2 palette(mid),stop : 0.1 palette(mid));
+color: transparent;
+text-align: center;
+border: none;
+height:25px;
+}
+
+QDockWidget::title:hover{
+background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,
+    stop : 0 palette(highlight),
+    stop : 0.2 palette(highlight),
+    stop : 1 palette(highlight));
+}
+
+QDockWidget::title:top:!selected{
+background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,
+    stop : 0 palette(light),
+    stop : 0.2 palette(dark),
+    stop : 1 palette(dark));
+}
+
+QDockWidget::close-button {
+    image: url("resources/iconsModified/close_window_100.png");
+    icon-size: 25px;
+    padding: 0px;
+    margin: 0px;
+}
+
+QMenuBar {
+    background: palette(dark);
+    font-size: 16px;
+}
+
+QMenuBar::item{
+spacing:3px;
+padding:3px 10px;
+color:palette(text);
+background:transparent;
+}
+
+QMenuBar::item:pressed{
+background:palette(highlight);
+}
+
+QMenu{
+background:palette(dark);
+border:1px solid palette(light);
+}
+
+QMenu::item{
+background:palette(dark);
+color:palette(text);
+}
+
+QMenu::item:selected{
+background:palette(highlight);
+}
+
+QMenu::separator{
+height:1px;
+background:palette(light);
+}
+
+QToolButton {
+    padding: 0px 1px;
+    font-size: 16px;
+}
+
+QMenu:disabled,
+QMenu::item:disabled{
+color:palette(shadow);}
+
+QListView{
+background-color:palette(window);
+
+}
+
+QListView::item{
+height:22px;
+color:palette(text);
+}
+
+QListView::item:hover{
+background:palette(light);
+}
+
+QListView::item:selected,QListView::item:active:selected{
+color:palette(text);
+background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,
+stop : 0 palette(light),stop : 1 palette(light));
+border:0;}
+
+QTableView::item{
+color:palette(text);
+padding-right: 0px;
+padding-left: 0px;
+}
+
+QTableView::item:hover{
+background:palette(light);
+}
+
+QTableView::item:active:hover{
+color:palette(text);
+padding-right: 0px;
+padding-left: 0px;
+}
+
+QTableView::item:selected,QTableView::item:active:selected {
+    color: palette(text);
+    background: qlineargradient(x1:0,
+    y1: 0,
+    x2: 0,
+    y2: 1,
+    stop: 0 palette(highlight),
+    stop: 1 palette(highlight));
+    border: 0;
+    padding-right: 0px;
+    padding-left: 0px;
+}
+
+QPushButton{
+border: 1px solid palette(light);
+border-radius: 0;
+color: palette(dark);
+font-size: 12px;
+padding: 6px 16px;
+background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+stop: 0.0 palette(light), stop: 0.3 palette(light),
+stop: 0.7 palette(light), stop: 1.0 palette(light));
+}
+
+QPushButton:hover{
+color:palette(button-text);
+background:palette(window);
+border-color:palette(dark);
+}
+
+QPushButton:focus,
+QPushButton:hover,
+QPushButton:hover:focus,
+QPushButton:pressed,
+QPushButton:pressed:focus{
+color:palette(button-text);
+background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,
+    stop : 0 palette(highlight),
+    stop : 1 palette(highlight));
+border-color:palette(dark);
+}
+
+QPushButton:default{
+color:palette(button-text);
+background:palette(dark);
+border-color:palette(dark);
+}
+
+QLabel{
+    color:palette(text);
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    background: palette(window);
+}
+
+QTextEdit{
+color:palette(light);
+background:palette(window);
+}
+
+QLineEdit{
+border:1px solid palette(button-text);
+background:palette(window);
+border-radius:2px;
+padding:1px 2px;
+}
+
+QGraphicsView {
+selection-background-color: palette(light);
+}
+
+QTableWidget {
+background-color: palette(window);
+padding-left: 0px;
+gridline-color: palette(window);
+border-bottom: 1px solid palette(window);
+}
+
+QTableWidget::item{
+font-size: 14px;
+border-color: palette(window);
+padding-top: 0px;
+gridline-color: palette(window);
+border-left: 1px solid palette(light);
+border-bottom: 1px solid palette(light);
+}
+
+QTableWidget::item:selected{
+background-color: palette(highlight);
+}
+
+QHeaderView::section
+{
+border: 0px solid palette(light);
+background-color: palette(dark);
+}
+
+QScrollBar:horizontal {
+border: none;
+background: palette(light);
+height: 14px;
+margin: 0px 21px 0 21px;
+border-radius: 0px;
+}
+
+QScrollBar:vertical {
+border: none;
+background: palette(light);
+width: 14px;
+margin: 21px 0 21px 0;
+border-radius: 0px;
+}
+
+QMenu{
+image:url("resources/iconsModified/close_window_100.png");
+}
+
+QToolBar{
+background: palette(midlight);
+border-top:1px solid palette(light);
+border-bottom:1px solid palette(light);
+}
+
+QToolBar::separator {
+    border-right: 1px solid palette(light);
+    padding: 3px;
+    width: 1px;
+    height: 30px;
+}
+
+SceneItemsTableWidget {
+    min-width: 300px;
+}
+
+QToolTip {
+    background: palette(light);
+    color: palette(text);
+}
+
+QListWidget {
+    /*max-height: 10;*/
+    min-width: 10px;
+}
+
+PlotWidget {
+    padding: 0px;
+}

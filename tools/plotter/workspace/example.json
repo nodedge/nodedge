@@ -1,0 +1,117 @@
+{
+    "Untitled": {
+        "main": [
+            "vertical",
+            [
+                [
+                    "dock",
+                    "Plot1",
+                    {}
+                ]
+            ],
+            {
+                "sizes": [
+                    760
+                ]
+            }
+        ],
+        "float": [],
+        "graphStates": [
+            {
+                "fftCheck": false,
+                "logXCheck": false,
+                "logYCheck": false,
+                "clipToViewCheck": false,
+                "maxTracesCheck": false,
+                "downsampleCheck": false,
+                "peakRadio": true,
+                "maxTracesSpin": 0,
+                "forgetTracesCheck": false,
+                "meanRadio": false,
+                "subsampleRadio": false,
+                "autoDownsampleCheck": true,
+                "downsampleSpin": 1,
+                "averageGroup": false,
+                "alphaGroup": true,
+                "autoAlphaCheck": false,
+                "alphaSlider": 1000,
+                "xGridCheck": true,
+                "yGridCheck": true,
+                "gridAlphaSlider": 128,
+                "pointsGroup": true,
+                "autoPointsCheck": true,
+                "paramList": {},
+                "view": {
+                    "targetRange": [
+                        [
+                            -0.075,
+                            15.075
+                        ],
+                        [
+                            -0.013992857142857144,
+                            1.5139928571428571
+                        ]
+                    ],
+                    "viewRange": [
+                        [
+                            -0.075,
+                            15.075
+                        ],
+                        [
+                            -0.013992857142857144,
+                            1.5139928571428571
+                        ]
+                    ],
+                    "yInverted": false,
+                    "xInverted": false,
+                    "aspectLocked": false,
+                    "autoRange": [
+                        false,
+                        true
+                    ],
+                    "autoPan": [
+                        false,
+                        false
+                    ],
+                    "autoVisibleOnly": [
+                        false,
+                        false
+                    ],
+                    "linkedViews": [
+                        null,
+                        null
+                    ],
+                    "mouseEnabled": [
+                        true,
+                        true
+                    ],
+                    "mouseMode": 3,
+                    "enableMenu": true,
+                    "wheelScaleFactor": -0.125,
+                    "background": null,
+                    "limits": {
+                        "xLimits": [
+                            0,
+                            15
+                        ],
+                        "yLimits": [
+                            null,
+                            null
+                        ],
+                        "xRange": [
+                            null,
+                            null
+                        ],
+                        "yRange": [
+                            null,
+                            null
+                        ]
+                    }
+                },
+                "curveNames": [
+                    "sim_data/pos_k_i_dt[0,0,:]"
+                ]
+            }
+        ]
+    }
+}

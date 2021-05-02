@@ -1,8 +1,8 @@
 import json
 
 import black
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import *
+from PySide2.QtCore import Qt
+from PySide2.QtWidgets import *
 
 
 class ViewTree(QTreeWidget):

@@ -20,7 +20,7 @@ from PySide2.QtWidgets import (
 )
 
 from nodedge.utils import dumpException
-from tools.log_analyzer.application_styler import ApplicationStyler
+from tools.main_window_template.application_styler import ApplicationStyler
 
 
 class MainWindow(QMainWindow):
@@ -38,6 +38,7 @@ class MainWindow(QMainWindow):
         )
 
         self.applicationName: str = applicationName
+        self.setWindowTitle(self.applicationName)
         self.iconPath = iconPath
 
         self.textEdit = QPlainTextEdit()
@@ -49,9 +50,6 @@ class MainWindow(QMainWindow):
             QGuiApplication, QGuiApplication.instance()
         )
         self.readSettings()
-
-        self.createActions()
-        self.createMenus()
 
         self.initUI()
         self.setMouseTracking(True)
@@ -126,7 +124,7 @@ class MainWindow(QMainWindow):
         """
 
         self.newAct = self.createAction(
-            "&New", self.newFile, "Create new Nodedge graph", QKeySequence("Ctrl+N")
+            "&New", self.newFile, "Create new file", QKeySequence("Ctrl+N")
         )
 
         self.openAct = self.createAction(

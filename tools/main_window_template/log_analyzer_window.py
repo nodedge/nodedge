@@ -3,11 +3,11 @@ import logging
 import sys
 
 from PySide2.QtGui import QStandardItem, QStandardItemModel
-from PySide2.QtWidgets import QApplication, QFileDialog, QMdiArea, QTableView
+from PySide2.QtWidgets import QApplication, QFileDialog, QTableView
 
 from nodedge.utils import dumpException
-from tools.log_analyzer.main_window import MainWindow
-from tools.log_analyzer.mdi_area import MdiArea
+from tools.main_window_template.main_window import MainWindow
+from tools.main_window_template.mdi_area import MdiArea
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
