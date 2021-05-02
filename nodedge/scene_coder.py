@@ -12,6 +12,7 @@ from PySide2.QtWidgets import QFileDialog
 from nodedge.blocks.block_config import OP_NODE_OUTPUT
 from nodedge.connector import Socket
 from nodedge.node import Node
+from nodedge.utils import indentCode
 
 
 class SceneCoder(QObject):
@@ -126,7 +127,7 @@ class SceneCoder(QObject):
         outputFileString = (
             generatedImport
             + generatedFunctionDef
-            + _indent_code(generatedCode)
+            + indentCode(generatedCode)
             + generatedFunctionCall
         )
 
@@ -183,8 +184,13 @@ class SceneCoder(QObject):
         return nodesToAdd
 
     def _getFunctionName(self):
-        functionName = self.scene.filename.split("/")[-1]
-        functionName = functionName.split(".")[0].lower()
+        filename = self.scene.filename
+        if filename is None:
+            functionName = "unnamed"
+        else:
+            functionName = self.scene.filename.split("/")[-1]
+            functionName = functionName.split(".")[0].lower()
+
         return functionName
 
     @staticmethod
@@ -206,10 +212,3 @@ class SceneCoder(QObject):
         :rtype: ``str``
         """
         return "Python files (*.py);;All files (*)"
-
-
-def _indent_code(string: str):
-    lines = string.split("\n")
-    indentedLines = ["\n    " + line for line in lines]
-    indentedCode = "".join(indentedLines)
-    return indentedCode
