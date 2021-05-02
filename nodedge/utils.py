@@ -85,3 +85,10 @@ def widgetsAt(pos):
         widget.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents, False)
 
     return widgets
+
+
+def indentCode(string: str):
+    lines = string.split("\n")
+    indentedLines = ["\n    " + line for line in lines]
+    indentedCode = "".join(indentedLines)
+    return indentedCode

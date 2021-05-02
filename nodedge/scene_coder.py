@@ -3,13 +3,16 @@
 Scene Coder module containing :class:`~nodedge.scene_coder.SceneCoder` class.
 """
 import logging
+from pathlib import Path
 from typing import List, Tuple
 
 from PySide2.QtCore import QObject, Signal
+from PySide2.QtWidgets import QFileDialog
 
 from nodedge.blocks.block_config import OP_NODE_OUTPUT
 from nodedge.connector import Socket
 from nodedge.node import Node
+from nodedge.utils import indentCode
 
 
 class SceneCoder(QObject):
@@ -18,11 +21,19 @@ class SceneCoder(QObject):
     notConnectedSocket = Signal()
 
     def __init__(self, scene: "Scene", parent=None):  # type: ignore
+        super().__init__(parent)
         self.scene = scene
+        self.filename: str = ""
 
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
-        super().__init__(parent)
+
+    def generateCodeAndSave(self):
+
+        orderedNodeList, generatedCode = self.generateCode()
+        generatedFileString = self.addImports(orderedNodeList, generatedCode)
+        self.saveFileAs(generatedFileString)
+        return
 
     def generateCode(self) -> Tuple[List[Node], str]:
         """
@@ -90,7 +101,7 @@ class SceneCoder(QObject):
 
         return orderedNodeList, generatedCode
 
-    def createFileFromGeneratedCode(self, orderedNodeList, generatedCode):
+    def addImports(self, orderedNodeList, generatedCode):
         # add imports on top
         importedLibraries = {}
         for currentVarIndex, node in enumerate(orderedNodeList):
@@ -107,8 +118,7 @@ class SceneCoder(QObject):
         generatedImport += "\n\n"
 
         # put code into a function
-        functionName = self.scene.filename.split("/")[-1]
-        functionName = functionName.split(".")[0].lower()
+        functionName = self._getFunctionName()
         generatedFunctionDef = f"def {functionName}():"
         generatedFunctionCall = (
             f"\n\n\nif __name__ == '__main__':\n    {functionName}()\n"
@@ -117,11 +127,50 @@ class SceneCoder(QObject):
         outputFileString = (
             generatedImport
             + generatedFunctionDef
-            + _indent_code(generatedCode)
+            + indentCode(generatedCode)
             + generatedFunctionCall
         )
 
         return outputFileString
+
+    def saveFileAs(self, outputFileString):
+        """
+        Choose the filename and path where to save Python generated code via a ``QFileDialog``.
+        """
+        self.__logger.debug("Saving generated code to file")
+
+        # define default file name
+        functionName = self._getFunctionName()
+        defaultFilename = functionName + ".py"
+
+        # open QFileDialog
+        dialog: QFileDialog = QFileDialog()
+        # dialog.setAcceptMode(QFileDialog.AcceptMode.AcceptSave)  # Set save mode: Ubuntu 18.04 shows "Open"
+        self.filename, _ = dialog.getSaveFileName(
+            parent=None,
+            caption="Save code to file",
+            dir=str(Path(SceneCoder.getFileDialogDirectory(), defaultFilename)),
+            filter=SceneCoder.getFileDialogFilter(),
+        )
+
+        # if filename is empty, do nothing
+        if self.filename == "":
+            return
+
+        # if filename is not empty, save to file
+        self.saveFile(self.filename, outputFileString)
+
+        return
+
+    def saveFile(self, filename, outputFileString):
+        """
+        Save Python generated code to file.
+        """
+        with open(filename, "w") as file:
+            file.write(outputFileString)
+            self.__logger.debug(f"Saving to {filename} was successful.")
+
+        return
 
     def _appendHierarchyUntilRoot(
         self, currentNode: Node, appendedNodes: List[Node], nodesToAdd: List[Node]
@@ -134,9 +183,32 @@ class SceneCoder(QObject):
                     self._appendHierarchyUntilRoot(parent, appendedNodes, nodesToAdd)
         return nodesToAdd
 
+    def _getFunctionName(self):
+        filename = self.scene.filename
+        if filename is None:
+            functionName = "unnamed"
+        else:
+            functionName = self.scene.filename.split("/")[-1]
+            functionName = functionName.split(".")[0].lower()
 
-def _indent_code(string: str):
-    lines = string.split("\n")
-    indentedLines = ["\n    " + line for line in lines]
-    indentedCode = "".join(indentedLines)
-    return indentedCode
+        return functionName
+
+    @staticmethod
+    def getFileDialogDirectory() -> str:
+        """
+        Return starting directory for ``QFileDialog`` file open/save
+
+        :return: starting directory for ``QFileDialog`` file open/save
+        :rtype: ``str``
+        """
+        return ""
+
+    @staticmethod
+    def getFileDialogFilter() -> str:
+        """
+        Return ``str`` standard file open/save filter for ``QFileDialog``
+
+        :return: standard file open/save filter for ``QFileDialog``
+        :rtype: ``str``
+        """
+        return "Python files (*.py);;All files (*)"
