@@ -168,7 +168,7 @@ class SceneCoder(QObject):
         """
         with open(filename, "w") as file:
             file.write(outputFileString)
-            self.__logger.info(f"Saving to {filename} was successful.")
+            self.__logger.debug(f"Saving to {filename} was successful.")
 
         return
 
