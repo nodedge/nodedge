@@ -552,9 +552,7 @@ class EditorWindow(QMainWindow):
                 self.currentEditorWidget.scene.coder.generateCodeAndSave()
                 successStr = f"File saved to {coder.filename}"
                 self.__logger.debug(successStr)
-                self.statusBar().showMessage(
-                    successStr, 5000)
-
+                self.statusBar().showMessage(successStr, 5000)
 
     def createAction(
         self,

@@ -134,7 +134,7 @@ class SceneCoder(QObject):
 
     def saveFileAs(self, outputFileString):
         """
-            Save Python generated code to file. Choose the filename via a ``QFileDialog``.
+        Choose the filename and path where to save Python generated code via a ``QFileDialog``.
         """
         self.__logger.debug("Saving generated code to file")
 
@@ -162,7 +162,9 @@ class SceneCoder(QObject):
         return
 
     def saveFile(self, filename, outputFileString):
-
+        """
+        Save Python generated code to file.
+        """
         with open(filename, "w") as file:
             file.write(outputFileString)
             self.__logger.info(f"Saving to {filename} was successful.")
@@ -188,7 +190,7 @@ class SceneCoder(QObject):
     @staticmethod
     def getFileDialogDirectory() -> str:
         """
-        Returns starting directory for ``QFileDialog`` file open/save
+        Return starting directory for ``QFileDialog`` file open/save
 
         :return: starting directory for ``QFileDialog`` file open/save
         :rtype: ``str``
@@ -198,7 +200,7 @@ class SceneCoder(QObject):
     @staticmethod
     def getFileDialogFilter() -> str:
         """
-        Returns ``str`` standard file open/save filter for ``QFileDialog``
+        Return ``str`` standard file open/save filter for ``QFileDialog``
 
         :return: standard file open/save filter for ``QFileDialog``
         :rtype: ``str``
