@@ -12,6 +12,7 @@ from PySide2.QtGui import QBrush, QKeyEvent
 from PySide2.QtWidgets import QAction, QApplication, QColorDialog, QInputDialog
 
 from tools.plotter.curve_item import CurveItem
+from tools.plotter.time_axis_item import TimeAxisItem
 
 
 class RangedPlot(pg.PlotWidget):
@@ -20,7 +21,9 @@ class RangedPlot(pg.PlotWidget):
     selected = Signal(object)
 
     def __init__(self, *args):
-        super().__init__(*args)
+        super().__init__(
+            *args, axisItems={"bottom": TimeAxisItem(orientation="bottom")}
+        )
 
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.DEBUG)
@@ -44,14 +47,16 @@ class RangedPlot(pg.PlotWidget):
 
         p = QApplication.palette()
         self.setBackground(p.base())
+        self.showGrid(x=True, y=True)
 
         self.sigRangeChanged.connect(self.updateRange)
         self.linearRegion.sigRegionChangeFinished.connect(self.onLinearRegionChanged)
 
         self.numberOfColors = 10
+        self.register("Unnamed")
 
-        self.dataXRange = [1e9, -1e9]
-        self.dataYRange = [1e9, -1e9]
+        self.dataXRange = [1e15, -1e15]
+        self.dataYRange = [1e15, -1e15]
         self.getPlotItem().addLegend()
 
         self.curves = OrderedDict()
@@ -118,8 +123,8 @@ class RangedPlot(pg.PlotWidget):
 
     def onLinearRegionChanged(self):
         self.linearRegion.setZValue(10)
-        minX = self.linearRegion.getRegion()
-        self.linearRegionChanged.emit(minX)
+        range = self.linearRegion.getRegion()
+        self.linearRegionChanged.emit(range)
 
     def updateRange(self, window, viewRange):
         self.viewRange = viewRange[0]
@@ -136,10 +141,9 @@ class RangedPlot(pg.PlotWidget):
     def updateLinearRegion(self, minMaxList):
         self.linearRegion.setRegion(minMaxList)
 
-    def plot(self, data, name=None):
-        numberOfCurves = len(self.getPlotItem().curves)
+    def plotData(self, x, y=None, name=None, **kargs):
 
-        self.updateMinMaxData(data)
+        self.updateMinMaxData(x, y)
         curveNames = list(self.curves.keys())
         if name not in curveNames:
             nbCurves = len(curveNames)
@@ -148,11 +152,13 @@ class RangedPlot(pg.PlotWidget):
             curveItem = CurveItem(pen=pen, clickable=True, name=name)
             self.addItem(curveItem)
             self.curves[name] = curveItem
-            curveItem.setDataPoints(data)
+            curveItem.setDataPoints(x=x, y=y)
+            minX = min(x)
+            self.linearRegion.setRegion((minX, minX))
         else:
             idx = curveNames.index(name)
             curveItem = self.curves[name]
-            curveItem.setDataPoints(data)
+            curveItem.setData(y=y, x=x)
 
         curveItem.sigClicked.connect(self.clicked)
 
@@ -163,11 +169,11 @@ class RangedPlot(pg.PlotWidget):
     def clicked(self, curve):
         self.clickedCurve = curve
 
-    def updateMinMaxData(self, data):
-        lastCurveXMax = len(data)
-        lastCurveXMin = 0
-        lastCurveYMax = max(data)
-        lastCurveYMin = min(data)
+    def updateMinMaxData(self, x, y):
+        lastCurveXMax = max(x)
+        lastCurveXMin = min(x)
+        lastCurveYMax = max(y)
+        lastCurveYMin = min(y)
         if lastCurveXMin < self.dataXRange[0]:
             self.dataXRange[0] = lastCurveXMin
         if lastCurveXMax > self.dataXRange[1]:

@@ -7,13 +7,14 @@ from typing import Optional
 
 from PySide2.QtCore import QEvent, Qt, Signal, Slot
 from PySide2.QtGui import QMouseEvent
-from PySide2.QtWidgets import QTreeWidget, QTreeWidgetItem
+from PySide2.QtWidgets import QHeaderView, QTreeWidget, QTreeWidgetItem
 
 from tools.plotter.utils import H5Types
 
 COLUMNS = {
     "Name": 0,
     "Type": 1,
+    "Variable type": 2,
 }
 
 H5TYPES_TO_STR = {
@@ -35,6 +36,9 @@ class VariableTreeWidget(QTreeWidget):
 
         self.setHeaderLabels(COLUMNS.keys())
         self.setSortingEnabled(True)
+        self.header().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.header().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.header().setSectionResizeMode(2, QHeaderView.Stretch)
 
         self.itemDoubleClicked.connect(self.onItemClicked)
 
@@ -58,11 +62,7 @@ class VariableTreeWidget(QTreeWidget):
     def onHeaderClicked(self, index):
         self.sortItems(index, Qt.AscendingOrder)
 
-    def updateVariablesHdf5(self, allKeys, allTypes):
-        # Remove first key "/"
-        allKeys = allKeys[1::]
-        allTypes = allTypes[1::]
-
+    def updateVariablesHdf5(self, allKeys, allTypes, allVariableTypes):
         # Create QTreeWidgetItems and store them in a dictionary
         self.variableDict = {}
         for ind, key in enumerate(allKeys):
@@ -70,6 +70,8 @@ class VariableTreeWidget(QTreeWidget):
             item = QTreeWidgetItem()
             item.setText(COLUMNS["Name"], itemTitle)
             item.setText(COLUMNS["Type"], H5TYPES_TO_STR[allTypes[ind]])
+            item.setText(COLUMNS["Variable type"], str(allVariableTypes[ind]))
+
             self.variableDict.update({key: item})
 
         # Populate the TreeWidget

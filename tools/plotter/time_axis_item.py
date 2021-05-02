@@ -16,5 +16,7 @@ class TimeAxisItem(pg.AxisItem):
     def tickStrings(self, values, scale, spacing):
         return [
             datetime.datetime.fromtimestamp(value).strftime("%H:%M:%S.%f")
+            if value > 0
+            else ""
             for value in values
         ]

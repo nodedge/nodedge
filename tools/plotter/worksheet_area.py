@@ -47,4 +47,3 @@ class WorksheetArea(DockArea):
 
     def mouseReleaseEvent(self, ev):
         QWidget.mouseReleaseEvent(self, ev)
-        print("Mew")

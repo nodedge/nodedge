@@ -4,7 +4,6 @@ import sys
 
 import pyqtgraph as pg
 from pyqtgraph.dockarea import Dock, DockArea
-from pyqtgraph.Qt import QtGui
 from PySide2.QtCore import Qt, Signal
 from PySide2.QtWidgets import (
     QApplication,
@@ -16,6 +15,7 @@ from PySide2.QtWidgets import (
 
 from tools.main_window_template.application_styler import ApplicationStyler
 from tools.plotter.ranged_plot import RangedPlot
+from tools.plotter.time_axis_item import TimeAxisItem
 from tools.plotter.utils import loadStyleSheets
 
 
@@ -28,7 +28,9 @@ class RangeSliderPlot(QWidget):
 
         self.vlayout = QVBoxLayout()
         self.setLayout(self.vlayout)
-        self.sliderPlot = pg.PlotWidget()
+        self.sliderPlot = pg.PlotWidget(
+            axisItems={"bottom": TimeAxisItem(orientation="bottom")}
+        )
         p = QApplication.palette()
         self.sliderPlot.setBackground(p.mid())
         self.sliderPlot.setMaximumHeight(50)

@@ -19,7 +19,6 @@ from PySide2.QtWidgets import QApplication, QDockWidget, QFileDialog, QMdiSubWin
 from nodedge.utils import dumpException
 from tools.main_window_template.main_window import MainWindow
 from tools.plotter.countable_dock import CountableDock
-from tools.plotter.curve_container import CurveContainer
 from tools.plotter.plot_area import PlotArea
 from tools.plotter.range_slider_plot import RangeSliderPlot
 from tools.plotter.ranged_plot import RangedPlot
@@ -99,8 +98,8 @@ class PlotterWindow(MainWindow):
             self.file = self.loadHdf5(filename)
 
             # Get hdf5 key tree
-            allKeys, allTypes = getAllKeysHdf5(self.file)
-            self.variableTree.updateVariablesHdf5(allKeys, allTypes)
+            allKeys, allTypes, allVariableTypes = getAllKeysHdf5(self.file)
+            self.variableTree.updateVariablesHdf5(allKeys, allTypes, allVariableTypes)
 
         elif extension == "csv":
             # Load csv file
@@ -148,6 +147,13 @@ class PlotterWindow(MainWindow):
             variableName, indices
         )
 
+        # Find time
+        dataPath = fullDatasetName.split("/")[0:-1]
+        timeFullName = dataPath + ["time"]
+
+        fullTimeSetName = "".join(timeFullName)
+        timeSet = self.file[fullTimeSetName][:]
+
         if option in [
             PlottingOption.ADD_NEW_WORKBOOK,
             PlottingOption.ADD_NEW_WORKSHEET,
@@ -161,11 +167,11 @@ class PlotterWindow(MainWindow):
             # Select dock where to plot
             dock = self.selectDock(currentSubwindow, option)
             dock.setTitle(fullDatasetName)
-            worksheet = dock.widgets[0].graph
+            worksheet = dock.widgets[0]
         elif option is PlottingOption.APPEND_IN_CURRENT_WORKSHEET:
             worksheet = self.lastSelectedGraph
 
-        worksheet.plot(dataToBePlotted, name=fullDatasetName)
+        worksheet.plotData(y=dataToBePlotted, x=timeSet)
         worksheet.selected.connect(self.onGraphSelected)
         self.rangeSliderPlot.linkPlot(worksheet)
 
@@ -200,7 +206,7 @@ class PlotterWindow(MainWindow):
             or option is PlottingOption.ADD_NEW_WORKSHEET
             or (option is PlottingOption.APPEND_IN_CURRENT_WORKSHEET and not keys)
         ):
-            widget: CurveContainer = CurveContainer()
+            widget: RangedPlot = RangedPlot()
             countableDock = CountableDock("")
             countableDock.addWidget(widget)
             dock = currentSubwindow.widget().addDock(countableDock, "bottom")
@@ -244,7 +250,14 @@ class PlotterWindow(MainWindow):
 
     def loadHdf5(self, filename):
         f = h5py.File(filename, "r")
+        # dlg = TimestampDialog(keys=getAllKeysHdf5(f))
+        # dlg.optionsChosen.connect(self.onOpenFileOptionsChosen)
+        # dlg.exec_()
         return f
+
+    def onOpenFileOptionsChosen(self, options):
+        self.options = options
+        self.__logger.debug(options)
 
     def extractDataFromHdf5(self, datasetName, indices=None):
         data = np.array(self.file.get(datasetName))
@@ -424,9 +437,11 @@ if __name__ == "__main__":
     # FIXME: delete the following. Only for dev.
     # Open file
     # window.openWorkspace("workspace/example.json")
-    window.openFile("../../data/test.hdf5")
-    window.plotData("sim_data/pos_k_i_dt", indices="[0,0,:]")
+    # window.openFile("../../data/test.hdf5")
+    window.openFile("../../data/mytestfile.hdf5")
+    # window.plotData("sim_data/pos_k_i_dt", indices="[0,0,:]")
     # window.plotData("/cf1/pos")
+    # window.openFile("../../data/h5ex_t_float.h5")
 
     try:
         sys.exit(app.exec_())

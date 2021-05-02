@@ -31,8 +31,10 @@ def getAllKeysHdf5(hdf5Object):
     :return: keys, types
     :rtype: tuple(Union[tuple(`str`), tuple(`H5Types`)])
     """
-    keys = (hdf5Object.name,)
-    types = (H5Types.GROUP,)
+
+    keys = []
+    types = []
+    variableTypes = []
     if isinstance(hdf5Object, h5py.Group):
         for key, value in hdf5Object.items():
             if isinstance(value, h5py.Group):
@@ -42,8 +44,9 @@ def getAllKeysHdf5(hdf5Object):
             else:
                 keys += (value.name,)
                 types += (H5Types.DATASET,)
+            variableTypes += (type(hdf5Object[key][0]),)
 
-    return keys, types
+    return keys, types, variableTypes
 
 
 def timestamp():

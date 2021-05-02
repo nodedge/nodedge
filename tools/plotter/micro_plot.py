@@ -127,7 +127,7 @@ if __name__ == "__main__":
     boxLayout = QGridLayout()
     mdiArea.setLayout(boxLayout)
     widgets = []
-    for i in range(20):
+    for i in range(10):
         for j in range(2):
             microPlot = MicroPlot(
                 str(i) + str(j), get_random_string(3), simulatedData=True
