@@ -3,8 +3,8 @@
 Scene Coder module containing :class:`~nodedge.scene_coder.SceneCoder` class.
 """
 import logging
-from typing import List, Tuple
 from pathlib import Path
+from typing import List, Tuple
 
 from PySide2.QtCore import QObject, Signal
 from PySide2.QtWidgets import QFileDialog
