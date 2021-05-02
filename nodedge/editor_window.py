@@ -21,6 +21,7 @@ from PySide2.QtWidgets import (
 
 from nodedge.application_styler import ApplicationStyler
 from nodedge.editor_widget import EditorWidget
+from nodedge.scene_coder import SceneCoder
 
 
 class EditorWindow(QMainWindow):
@@ -546,7 +547,14 @@ class EditorWindow(QMainWindow):
 
     def onGenerateCode(self):
         if self.currentEditorWidget is not None:
-            self.currentEditorWidget.scene.coder.generateCode()
+            coder: SceneCoder = self.currentEditorWidget.scene.coder
+            if coder is not None:
+                self.currentEditorWidget.scene.coder.generateCodeAndSave()
+                successStr = f"File saved to {coder.filename}"
+                self.__logger.debug(successStr)
+                self.statusBar().showMessage(
+                    successStr, 5000)
+
 
     def createAction(
         self,

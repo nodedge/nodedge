@@ -34,7 +34,7 @@ if __name__ == "__main__":
     orderedNodeList, currentSceneCode = coder.generateCode()
     print(currentSceneCode)
 
-    generatedFileString = coder.createFileFromGeneratedCode(
+    generatedFileString = coder.addImports(
         orderedNodeList, currentSceneCode
     )
 
