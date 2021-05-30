@@ -6,13 +6,6 @@ Welcome to the Nodedge User's Manual. This manual contains information
 on how to use the Nodedge software and includes the documentation for all
 the modules of the package and examples illustrating their use.
 
-..
-    Overview
-    ========
-
-    Some differences from Simulink
-    ==============================
-
 Installation
 ============
 

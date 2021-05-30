@@ -6,6 +6,7 @@ import logging
 from collections import OrderedDict
 from typing import Optional
 
+import numpy as np
 import pyqtgraph as pg
 from PySide2.QtCore import Qt, Signal
 from PySide2.QtGui import QBrush, QKeyEvent
@@ -141,7 +142,11 @@ class RangedPlot(pg.PlotWidget):
     def updateLinearRegion(self, minMaxList):
         self.linearRegion.setRegion(minMaxList)
 
-    def plotData(self, x, y=None, name=None, **kargs):
+    def plotData(self, x, y, name=None, **kargs):
+        self.__logger.debug(name)
+
+        if x is None:
+            x = np.array(range(0, len(y)))
 
         self.updateMinMaxData(x, y)
         curveNames = list(self.curves.keys())

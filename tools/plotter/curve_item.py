@@ -36,7 +36,8 @@ class CurveItem(pg.PlotCurveItem):
         if self.dataPoints is None:
             self.setData([])
             return
-        self.setData(x=self.timePoints, y=self.dataPoints)
+        # Remove antialias in case performance is not enough.
+        self.setData(x=self.timePoints, y=self.dataPoints, antialias=True)
         self.resetTransform()
         self.scale(1, 1)
         vb: ViewBox = self.getViewBox()

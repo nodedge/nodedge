@@ -143,16 +143,9 @@ class PlotterWindow(MainWindow):
             fullVariableName = variableName
             variableName, indices = fullVariableName.split("[")
             indices = "[" + indices
-        dataToBePlotted, fullDatasetName = self.selectDataToBePlotted(
+        dataToBePlotted, timeSet, fullDatasetName = self.selectDataToBePlotted(
             variableName, indices
         )
-
-        # Find time
-        dataPath = fullDatasetName.split("/")[0:-1]
-        timeFullName = dataPath + ["time"]
-
-        fullTimeSetName = "".join(timeFullName)
-        timeSet = self.file[fullTimeSetName][:]
 
         if option in [
             PlottingOption.ADD_NEW_WORKBOOK,
@@ -171,7 +164,7 @@ class PlotterWindow(MainWindow):
         elif option is PlottingOption.APPEND_IN_CURRENT_WORKSHEET:
             worksheet = self.lastSelectedGraph
 
-        worksheet.plotData(y=dataToBePlotted, x=timeSet)
+        worksheet.plotData(y=dataToBePlotted, x=timeSet, name=fullDatasetName)
         worksheet.selected.connect(self.onGraphSelected)
         self.rangeSliderPlot.linkPlot(worksheet)
 
@@ -181,6 +174,8 @@ class PlotterWindow(MainWindow):
 
     def selectDataToBePlotted(self, variableName, indices=None):
         # If no file has been opened yet, do nothing
+        # Find time
+
         if self.file is None:
             if indices is not None:
                 fullDatasetName = variableName + indices
@@ -192,12 +187,25 @@ class PlotterWindow(MainWindow):
             dataToBePlotted, fullDatasetName = self.extractDataFromHdf5(
                 variableName, indices
             )
+
         elif isinstance(self.file, pd.core.frame.DataFrame):
             dataToBePlotted = np.array(self.file[variableName])
             fullDatasetName = variableName
         else:
             raise NotImplementedError
-        return dataToBePlotted, fullDatasetName
+
+        dataPath = fullDatasetName.split("/")[0:-1]
+        timeFullName = dataPath + ["time"]
+        fullTimeSetName = "".join(timeFullName)
+        try:
+            timeSet = self.file[fullTimeSetName][:]
+
+            if isinstance(self.file, pd.core.frame.DataFrame):
+                timeSet = timeSet.to_numpy()
+        except:
+            timeSet = None
+
+        return dataToBePlotted, timeSet, fullDatasetName
 
     def selectDock(self, currentSubwindow, option, dock=None):
         keys = list(currentSubwindow.widget().docks.data.keys())
@@ -439,6 +447,8 @@ if __name__ == "__main__":
     # window.openWorkspace("workspace/example.json")
     # window.openFile("../../data/test.hdf5")
     window.openFile("../../data/mytestfile.hdf5")
+    # window.openFile("../../data/test.csv")
+    # window.plotData("data")
     # window.plotData("sim_data/pos_k_i_dt", indices="[0,0,:]")
     # window.plotData("/cf1/pos")
     # window.openFile("../../data/h5ex_t_float.h5")

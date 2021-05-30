@@ -29,6 +29,8 @@ with File("mytestfile.hdf5", "w") as f:
     time = np.array(t)
     f["time"] = time.astype(opaque_dtype(time.dtype))
     f["data"] = data
+    f["data2"] = data + 1
+
     print(f["data"])
 
 

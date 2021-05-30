@@ -4,7 +4,8 @@
 
 import sys
 
-from setuptools import find_packages, setup
+from cx_Freeze import Executable, setup
+from setuptools import find_packages
 from setuptools.command.test import test as TestCommand
 
 with open("README.rst") as readme_file:
@@ -78,6 +79,17 @@ PROJECT_URLS = {
     "Tracker": "https://github.com/nodedge/nodedge/issues",
 }
 
+# ADD FILES
+files = ["nodedge/resources/Icon.ico", "nodedge/qss/", "examples/"]
+
+# TARGET
+target = Executable(
+    script="nodedge/__main__.py",
+    base="Win32GUI",
+    icon="nodedge/resources/Icon.ico",
+    targetName="nodedge.exe",
+)
+
 setup(
     name="nodedge",
     keywords=KEYWORDS,
@@ -104,4 +116,6 @@ setup(
     zip_safe=False,
     entry_points={"console_scripts": ["nodedge = nodedge.__main__:main"]},
     project_urls=PROJECT_URLS,
+    options={"build_exe": {"include_files": files}},
+    executables=[target],
 )
