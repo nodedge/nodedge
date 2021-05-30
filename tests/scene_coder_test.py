@@ -6,6 +6,7 @@ from nodedge.blocks.custom.input_block import InputBlock
 from nodedge.blocks.custom.output_block import OutputBlock
 from nodedge.edge import Edge
 from nodedge.editor_widget import EditorWidget
+from nodedge.utils import indentCode
 
 
 @pytest.fixture
@@ -45,12 +46,30 @@ def filledScene(emptyScene):
 
 def test_generateCode(filledScene):
     expectedResult = (
-            "var_0 = 2.0\n"
-            + "var_1 = 1.0\n"
-            + "var_2 = add(var_1, var_0)\n"
-            + "return [var_2]"
+        "var_0 = 2.0\n"
+        + "var_1 = 1.0\n"
+        + "var_2 = add(var_1, var_0)\n"
+        + "return [var_2]"
     )
 
     _, generatedCode = filledScene.coder.generateCode()
 
     assert generatedCode == expectedResult
+
+
+def test_addImports(filledScene):
+    orderedNodeList, generatedCode = filledScene.coder.generateCode()
+
+    filename = "unnamed"
+    imports = "from operator import add\n\n\n"
+
+    expectedResult = (
+        imports
+        + f"def {filename}():"
+        + indentCode(generatedCode)
+        + f"\n\n\nif __name__ == '__main__':\n    {filename}()\n"
+    )
+
+    generatedFileString = filledScene.coder.addImports(orderedNodeList, generatedCode)
+
+    assert generatedFileString == expectedResult
