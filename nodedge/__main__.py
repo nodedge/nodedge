@@ -2,7 +2,7 @@
 import os
 import sys
 
-from PySide2.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication
 
 from nodedge.logger import highLightLoggingSetup, setupLogging
 from nodedge.mdi_window import MdiWindow
@@ -23,7 +23,7 @@ def main():
         f"{os.path.dirname(__file__)}/../examples/calculator/calculator.json"
     )
     try:
-        sys.exit(app.exec_())
+        sys.exit(app.exec())
     except Exception as e:
         dumpException(e)
 

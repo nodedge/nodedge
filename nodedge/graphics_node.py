@@ -6,9 +6,9 @@ Graphics node module containing :class:`~nodedge.graphics_node.GraphicsNode` cla
 import logging
 from typing import Optional, cast
 
-from PySide2.QtCore import QRectF, Qt
-from PySide2.QtGui import QBrush, QColor, QFont, QPainterPath, QPen
-from PySide2.QtWidgets import (
+from PySide6.QtCore import QRectF, Qt
+from PySide6.QtGui import QBrush, QColor, QFont, QPainterPath, QPen
+from PySide6.QtWidgets import (
     QApplication,
     QFrame,
     QGraphicsItem,
@@ -167,7 +167,7 @@ class GraphicsNode(QGraphicsItem):
             titleFrame = GraphicsNodeTitleFrame(widget)
             titleFrame.setMaximumHeight(30)
             titleLayout = QHBoxLayout()
-            titleLayout.setMargin(0)
+            titleLayout.setContentsMargins(0, 0, 0, 0)
             titleFrame.setLayout(titleLayout)
             self.titleLabel = GraphicsNodeTitleLabel(self.title, widget)
             self.titleLabel.setSizePolicy(

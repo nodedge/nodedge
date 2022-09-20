@@ -6,8 +6,8 @@ import logging
 from pathlib import Path
 from typing import List, Tuple
 
-from PySide2.QtCore import QObject, Signal
-from PySide2.QtWidgets import QFileDialog
+from PySide6.QtCore import QObject, Signal
+from PySide6.QtWidgets import QFileDialog
 
 from nodedge.blocks.block_config import OP_NODE_OUTPUT
 from nodedge.connector import Socket

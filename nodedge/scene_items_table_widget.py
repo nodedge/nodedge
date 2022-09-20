@@ -6,9 +6,9 @@ Scene items table widget module containing
 import logging
 from typing import Optional
 
-from PySide2.QtCore import Qt, Signal
-from PySide2.QtGui import QMouseEvent
-from PySide2.QtWidgets import (
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QMouseEvent
+from PySide6.QtWidgets import (
     QAbstractItemView,
     QHeaderView,
     QMainWindow,
@@ -83,7 +83,7 @@ class SceneItemsTableWidget(QTableWidget):
 
                 self.setRowHeight(row, 30)
 
-        super().update()
+        super().viewport().update()
 
     def onCellClicked(self, row: int, column: int):
         if self.scene is not None:

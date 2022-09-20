@@ -5,11 +5,10 @@ import logging
 import os
 from typing import Any, Callable, List, Optional, cast
 
-from pyqtconsole.console import PythonConsole
-from PySide2.QtCore import QSignalMapper, QSize, Qt, QTimer, Slot
-from PySide2.QtGui import QCloseEvent, QIcon, QKeySequence, QMouseEvent
-from PySide2.QtWidgets import (
-    QAction,
+# from pyqtconsole.console import PythonConsole
+from PySide6.QtCore import QSignalMapper, QSize, Qt, QTimer, Slot
+from PySide6.QtGui import QAction, QCloseEvent, QIcon, QKeySequence, QMouseEvent
+from PySide6.QtWidgets import (
     QDialog,
     QDockWidget,
     QFileDialog,
@@ -107,13 +106,13 @@ class MdiWindow(EditorWindow):
         self.mdiArea.subWindowActivated.connect(self.onSubWindowActivated)
 
         self.windowMapper = QSignalMapper(self)
-        self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
+        self.windowMapper.mappedObject.connect(self.setActiveSubWindow)
 
         self.createSceneItemDetailDock()
         self.createNodesDock()
         self.createHistoryDock()
         self.createSceneItemsDock()
-        self.createPythonConsole()
+        # self.createPythonConsole()
 
         self.createActions()
         self.createMenus()
@@ -441,7 +440,7 @@ class MdiWindow(EditorWindow):
         """
         self.sceneItemDetailsWidget = SceneItemDetailWidget(self)
 
-        self.sceneItemDetailsDock = QDockWidget("Item details")
+        self.sceneItemDetailsDock = QDockWidget("Selected node details")
         self.sceneItemDetailsDock.setWidget(self.sceneItemDetailsWidget)
         self.sceneItemDetailsDock.setFloating(False)
 

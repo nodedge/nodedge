@@ -7,9 +7,9 @@ and :class:`~nodedge.graphics_view.DragMode` classes.
 import logging
 from typing import Callable, List, Optional
 
-from PySide2.QtCore import QEvent, QPointF, Qt, Signal
-from PySide2.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QMouseEvent, QPainter
-from PySide2.QtWidgets import QGraphicsItem, QGraphicsView, QWidget
+from PySide6.QtCore import QEvent, QPointF, Qt, Signal
+from PySide6.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QMouseEvent, QPainter
+from PySide6.QtWidgets import QGraphicsItem, QGraphicsView, QWidget
 
 from nodedge.edge_dragging import EdgeDragging, EdgeDraggingMode
 from nodedge.graphics_cut_line import CutLine

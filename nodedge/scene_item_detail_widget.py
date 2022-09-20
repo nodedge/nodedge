@@ -5,8 +5,8 @@ Scene item detail widget module containing
 """
 import logging
 
-from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QGridLayout, QLabel, QLineEdit, QSizePolicy, QWidget
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QGridLayout, QLabel, QLineEdit, QSizePolicy, QWidget
 
 
 class SceneItemDetailWidget(QWidget):

@@ -5,8 +5,9 @@ Mdi widget module containing :class:`~nodedge.mdi_widget.MdiWidget` class.
 import logging
 from typing import Callable, List, Optional
 
-from PySide2.QtCore import QDataStream, QIODevice, Qt
-from PySide2.QtGui import (
+from PySide6.QtCore import QDataStream, QIODevice, Qt
+from PySide6.QtGui import (
+    QAction,
     QCloseEvent,
     QContextMenuEvent,
     QDragEnterEvent,
@@ -15,7 +16,7 @@ from PySide2.QtGui import (
     QMouseEvent,
     QPixmap,
 )
-from PySide2.QtWidgets import QAction, QGraphicsProxyWidget, QMenu
+from PySide6.QtWidgets import QGraphicsProxyWidget, QMenu
 
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import BLOCKS, getClassFromOperationCode

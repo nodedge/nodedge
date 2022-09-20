@@ -7,10 +7,15 @@ import logging
 import os
 from typing import Callable, Optional, Union, cast
 
-from PySide2.QtCore import QPoint, QSettings, QSize, Qt
-from PySide2.QtGui import QClipboard, QCloseEvent, QGuiApplication, QKeySequence
-from PySide2.QtWidgets import (
+from PySide6.QtCore import QPoint, QSettings, QSize, Qt
+from PySide6.QtGui import (
     QAction,
+    QClipboard,
+    QCloseEvent,
+    QGuiApplication,
+    QKeySequence,
+)
+from PySide6.QtWidgets import (
     QFileDialog,
     QLabel,
     QMainWindow,

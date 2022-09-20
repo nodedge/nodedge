@@ -7,9 +7,9 @@ import logging
 import os
 from typing import List, Optional
 
-from PySide2.QtCore import Qt
-from PySide2.QtGui import QBrush, QMouseEvent, QPen
-from PySide2.QtWidgets import (
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QBrush, QMouseEvent, QPen
+from PySide6.QtWidgets import (
     QApplication,
     QGraphicsItem,
     QLabel,

@@ -5,7 +5,7 @@
 import logging
 from typing import Optional
 
-from PySide2.QtCore import (
+from PySide6.QtCore import (
     QByteArray,
     QDataStream,
     QIODevice,
@@ -15,8 +15,8 @@ from PySide2.QtCore import (
     Qt,
     Signal,
 )
-from PySide2.QtGui import QDrag, QIcon, QMouseEvent, QPixmap
-from PySide2.QtWidgets import QAbstractItemView, QTreeWidget, QTreeWidgetItem, QWidget
+from PySide6.QtGui import QDrag, QIcon, QMouseEvent, QPixmap
+from PySide6.QtWidgets import QAbstractItemView, QTreeWidget, QTreeWidgetItem, QWidget
 
 from nodedge import DEBUG_ITEMS_PRESSED
 from nodedge.blocks.block_config import *

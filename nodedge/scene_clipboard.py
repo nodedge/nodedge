@@ -6,7 +6,7 @@ Scene clipboard module containing :class:`~nodedge.scene_clipboard.SceneClipboar
 import logging
 from collections import OrderedDict
 
-from PySide2.QtCore import QPointF
+from PySide6.QtCore import QPointF
 
 from nodedge.edge import Edge
 from nodedge.graphics_edge import GraphicsEdge

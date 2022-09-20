@@ -7,8 +7,8 @@ Application styler module containing
 import logging
 
 import pyqtconsole.highlighter as hl
-from PySide2.QtGui import QColor, QGuiApplication, QPalette
-from PySide2.QtWidgets import QApplication
+from PySide6.QtGui import QColor, QGuiApplication, QPalette
+from PySide6.QtWidgets import QApplication
 
 
 class ApplicationStyler:

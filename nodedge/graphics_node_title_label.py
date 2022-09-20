@@ -2,7 +2,7 @@
 """Graphics node title item module containing
 :class:`~nodedge.graphics_node_title_label.GraphicsNodeTitleLabel` class. """
 
-from PySide2.QtWidgets import QLabel, QWidget
+from PySide6.QtWidgets import QLabel, QWidget
 
 
 class GraphicsNodeTitleLabel(QLabel):

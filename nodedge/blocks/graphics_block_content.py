@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QHBoxLayout, QListWidget, QListWidgetItem, QSizePolicy
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QHBoxLayout, QListWidget, QListWidgetItem, QSizePolicy
 
 from nodedge.graphics_node_content import GraphicsNodeContent
 from nodedge.socket_type import SocketType
@@ -14,7 +14,7 @@ class GraphicsBlockContent(GraphicsNodeContent):
         # self.label.setObjectName(self.node.contentLabelObjectName)
 
         self.hLayout = QHBoxLayout(self)
-        self.hLayout.setMargin(0)
+        self.hLayout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.hLayout)
         self.listInputs = QListWidget(self)
         self.listInputs.setSizePolicy(

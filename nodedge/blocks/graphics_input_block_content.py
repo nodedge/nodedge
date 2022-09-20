@@ -6,7 +6,7 @@ Graphics input block content module containing
 
 from typing import Optional
 
-from PySide2.QtWidgets import QLineEdit
+from PySide6.QtWidgets import QLineEdit
 
 from nodedge.graphics_node_content import GraphicsNodeContent
 from nodedge.utils import dumpException
