@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_POWER)
-class PowerBlock(Block):
+class NumpyPowerBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/square_number_100.png"
     operationCode = OP_NODE_NUMPY_POWER
     operationTitle = "Power"
@@ -42,7 +42,7 @@ class PowerBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{PowerBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyPowerBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_LESS)
-class LessThanBlock(Block):
+class NumpyLessThanBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/less_than_100.png"
     operationCode = OP_NODE_NUMPY_LESS
     operationTitle = "Less"
@@ -42,7 +42,7 @@ class LessThanBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{LessThanBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyLessThanBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

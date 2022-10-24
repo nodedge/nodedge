@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_LOG2)
-class Log2Block(Block):
+class NumpyLog2Block(Block):
     icon = f"{BLOCKS_ICONS_PATH}/log2_100.png"
     operationCode = OP_NODE_NUMPY_LOG2
     operationTitle = "Logarithm 2"
@@ -41,7 +41,7 @@ class Log2Block(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{Log2Block.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyLog2Block.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_SQRT)
-class SqrtBlock(Block):
+class NumpySqrtBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/sqrt_100.png"
     operationCode = OP_NODE_NUMPY_SQRT
     operationTitle = "Square root"
@@ -41,7 +41,7 @@ class SqrtBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{SqrtBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpySqrtBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

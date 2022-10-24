@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_HYPOT)
-class HypotBlock(Block):
+class NumpyHypotBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/hypot_100.png"
     operationCode = OP_NODE_NUMPY_HYPOT
     operationTitle = "Hypotenuse"
@@ -41,7 +41,7 @@ class HypotBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{HypotBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyHypotBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

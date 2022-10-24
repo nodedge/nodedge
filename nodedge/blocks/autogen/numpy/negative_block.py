@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_NEGATIVE)
-class NegativeBlock(Block):
+class NumpyNegativeBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/subtract_100.png"
     operationCode = OP_NODE_NUMPY_NEGATIVE
     operationTitle = "Neg. value"
@@ -41,7 +41,7 @@ class NegativeBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{NegativeBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyNegativeBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

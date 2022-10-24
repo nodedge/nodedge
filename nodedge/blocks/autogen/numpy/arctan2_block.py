@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_ARCTAN2)
-class Arctan2Block(Block):
+class NumpyArctan2Block(Block):
     icon = f"{BLOCKS_ICONS_PATH}/arctan_100.png"
     operationCode = OP_NODE_NUMPY_ARCTAN2
     operationTitle = "Arctan2"
@@ -41,7 +41,7 @@ class Arctan2Block(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{Arctan2Block.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyArctan2Block.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

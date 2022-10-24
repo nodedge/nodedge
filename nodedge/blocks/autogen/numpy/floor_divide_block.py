@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_FLOOR_DIVIDE)
-class FloorDivideBlock(Block):
+class NumpyFloorDivideBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/floor_100.png"
     operationCode = OP_NODE_NUMPY_FLOOR_DIVIDE
     operationTitle = "Floor div."
@@ -42,7 +42,9 @@ class FloorDivideBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{FloorDivideBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = (
+                f"{NumpyFloorDivideBlock.evalString}({', '.join(evaluatedInputs)})"
+            )
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

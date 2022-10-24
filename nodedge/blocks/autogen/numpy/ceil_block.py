@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_CEIL)
-class CeilBlock(Block):
+class NumpyCeilBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/ceil_100.png"
     operationCode = OP_NODE_NUMPY_CEIL
     operationTitle = "Ceiling"
@@ -41,7 +41,7 @@ class CeilBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{CeilBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyCeilBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

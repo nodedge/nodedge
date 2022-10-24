@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_AROUND)
-class AroundBlock(Block):
+class NumpyAroundBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/around_100.png"
     operationCode = OP_NODE_NUMPY_AROUND
     operationTitle = "Around"
@@ -41,7 +41,7 @@ class AroundBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{AroundBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyAroundBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

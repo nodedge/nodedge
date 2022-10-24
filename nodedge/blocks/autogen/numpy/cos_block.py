@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_COS)
-class CosBlock(Block):
+class NumpyCosBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/cos_100.png"
     operationCode = OP_NODE_NUMPY_COS
     operationTitle = "Cosine"
@@ -41,7 +41,7 @@ class CosBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{CosBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyCosBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

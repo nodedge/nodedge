@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_SIGN)
-class SignBlock(Block):
+class NumpySignBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/sign_100.png"
     operationCode = OP_NODE_NUMPY_SIGN
     operationTitle = "Sign"
@@ -41,7 +41,7 @@ class SignBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{SignBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpySignBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

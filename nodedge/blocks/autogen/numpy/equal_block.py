@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_EQUAL)
-class EqualBlock(Block):
+class NumpyEqualBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/equal_sign_100.png"
     operationCode = OP_NODE_NUMPY_EQUAL
     operationTitle = "Equal"
@@ -42,7 +42,7 @@ class EqualBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{EqualBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyEqualBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

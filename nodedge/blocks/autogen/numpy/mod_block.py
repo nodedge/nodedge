@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_MODULO)
-class ModBlock(Block):
+class NumpyNumpyModBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/percentage_100.png"
     operationCode = OP_NODE_NUMPY_MODULO
     operationTitle = "Modulo"
@@ -42,7 +42,7 @@ class ModBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{ModBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyNumpyModBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

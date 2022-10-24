@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_IS_CLOSE)
-class IsCloseBlock(Block):
+class NumpyIsCloseBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/approximately_equal_100.png"
     operationCode = OP_NODE_NUMPY_IS_CLOSE
     operationTitle = "Is close"
@@ -42,7 +42,7 @@ class IsCloseBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{IsCloseBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyIsCloseBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

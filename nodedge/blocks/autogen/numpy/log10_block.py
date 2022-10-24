@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_LOG10)
-class Log10Block(Block):
+class NumpyLog10Block(Block):
     icon = f"{BLOCKS_ICONS_PATH}/log10_100.png"
     operationCode = OP_NODE_NUMPY_LOG10
     operationTitle = "Logarithm 10"
@@ -41,7 +41,7 @@ class Log10Block(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{Log10Block.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyLog10Block.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

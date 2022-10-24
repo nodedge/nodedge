@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_TAN)
-class TanBlock(Block):
+class NumpyTanBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/tan_100.png"
     operationCode = OP_NODE_NUMPY_TAN
     operationTitle = "Tangent"
@@ -41,7 +41,7 @@ class TanBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{TanBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyTanBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

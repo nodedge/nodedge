@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_SUBTRACT)
-class SubtractBlock(Block):
+class NumpySubtractBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/subtract_100.png"
     operationCode = OP_NODE_NUMPY_SUBTRACT
     operationTitle = "Subtraction"
@@ -42,7 +42,7 @@ class SubtractBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{SubtractBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpySubtractBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

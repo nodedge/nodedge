@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_SINH)
-class SinhBlock(Block):
+class NumpySinhBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/sinh_100.png"
     operationCode = OP_NODE_NUMPY_SINH
     operationTitle = "Sinh"
@@ -41,7 +41,7 @@ class SinhBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{SinhBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpySinhBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

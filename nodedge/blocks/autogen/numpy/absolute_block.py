@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_ABSOLUTE)
-class AbsoluteBlock(Block):
+class NumpyAbsoluteBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/absolute_100.png"
     operationCode = OP_NODE_NUMPY_ABSOLUTE
     operationTitle = "Abs. value"
@@ -41,7 +41,7 @@ class AbsoluteBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{AbsoluteBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyAbsoluteBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

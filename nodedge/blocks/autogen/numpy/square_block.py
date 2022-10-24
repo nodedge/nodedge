@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_SQUARE)
-class SquareBlock(Block):
+class NumpySquareBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/square_100.png"
     operationCode = OP_NODE_NUMPY_SQUARE
     operationTitle = "Square"
@@ -41,7 +41,7 @@ class SquareBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{SquareBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpySquareBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

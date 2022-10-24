@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_MIN)
-class MinimumBlock(Block):
+class NumpyMinimumBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/min_100.png"
     operationCode = OP_NODE_NUMPY_MIN
     operationTitle = "Minimum"
@@ -42,7 +42,7 @@ class MinimumBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{MinimumBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyMinimumBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

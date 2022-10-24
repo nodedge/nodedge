@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_TANH)
-class TanhBlock(Block):
+class NumpyTanhBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/tanh_100.png"
     operationCode = OP_NODE_NUMPY_TANH
     operationTitle = "Tanh"
@@ -41,7 +41,7 @@ class TanhBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{TanhBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyTanhBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

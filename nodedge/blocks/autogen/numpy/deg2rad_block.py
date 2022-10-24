@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_DEG2RAD)
-class Deg2RadBlock(Block):
+class NumpyDeg2RadBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/deg2rad_100.png"
     operationCode = OP_NODE_NUMPY_DEG2RAD
     operationTitle = "Deg to rad"
@@ -41,7 +41,7 @@ class Deg2RadBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{Deg2RadBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyDeg2RadBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

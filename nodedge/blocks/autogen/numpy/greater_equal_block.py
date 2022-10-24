@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_GREATER_EQUAL)
-class GreaterEqualBlock(Block):
+class NumpyGreaterEqualBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/more_or_equal_100.png"
     operationCode = OP_NODE_NUMPY_GREATER_EQUAL
     operationTitle = "Greater or equal"
@@ -42,7 +42,9 @@ class GreaterEqualBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{GreaterEqualBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = (
+                f"{NumpyGreaterEqualBlock.evalString}({', '.join(evaluatedInputs)})"
+            )
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

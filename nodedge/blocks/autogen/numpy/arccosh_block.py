@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_ARCCOSH)
-class ArccoshBlock(Block):
+class NumpyArccoshBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/arccosh_100.png"
     operationCode = OP_NODE_NUMPY_ARCCOSH
     operationTitle = "Arccosh"
@@ -41,7 +41,7 @@ class ArccoshBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{ArccoshBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyArccoshBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

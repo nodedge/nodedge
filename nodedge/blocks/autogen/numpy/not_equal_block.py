@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_NOT_EQUAL)
-class NotEqualBlock(Block):
+class NumpyNotEqualBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/not_equal_sign_100.png"
     operationCode = OP_NODE_NUMPY_NOT_EQUAL
     operationTitle = "Not equal"
@@ -42,7 +42,7 @@ class NotEqualBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{NotEqualBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyNotEqualBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

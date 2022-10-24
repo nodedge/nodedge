@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_DIVIDE)
-class TrueDivideBlock(Block):
+class NumpyTrueDivideBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/divide_100.png"
     operationCode = OP_NODE_NUMPY_DIVIDE
     operationTitle = "Division"
@@ -42,7 +42,9 @@ class TrueDivideBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{TrueDivideBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = (
+                f"{NumpyTrueDivideBlock.evalString}({', '.join(evaluatedInputs)})"
+            )
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

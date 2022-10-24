@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_ADD)
-class AddBlock(Block):
+class NumpyAddBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/plus_math_100.png"
     operationCode = OP_NODE_NUMPY_ADD
     operationTitle = "Addition"
@@ -42,7 +42,7 @@ class AddBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{AddBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyAddBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

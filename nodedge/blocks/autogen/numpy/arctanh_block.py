@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_ARCTANH)
-class ArctanhBlock(Block):
+class NumpyArctanhBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/arctanh_100.png"
     operationCode = OP_NODE_NUMPY_ARCTANH
     operationTitle = "Arctanh"
@@ -41,7 +41,7 @@ class ArctanhBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{ArctanhBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyArctanhBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

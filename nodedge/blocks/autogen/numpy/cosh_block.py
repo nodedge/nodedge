@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_COSH)
-class CoshBlock(Block):
+class NumpyCoshBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/cosh_100.png"
     operationCode = OP_NODE_NUMPY_COSH
     operationTitle = "Cosh"
@@ -41,7 +41,7 @@ class CoshBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{CoshBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyCoshBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

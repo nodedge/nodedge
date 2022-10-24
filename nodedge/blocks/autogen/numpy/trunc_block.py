@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_TRUNC)
-class TruncBlock(Block):
+class NumpyTruncBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/trunc_100.png"
     operationCode = OP_NODE_NUMPY_TRUNC
     operationTitle = "Truncation"
@@ -41,7 +41,7 @@ class TruncBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{TruncBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyTruncBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

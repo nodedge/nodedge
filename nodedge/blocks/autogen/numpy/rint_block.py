@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_RINT)
-class RintBlock(Block):
+class NumpyRintBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/round_100.png"
     operationCode = OP_NODE_NUMPY_RINT
     operationTitle = "Round integer"
@@ -41,7 +41,7 @@ class RintBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{RintBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyRintBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

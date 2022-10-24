@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_MULTIPLY)
-class MultiplyBlock(Block):
+class NumpyMultiplyBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/multiply_100.png"
     operationCode = OP_NODE_NUMPY_MULTIPLY
     operationTitle = "Multiplication"
@@ -42,7 +42,7 @@ class MultiplyBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{MultiplyBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyMultiplyBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)

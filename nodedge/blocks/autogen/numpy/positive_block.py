@@ -19,7 +19,7 @@ except NameError:
 
 
 @registerNode(OP_NODE_NUMPY_POSITIVE)
-class PositiveBlock(Block):
+class NumpyPositiveBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/plus_math_100.png"
     operationCode = OP_NODE_NUMPY_POSITIVE
     operationTitle = "Pos. value"
@@ -41,7 +41,7 @@ class PositiveBlock(Block):
 
         try:
             evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
-            operation = f"{PositiveBlock.evalString}({', '.join(evaluatedInputs)})"
+            operation = f"{NumpyPositiveBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:
             raise EvaluationError(e)
