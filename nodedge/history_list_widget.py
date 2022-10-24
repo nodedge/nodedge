@@ -28,7 +28,7 @@ class HistoryListWidget(QListWidget):
 
         self.history: SceneHistory = history
 
-        self.itemClicked.connect(self.onItemClicked)
+        self.itemClicked.connect(self.onItemClicked)  # type: ignore
 
     def update(self, *__args) -> None:
         """
@@ -62,5 +62,5 @@ class HistoryListWidget(QListWidget):
             itemsPressed = [w.__class__.__name__ for w in widgetsAt(pos)]
             self.__logger.debug(itemsPressed)
             # noinspection PyUnresolvedReferences
-            self.itemsPressed.emit(itemsPressed)  # type: ignore
+            self.itemsPressed.emit(itemsPressed)
         super().mousePressEvent(e)

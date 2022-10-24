@@ -6,7 +6,7 @@ Application styler module containing
 
 import logging
 
-import pyqtconsole.highlighter as hl
+# import pyqtconsole.highlighter as hl
 from PySide6.QtGui import QColor, QGuiApplication, QPalette
 from PySide6.QtWidgets import QApplication
 
@@ -50,16 +50,16 @@ class ApplicationStyler:
         p.setColor(QPalette.WindowText, white)
         app.setPalette(p)
 
-        self.consoleStyle = {
-            "keyword": hl.format("blue", "bold"),
-            "operator": hl.format("white"),
-            "brace": hl.format("lightGray"),
-            "defclass": hl.format("white", "bold"),
-            "string": hl.format("magenta"),
-            "string2": hl.format("lightMagenta"),
-            "comment": hl.format("lightGreen", "italic"),
-            "self": hl.format("white", "italic"),
-            "numbers": hl.format("white"),
-            "inprompt": hl.format("lightBlue", "bold"),
-            "outprompt": hl.format("white", "bold"),
-        }
+        # self.consoleStyle = {
+        #     "keyword": hl.format("blue", "bold"),
+        #     "operator": hl.format("white"),
+        #     "brace": hl.format("lightGray"),
+        #     "defclass": hl.format("white", "bold"),
+        #     "string": hl.format("magenta"),
+        #     "string2": hl.format("lightMagenta"),
+        #     "comment": hl.format("lightGreen", "italic"),
+        #     "self": hl.format("white", "italic"),
+        #     "numbers": hl.format("white"),
+        #     "inprompt": hl.format("lightBlue", "bold"),
+        #     "outprompt": hl.format("white", "bold"),
+        # }

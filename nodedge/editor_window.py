@@ -69,7 +69,7 @@ class EditorWindow(QMainWindow):
 
         # Pycharm does not recognise resolve connect method so the inspection is
         # noinspection PyUnresolvedReferences
-        self.clipboard.dataChanged.connect(self.onClipboardChanged)
+        self.clipboard.dataChanged.connect(self.onClipboardChanged)  # type: ignore
 
         self.lastActiveEditorWidget: Optional[EditorWidget] = None
 
@@ -135,7 +135,7 @@ class EditorWindow(QMainWindow):
         if self.currentEditorWidget is None:
             return
 
-        self.currentEditorWidget.graphicsView.scenePosChanged.connect(  # type: ignore
+        self.currentEditorWidget.graphicsView.scenePosChanged.connect(
             self.OnScenePosChanged
         )
 
@@ -581,7 +581,7 @@ class EditorWindow(QMainWindow):
         :return:
         """
         act = QAction(name, self)
-        act.triggered.connect(callback)
+        act.triggered.connect(callback)  # type: ignore
 
         if statusTip is not None:
             act.setStatusTip(statusTip)

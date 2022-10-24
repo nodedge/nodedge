@@ -82,7 +82,5 @@ class MdiArea(QMdiArea):
             pos = e.globalPos()
             self.__logger.debug([w.__class__.__name__ for w in widgetsAt(pos)])
             # noinspection PyUnresolvedReferences
-            self.itemsPressed.emit(  # type: ignore
-                [w.__class__.__name__ for w in widgetsAt(pos)]
-            )
+            self.itemsPressed.emit([w.__class__.__name__ for w in widgetsAt(pos)])
         super().mousePressEvent(e)

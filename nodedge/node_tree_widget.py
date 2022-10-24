@@ -163,5 +163,5 @@ class NodeTreeWidget(QTreeWidget):
             itemsPressed = [w.__class__.__name__ for w in widgetsAt(pos)]
             self.__logger.debug(itemsPressed)
             # noinspection PyUnresolvedReferences
-            self.itemsPressed.emit(itemsPressed)  # type: ignore
+            self.itemsPressed.emit(itemsPressed)
         super().mousePressEvent(e)

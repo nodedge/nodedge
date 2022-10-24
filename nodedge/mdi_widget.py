@@ -242,7 +242,7 @@ class MdiWidget(EditorWidget):
         markInvalidAct = contextMenu.addAction("Mark invalid")
         unmarkAct = contextMenu.addAction("Unmark invalid")
         evalAct = contextMenu.addAction("Eval")
-        action = QMenu.exec_(self.mapToGlobal(event.pos()))
+        action = QMenu.exec_(self.mapToGlobal(event.pos()))  # type: ignore
 
         selected = None
         item = self.scene.itemAt(event.pos())

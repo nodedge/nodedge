@@ -3,8 +3,8 @@ from random import random
 from typing import cast
 
 import pytest
-from PySide2.QtCore import QPoint, QPointF, Qt
-from PySide2.QtWidgets import QGraphicsView, QMainWindow
+from PySide6.QtCore import QPoint, QPointF, Qt
+from PySide6.QtWidgets import QGraphicsView, QMainWindow
 from pytestqt.qtbot import QtBot
 
 from nodedge.edge import Edge

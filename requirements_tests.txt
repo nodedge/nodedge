@@ -12,3 +12,4 @@ pytest-qt
 pytest-xdist
 pytest-xvfb
 tox
+types-PyYAML

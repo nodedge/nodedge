@@ -69,7 +69,7 @@ class Scene(Serializable):
 
         self.graphicsScene: GraphicsScene = GraphicsScene(self)
         self.graphicsScene.setScene(self.sceneWidth, self.sceneHeight)
-        self.graphicsScene.itemSelected.connect(self.onItemSelected)  # type: ignore
+        self.graphicsScene.itemSelected.connect(self.onItemSelected)
 
         # current filename assigned to this scene
         self.filename: Optional[str] = None
@@ -135,7 +135,7 @@ class Scene(Serializable):
         return ret
 
     @property
-    def selectedNodes(self) -> List[Node]:
+    def selectedNodes(self) -> List[GraphicsNode]:
         return [item for item in self.selectedItems if isinstance(item, GraphicsNode)]
 
     @property

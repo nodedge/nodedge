@@ -57,7 +57,7 @@ class SceneCoder(QObject):
                     self.__logger.warning(
                         f"Node {node.id} has a disconnected socket: {outputSocket.id}"
                     )
-                    self.notConnectedSocket.emit()  # type: ignore
+                    self.notConnectedSocket.emit()
 
         # if scene is not codable: raise a warning and exit
 

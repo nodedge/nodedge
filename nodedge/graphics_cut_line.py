@@ -53,7 +53,7 @@ class CutLine:
         eventButton: Qt.MouseButton = event.button()
         eventType: QEvent.Type = event.type()
         eventScenePos = self.graphicsView.mapToScene(event.pos())
-        eventModifiers: Qt.KeyboardModifiers = event.modifiers()
+        eventModifiers: Qt.KeyboardModifiers = event.modifiers()  #  type: ignore
         if self.mode == CutLineMode.NOOP:
             if (
                 eventType == QEvent.MouseButtonPress

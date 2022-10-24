@@ -45,7 +45,7 @@ class SceneItemDetailWidget(QWidget):
         valueWidget.setSizePolicy(
             QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         )
-        valueWidget.setAlignment(Qt.AlignTop)
+        # valueWidget.setAlignment(Qt.AlignTop)
         valueWidget.setFixedHeight(30)
 
         rowCount = self.layout.rowCount()

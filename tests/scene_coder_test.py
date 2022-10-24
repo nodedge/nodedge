@@ -1,5 +1,5 @@
 import pytest
-from PySide2.QtWidgets import QMainWindow
+from PySide6.QtWidgets import QMainWindow
 
 from nodedge.blocks.autogen.operator.add_block import AddBlock
 from nodedge.blocks.custom.input_block import InputBlock
