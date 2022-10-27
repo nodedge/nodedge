@@ -1,2 +1,2 @@
-from .operator import *
 from .numpy import *
+from .operator import *

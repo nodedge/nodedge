@@ -3,10 +3,10 @@ from typing import List
 
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
-from nodedge.blocks.op_node import OP_NODE_CUSTOM_OUTPUT
 from nodedge.blocks.block_exception import EvaluationError
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.blocks.graphics_output_block_content import GraphicsOutputBlockContent
+from nodedge.blocks.op_node import OP_NODE_CUSTOM_OUTPUT
 from nodedge.socket_type import SocketType
 
 
