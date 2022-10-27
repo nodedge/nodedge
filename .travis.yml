@@ -7,6 +7,15 @@ addons:
     packages:
     - x11-utils
     - libxkbcommon-x11-0
+    - libxcb-icccm4
+    - libxcb-image0
+    - libxcb-keysyms1
+    - libxcb-randr0
+    - libxcb-render-util0
+    - libxcb-xinerama0
+    - libxcb-xfixes0
+    - x11-utils
+
 
 services: xvfb
 
@@ -19,7 +28,7 @@ branches:
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -y xvfb herbstluftwm libxcb-xinerama0
+  - sudo apt-get install -y xvfb herbstluftwm
   - python -m pip install -U pip
 
 install:
