@@ -7,9 +7,9 @@ and :class:`~nodedge.graphics_view.DragMode` classes.
 import logging
 from typing import Callable, List, Optional
 
-from PySide2.QtCore import QEvent, QPointF, Qt, Signal
-from PySide2.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QMouseEvent, QPainter
-from PySide2.QtWidgets import QGraphicsItem, QGraphicsView, QWidget
+from PySide6.QtCore import QEvent, QPointF, Qt, Signal
+from PySide6.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QMouseEvent, QPainter
+from PySide6.QtWidgets import QGraphicsItem, QGraphicsView, QWidget
 
 from nodedge.edge_dragging import EdgeDragging, EdgeDraggingMode
 from nodedge.graphics_cut_line import CutLine
@@ -243,9 +243,9 @@ class GraphicsView(QGraphicsView):
                 selectedItems = self.graphicsScene.selectedItems()
                 if selectedItems != self.graphicsScene.scene.lastSelectedItems:
                     if not selectedItems:
-                        self.graphicsScene.itemsDeselected.emit()  # type: ignore
+                        self.graphicsScene.itemsDeselected.emit()
                     else:
-                        self.graphicsScene.itemSelected.emit()  # type: ignore
+                        self.graphicsScene.itemSelected.emit()
                 return
         except Exception as e:
             dumpException(e)
@@ -354,9 +354,7 @@ class GraphicsView(QGraphicsView):
 
         self.lastSceneMousePos = eventScenePos
         # noinspection PyUnresolvedReferences
-        self.scenePosChanged.emit(  # type: ignore
-            int(eventScenePos.x()), int(eventScenePos.y())
-        )
+        self.scenePosChanged.emit(int(eventScenePos.x()), int(eventScenePos.y()))
 
         super().mouseMoveEvent(event)
 
@@ -464,7 +462,7 @@ class GraphicsView(QGraphicsView):
             return False
         newLMBClickPos: QPointF = self.mapToScene(event.pos())
         distScene = newLMBClickPos - self.lastLMBClickScenePos
-        edgeStartDragThresholdSquared = EDGE_START_DRAG_THRESHOLD ** 2
+        edgeStartDragThresholdSquared = EDGE_START_DRAG_THRESHOLD**2
         distSceneSquared = distScene.x() * distScene.x() + distScene.y() * distScene.y()
         if distSceneSquared < edgeStartDragThresholdSquared:
             self.__logger.debug(

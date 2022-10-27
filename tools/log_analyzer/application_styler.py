@@ -8,9 +8,9 @@ import logging
 import os
 
 import pyqtconsole.highlighter as hl
-from PySide2.QtCore import QFile, QTimer
-from PySide2.QtGui import QColor, QGuiApplication, QPalette, Qt
-from PySide2.QtWidgets import QApplication
+from PySide6.QtCore import QFile, QTimer
+from PySide6.QtGui import QColor, QGuiApplication, QPalette, Qt
+from PySide6.QtWidgets import QApplication
 
 
 class ApplicationStyler:
@@ -53,7 +53,8 @@ class ApplicationStyler:
         p.setColor(QPalette.Text, white)
         p.setColor(QPalette.Window, charCoal)
         p.setColor(QPalette.WindowText, white)
-        app.setPalette(p)
+        if app is not None:
+            app.setPalette(p)  # type: ignore
 
         self.consoleStyle = {
             "keyword": hl.format("blue", "bold"),
@@ -76,7 +77,7 @@ class ApplicationStyler:
         self.timer = QTimer()
         self.timer.setTimerType(Qt.PreciseTimer)
         self.timer.setInterval(500)
-        self.timer.timeout.connect(self.checkStylesheet)
+        self.timer.timeout.connect(self.checkStylesheet)  # type: ignore
         self.timer.start()
 
     def checkStylesheet(self) -> None:

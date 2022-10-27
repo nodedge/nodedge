@@ -9,9 +9,9 @@ import logging
 import math
 from typing import Optional, Union
 
-from PySide2.QtCore import QPointF, Qt
-from PySide2.QtGui import QColor, QPainterPath, QPen
-from PySide2.QtWidgets import (
+from PySide6.QtCore import QPointF, Qt
+from PySide6.QtGui import QColor, QPainterPath, QPen
+from PySide6.QtWidgets import (
     QApplication,
     QGraphicsItem,
     QGraphicsPathItem,

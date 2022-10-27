@@ -1,5 +1,5 @@
 os: linux
-dist: bionic
+dist: focal
 cache: pip
 
 addons:
@@ -7,6 +7,15 @@ addons:
     packages:
     - x11-utils
     - libxkbcommon-x11-0
+    - libxcb-icccm4
+    - libxcb-image0
+    - libxcb-keysyms1
+    - libxcb-randr0
+    - libxcb-render-util0
+    - libxcb-xinerama0
+    - libxcb-xfixes0
+    - x11-utils
+
 
 services: xvfb
 
@@ -32,23 +41,23 @@ install:
 
 jobs:
   include:
-    - python: 3.6
+    - python: 3.10
       env: TOXENV=flake8
-    - python: 3.6
+    - python: 3.10
       env: TOXENV=black
-    - python: 3.6
+    - python: 3.10
       env: TOXENV=mypy
-    - python: 3.6
-      env: TOXENV=py36
+    - python: 3.10
+      env: TOXENV=py310
     - python: 3.7
       env: TOXENV=py37
     - python: 3.8
       env: TOXENV=py38
-    - python: 3.6
+    - python: 3.10
       env: TOXENV=coverage
-    - python: 3.6
+    - python: 3.10
       env: TOXENV=packaging
-    - python: 3.6
+    - python: 3.10
       env: TOXENV=docs
 
 

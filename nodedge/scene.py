@@ -9,8 +9,8 @@ import os
 from collections import OrderedDict
 from typing import Callable, List, Optional, cast
 
-from PySide2.QtGui import QDragEnterEvent, QDropEvent
-from PySide2.QtWidgets import QGraphicsItem
+from PySide6.QtGui import QDragEnterEvent, QDropEvent
+from PySide6.QtWidgets import QGraphicsItem
 
 from nodedge.edge import Edge
 from nodedge.graphics_node import GraphicsNode
@@ -69,7 +69,7 @@ class Scene(Serializable):
 
         self.graphicsScene: GraphicsScene = GraphicsScene(self)
         self.graphicsScene.setScene(self.sceneWidth, self.sceneHeight)
-        self.graphicsScene.itemSelected.connect(self.onItemSelected)  # type: ignore
+        self.graphicsScene.itemSelected.connect(self.onItemSelected)
 
         # current filename assigned to this scene
         self.filename: Optional[str] = None
@@ -135,7 +135,7 @@ class Scene(Serializable):
         return ret
 
     @property
-    def selectedNodes(self) -> List[Node]:
+    def selectedNodes(self) -> List[GraphicsNode]:
         return [item for item in self.selectedItems if isinstance(item, GraphicsNode)]
 
     @property
@@ -349,7 +349,7 @@ class Scene(Serializable):
         with open(filename) as file:
             rawData = file.read()
             try:
-                data = json.loads(rawData, encoding="utf-8")
+                data = json.loads(rawData)
                 self.deserialize(data)
                 self.isModified = False
                 self.filename = filename

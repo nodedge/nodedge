@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-from PySide2.QtGui import QImage, QPixmap
+from PySide6.QtGui import QImage, QPixmap
 
 from nodedge.graphics_node import GraphicsNode
 

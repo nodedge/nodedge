@@ -3,5 +3,4 @@ pydocstyle
 recommonmark
 sphinx
 sphinx-autodoc-typehints
-sphinx-autodoc-types
 sphinx-rtd-theme

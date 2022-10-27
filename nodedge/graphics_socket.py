@@ -6,9 +6,9 @@ class.
 
 from typing import Optional, Union
 
-from PySide2.QtCore import QRectF, Qt
-from PySide2.QtGui import QBrush, QColor, QPainter, QPen
-from PySide2.QtWidgets import (
+from PySide6.QtCore import QRectF, Qt
+from PySide6.QtGui import QBrush, QColor, QPainter, QPen
+from PySide6.QtWidgets import (
     QApplication,
     QGraphicsItem,
     QGraphicsSceneHoverEvent,

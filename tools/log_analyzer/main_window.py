@@ -7,10 +7,16 @@ import os
 import sys
 from typing import Callable, Optional, Union, cast
 
-from PySide2.QtCore import QSettings, QSize, Qt
-from PySide2.QtGui import QCloseEvent, QGuiApplication, QIcon, QKeySequence, QMouseEvent
-from PySide2.QtWidgets import (
+from PySide6.QtCore import QSettings, QSize, Qt
+from PySide6.QtGui import (
     QAction,
+    QCloseEvent,
+    QGuiApplication,
+    QIcon,
+    QKeySequence,
+    QMouseEvent,
+)
+from PySide6.QtWidgets import (
     QApplication,
     QLabel,
     QMainWindow,
@@ -254,7 +260,7 @@ class MainWindow(QMainWindow):
         :return:
         """
         act = QAction(name, self)
-        act.triggered.connect(callback)
+        act.triggered.connect(callback)  # type: ignore
 
         if statusTip is not None:
             act.setStatusTip(statusTip)

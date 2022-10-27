@@ -7,10 +7,15 @@ import logging
 import os
 from typing import Callable, Optional, Union, cast
 
-from PySide2.QtCore import QPoint, QSettings, QSize, Qt
-from PySide2.QtGui import QClipboard, QCloseEvent, QGuiApplication, QKeySequence
-from PySide2.QtWidgets import (
+from PySide6.QtCore import QPoint, QSettings, QSize, Qt
+from PySide6.QtGui import (
     QAction,
+    QClipboard,
+    QCloseEvent,
+    QGuiApplication,
+    QKeySequence,
+)
+from PySide6.QtWidgets import (
     QFileDialog,
     QLabel,
     QMainWindow,
@@ -64,7 +69,7 @@ class EditorWindow(QMainWindow):
 
         # Pycharm does not recognise resolve connect method so the inspection is
         # noinspection PyUnresolvedReferences
-        self.clipboard.dataChanged.connect(self.onClipboardChanged)
+        self.clipboard.dataChanged.connect(self.onClipboardChanged)  # type: ignore
 
         self.lastActiveEditorWidget: Optional[EditorWidget] = None
 
@@ -130,7 +135,7 @@ class EditorWindow(QMainWindow):
         if self.currentEditorWidget is None:
             return
 
-        self.currentEditorWidget.graphicsView.scenePosChanged.connect(  # type: ignore
+        self.currentEditorWidget.graphicsView.scenePosChanged.connect(
             self.OnScenePosChanged
         )
 
@@ -576,7 +581,7 @@ class EditorWindow(QMainWindow):
         :return:
         """
         act = QAction(name, self)
-        act.triggered.connect(callback)
+        act.triggered.connect(callback)  # type: ignore
 
         if statusTip is not None:
             act.setStatusTip(statusTip)

@@ -4,7 +4,7 @@
 """
 
 import pytest
-from PySide2.QtWidgets import QMainWindow
+from PySide6.QtWidgets import QMainWindow
 
 from nodedge.editor_widget import EditorWidget
 from nodedge.scene_history import SceneHistory

@@ -1,6 +1,6 @@
 import pytest
-from PySide2.QtCore import QPointF
-from PySide2.QtWidgets import QMainWindow
+from PySide6.QtCore import QPointF
+from PySide6.QtWidgets import QMainWindow
 
 from nodedge.connector import SocketLocation
 from nodedge.edge import Edge

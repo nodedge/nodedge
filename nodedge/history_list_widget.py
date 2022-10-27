@@ -6,9 +6,9 @@ History list widget module containing
 import logging
 from typing import Optional
 
-from PySide2.QtCore import Qt, Signal
-from PySide2.QtGui import QMouseEvent
-from PySide2.QtWidgets import QListWidget, QListWidgetItem, QMainWindow
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QMouseEvent
+from PySide6.QtWidgets import QListWidget, QListWidgetItem, QMainWindow
 
 from nodedge import DEBUG_ITEMS_PRESSED
 from nodedge.scene_history import SceneHistory
@@ -28,7 +28,7 @@ class HistoryListWidget(QListWidget):
 
         self.history: SceneHistory = history
 
-        self.itemClicked.connect(self.onItemClicked)
+        self.itemClicked.connect(self.onItemClicked)  # type: ignore
 
     def update(self, *__args) -> None:
         """
@@ -49,7 +49,7 @@ class HistoryListWidget(QListWidget):
                 if index == self.history.currentStep:
                     item.setSelected(True)
 
-        super().update()
+        super().viewport().update()
 
     def onItemClicked(self, item: QListWidgetItem):
         if self.history is not None:
@@ -62,5 +62,5 @@ class HistoryListWidget(QListWidget):
             itemsPressed = [w.__class__.__name__ for w in widgetsAt(pos)]
             self.__logger.debug(itemsPressed)
             # noinspection PyUnresolvedReferences
-            self.itemsPressed.emit(itemsPressed)  # type: ignore
+            self.itemsPressed.emit(itemsPressed)
         super().mousePressEvent(e)

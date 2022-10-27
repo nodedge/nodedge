@@ -5,9 +5,9 @@
 from collections import OrderedDict
 from typing import Optional, cast
 
-from PySide2.QtCore import Qt
-from PySide2.QtGui import QFocusEvent
-from PySide2.QtWidgets import QGraphicsProxyWidget, QTextEdit, QVBoxLayout, QWidget
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QFocusEvent
+from PySide6.QtWidgets import QGraphicsProxyWidget, QTextEdit, QVBoxLayout, QWidget
 
 from nodedge.serializable import Serializable
 

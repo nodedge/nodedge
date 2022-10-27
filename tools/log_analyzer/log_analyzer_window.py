@@ -2,8 +2,8 @@ import csv
 import logging
 import sys
 
-from PySide2.QtGui import QStandardItem, QStandardItemModel
-from PySide2.QtWidgets import QApplication, QFileDialog, QMdiArea, QTableView
+from PySide6.QtGui import QStandardItem, QStandardItemModel
+from PySide6.QtWidgets import QApplication, QFileDialog, QMdiArea, QTableView
 
 from nodedge.utils import dumpException
 from tools.log_analyzer.main_window import MainWindow

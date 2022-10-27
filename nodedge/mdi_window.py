@@ -5,11 +5,10 @@ import logging
 import os
 from typing import Any, Callable, List, Optional, cast
 
-from pyqtconsole.console import PythonConsole
-from PySide2.QtCore import QSignalMapper, QSize, Qt, QTimer, Slot
-from PySide2.QtGui import QCloseEvent, QIcon, QKeySequence, QMouseEvent
-from PySide2.QtWidgets import (
-    QAction,
+# from pyqtconsole.console import PythonConsole
+from PySide6.QtCore import QSignalMapper, QSize, Qt, QTimer, Slot
+from PySide6.QtGui import QAction, QCloseEvent, QIcon, QKeySequence, QMouseEvent
+from PySide6.QtWidgets import (
     QDialog,
     QDockWidget,
     QFileDialog,
@@ -96,7 +95,7 @@ class MdiWindow(EditorWindow):
         self.timer = QTimer()
         self.timer.setTimerType(Qt.PreciseTimer)
         self.timer.setInterval(500)
-        self.timer.timeout.connect(self.checkStylesheet)
+        self.timer.timeout.connect(self.checkStylesheet)  # type: ignore
         self.timer.start()
 
         self.mdiArea = MdiArea()
@@ -104,16 +103,16 @@ class MdiWindow(EditorWindow):
 
         self.addCurrentEditorWidgetChangedListener(self.updateMenus)
 
-        self.mdiArea.subWindowActivated.connect(self.onSubWindowActivated)
+        self.mdiArea.subWindowActivated.connect(self.onSubWindowActivated)  # type: ignore
 
         self.windowMapper = QSignalMapper(self)
-        self.windowMapper.mapped[QWidget].connect(self.setActiveSubWindow)
+        self.windowMapper.mappedObject.connect(self.setActiveSubWindow)  # type: ignore
 
         self.createSceneItemDetailDock()
         self.createNodesDock()
         self.createHistoryDock()
         self.createSceneItemsDock()
-        self.createPythonConsole()
+        # self.createPythonConsole()
 
         self.createActions()
         self.createMenus()
@@ -237,7 +236,7 @@ class MdiWindow(EditorWindow):
         self.createHelpMenu()
 
         # noinspection PyUnresolvedReferences
-        self.editMenu.aboutToShow.connect(self.updateEditMenu)
+        self.editMenu.aboutToShow.connect(self.updateEditMenu)  # type: ignore
 
     # noinspection PyAttributeOutsideInit
     def createHomeMenu(self):
@@ -269,7 +268,7 @@ class MdiWindow(EditorWindow):
         """
         self.windowMenu = self.menuBar().addMenu("&Window")
         # noinspection PyUnresolvedReferences
-        self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
+        self.windowMenu.aboutToShow.connect(self.updateWindowMenu)  # type: ignore
 
     def updateMenus(self) -> None:
         """
@@ -339,7 +338,7 @@ class MdiWindow(EditorWindow):
             action.setCheckable(True)
             action.setChecked(editorWidget is self.currentEditorWidget)
             # noinspection PyUnresolvedReferences
-            action.triggered.connect(self.windowMapper.map)
+            action.triggered.connect(self.windowMapper.map)  # type: ignore
             self.windowMapper.setMapping(action, window)
 
     def updateEditMenu(self) -> None:
@@ -371,7 +370,7 @@ class MdiWindow(EditorWindow):
         :class:`~nodedge.editor_widget.EditorWidget`
         """
         editor: MdiWidget = childWidget if childWidget is not None else MdiWidget()
-        editor.scene.coder.notConnectedSocket.connect(  # type: ignore
+        editor.scene.coder.notConnectedSocket.connect(
             self.onSceneCoderOutputSocketDisconnect
         )
         subWindow = self.mdiArea.addSubWindow(editor)
@@ -419,7 +418,7 @@ class MdiWindow(EditorWindow):
         for window in self.mdiArea.subWindowList():
             editorWidget: EditorWidget = cast(EditorWidget, window.widget())
             if editorWidget.filename == filename:
-                return cast(QMdiSubWindow, window)
+                return window
         return None
 
     def setActiveSubWindow(self, window: QMdiSubWindow) -> None:
@@ -441,7 +440,7 @@ class MdiWindow(EditorWindow):
         """
         self.sceneItemDetailsWidget = SceneItemDetailWidget(self)
 
-        self.sceneItemDetailsDock = QDockWidget("Item details")
+        self.sceneItemDetailsDock = QDockWidget("Selected node details")
         self.sceneItemDetailsDock.setWidget(self.sceneItemDetailsWidget)
         self.sceneItemDetailsDock.setFloating(False)
 
@@ -453,9 +452,7 @@ class MdiWindow(EditorWindow):
         Create Nodes dock.
         """
         self.nodesTreeWidget = NodeTreeWidget()
-        self.nodesTreeWidget.itemsPressed.connect(  # type: ignore
-            self.showItemsInStatusBar
-        )
+        self.nodesTreeWidget.itemsPressed.connect(self.showItemsInStatusBar)
 
         self.nodesDock = QDockWidget("Nodes")
         self.nodesDock.setWidget(self.nodesTreeWidget)
@@ -469,9 +466,7 @@ class MdiWindow(EditorWindow):
         Create history dock.
         """
         self.historyListWidget = HistoryListWidget(self)
-        self.historyListWidget.itemsPressed.connect(  # type: ignore
-            self.showItemsInStatusBar
-        )
+        self.historyListWidget.itemsPressed.connect(self.showItemsInStatusBar)
         self.addCurrentEditorWidgetChangedListener(self.historyListWidget.update)
 
         self.historyDock = QDockWidget("History")
@@ -486,9 +481,7 @@ class MdiWindow(EditorWindow):
         Create scene items dock.
         """
         self.sceneItemsTableWidget = SceneItemsTableWidget(self)
-        self.sceneItemsTableWidget.itemsPressed.connect(  # type: ignore
-            self.showItemsInStatusBar
-        )
+        self.sceneItemsTableWidget.itemsPressed.connect(self.showItemsInStatusBar)
         self.addCurrentEditorWidgetChangedListener(self.sceneItemsTableWidget.update)
 
         self.sceneItemsDock = QDockWidget("Scene items")
@@ -503,14 +496,16 @@ class MdiWindow(EditorWindow):
         Create a python console embedded in a dock.
         :return: ``None``
         """
-        self.pythonConsoleWidget = PythonConsole(formats=self.styler.consoleStyle)
-        self.pythonConsoleWidget.eval_in_thread()
+        # self.pythonConsoleWidget = PythonConsole(formats=self.styler.consoleStyle)
+        # self.pythonConsoleWidget.eval_in_thread()
 
-        self.pythonConsoleDock = QDockWidget("Python console")
-        self.pythonConsoleDock.setWidget(self.pythonConsoleWidget)
-        self.pythonConsoleDock.setFloating(False)
+        # self.pythonConsoleDock = QDockWidget("Python console")
+        # self.pythonConsoleDock.setWidget(self.pythonConsoleWidget)
+        # self.pythonConsoleDock.setFloating(False)
 
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.pythonConsoleDock)
+        # self.addDockWidget(Qt.LeftDockWidgetArea, self.pythonConsoleDock)
+
+        pass
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """
@@ -525,7 +520,7 @@ class MdiWindow(EditorWindow):
             event.ignore()
         else:
             self.writeSettings()
-            self.pythonConsoleWidget.close()
+            # self.pythonConsoleWidget.close()
             event.accept()
 
     def newFile(self) -> QMdiSubWindow:
@@ -637,9 +632,7 @@ class MdiWindow(EditorWindow):
             self.historyListWidget.history = self.currentEditorWidget.scene.history
             self.sceneItemsTableWidget.scene = self.currentEditorWidget.scene
             graphicsScene = self.currentEditorWidget.scene.graphicsScene
-            graphicsScene.itemsPressed.connect(  # type: ignore
-                self.showItemsInStatusBar
-            )
+            graphicsScene.itemsPressed.connect(self.showItemsInStatusBar)
 
     def checkStylesheet(self) -> None:
         """
@@ -655,7 +648,7 @@ class MdiWindow(EditorWindow):
             self.stylesheetLastModified = modTime
             loadStyleSheets(self.styleSheetFilename)
 
-    @Slot(list)  # type: ignore
+    @Slot(list)
     def showItemsInStatusBar(self, items: List[str]):
         """
         Slot triggered when an item has been selected.
@@ -670,7 +663,7 @@ class MdiWindow(EditorWindow):
         """Event called when the debug action is triggered."""
         pass
 
-    @Slot()  # type: ignore
+    @Slot()
     def onShowDialogActions(self):
         self.__logger.info("")
         dialog = QDialog()
@@ -682,7 +675,7 @@ class MdiWindow(EditorWindow):
 
         super().mouseMoveEvent(event)
 
-    @Slot()  # type: ignore
+    @Slot()
     def onSceneCoderOutputSocketDisconnect(self) -> None:
         """
         Callback to deal with :class:`~nodedge.scene_coder.SceneCoder` warning.

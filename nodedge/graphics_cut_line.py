@@ -5,9 +5,9 @@ import logging
 from enum import IntEnum
 from typing import List, Optional
 
-from PySide2.QtCore import QEvent, QPointF, QRectF, Qt
-from PySide2.QtGui import QMouseEvent, QPainter, QPainterPath, QPen, QPolygonF
-from PySide2.QtWidgets import (
+from PySide6.QtCore import QEvent, QPointF, QRectF, Qt
+from PySide6.QtGui import QMouseEvent, QPainter, QPainterPath, QPen, QPolygonF
+from PySide6.QtWidgets import (
     QApplication,
     QGraphicsItem,
     QStyleOptionGraphicsItem,
@@ -53,7 +53,7 @@ class CutLine:
         eventButton: Qt.MouseButton = event.button()
         eventType: QEvent.Type = event.type()
         eventScenePos = self.graphicsView.mapToScene(event.pos())
-        eventModifiers: Qt.KeyboardModifiers = event.modifiers()
+        eventModifiers: Qt.KeyboardModifiers = event.modifiers()  # type: ignore
         if self.mode == CutLineMode.NOOP:
             if (
                 eventType == QEvent.MouseButtonPress

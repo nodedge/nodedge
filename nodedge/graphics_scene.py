@@ -7,9 +7,9 @@ import logging
 from math import ceil, floor, log
 from typing import Optional
 
-from PySide2.QtCore import QLine, Qt, Signal
-from PySide2.QtGui import QColor, QMatrix, QPen, QTransform
-from PySide2.QtWidgets import (
+from PySide6.QtCore import QLine, Qt, Signal
+from PySide6.QtGui import QColor, QPen, QTransform
+from PySide6.QtWidgets import (
     QGraphicsItem,
     QGraphicsItemGroup,
     QGraphicsScene,
@@ -187,20 +187,20 @@ class GraphicsScene(QGraphicsScene):
         maxZoomLevel = self.scene.graphicsView.zoomRange[1]
 
         # Get current scale factor.
-        oldMatrix: QMatrix = self.scene.graphicsView.matrix()
+        oldMatrix: QTransform = self.scene.graphicsView.transform()
         oldScaleFactor = oldMatrix.m11()
         oldZoomLevel = maxZoomLevel + round(log(oldScaleFactor) / log(zoomInFactor))
 
         # Fit in view and estimate new scale factor.
         self.scene.graphicsView.fitInView(group, Qt.KeepAspectRatio)
-        newMatrix = self.scene.graphicsView.matrix()
+        newMatrix = self.scene.graphicsView.transform()
         newScaleFactor = newMatrix.m11()
         newZoomLevel = min(
             maxZoomLevel, maxZoomLevel + floor(log(newScaleFactor) / log(zoomInFactor))
         )
 
         # Restore old scale factor.
-        self.scene.graphicsView.setMatrix(oldMatrix)
+        self.scene.graphicsView.setTransform(oldMatrix)
 
         # Apply new scale factor properly.
         self.scene.graphicsView.zoom = newZoomLevel

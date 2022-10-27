@@ -1,5 +1,5 @@
 import pytest
-from PySide2.QtWidgets import QMessageBox
+from PySide6.QtWidgets import QMessageBox
 from pytestqt.qtbot import QtBot
 
 from nodedge.mdi_window import MdiWindow

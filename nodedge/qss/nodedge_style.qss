@@ -65,7 +65,7 @@ QDockWidget{
     /*font-weight:bold;*/
     titlebar-close-icon: url("resources/iconsModified/close_window_100.png");
     titlebar-normal-icon: url(":icons/docktitle-normal-btn-light.png");
-    icon-size: 25px;
+    icon-size: 50px;
     width: 25px;
     border: 1px solid palette(highlight);
 }
@@ -102,7 +102,7 @@ QDockWidget::close-button {
 
 QMenuBar {
     background: palette(dark);
-    font-size: 16px;
+    font-size: 12px;
 }
 
 QMenuBar::item{
@@ -137,7 +137,7 @@ background:palette(light);
 
 QToolButton {
     padding: 0px 1px;
-    font-size: 16px;
+    font-size: 12px;
 }
 
 QMenu:disabled,

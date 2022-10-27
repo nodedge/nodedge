@@ -6,9 +6,9 @@ Scene items table widget module containing
 import logging
 from typing import Optional
 
-from PySide2.QtCore import Qt, Signal
-from PySide2.QtGui import QMouseEvent
-from PySide2.QtWidgets import (
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QMouseEvent
+from PySide6.QtWidgets import (
     QAbstractItemView,
     QHeaderView,
     QMainWindow,
@@ -45,8 +45,8 @@ class SceneItemsTableWidget(QTableWidget):
         self.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
         self.verticalHeader().hide()
         self.setShowGrid(True)
-        self.cellClicked.connect(self.onCellClicked)
-        self.cellDoubleClicked.connect(self.onCellDoubleClicked)
+        self.cellClicked.connect(self.onCellClicked)  # type: ignore
+        self.cellDoubleClicked.connect(self.onCellDoubleClicked)  # type: ignore
 
     def update(self, *__args) -> None:
         if self.scene is not None:
@@ -83,7 +83,7 @@ class SceneItemsTableWidget(QTableWidget):
 
                 self.setRowHeight(row, 30)
 
-        super().update()
+        super().viewport().update()
 
     def onCellClicked(self, row: int, column: int):
         if self.scene is not None:
@@ -102,5 +102,5 @@ class SceneItemsTableWidget(QTableWidget):
             itemsPressed = [w.__class__.__name__ for w in widgetsAt(pos)]
             self.__logger.debug(itemsPressed)
             # noinspection PyUnresolvedReferences
-            self.itemsPressed.emit(itemsPressed)  # type: ignore
+            self.itemsPressed.emit(itemsPressed)
         super().mousePressEvent(e)

@@ -8,8 +8,8 @@ import logging
 from collections import OrderedDict
 from typing import Callable, Collection, List, Optional, Tuple, TypeVar, cast
 
-from PySide2.QtCore import QPoint, QPointF
-from PySide2.QtWidgets import QGraphicsSceneMouseEvent
+from PySide6.QtCore import QPoint, QPointF
+from PySide6.QtWidgets import QGraphicsSceneMouseEvent
 
 from nodedge.connector import Socket, SocketLocation
 from nodedge.edge import Edge
