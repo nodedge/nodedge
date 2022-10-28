@@ -22,8 +22,9 @@ services: xvfb
 language: python
 branches:
   only:
-    - master
-    - /^v.*$/
+    - no-branch
+#    - master
+#    - /^v.*$/
 
 
 before_install:
