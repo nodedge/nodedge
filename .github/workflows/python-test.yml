@@ -25,7 +25,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install linux dependencies
       run: |
-        if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+        if [ "${{ matrix.platform }}" == "ubuntu-latest" ]; then
           sudo apt-get update
           sudo apt-get install -y libxml2-utils x11-utils xvfb herbstluftwm
           sudo apt-get install -y libxkbcommon-x11-0 libxcb-icccm4 libegl1
@@ -39,11 +39,10 @@ jobs:
         python -m pip install setuptools_rust tox tox-gh-actions
     - name: Test with tox
       uses: GabrielBB/xvfb-action@v1
+      with:
+        run: tox
       env:
         PLATFORM: ${{ matrix.platform }}
         QT_API: pyside6
         PYTEST_QT_API: pyside6
         QT_DEBUG_PLUGINS: 1
-      with:
-        run: tox
-
