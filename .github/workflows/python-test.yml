@@ -1,7 +1,9 @@
 name: Python test
 
 on:
-  - push
+  - push:
+    branches:
+      - main
   - pull_request
 
 jobs:
@@ -9,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-latest, windows-latest]
+        platform: [ubuntu-20.04, macos-latest, windows-latest]
         python-version: [3.8, 3.9, '3.10']
 
     steps:
@@ -34,3 +36,5 @@ jobs:
       uses: GabrielBB/xvfb-action@v1
       with:
         run: tox
+        env:
+          PLATFORM: ${{ matrix.platform }}
