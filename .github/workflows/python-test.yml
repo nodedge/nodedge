@@ -26,7 +26,7 @@ jobs:
     - name: Install linux dependencies
       run: |
         if [ "${{ matrix.os }}" == "ubuntu-20.04" ]; then
-          sudo apt-get install -y libxml2-utils x11-utils
+          sudo apt-get install -y libxml2-utils x11-utils libgl1-mesa-dev
           sudo apt-get install -y libxkbcommon-x11-0 libxcb-icccm4
           sudo apt-get install -y libxcb-image0 libxcb-keysyms1 libxcb-randr0 x11-utils
           sudo apt-get install -y libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0
@@ -38,6 +38,7 @@ jobs:
         python -m pip install tox tox-gh-actions
     - name: Test with tox
       uses: GabrielBB/xvfb-action@v1
-      with:
-        run: tox
+      run: tox
+      env:
+        PLATFORM: ${{ matrix.platform }}
 
