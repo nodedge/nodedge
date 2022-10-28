@@ -1,7 +1,9 @@
-=======
+.. image:: nodedge/resources/nodedge_logo.png
+  :width: 100px
 Nodedge
 =======
-Graphical editor for physical modeling and simulation.
+A Python3 graphic environment for next-generation engineering.
+
 https://www.nodedge.io
 
 .. image:: https://badge.fury.io/py/nodedge.svg
