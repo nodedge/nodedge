@@ -28,7 +28,7 @@ jobs:
         if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
           sudo apt-get update
           sudo apt-get install -y libxml2-utils x11-utils xvfb herbstluftwm
-          sudo apt-get install -y libxkbcommon-x11-0 libxcb-icccm4
+          sudo apt-get install -y libxkbcommon-x11-0 libxcb-icccm4 libegl1
           sudo apt-get install -y libxcb-image0 libxcb-keysyms1 libxcb-randr0 x11-utils
           sudo apt-get install -y libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0
         fi
