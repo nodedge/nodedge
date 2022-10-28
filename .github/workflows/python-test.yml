@@ -34,5 +34,3 @@ jobs:
       uses: GabrielBB/xvfb-action@v1
       with:
         run: tox
-        env:
-          PLATFORM: ${{ matrix.platform }}
