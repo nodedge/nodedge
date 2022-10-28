@@ -41,8 +41,3 @@ jobs:
       uses: GabrielBB/xvfb-action@v1
       with:
         run: tox
-      env:
-        PLATFORM: ${{ matrix.platform }}
-        QT_API: pyside6
-        PYTEST_QT_API: pyside6
-        QT_DEBUG_PLUGINS: 1
