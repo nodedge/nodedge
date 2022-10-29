@@ -23,7 +23,9 @@ jobs:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
+        os: ${{ matrix.platform }}
         python-version: ${{ matrix.python-version }}
+        cache: 'pip'
     - name: Install linux dependencies
       run: |
         if [ "${{ matrix.platform }}" == "ubuntu-latest" ]; then
