@@ -1,7 +1,9 @@
 .. image:: nodedge/resources/nodedge_logo.png
   :width: 100px
+
 Nodedge
 =======
+
 A Python3 graphic environment for next-generation engineering.
 
 https://www.nodedge.io

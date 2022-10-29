@@ -1,0 +1,15 @@
+library;function;block_name;op_block_string;operation_title;operation_symbol;icon_filename;input_socket_types;output_socket_types
+operator;add;Add;OP_NODE_OPERATOR_ADD;Addition;+;plus_math_100;(Number,Number);(Number)
+operator;sub;Sub;OP_NODE_OPERATOR_SUBTRACT;Subtraction;-;subtract_100;(Number,Number);(Number)
+operator;mul;Mul;OP_NODE_OPERATOR_MULTIPLY;Multiplication;*;multiply_100;(Number,Number);(Number)
+operator;truediv;TrueDiv;OP_NODE_OPERATOR_DIVIDE;Division;/;divide_100;(Number,Number);(Number)
+operator;mod;Mod;OP_NODE_OPERATOR_MODULO;Modulo;%;percentage_100;(Number,Number);(Number)
+operator;pow;Pow;OP_NODE_OPERATOR_POWER;Power;**;square_number_100;(Number,Number);(Number)
+operator;lt;Lt;OP_NODE_OPERATOR_LESS;Less;<;less_than_100;(Number,Number);(Number)
+operator;le;Le;OP_NODE_OPERATOR_LESS_EQUAL;Less or Equal;<=;less_or_equal_100;(Number,Number);(Number)
+operator;eq;Eq;OP_NODE_OPERATOR_EQUAL;Equal;==;equal_sign_100;(Number,Number);(Number)
+operator;gt;Gt;OP_NODE_OPERATOR_GREATER;Greater;>;more_than_100;(Number,Number);(Number)
+operator;ge;Ge;OP_NODE_OPERATOR_GREATER_EQUAL;Greater or Equal;>=;more_or_equal_100;(Number,Number);(Number)
+operator;floordiv;FloorDiv;OP_NODE_OPERATOR_FLOOR_DIVIDE;Floor division;//;floor_100;(Number,Number);(Number)
+operator;abs;Abs;OP_NODE_OPERATOR_ABSOLUTE;Abs. value;;absolute_100;(Number);(Number)
+

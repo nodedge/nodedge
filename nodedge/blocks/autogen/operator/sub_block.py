@@ -6,21 +6,21 @@ from typing import List
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
 from nodedge.blocks.block_exception import EvaluationError
-from nodedge.socket_type import SocketType
+from nodedge.connector import SocketType
 
 _LOG = logging.getLogger(__name__)
 
 try:
-    from nodedge.blocks.block_config import OP_NODE_SUBTRACT
+    from nodedge.blocks.op_node import OP_NODE_OPERATOR_SUBTRACT
 except NameError:
     _LOG.warning(f"Not registered block: {__name__}")
     op_block_string = -1
 
 
-@registerNode(OP_NODE_SUBTRACT)
+@registerNode(OP_NODE_OPERATOR_SUBTRACT)
 class SubBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/subtract_100.png"
-    operationCode = OP_NODE_SUBTRACT
+    operationCode = OP_NODE_OPERATOR_SUBTRACT
     operationTitle = "Subtraction"
     contentLabel = "-"
     contentLabelObjectName = "BlockBackground"

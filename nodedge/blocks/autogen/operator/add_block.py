@@ -6,21 +6,21 @@ from typing import List
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
 from nodedge.blocks.block_exception import EvaluationError
-from nodedge.socket_type import SocketType
+from nodedge.connector import SocketType
 
 _LOG = logging.getLogger(__name__)
 
 try:
-    from nodedge.blocks.block_config import OP_NODE_ADD
+    from nodedge.blocks.op_node import OP_NODE_OPERATOR_ADD
 except NameError:
     _LOG.warning(f"Not registered block: {__name__}")
     op_block_string = -1
 
 
-@registerNode(OP_NODE_ADD)
+@registerNode(OP_NODE_OPERATOR_ADD)
 class AddBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/plus_math_100.png"
-    operationCode = OP_NODE_ADD
+    operationCode = OP_NODE_OPERATOR_ADD
     operationTitle = "Addition"
     contentLabel = "+"
     contentLabelObjectName = "BlockBackground"

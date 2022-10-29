@@ -2,20 +2,6 @@
 import os
 from typing import Dict
 
-OP_NODE_INPUT = 1
-OP_NODE_OUTPUT = 2
-OP_NODE_ADD = 3
-OP_NODE_SUBTRACT = 4
-OP_NODE_MULTIPLY = 5
-OP_NODE_DIVIDE = 6
-OP_NODE_MODULO = 7
-OP_NODE_POWER = 8
-OP_NODE_LESS = 9
-OP_NODE_LESS_EQUAL = 10
-OP_NODE_EQUAL = 11
-OP_NODE_GREATER = 12
-OP_NODE_GREATER_EQUAL = 13
-
 # BlockType = TypeVar("BlockType", bound=Block)
 BLOCKS: Dict[int, type] = {}
 

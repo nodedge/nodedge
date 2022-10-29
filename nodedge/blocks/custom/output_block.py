@@ -2,17 +2,18 @@
 from typing import List
 
 from nodedge.blocks.block import Block
-from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, OP_NODE_OUTPUT, registerNode
+from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
 from nodedge.blocks.block_exception import EvaluationError
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.blocks.graphics_output_block_content import GraphicsOutputBlockContent
+from nodedge.blocks.op_node import OP_NODE_CUSTOM_OUTPUT
 from nodedge.socket_type import SocketType
 
 
-@registerNode(OP_NODE_OUTPUT)
+@registerNode(OP_NODE_CUSTOM_OUTPUT)
 class OutputBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/output.png"
-    operationCode = OP_NODE_OUTPUT
+    operationCode = OP_NODE_CUSTOM_OUTPUT
     operationTitle = "Output"
     contentLabel = "Out"
     contentLabelObjectName = "OutputBlockContent"

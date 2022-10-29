@@ -6,7 +6,7 @@
         {
             "id": 1583748004592,
             "title": "Input",
-            "posX": -375.0,
+            "posX": -510.0,
             "posY": -330.0,
             "inputSockets": [],
             "outputSockets": [
@@ -25,8 +25,8 @@
         },
         {
             "id": 1583747824656,
-            "title": "Input",
-            "posX": -375.0,
+            "title": "Input1",
+            "posX": -515.0,
             "posY": -225.0,
             "inputSockets": [],
             "outputSockets": [
@@ -178,7 +178,7 @@
         {
             "id": 1583749319792,
             "title": "Output",
-            "posX": 240.0,
+            "posX": 495.0,
             "posY": -330.0,
             "inputSockets": [
                 {
@@ -195,8 +195,8 @@
         },
         {
             "id": 1583749804960,
-            "title": "Output",
-            "posX": 240.0,
+            "title": "Output1",
+            "posX": 498.0,
             "posY": -210.0,
             "inputSockets": [
                 {
@@ -213,8 +213,8 @@
         },
         {
             "id": 1583749320560,
-            "title": "Output",
-            "posX": 240.0,
+            "title": "Output2",
+            "posX": 498.0,
             "posY": -105.0,
             "inputSockets": [
                 {
@@ -231,8 +231,8 @@
         },
         {
             "id": 1583749320608,
-            "title": "Output",
-            "posX": 240.0,
+            "title": "Output3",
+            "posX": 498.0,
             "posY": 15.0,
             "inputSockets": [
                 {
@@ -249,8 +249,8 @@
         },
         {
             "id": 192604048,
-            "title": "Output",
-            "posX": 240.0,
+            "title": "Output4",
+            "posX": 498.0,
             "posY": 120.0,
             "inputSockets": [
                 {
@@ -297,6 +297,70 @@
             ],
             "content": {},
             "operationCode": 7
+        },
+        {
+            "id": 140476586788960,
+            "title": "Absolute value",
+            "posX": -45.0,
+            "posY": 225.0,
+            "inputSockets": [
+                {
+                    "id": 140476586788400,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [
+                {
+                    "id": 140476586788232,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {},
+            "operationCode": 15
+        },
+        {
+            "id": 140474823730792,
+            "title": "Input2",
+            "posX": -525.0,
+            "posY": 225.0,
+            "inputSockets": [],
+            "outputSockets": [
+                {
+                    "id": 140476592967808,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {
+                "value": "-3.14"
+            },
+            "operationCode": 1
+        },
+        {
+            "id": 140476592970272,
+            "title": "Output5",
+            "posX": 498.0,
+            "posY": 225.0,
+            "inputSockets": [
+                {
+                    "id": 140476592970720,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [],
+            "content": {},
+            "operationCode": 2
         }
     ],
     "edges": [
@@ -395,6 +459,18 @@
             "edgeType": 3,
             "source": 1583749280096,
             "target": 212486416
+        },
+        {
+            "id": 140476592971672,
+            "edgeType": 3,
+            "source": 140476592967808,
+            "target": 140476586788400
+        },
+        {
+            "id": 140476592971616,
+            "edgeType": 3,
+            "source": 140476586788232,
+            "target": 140476592970720
         }
     ]
 }

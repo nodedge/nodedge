@@ -1,7 +1,6 @@
 from pylab import *
 from scipy.integrate import odeint
 
-
 """
 A spring-mass system with damping
 """
