@@ -2,13 +2,13 @@ name: Python test
 
 
 on:
-  - push
-#  :
-#    branches:
-#      - main
-#  pull_request:
-#    branches:
-#      - '**'
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+    types: [opened, synchronize]
 
 jobs:
   build:
@@ -46,3 +46,4 @@ jobs:
         run: tox
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        PLATFORM: ${{ matrix.platform }}
