@@ -44,3 +44,5 @@ jobs:
       uses: GabrielBB/xvfb-action@v1
       with:
         run: tox
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
