@@ -16,7 +16,7 @@ htmlcov/
 .mypy_cache
 venv/
 venv38/
-docs/build/
+docs_sphinx/build/
 dist/
 build/
 _template/
