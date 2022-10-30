@@ -3,7 +3,7 @@
 Graphics socket module containing :class:`~nodedge.graphics_socket.GraphicsSocket`
 class.
 """
-
+import logging
 from typing import Optional, Union
 
 from PySide6.QtCore import QRectF, Qt
@@ -115,7 +115,12 @@ class GraphicsSocket(QGraphicsItem):
             -self.radius, -self.radius, 2 * self.radius, 2 * self.radius
         )
 
-        painter.setBrush(QBrush(QColor(QApplication.palette().Button)))
+        try:
+            app = QApplication.palette()
+            painter.setBrush(QBrush(QColor(app.dark().color())))
+        except AttributeError as e:
+            painter.setBrush(QBrush(QColor("white")))
+            logging.warning(e)
         if not self.socket.hasAnyEdge:
             painter.drawEllipse(
                 -int(self.radius * 0.5),
