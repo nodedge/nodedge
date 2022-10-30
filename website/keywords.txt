@@ -1,0 +1,14 @@
+graphical-editor
+visual-scripting
+block-diagram
+automated-research
+physical-systems
+simulation
+engineering
+robotics
+python3
+qt6
+pyside6
+windows
+macos
+linux
