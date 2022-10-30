@@ -1,0 +1,313 @@
+{
+    "id": 1583693334992,
+    "sceneWidth": 64000,
+    "sceneHeight": 64000,
+    "nodes": [
+        {
+            "id": 1583748004592,
+            "title": "Gravitational const.",
+            "posX": -540.0,
+            "posY": -330.0,
+            "inputSockets": [],
+            "outputSockets": [
+                {
+                    "id": 1583749280096,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {
+                "value": "6.67e-11"
+            },
+            "operationCode": 1
+        },
+        {
+            "id": 1583749318256,
+            "title": "Multiply",
+            "posX": -45.0,
+            "posY": -330.0,
+            "inputSockets": [
+                {
+                    "id": 1583749318688,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                },
+                {
+                    "id": 1583749318832,
+                    "index": 1,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [
+                {
+                    "id": 1583749318928,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {},
+            "operationCode": 5
+        },
+        {
+            "id": 1583749318640,
+            "title": "Divide",
+            "posX": 240.0,
+            "posY": -210.0,
+            "inputSockets": [
+                {
+                    "id": 1583749319072,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                },
+                {
+                    "id": 1583749319216,
+                    "index": 1,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [
+                {
+                    "id": 1583749319312,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {},
+            "operationCode": 6
+        },
+        {
+            "id": 1583749319792,
+            "title": "Output",
+            "posX": 480.0,
+            "posY": -210.0,
+            "inputSockets": [
+                {
+                    "id": 1583749319888,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [],
+            "content": {},
+            "operationCode": 2
+        },
+        {
+            "id": 140474823730792,
+            "title": "Moon mass",
+            "posX": -534.0,
+            "posY": -64.0,
+            "inputSockets": [],
+            "outputSockets": [
+                {
+                    "id": 140476592967808,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {
+                "value": "7.34e22"
+            },
+            "operationCode": 1
+        },
+        {
+            "id": 1976542440912,
+            "title": "Power",
+            "posX": -30.0,
+            "posY": -15.0,
+            "inputSockets": [
+                {
+                    "id": 1976542439376,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                },
+                {
+                    "id": 1976542441584,
+                    "index": 1,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [
+                {
+                    "id": 1976542440720,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {},
+            "operationCode": 21
+        },
+        {
+            "id": 1976542442400,
+            "title": "Distance earth-moon",
+            "posX": -285.0,
+            "posY": 75.0,
+            "inputSockets": [],
+            "outputSockets": [
+                {
+                    "id": 1976542442784,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 0
+                }
+            ],
+            "content": {
+                "value": "384e3"
+            },
+            "operationCode": 1
+        },
+        {
+            "id": 1976542443744,
+            "title": "Square",
+            "posX": -285.0,
+            "posY": 180.0,
+            "inputSockets": [],
+            "outputSockets": [
+                {
+                    "id": 1976542444224,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 0
+                }
+            ],
+            "content": {
+                "value": "2"
+            },
+            "operationCode": 1
+        },
+        {
+            "id": 1976542430160,
+            "title": "Cat mass",
+            "posX": -534.0,
+            "posY": -169.0,
+            "inputSockets": [],
+            "outputSockets": [
+                {
+                    "id": 1976542438608,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 0
+                }
+            ],
+            "content": {
+                "value": "5.2"
+            },
+            "operationCode": 1
+        },
+        {
+            "id": 1976542437120,
+            "title": "Multiplication",
+            "posX": -285.0,
+            "posY": -120.0,
+            "inputSockets": [
+                {
+                    "id": 1976542436064,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                },
+                {
+                    "id": 1976542441104,
+                    "index": 1,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [
+                {
+                    "id": 1976542441056,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {},
+            "operationCode": 5
+        }
+    ],
+    "edges": [
+        {
+            "id": 1976542442880,
+            "edgeType": 3,
+            "source": 1976542444224,
+            "target": 1976542441584
+        },
+        {
+            "id": 1976542441536,
+            "edgeType": 3,
+            "source": 1583749318928,
+            "target": 1583749319072
+        },
+        {
+            "id": 1976542444944,
+            "edgeType": 3,
+            "source": 1976542440720,
+            "target": 1583749319216
+        },
+        {
+            "id": 1976542442976,
+            "edgeType": 3,
+            "source": 1583749319312,
+            "target": 1583749319888
+        },
+        {
+            "id": 1976540759088,
+            "edgeType": 3,
+            "source": 1976542442784,
+            "target": 1976542439376
+        },
+        {
+            "id": 1976256368544,
+            "edgeType": 3,
+            "source": 1583749280096,
+            "target": 1583749318688
+        },
+        {
+            "id": 1976542436592,
+            "edgeType": 3,
+            "source": 1976542438608,
+            "target": 1976542436064
+        },
+        {
+            "id": 1976542436784,
+            "edgeType": 3,
+            "source": 140476592967808,
+            "target": 1976542441104
+        },
+        {
+            "id": 1976542442352,
+            "edgeType": 3,
+            "source": 1976542441056,
+            "target": 1583749318832
+        }
+    ]
+}
