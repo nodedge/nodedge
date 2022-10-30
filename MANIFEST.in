@@ -29,9 +29,9 @@ recursive-include tools *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
 
-recursive-include docs *.rst *.py Makefile make.bat *.png
-recursive-include docs/source/_templates *
-recursive-exclude docs/build *
+recursive-include docs_sphinx *.rst *.py Makefile make.bat *.png
+recursive-include docs_sphinx/source/_templates *
+recursive-exclude docs_sphinx/build *
 
 include *.txt
 recursive-include nodedge *

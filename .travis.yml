@@ -59,7 +59,7 @@ jobs:
     - python: 3.10
       env: TOXENV=packaging
     - python: 3.10
-      env: TOXENV=docs
+      env: TOXENV=docs_sphinx
 
 
 before_script:
