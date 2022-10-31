@@ -10,7 +10,7 @@ import math
 from typing import Optional, Union
 
 from PySide6.QtCore import QPointF, Qt
-from PySide6.QtGui import QColor, QPainterPath, QPen
+from PySide6.QtGui import QColor, QFocusEvent, QPainterPath, QPen
 from PySide6.QtWidgets import (
     QApplication,
     QGraphicsItem,

@@ -6,9 +6,9 @@ Node module containing :class:`~nodedge.node.Node` class.
 
 import logging
 from collections import OrderedDict
-from typing import Callable, Collection, List, Optional, Tuple, TypeVar, cast
+from typing import Callable, Collection, List, Optional, cast
 
-from PySide6.QtCore import QPoint, QPointF
+from PySide6.QtCore import QPointF
 from PySide6.QtWidgets import QGraphicsSceneMouseEvent
 
 from nodedge.connector import Socket, SocketLocation
@@ -17,9 +17,8 @@ from nodedge.graphics_node import GraphicsNode
 from nodedge.graphics_node_content import GraphicsNodeContent
 from nodedge.serializable import Serializable
 from nodedge.socket_type import SocketType
+from nodedge.types import Pos
 from nodedge.utils import dumpException
-
-Pos = TypeVar("Pos", List, Tuple, QPoint, QPointF)
 
 
 class NodesAndSockets:

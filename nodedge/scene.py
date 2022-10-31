@@ -13,6 +13,9 @@ from PySide6.QtGui import QDragEnterEvent, QDropEvent
 from PySide6.QtWidgets import QGraphicsItem
 
 from nodedge.edge import Edge
+from nodedge.elements.comment_element import CommentElement
+from nodedge.elements.element import Element
+from nodedge.elements.op_element import *
 from nodedge.graphics_node import GraphicsNode
 from nodedge.graphics_scene import GraphicsScene
 from nodedge.graphics_view import GraphicsView
@@ -42,6 +45,7 @@ class Scene(Serializable):
         super().__init__()
         self.nodes: List[Node] = []
         self.edges: List[Edge] = []
+        self.elements: List[Element] = []
 
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
@@ -276,6 +280,11 @@ class Scene(Serializable):
         :type node: :class:`~nodedge.node.Node`
         """
         self.nodes.append(node)
+
+    def addElement(self):
+        element = CommentElement(self)
+        self.__logger.info(f"Number of elements: {len(self.elements)}")
+        self.__logger.info([e.graphicsElement.pos() for e in self.elements])
 
     def addEdge(self, edge: Edge):
         """Add :class:`~nodedge.edge.Edge` to this `Scene`

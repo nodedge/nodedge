@@ -1,9 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-comment_element.py module containing :class:`~nodedge.comment_element.py.CommentElement` class.
+comment_element.py module containing :class:`~nodedge.comment_element.CommentElement` class.
 """
+from nodedge.elements.element import Element
+from nodedge.graphics_text_item import GraphicsTextItem
 
 
 class CommentElement(Element):
-    def __init__(self):
-        pass
+    GraphicsElementClass = GraphicsTextItem
+
+    def __init__(self, scene: "Scene"):  # type: ignore
+        super().__init__(scene)
+
+    def initInnerClasses(self):
+        self.graphicsElement = self.__class__.GraphicsElementClass(
+            self, "Add your text here"
+        )

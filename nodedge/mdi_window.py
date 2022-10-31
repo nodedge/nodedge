@@ -200,6 +200,13 @@ class MdiWindow(EditorWindow):
             QKeySequence("ctrl+shift+a"),
         )
 
+        self.addCommentElementAct = self.createAction(
+            "Add Comment",
+            self.addCommentElement,
+            "Add comment element in current scene",
+            QKeySequence("Ctrl+Alt+C"),
+        )
+
     # noinspection PyAttributeOutsideInit
     def createToolBars(self) -> None:
         """
@@ -217,9 +224,13 @@ class MdiWindow(EditorWindow):
         self.editToolBar.addAction(self.cutAct)
         self.editToolBar.addAction(self.copyAct)
         self.editToolBar.addAction(self.pasteAct)
+        self.editToolBar.addSeparator()
 
         self.coderToolbar = self.addToolBar("Coder")
         self.coderToolbar.addAction(self.generateCodeAct)
+
+        self.coderToolbar.addSeparator()
+        self.coderToolbar.addAction(self.addCommentElementAct)
 
     def createMenus(self) -> None:
         """
@@ -382,6 +393,7 @@ class MdiWindow(EditorWindow):
         editor.scene.history.addHistoryModifiedListener(
             self.sceneItemsTableWidget.update
         )
+        editor.scene.addItemsDeselectedListener(self.sceneItemDetailsWidget.update)
         editor.scene.addItemSelectedListener(self.sceneItemDetailsWidget.update)
         editor.addCloseEventListener(self.onSubWindowClosed)
 
@@ -596,6 +608,11 @@ class MdiWindow(EditorWindow):
             "Scrub them off every once in a while, or the light won't come in.\" \n "
             "Isaac Asimov.",
         )
+
+    def addCommentElement(self):
+        if self.currentEditorWidget is not None:
+            scene = self.currentEditorWidget.scene
+            scene.addElement()
 
     def onNodesToolbarTriggered(self) -> None:
         """
