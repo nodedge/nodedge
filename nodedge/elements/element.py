@@ -8,6 +8,7 @@ from typing import Optional
 from PySide6.QtCore import QPointF
 
 from nodedge.elements.graphics_element import GraphicsElement
+from nodedge.logger import logger
 from nodedge.serializable import Serializable
 from nodedge.types import Pos
 from nodedge.utils import dumpException
@@ -27,18 +28,21 @@ class Element(Serializable):
         self.scene.graphicsScene.addItem(self.graphicsElement)
 
     def initInnerClasses(self):
-
+        self.content: str = ""
         self.graphicsElement = self.__class__.GraphicsElementClass(self)
 
     def serialize(self) -> OrderedDict:
         if isinstance(self.content, Serializable):
-            self.content.serialize()
+            serializedContent = self.content.serialize()
+        else:
+            serializedContent = ""
 
         return OrderedDict(
             [
                 ("id", self.id),
                 ("posX", self.graphicsElement.scenePos().x()),
                 ("posY", self.graphicsElement.scenePos().y()),
+                ("content", serializedContent),
             ]
         )
 
@@ -48,7 +52,7 @@ class Element(Serializable):
         hashmap: Optional[dict] = None,
         restoreId: bool = True,
         *args,
-        **kwargs
+        **kwargs,
     ) -> bool:
 
         if hashmap is None:
@@ -60,7 +64,13 @@ class Element(Serializable):
 
             self.pos = (data["posX"], data["posY"])
 
+            if isinstance(data["content"], str):
+                self.content = data["content"]
+            else:
+                raise NotImplementedError
+
         except Exception as e:
+            logger.warning(e)
             dumpException(e)
             return False
 
@@ -89,3 +99,15 @@ class Element(Serializable):
                 raise TypeError("Pass an iterable with two numbers.")
         elif isinstance(pos, QPointF):
             self.graphicsElement.setPos(pos)
+
+    def remove(self):
+        """
+        Safely remove this element.
+        """
+        logger.debug(f"Removing {self}")
+        logger.debug("Removing the graphical element.")
+        self.scene.graphicsScene.removeItem(self.graphicsElement)
+        # TODO: Investigate why setting graphicsNode to None makes tests crash.
+        # self.graphicsNode = None
+        logger.debug("Removing the node from the scene.")
+        self.scene.removeElement(self)

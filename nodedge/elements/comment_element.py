@@ -13,6 +13,5 @@ class CommentElement(Element):
         super().__init__(scene)
 
     def initInnerClasses(self):
-        self.graphicsElement = self.__class__.GraphicsElementClass(
-            self, "Add your text here"
-        )
+        self.content = "Add your text here"
+        self.graphicsElement = self.__class__.GraphicsElementClass(self, self.content)

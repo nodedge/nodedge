@@ -154,6 +154,13 @@ class MdiWindow(EditorWindow):
             "&Cascade", self.mdiArea.cascadeSubWindows, "Cascade the windows"
         )
 
+        self.hideToolbarAct = self.createAction(
+            "Hide toolbars",
+            self.hideToolBars,
+            "Hide toolbars",
+            QKeySequence("Ctrl+T"),
+        )
+
         self.nextAct = self.createAction(
             "Ne&xt",
             self.mdiArea.activateNextSubWindow,
@@ -212,12 +219,14 @@ class MdiWindow(EditorWindow):
         """
         Create the `File` and `Edit` toolbar containing few of their menu actions.
         """
+        self.toolBars = []
         self.fileToolBar: QToolBar = self.addToolBar("File")
         self.fileToolBar.setMovable(False)
         self.fileToolBar.addAction(self.newAct)
         self.fileToolBar.addAction(self.openAct)
         self.fileToolBar.addAction(self.saveAct)
         self.fileToolBar.addSeparator()
+        self.toolBars.append(self.fileToolBar)
 
         self.editToolBar = self.addToolBar("Edit")
         self.editToolBar.setMovable(False)
@@ -225,12 +234,20 @@ class MdiWindow(EditorWindow):
         self.editToolBar.addAction(self.copyAct)
         self.editToolBar.addAction(self.pasteAct)
         self.editToolBar.addSeparator()
+        self.toolBars.append(self.editToolBar)
 
-        self.coderToolbar = self.addToolBar("Coder")
-        self.coderToolbar.addAction(self.generateCodeAct)
+        self.coderToolBar = self.addToolBar("Coder")
+        self.coderToolBar.addAction(self.generateCodeAct)
+        self.coderToolBar.addAction(self.addCommentElementAct)
+        self.toolBars.append(self.coderToolBar)
 
-        self.coderToolbar.addSeparator()
-        self.coderToolbar.addAction(self.addCommentElementAct)
+    def hideToolBars(self):
+        if self.toolBars[0].isVisible():
+            for toolBar in self.toolBars:
+                toolBar.hide()
+        else:
+            for toolBar in self.toolBars:
+                toolBar.show()
 
     def createMenus(self) -> None:
         """

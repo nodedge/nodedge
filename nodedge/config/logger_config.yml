@@ -1,0 +1,4 @@
+#LOGGER_FORMAT: !!str '%(asctime)s | %(levelname)-7s | %(name)s.%(filename)s:%(lineno)-3d | %(message)s'
+LOGGER_FORMAT: !!str '%(asctime)s | %(levelname)-7s | %(filename)s:%(lineno)-3d | %(message)s'
+LOGGER_DATE_FORMAT: !!str '%Y-%m-%d %H:%M:%S'
+LOGGER_LEVEL: !!str 'DEBUG'

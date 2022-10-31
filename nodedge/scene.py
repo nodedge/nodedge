@@ -15,10 +15,10 @@ from PySide6.QtWidgets import QGraphicsItem
 from nodedge.edge import Edge
 from nodedge.elements.comment_element import CommentElement
 from nodedge.elements.element import Element
-from nodedge.elements.op_element import *
 from nodedge.graphics_node import GraphicsNode
 from nodedge.graphics_scene import GraphicsScene
 from nodedge.graphics_view import GraphicsView
+from nodedge.logger import logger
 from nodedge.node import Node
 from nodedge.scene_clipboard import SceneClipboard
 from nodedge.scene_coder import SceneCoder
@@ -46,9 +46,6 @@ class Scene(Serializable):
         self.nodes: List[Node] = []
         self.edges: List[Edge] = []
         self.elements: List[Element] = []
-
-        self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.INFO)
 
         self.sceneWidth: int = 64000
         self.sceneHeight: int = 64000
@@ -283,8 +280,8 @@ class Scene(Serializable):
 
     def addElement(self):
         element = CommentElement(self)
-        self.__logger.info(f"Number of elements: {len(self.elements)}")
-        self.__logger.info([e.graphicsElement.pos() for e in self.elements])
+        logger.info(f"Number of elements: {len(self.elements)}")
+        logger.info([e.graphicsElement.pos() for e in self.elements])
 
     def addEdge(self, edge: Edge):
         """Add :class:`~nodedge.edge.Edge` to this `Scene`
@@ -302,9 +299,22 @@ class Scene(Serializable):
         if nodeToRemove in self.nodes:
             self.nodes.remove(nodeToRemove)
         else:
-            self.__logger.warning(
+            logger.warning(
                 f"Trying to remove {nodeToRemove} from {self} but is it not in the "
                 f"node list. "
+            )
+
+    def removeElement(self, elementToRemove: Element):
+        """Remove :class:`~nodedge.node.Node` from this `Scene`
+        :param elementToRemove: :class:`~nodedge.elements.element.Element` to be removed from this `Scene`
+        :type elementToRemove: :class:`~nodedge.elements.element.Element`
+        """
+        if elementToRemove in self.elements:
+            self.nodes.remove(elementToRemove)
+        else:
+            logger.warning(
+                f"Trying to remove {elementToRemove} from {self} but is it not in the "
+                f"element list. "
             )
 
     def removeEdge(self, edgeToRemove: Edge):
@@ -316,7 +326,7 @@ class Scene(Serializable):
         if edgeToRemove in self.edges:
             self.edges.remove(edgeToRemove)
         else:
-            self.__logger.warning(
+            logger.warning(
                 f"Trying to remove {edgeToRemove} from {self} but is it not is the "
                 f"edge list. "
             )
@@ -341,7 +351,7 @@ class Scene(Serializable):
         """
         with open(filename, "w") as file:
             file.write(json.dumps(self.serialize(), indent=4))
-            self.__logger.info(f"Saving to {filename} was successful.")
+            logger.info(f"Saving to {filename} was successful.")
 
             self.isModified = False
             self.filename = filename
@@ -377,12 +387,15 @@ class Scene(Serializable):
         :return: data serialized in ``OrderedDict``
         :rtype: ``OrderedDict``
         """
-        nodes, edges = [], []
+        nodes, edges, elements = [], [], []
         for node in self.nodes:
             nodes.append(node.serialize())
 
         for edge in self.edges:
             edges.append(edge.serialize())
+
+        for element in self.elements:
+            elements.append(element.serialize())
 
         return OrderedDict(
             [
@@ -391,6 +404,7 @@ class Scene(Serializable):
                 ("sceneHeight", self.sceneHeight),
                 ("nodes", nodes),
                 ("edges", edges),
+                ("elements", elements),
             ]
         )
 
@@ -421,7 +435,7 @@ class Scene(Serializable):
         try:
             if hashmap is None:
                 hashmap = {}
-            self.__logger.debug(f"Deserialize data: {data}")
+            logger.debug(f"Deserialize data: {data}")
             self.clear()
 
             if restoreId:
@@ -469,8 +483,25 @@ class Scene(Serializable):
             while allEdges:
                 edge = allEdges.pop()
                 edge.remove()
+
+            allElements = self.elements.copy()
+            elementsData = data.get("elements")
+            if elementsData is not None:
+                for elementData in elementsData:
+                    existingElement: Optional[Element] = None
+                    for element in allElements:
+                        if element.id == elementData["id"]:
+                            existingElement = element
+
+                    if not existingElement:
+                        Element(self).deserialize(elementData, hashmap, restoreId)
+
+                while allElements:
+                    element = allElements.pop()
+                    element.remove()
             return True
         except Exception as e:
+
             dumpException(e)
             return False
 

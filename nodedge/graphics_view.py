@@ -12,10 +12,12 @@ from PySide6.QtGui import QDragEnterEvent, QDropEvent, QKeyEvent, QMouseEvent, Q
 from PySide6.QtWidgets import QGraphicsItem, QGraphicsView, QWidget
 
 from nodedge.edge_dragging import EdgeDragging, EdgeDraggingMode
+from nodedge.elements.element import Element
 from nodedge.graphics_cut_line import CutLine
 from nodedge.graphics_edge import GraphicsEdge
 from nodedge.graphics_scene import GraphicsScene
 from nodedge.graphics_socket import GraphicsSocket
+from nodedge.logger import logger
 from nodedge.node import Node
 from nodedge.utils import dumpException
 
@@ -380,9 +382,29 @@ class GraphicsView(QGraphicsView):
         # self.graphicsScene.scene.history.undo() elif event.key() == Qt.Key_Z and
         # event.modifiers() & Qt.ControlModifier and event.modifiers() &
         # Qt.ShiftModifier: self.graphicsScene.scene.history.redo()
+        dPos = [0, 0]
+        if event.modifiers() & Qt.AltModifier:
+            if event.key() == Qt.Key_Left:
+                dPos[0] = -10
+            elif event.key() == Qt.Key_Right:
+                dPos[0] = 10
+            elif event.key() == Qt.Key_Up:
+                dPos[1] = -10
+            elif event.key() == Qt.Key_Down:
+                dPos[1] = 10
+            logger.debug(f"Move: {dPos}")
+
+            for item in self.scene().selectedItems():
+                if hasattr(item, "node"):
+                    item.node.pos = item.pos() + QPointF(*dPos)
+                    item.node.updateConnectedEdges()
+
+            if dPos != [0, 0]:
+                event.accept()
+                return
+
         if event.key() == Qt.Key_H:
             self.__logger.info(f"{self.graphicsScene.scene.history}")
-
         else:
             super().keyPressEvent(event)
 
@@ -431,6 +453,9 @@ class GraphicsView(QGraphicsView):
             elif hasattr(item, "node"):
                 node: Node = item.node
                 node.remove()
+            elif hasattr(item, "element"):
+                element: Element = item.element
+                element.remove()
 
         self.graphicsScene.scene.history.store("Delete selected objects.")
 
