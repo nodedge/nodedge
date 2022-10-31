@@ -38,3 +38,12 @@ recursive-include nodedge *
 
 recursive-exclude logs *
 recursive-exclude demos *
+
+recursive-include docs *.gif
+recursive-include docs *.html
+recursive-include docs *.ico
+recursive-include docs *.jpg
+recursive-include docs *.md
+recursive-include docs *.nojekyll
+recursive-include docs *.png
+recursive-include docs *.txt
