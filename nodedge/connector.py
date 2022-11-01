@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Socket module containing Nodedge's class for representing
+Socket module containing Nodedge class for representing
 :class:`~nodedge.socket.Socket` class and :class:`~nodedge.socket.SocketLocation`
 constants.
 """
@@ -135,7 +135,7 @@ class Socket(Serializable):
         Delete this :class:`~nodedge.socket.Socket`
         from :class:`~nodedge.scene.Scene`.
         """
-        self.graphicsSocket.setParentItem(None)
+        self.graphicsSocket.setParentItem(None)  # type: ignore
         self.node.scene.grScene.removeItem(self.graphicsSocket)
         del self.graphicsSocket
 

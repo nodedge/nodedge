@@ -233,7 +233,7 @@ class EditorWidget(QWidget):
 
     def mouseReleaseEvent(self, ev: QMouseEvent) -> None:
         """
-        Handle Qt's mouse's button release event.
+        Handle Qt mouse's button release event.
 
         :param ev: Mouse release event
         :type ev: ``QMouseEvent``
@@ -243,7 +243,7 @@ class EditorWidget(QWidget):
 
     def mousePressEvent(self, ev: QMouseEvent) -> None:
         """
-        Handle Qt's mouse's button press event.
+        Handle Qt mouse's button press event.
 
         :param ev: Mouse press event
         :type ev: ``QMouseEvent``

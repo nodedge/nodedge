@@ -122,11 +122,11 @@ class MdiWidget(EditorWidget):
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """
-        Handle Qt's close event.
+        Handle Qt close event.
 
         Make sure changes have been saved before closing the widget.
 
-        :param event: Qt's close event, the user may have clicked on the close button,
+        :param event: Qt close event, the user may have clicked on the close button,
             or pressed CTRL+W
         :type event: ``QCloseEvent.py``
         """
@@ -142,7 +142,7 @@ class MdiWidget(EditorWidget):
         :class:`~nodedge.node_list_widget.NodeListWidget`, its logo is displayed
         above the scene, near the location of the mouse.
 
-        :param event: the Qt's drag event event, containing the mime data of the node
+        :param event: the Qt drag event event, containing the mime data of the node
             being dragged
         :return: QDragEnterEvent
         """
@@ -162,7 +162,7 @@ class MdiWidget(EditorWidget):
         When the node is dropped, an instance of it is created near at the mouse
         location, displayed by its :class:`~nodedge.graphics_node.GraphicsNode`.
 
-        :param event: the Qt's drop event, containing the mime data of the node being
+        :param event: the Qt drop event, containing the mime data of the node being
             dropped.
         :type event: QDropEvent.py
         """
@@ -203,10 +203,10 @@ class MdiWidget(EditorWidget):
 
     def contextMenuEvent(self, event: QContextMenuEvent):
         """
-        Handle Qt's context menu event.
+        Handle Qt context menu event.
 
 
-        :param event: the Qt's context menu event, happening when the user right
+        :param event: the Qt context menu event, happening when the user right
             clicks on the :class:`~nodedge.graphics_scene.GraphicsScene`
         :type event: ``QContextMenuEvent.py``
         """
@@ -231,9 +231,9 @@ class MdiWidget(EditorWidget):
 
     def handleNodeContextMenu(self, event: QContextMenuEvent):
         """
-        Handle Qt's context menu event when the user has clicked on a node.
+        Handle Qt context menu event when the user has clicked on a node.
 
-        :param event: Qt's context menu event, happening when the users
+        :param event: Qt context menu event, happening when the users
         :return: ``QContextMenuEvent``
         """
         contextMenu = QMenu()
@@ -298,7 +298,7 @@ class MdiWidget(EditorWidget):
         Show all available nodes available in a list context menu, so that the users
         can quickly create a new one.
 
-        :param event: the Qt's context menu event, happening when the user right
+        :param event: the Qt context menu event, happening when the user right
             clicks on the :class:`~nodedge.graphics_scene.GraphicsScene`
         :type event: ``QContextMenuEvent.py``
         """
@@ -338,10 +338,10 @@ class MdiWidget(EditorWidget):
 
     def handleEdgeContextMenu(self, event):
         """
-        Handle Qt's context menu when the user has right clicked on an
+        Handle Qt context menu when the user has right clicked on an
         :class:`~nodedge.graphics_edge.GraphicsEdge`
 
-        :param event: the Qt's context menu event, happening when the user right clicks
+        :param event: the Qt context menu event, happening when the user right clicks
             on the :class:`~nodedge.graphics_scene.GraphicsScene`
         :type event: ``QContextMenuEvent``
         """
@@ -363,9 +363,9 @@ class MdiWidget(EditorWidget):
 
     def mouseReleaseEvent(self, event: QMouseEvent):
         """
-        Handle Qt's mouse release event.
+        Handle Qt mouse release event.
 
-        :param event: Qt's mouse release event
+        :param event: Qt mouse release event
         :return: ``QMouseEvent``
         """
         super().mouseReleaseEvent(event)

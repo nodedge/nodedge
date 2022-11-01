@@ -5,7 +5,6 @@
 from collections import OrderedDict
 from typing import Optional, cast
 
-from PySide6.QtCore import Qt
 from PySide6.QtGui import QFocusEvent
 from PySide6.QtWidgets import QGraphicsProxyWidget, QTextEdit, QVBoxLayout, QWidget
 
@@ -107,7 +106,7 @@ class TextEdit(QTextEdit):
     .. note::
 
         This class is example of ``QTextEdit`` modification to be able to handle
-        `Delete` key with overridden Qt's ``keyPressEvent`` (when not using
+        `Delete` key with overridden Qt ``keyPressEvent`` (when not using
         ``QActions`` in menu or toolbar)
 
     overridden ``QTextEdit`` which sends notification about being edited to parent's
@@ -118,7 +117,7 @@ class TextEdit(QTextEdit):
         """
         Example of overridden focusInEvent to mark start of editing.
 
-        :param event: Qt's focus event
+        :param event: Qt focus event
         :type event: QFocusEvent
         """
 
@@ -130,7 +129,7 @@ class TextEdit(QTextEdit):
         """
         Example of overridden focusOutEvent to mark end of editing
 
-        :param event: Qt's focus event
+        :param event: Qt focus event
         :type event: QFocusEvent
         """
 

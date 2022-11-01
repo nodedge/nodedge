@@ -4,7 +4,6 @@ Scene module containing :class:`~nodedge.scene.Scene`.
 """
 
 import json
-import logging
 import os
 from collections import OrderedDict
 from typing import Callable, List, Optional, cast
@@ -494,7 +493,9 @@ class Scene(Serializable):
                             existingElement = element
 
                     if not existingElement:
-                        Element(self).deserialize(elementData, hashmap, restoreId)
+                        CommentElement(self).deserialize(
+                            elementData, hashmap, restoreId
+                        )
 
                 while allElements:
                     element = allElements.pop()

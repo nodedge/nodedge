@@ -10,7 +10,8 @@ from PySide6.QtCore import QPointF
 from nodedge.elements.graphics_element import GraphicsElement
 from nodedge.logger import logger
 from nodedge.serializable import Serializable
-from nodedge.types import Pos
+
+# from nodedge.types import Pos
 from nodedge.utils import dumpException
 
 
@@ -35,7 +36,7 @@ class Element(Serializable):
         if isinstance(self.content, Serializable):
             serializedContent = self.content.serialize()
         else:
-            serializedContent = ""
+            serializedContent = self.content
 
         return OrderedDict(
             [
@@ -66,6 +67,10 @@ class Element(Serializable):
 
             if isinstance(data["content"], str):
                 self.content = data["content"]
+                try:
+                    self.updateGraphicsElement()
+                except Exception as e:
+                    dumpException(e)
             else:
                 raise NotImplementedError
 
@@ -87,7 +92,7 @@ class Element(Serializable):
         return self.graphicsElement.pos()  # QPointF
 
     @pos.setter
-    def pos(self, pos: Pos):
+    def pos(self, pos):
         if isinstance(pos, (list, tuple)):
             try:
                 x, y = pos

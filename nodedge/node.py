@@ -17,7 +17,8 @@ from nodedge.graphics_node import GraphicsNode
 from nodedge.graphics_node_content import GraphicsNodeContent
 from nodedge.serializable import Serializable
 from nodedge.socket_type import SocketType
-from nodedge.types import Pos
+
+# from nodedge.types import Pos
 from nodedge.utils import dumpException
 
 
@@ -230,7 +231,7 @@ class Node(Serializable):
         return self.graphicsNode.pos()  # QPointF
 
     @pos.setter
-    def pos(self, pos: Pos):
+    def pos(self, pos):
         if isinstance(pos, (list, tuple)):
             try:
                 x, y = pos

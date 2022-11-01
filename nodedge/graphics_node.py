@@ -256,7 +256,7 @@ class GraphicsNode(QGraphicsItem):
 
     def mouseMoveEvent(self, event):
         """
-        Override Qt's event to detect that we moved this .
+        Override Qt event to detect that we moved this .
         """
         super().mouseMoveEvent(event)
 
@@ -270,7 +270,7 @@ class GraphicsNode(QGraphicsItem):
 
     def mouseReleaseEvent(self, event):
         """
-        Handle Qt's event when we move, select or deselect this
+        Handle Qt event when we move, select or deselect this
         :class:`~nodedge.graphics_node.GraphicsNode`.
         """
         super().mouseReleaseEvent(event)
@@ -315,7 +315,7 @@ class GraphicsNode(QGraphicsItem):
 
     def hoverEnterEvent(self, event: QGraphicsSceneHoverEvent) -> None:
         """
-        Handle Qt's hover event.
+        Handle Qt hover event.
         It adds a highlighting boundary around this
         :class:`~nodedge.graphics_node.GraphicsNode`.
         """
@@ -324,14 +324,14 @@ class GraphicsNode(QGraphicsItem):
 
     def hoverLeaveEvent(self, event: QGraphicsSceneHoverEvent) -> None:
         """
-        Handle Qt's hover effect.
+        Handle Qt hover effect.
         """
         self.hovered = False
         self.update()
 
     def mouseDoubleClickEvent(self, event: QGraphicsSceneMouseEvent):
         """
-        Qt's overridden event for doubleclick.
+        Qt overridden event for doubleclick.
         Resend to :func:`~nodedge.node.Node.onDoubleClicked`
         """
         self.node.onDoubleClicked(event)

@@ -2,7 +2,7 @@
 """
 ${FILE_NAME} module containing :class:`~nodedge.${FILE_NAME}.<ClassName>` class.
 """
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFocusEvent
 from PySide6.QtWidgets import (
     QFontDialog,
@@ -13,6 +13,8 @@ from PySide6.QtWidgets import (
 
 
 class GraphicsTextItem(QGraphicsTextItem):
+    textChanged = Signal(str)
+
     def __init__(self, element, *args):
         """
         Initialize the shape.
@@ -38,6 +40,7 @@ class GraphicsTextItem(QGraphicsTextItem):
         cursor.clearSelection()
         self.setTextCursor(cursor)
         self.setCursor(Qt.OpenHandCursor)
+        self.textChanged.emit(self.toPlainText())  # type: ignore
 
     def mousePressEvent(self, event: QGraphicsSceneMouseEvent) -> None:
         if self.cursor().shape() != Qt.IBeamCursor:

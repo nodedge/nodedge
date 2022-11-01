@@ -538,7 +538,7 @@ class MdiWindow(EditorWindow):
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """
-        Qt's close event handle.
+        Qt close event handle.
 
         :param event: close event
         :type event: ``QCloseEvent.py``

@@ -3,7 +3,6 @@
 Graphics scene module containing :class:`~nodedge.graphics_scene.GraphicsScene` class.
 """
 
-import logging
 from math import ceil, floor, log
 from typing import Optional
 
@@ -17,6 +16,8 @@ from PySide6.QtWidgets import (
     QGraphicsSceneMouseEvent,
     QWidget,
 )
+
+from nodedge.logger import logger
 
 
 class GraphicsScene(QGraphicsScene):
@@ -42,9 +43,6 @@ class GraphicsScene(QGraphicsScene):
         """
 
         super().__init__(parent)
-
-        self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.INFO)
 
         self.scene = scene
         self.initUI()
@@ -122,7 +120,7 @@ class GraphicsScene(QGraphicsScene):
 
     def dragMoveEvent(self, event: QGraphicsSceneDragDropEvent) -> None:
         """
-        Handle Qt's mouse's drag move event.
+        Handle Qt mouse's drag move event.
 
         :param event: Mouse release event
         :type event: ``QGraphicsSceneDragDropEvent.py``
@@ -131,12 +129,13 @@ class GraphicsScene(QGraphicsScene):
 
     def mousePressEvent(self, event: QGraphicsSceneMouseEvent) -> None:
         """
-        Handle Qt's mouse's button press event.
+        Handle Qt mouse's button press event.
 
         :param event: Mouse release event
         :type event: ``QGraphicsSceneMouseEvent.py``
         """
         item: Optional[QGraphicsItem] = self.itemAt(event.scenePos(), QTransform())
+        logger.debug(f"item: {item}")
 
         if (
             item is not None
@@ -144,21 +143,19 @@ class GraphicsScene(QGraphicsScene):
             and item.parentItem() not in self.selectedItems()
             and not event.modifiers() & Qt.ShiftModifier
         ):
-            self.__logger.debug(f"Pressed item: {item}")
-            self.__logger.debug(f"Pressed parent item: {item.parentItem()}")
-            self.__logger.debug(
-                f"Selected items in graphics scene: {self.selectedItems()}"
-            )
+            logger.debug(f"Pressed item: {item}")
+            logger.debug(f"Pressed parent item: {item.parentItem()}")
+            logger.debug(f"Selected items in graphics scene: {self.selectedItems()}")
             for item in self.selectedItems():
                 if item is not None:
                     item.setSelected(False)
 
-        self.itemSelected.emit()
+        self.itemSelected.emit()  # type: ignore
         super().mousePressEvent(event)
 
     def mouseReleaseEvent(self, event: QGraphicsSceneMouseEvent) -> None:
         """
-        Handle Qt's mouse's button release event.
+        Handle Qt mouse's button release event.
 
         :param event: Mouse release event
         :type event: ``QGraphicsSceneMouseEvent.py``

@@ -15,3 +15,10 @@ class CommentElement(Element):
     def initInnerClasses(self):
         self.content = "Add your text here"
         self.graphicsElement = self.__class__.GraphicsElementClass(self, self.content)
+        self.graphicsElement.textChanged.connect(self.onTextChanged)
+
+    def updateGraphicsElement(self):
+        self.graphicsElement.setPlainText(self.content)
+
+    def onTextChanged(self, text: str):
+        self.content = text

@@ -6,7 +6,7 @@ class.
 import logging
 from typing import Optional, Union
 
-from PySide6.QtCore import QRectF, Qt
+from PySide6.QtCore import QRectF
 from PySide6.QtGui import QBrush, QColor, QPainter, QPen
 from PySide6.QtWidgets import (
     QApplication,
@@ -131,7 +131,7 @@ class GraphicsSocket(QGraphicsItem):
 
     def boundingRect(self) -> QRectF:
         """
-        Define Qt's bounding rectangle.
+        Define Qt bounding rectangle.
 
         :return: Graphics socket bounding rectangle.
         :rtype: ``QRectF``
@@ -145,9 +145,9 @@ class GraphicsSocket(QGraphicsItem):
 
     def hoverEnterEvent(self, event: QGraphicsSceneHoverEvent) -> None:
         """
-        Overridden Qt's slot to handle mouse hovering on the edge.
+        Overridden Qt slot to handle mouse hovering on the edge.
 
-        :param event: Qt's mouse hover event
+        :param event: Qt mouse hover event
         :type event: ``QGraphicsSceneHoverEvent``
         """
         self.hovered = True
@@ -155,9 +155,9 @@ class GraphicsSocket(QGraphicsItem):
 
     def hoverLeaveEvent(self, event: QGraphicsSceneHoverEvent) -> None:
         """
-        Overridden Qt's slot to handle mouse hovering's end on the edge.
+        Overridden Qt slot to handle mouse hovering's end on the edge.
 
-        :param event: Qt's mouse hover event
+        :param event: Qt mouse hover event
         :type event: ``QGraphicsSceneHoverEvent``
         """
         self.hovered = False

@@ -32,7 +32,7 @@ class HistoryListWidget(QListWidget):
 
     def update(self, *__args) -> None:
         """
-        Qt's update callback.
+        Qt update callback.
 
         :return: ``None``
         """
