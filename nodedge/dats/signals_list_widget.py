@@ -6,7 +6,7 @@ class SignalsListWidget(QListWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.setSelectionMode(QAbstractItemView.ExtendedSelection)  # type: ignore
+        self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
 
     def updateList(self, mdfFile: MDF):
         channels = list(mdfFile.channels_db.keys())
