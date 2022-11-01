@@ -14,7 +14,7 @@
         <array />
       </option>
       <option name="outputFromStdout" value="false" />
-      <option name="program" value="$PROJECT_DIR$/venv310/Scripts/black.exe" />
+      <option name="program" value="$PROJECT_DIR$/venv/Scripts/black.exe" />
       <option name="runOnExternalChanges" value="false" />
       <option name="scopeName" value="All Places" />
       <option name="trackOnlyRoot" value="false" />
@@ -34,7 +34,7 @@
         <array />
       </option>
       <option name="outputFromStdout" value="false" />
-      <option name="program" value="$PROJECT_DIR$/venv310/Scripts/isort" />
+      <option name="program" value="$PROJECT_DIR$/venv/Scripts/isort" />
       <option name="runOnExternalChanges" value="true" />
       <option name="scopeName" value="Project Files" />
       <option name="trackOnlyRoot" value="false" />
