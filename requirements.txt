@@ -4,3 +4,6 @@ pyqtconsole
 PySide6
 PyYAML
 types-PyYAML
+pyqtgraph
+asammdf
+numpy
