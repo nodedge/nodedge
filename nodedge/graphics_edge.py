@@ -143,9 +143,9 @@ class GraphicsEdge(QGraphicsPathItem):
 
     def mouseReleaseEvent(self, event: QGraphicsSceneMouseEvent) -> None:
         """
-        Overridden Qt's slot to handle mouse release on the edge.
+        Overridden Qt slot to handle mouse release on the edge.
 
-        :param event: Qt's mouse release event
+        :param event: Qt mouse release event
         :type event: ``QGraphicsSceneMouseEvent``
         """
         super().mouseReleaseEvent(event)
@@ -157,9 +157,9 @@ class GraphicsEdge(QGraphicsPathItem):
 
     def hoverEnterEvent(self, event: QGraphicsSceneHoverEvent) -> None:
         """
-        Overridden Qt's slot to handle mouse hovering on the edge.
+        Overridden Qt slot to handle mouse hovering on the edge.
 
-        :param event: Qt's mouse hover event
+        :param event: Qt mouse hover event
         :type event: ``QGraphicsSceneHoverEvent``
         """
         p = QApplication.palette()
@@ -169,9 +169,9 @@ class GraphicsEdge(QGraphicsPathItem):
 
     def hoverLeaveEvent(self, event: QGraphicsSceneHoverEvent) -> None:
         """
-        Overridden Qt's slot to handle mouse hovering's end on the edge.
+        Overridden Qt slot to handle mouse hovering's end on the edge.
 
-        :param event: Qt's mouse hover event
+        :param event: Qt mouse hover event
         :type event: ``QGraphicsSceneHoverEvent``
         """
         self.hovered = False
@@ -190,7 +190,7 @@ class GraphicsEdge(QGraphicsPathItem):
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """
-        Qt's overridden method to paint the edge.
+        Qt overridden method to paint the edge.
 
         .. note:: The path is calculated in
             :func:`~nodedge.graphics_edge.GraphicsEdge.calcPath` method.

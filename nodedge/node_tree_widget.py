@@ -41,7 +41,7 @@ class NodeTreeWidget(QTreeWidget):
     def __init__(self, parent: Optional[QWidget] = None):
         """
 
-        :param parent: Qt's widget parent
+        :param parent: Qt widget parent
         :type parent: ``QWidget`` | ``None``
         """
         super().__init__(parent)
@@ -154,7 +154,7 @@ class NodeTreeWidget(QTreeWidget):
 
     def mousePressEvent(self, e: QMouseEvent) -> None:
         """
-        Handle Qt's mouse press event.
+        Handle Qt mouse press event.
         :param e: `QMouseEvent`
         :return: ``None``
         """

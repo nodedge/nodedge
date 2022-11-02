@@ -10,7 +10,6 @@
 .coverage
 coverage.xml
 
-.idea
 htmlcov/
 .eggs/
 .mypy_cache
