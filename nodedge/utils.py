@@ -5,14 +5,11 @@ Utils module with some helper functions.
 
 import logging
 import traceback
-from pathlib import Path
 from pprint import PrettyPrinter
-from typing import Any
 
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import QFile, QPoint
 from PySide6.QtWidgets import QApplication
-from yaml import Loader, load
 
 pp = PrettyPrinter(indent=4).pprint
 
@@ -95,31 +92,3 @@ def indentCode(string: str):
     indentedLines = ["\n    " + line for line in lines]
     indentedCode = "".join(indentedLines)
     return indentedCode
-
-
-def load_config_file(path: Path) -> dict[str, Any]:
-    """
-    Load the specified .yaml config file and return the variables extracted
-    Parameters
-    ----------
-    path : pathlib.Path
-        The path to the config file to load
-    Returns
-    ----------
-    dict[str, Any]
-        A dictionary containing the extracted variables in the format : {'var_name': var_value}
-    """
-    with open(path, "rb") as file:
-        config = load(file, Loader)
-        return config
-
-
-def get_project_root() -> Path:
-    """
-    Get the root path of the project, assuming this file is at the right place inside the project
-    Returns
-    ----------
-    pathlib.Path
-        The path to the root of the project
-    """
-    return Path(__file__)
