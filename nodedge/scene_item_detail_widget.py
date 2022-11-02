@@ -9,8 +9,6 @@ from typing import cast
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QGridLayout, QLabel, QLineEdit, QSizePolicy, QWidget
 
-from nodedge.editor_widget import EditorWidget
-
 
 class SceneItemDetailWidget(QWidget):
     """:class:`~nodedge.scene_item_detail_widget.SceneItemDetailWidget` class ."""
@@ -65,7 +63,7 @@ class SceneItemDetailWidget(QWidget):
 
         return valueWidget
 
-    def update(self) -> None:
+    def update(self) -> None:  # type: ignore
         """
 
 

@@ -39,6 +39,10 @@ recursive-include nodedge *
 recursive-exclude logs *
 recursive-exclude demos *
 
+
+recursive-exclude .idea *
+
+
 recursive-include docs *.gif
 recursive-include docs *.html
 recursive-include docs *.ico

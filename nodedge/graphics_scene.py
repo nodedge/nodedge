@@ -150,7 +150,7 @@ class GraphicsScene(QGraphicsScene):
                 if item is not None:
                     item.setSelected(False)
 
-        self.itemSelected.emit()  # type: ignore
+        self.itemSelected.emit()
         super().mousePressEvent(event)
 
     def mouseReleaseEvent(self, event: QGraphicsSceneMouseEvent) -> None:

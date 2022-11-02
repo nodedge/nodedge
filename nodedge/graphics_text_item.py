@@ -40,7 +40,8 @@ class GraphicsTextItem(QGraphicsTextItem):
         cursor.clearSelection()
         self.setTextCursor(cursor)
         self.setCursor(Qt.OpenHandCursor)
-        self.textChanged.emit(self.toPlainText())  # type: ignore
+        # noinspection PyUnresolvedReferences
+        self.textChanged.emit(self.toPlainText())
 
     def mousePressEvent(self, event: QGraphicsSceneMouseEvent) -> None:
         if self.cursor().shape() != Qt.IBeamCursor:

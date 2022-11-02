@@ -309,7 +309,7 @@ class Scene(Serializable):
         :type elementToRemove: :class:`~nodedge.elements.element.Element`
         """
         if elementToRemove in self.elements:
-            self.nodes.remove(elementToRemove)
+            self.elements.remove(elementToRemove)
         else:
             logger.warning(
                 f"Trying to remove {elementToRemove} from {self} but is it not in the "

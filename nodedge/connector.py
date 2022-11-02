@@ -135,7 +135,7 @@ class Socket(Serializable):
         Delete this :class:`~nodedge.socket.Socket`
         from :class:`~nodedge.scene.Scene`.
         """
-        self.graphicsSocket.setParentItem(None)  # type: ignore
+        self.graphicsSocket.setParentItem(None)
         self.node.scene.grScene.removeItem(self.graphicsSocket)
         del self.graphicsSocket
 
