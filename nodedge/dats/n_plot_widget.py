@@ -17,7 +17,7 @@ from pyqtgraph.GraphicsScene.mouseEvents import MouseClickEvent
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import QPointF, Qt
 from PySide6.QtGui import QMouseEvent
-from PySide6.QtWidgets import QColorDialog, QInputDialog
+from PySide6.QtWidgets import QApplication, QColorDialog, QInputDialog
 
 from nodedge.dats.n_plot_data_item import NPlotDataItem
 from nodedge.logger import logger
@@ -31,8 +31,13 @@ class NPlotWidget(GraphicsLayoutWidget):
         # crosshair
         self.plotItems = []
         self.plotItem = self.addPlotItem(viewBox=NViewBox(self, self))
-        self.vLine: InfiniteLine = InfiniteLine(angle=90, movable=False)
-        self.hLine: InfiniteLine = InfiniteLine(angle=0, movable=False)
+        p = QApplication.palette()
+        self.vLine: InfiniteLine = InfiniteLine(
+            angle=90, movable=False, pen=pg.mkPen(p.highlight().color())
+        )
+        self.hLine: InfiniteLine = InfiniteLine(
+            angle=0, movable=False, pen=pg.mkPen(p.highlight().color())
+        )
         self.plotItem.addItem(self.vLine, ignoreBounds=True)
         self.plotItem.addItem(self.hLine, ignoreBounds=True)
         self.plotItem.addLegend()

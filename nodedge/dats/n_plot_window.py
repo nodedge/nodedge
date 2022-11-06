@@ -130,9 +130,7 @@ class DatsWindow(QMainWindow):
 
         for name in channelNames:
             channel: Channel = log.get(name)
-            w: WorksheetsTabWidget = cast(
-                self.workbooksTabWidget.currentWidget(), WorksheetsTabWidget
-            )
+            w: WorksheetsTabWidget = self.workbooksTabWidget.currentWidget()
             w.addCurvePlot(channel.timestamps, channel.samples, channel.name)  # type: ignore
 
     # noinspection PyArgumentList, PyAttributeOutsideInit
