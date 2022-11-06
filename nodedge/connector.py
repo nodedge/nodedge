@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Socket module containing Nodedge's class for representing
+Socket module containing Nodedge class for representing
 :class:`~nodedge.socket.Socket` class and :class:`~nodedge.socket.SocketLocation`
 constants.
 """

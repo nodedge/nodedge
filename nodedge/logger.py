@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Logger module containing function to setup logging functionalities.
+Logger module containing function to set up logging functionalities.
 """
 
 

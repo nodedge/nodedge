@@ -1,5 +1,6 @@
-from numpy import power
 from operator import mul, truediv
+
+from numpy import power
 
 
 def gravitational_force():

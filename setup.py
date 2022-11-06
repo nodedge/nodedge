@@ -72,10 +72,11 @@ CLASSIFIERS = [
 PLATFORMS = ["Windows", "Linux", "Mac OS-X", "Unix"]
 
 PROJECT_URLS = {
+    "Website": "https://nodedge.io",
     "Documentation": "https://nodedge.readthedocs.io/en/latest/",
-    "Say Thanks!": "http://saythanks.io/to/example",
     "Source": "https://github.com/nodedge/nodedge",
     "Tracker": "https://github.com/nodedge/nodedge/issues",
+    "Donate": "https://github.com/sponsors/nodedge",
 }
 
 setup(

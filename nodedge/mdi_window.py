@@ -154,6 +154,13 @@ class MdiWindow(EditorWindow):
             "&Cascade", self.mdiArea.cascadeSubWindows, "Cascade the windows"
         )
 
+        self.hideToolbarAct = self.createAction(
+            "Hide toolbars",
+            self.hideToolBars,
+            "Hide toolbars",
+            QKeySequence("Ctrl+T"),
+        )
+
         self.nextAct = self.createAction(
             "Ne&xt",
             self.mdiArea.activateNextSubWindow,
@@ -200,26 +207,47 @@ class MdiWindow(EditorWindow):
             QKeySequence("ctrl+shift+a"),
         )
 
+        self.addCommentElementAct = self.createAction(
+            "Add Comment",
+            self.addCommentElement,
+            "Add comment element in current scene",
+            QKeySequence("Ctrl+Alt+C"),
+        )
+
     # noinspection PyAttributeOutsideInit
     def createToolBars(self) -> None:
         """
         Create the `File` and `Edit` toolbar containing few of their menu actions.
         """
+        self.toolBars = []
         self.fileToolBar: QToolBar = self.addToolBar("File")
         self.fileToolBar.setMovable(False)
         self.fileToolBar.addAction(self.newAct)
         self.fileToolBar.addAction(self.openAct)
         self.fileToolBar.addAction(self.saveAct)
         self.fileToolBar.addSeparator()
+        self.toolBars.append(self.fileToolBar)
 
         self.editToolBar = self.addToolBar("Edit")
         self.editToolBar.setMovable(False)
         self.editToolBar.addAction(self.cutAct)
         self.editToolBar.addAction(self.copyAct)
         self.editToolBar.addAction(self.pasteAct)
+        self.editToolBar.addSeparator()
+        self.toolBars.append(self.editToolBar)
 
-        self.coderToolbar = self.addToolBar("Coder")
-        self.coderToolbar.addAction(self.generateCodeAct)
+        self.coderToolBar = self.addToolBar("Coder")
+        self.coderToolBar.addAction(self.generateCodeAct)
+        self.coderToolBar.addAction(self.addCommentElementAct)
+        self.toolBars.append(self.coderToolBar)
+
+    def hideToolBars(self):
+        if self.toolBars[0].isVisible():
+            for toolBar in self.toolBars:
+                toolBar.hide()
+        else:
+            for toolBar in self.toolBars:
+                toolBar.show()
 
     def createMenus(self) -> None:
         """
@@ -382,6 +410,7 @@ class MdiWindow(EditorWindow):
         editor.scene.history.addHistoryModifiedListener(
             self.sceneItemsTableWidget.update
         )
+        editor.scene.addItemsDeselectedListener(self.sceneItemDetailsWidget.update)
         editor.scene.addItemSelectedListener(self.sceneItemDetailsWidget.update)
         editor.addCloseEventListener(self.onSubWindowClosed)
 
@@ -509,7 +538,7 @@ class MdiWindow(EditorWindow):
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """
-        Qt's close event handle.
+        Qt close event handle.
 
         :param event: close event
         :type event: ``QCloseEvent.py``
@@ -596,6 +625,11 @@ class MdiWindow(EditorWindow):
             "Scrub them off every once in a while, or the light won't come in.\" \n "
             "Isaac Asimov.",
         )
+
+    def addCommentElement(self):
+        if self.currentEditorWidget is not None:
+            scene = self.currentEditorWidget.scene
+            scene.addElement()
 
     def onNodesToolbarTriggered(self) -> None:
         """

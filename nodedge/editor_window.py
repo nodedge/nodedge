@@ -7,7 +7,7 @@ import logging
 import os
 from typing import Callable, Optional, Union, cast
 
-from PySide6.QtCore import QPoint, QSettings, QSize, Qt
+from PySide6.QtCore import QSettings, QSize, Qt
 from PySide6.QtGui import (
     QAction,
     QClipboard,
@@ -257,7 +257,7 @@ class EditorWindow(QMainWindow):
 
     def sizeHint(self) -> QSize:
         """
-        Qt's size hint handle.
+        Qt size hint handle.
         TODO: Investigate if we really need to overwrite this method.
 
         :return: ``None``
@@ -501,12 +501,14 @@ class EditorWindow(QMainWindow):
             self,
             "Nodedge is about to close",
             "There are unsaved modifications. \n" "Do you want to save your changes?",
-            QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel,
+            QMessageBox.StandardButton.Save
+            | QMessageBox.StandardButton.Discard
+            | QMessageBox.StandardButton.Cancel,
         )
 
-        if res == QMessageBox.Save:
+        if res == QMessageBox.StandardButton.Save:
             return self.saveFile()
-        elif res == QMessageBox.Cancel:
+        elif res == QMessageBox.StandardButton.Cancel:
             return False
 
         return True

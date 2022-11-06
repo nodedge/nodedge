@@ -7,7 +7,7 @@ import os
 import sys
 from typing import Callable, Optional, Union, cast
 
-from PySide6.QtCore import QSettings, QSize, Qt
+from PySide6.QtCore import QSettings, QSize
 from PySide6.QtGui import (
     QAction,
     QCloseEvent,
@@ -82,7 +82,7 @@ class MainWindow(QMainWindow):
 
     def sizeHint(self) -> QSize:
         """
-        Qt's size hint handle.
+        Qt size hint handle.
         TODO: Investigate if we really need to overwrite this method.
 
         :return: ``None``
@@ -297,7 +297,7 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """
-        Qt's close event handle.
+        Qt close event handle.
 
         :param event: close event
         :type event: ``QCloseEvent.py``

@@ -12,7 +12,7 @@ class GraphicsBlock(GraphicsNode):
         super().initSizes()
         self.width = 200
         self.height = 80
-        self.edgeRoundness = 0.0
+        self.edgeRoundness = 2.0
         self.edgePadding = 0.0
         self.titleHorizontalPadding = 8.0
         self.titleVerticalPadding = 18.0

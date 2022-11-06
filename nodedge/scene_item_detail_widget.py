@@ -4,6 +4,7 @@ Scene item detail widget module containing
 :class:`~nodedge.scene_item_detail_widget.SceneItemDetailWidget` class.
 """
 import logging
+from typing import cast
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QGridLayout, QLabel, QLineEdit, QSizePolicy, QWidget
@@ -26,13 +27,21 @@ class SceneItemDetailWidget(QWidget):
         # pal.setColor(QPalette.Background, QColor("black"))
         # self.setPalette(pal)
         self.setLayout(self.layout)
-        self.titleLineEdit: QLineEdit = self.addRow("Name", edit=True)
+        self.titleLineEdit: QLineEdit = cast(QLineEdit, self.addRow("Title", edit=True))
+        self.titleLineEdit.setEnabled(False)
         self.titleLineEdit.editingFinished.connect(self.onTitleLineEditChanged)
-        self.typeLabel = self.addRow("Type")
-        self.inputsTypeLabel = self.addRow("Inputs type")
-        self.outputsTypeLabel = self.addRow("Outputs type")
+        self.typeLabel: QLabel = cast(QLabel, self.addRow("Type"))
+        self.inputsTypeLabel = cast(QLabel, self.addRow("Inputs type"))
+        self.outputsTypeLabel = cast(QLabel, self.addRow("Outputs type"))
 
     def addRow(self, title: str, edit: bool = False):
+        """
+        Add a widget on a new row to the layout.
+
+        :param title: Name of the row
+        :param edit: Whether is it as `QLineEdit` or not.
+        :return: added widget
+        """
         stringLabel = QLabel(title + ": ")
         stringLabel.setAlignment(Qt.AlignTop)
         stringLabel.setFixedHeight(30)
@@ -54,21 +63,41 @@ class SceneItemDetailWidget(QWidget):
 
         return valueWidget
 
-    def update(self):
+    def update(self) -> None:  # type: ignore
+        """
+
+
+        :return: `None`
+        """
         super().update()
+
+        self.titleLineEdit.setEnabled(False)
 
         if self.parent.currentEditorWidget is not None:
             selectedNode = self.parent.currentEditorWidget.scene.selectedNode
+            self.__logger.debug(selectedNode)
             if selectedNode is not None:
+                self.titleLineEdit.setEnabled(True)
                 self.titleLineEdit.setText(selectedNode.title)
                 self.typeLabel.setText(selectedNode.graphicsNode.type)
                 inputs = [i.name for i in selectedNode.inputSocketTypes]
                 outputs = [i.name for i in selectedNode.outputSocketTypes]
                 self.inputsTypeLabel.setText(str(inputs))
                 self.outputsTypeLabel.setText(str(outputs))
+            else:
+                self.titleLineEdit.setText("")
+                self.typeLabel.setText("")
+                self.inputsTypeLabel.setText("")
+                self.outputsTypeLabel.setText("")
 
-    def onTitleLineEditChanged(self):
-        selectedNode = self.parent.currentEditorWidget.scene.selectedNode
+    def onTitleLineEditChanged(self) -> None:
+        """
+        Give a unique name to the selected node.
+
+        :return: `None`
+        """
+        scene = self.parent.currentEditorWidget.scene  # type: ignore
+        selectedNode = scene.selectedNode
 
         otherNodes = self.parent.currentEditorWidget.scene.nodes.copy()
         if selectedNode in otherNodes:

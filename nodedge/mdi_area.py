@@ -43,7 +43,7 @@ class MdiArea(QMdiArea):
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """
-        Qt's paint event handle.
+        Qt paint event handle.
 
         :param event:
         :type event: ``QPaintEvent.py``
@@ -73,7 +73,7 @@ class MdiArea(QMdiArea):
 
     def mousePressEvent(self, e: QMouseEvent) -> None:
         """
-        Qt's mouse press handle.
+        Qt mouse press handle.
 
         :param e:
         :type e: ``QMouseEvent``
