@@ -31,6 +31,10 @@ class NPlotWidget(GraphicsLayoutWidget):
         # crosshair
         self.plotItems = []
         self.plotItem = self.addPlotItem(viewBox=NViewBox(self, self))
+        vb: NViewBox = self.plotItem.vb
+        vb.setBackgroundColor(QApplication.palette().base().color())
+        self.setBackground(QApplication.palette().base().color())
+
         p = QApplication.palette()
         self.vLine: InfiniteLine = InfiniteLine(
             angle=90, movable=False, pen=pg.mkPen(p.highlight().color())
