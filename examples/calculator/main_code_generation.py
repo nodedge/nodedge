@@ -1,8 +1,8 @@
 import os
 import sys
 
-from PySide2.QtGui import QColor, QPalette
-from PySide2.QtWidgets import QApplication
+from PySide6.QtGui import QColor, QPalette
+from PySide6.QtWidgets import QApplication
 
 from nodedge.mdi_window import MdiWindow
 from nodedge.scene_coder import SceneCoder
@@ -34,9 +34,7 @@ if __name__ == "__main__":
     orderedNodeList, currentSceneCode = coder.generateCode()
     print(currentSceneCode)
 
-    generatedFileString = coder.addImports(
-        orderedNodeList, currentSceneCode
-    )
+    generatedFileString = coder.addImports(orderedNodeList, currentSceneCode)
 
     try:
         sys.exit(app.exec_())
