@@ -34,7 +34,7 @@ class Element(Serializable):
 
     def serialize(self) -> OrderedDict:
         if isinstance(self.content, Serializable):
-            serializedContent = self.content.serialize()
+            serializedContent: OrderedDict | str = self.content.serialize()
         else:
             serializedContent = self.content
 
