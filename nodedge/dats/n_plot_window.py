@@ -3,6 +3,7 @@ import logging
 import sys
 from typing import Callable, Optional, Union, cast
 
+import pyqtgraph as pg
 from asammdf import MDF
 from asammdf.blocks.utils import MdfException
 from asammdf.blocks.v2_v3_blocks import Channel
@@ -355,6 +356,8 @@ if __name__ == "__main__":
     app.setOrganizationName("Nodedge")
     app.setOrganizationDomain("nodedge.io")
     app.setApplicationName("Dats")
+    pg.setConfigOption("background", app.palette().dark().color())  # type: ignore
+
     dats = DatsWindow()
     dats.showMaximized()
     # dats.logsWidget.logsListWidget.addLog("data/log.mf4")
