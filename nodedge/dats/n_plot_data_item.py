@@ -1,5 +1,5 @@
-from PySide6.QtGui import QMouseEvent
 from pyqtgraph import PlotDataItem
+from PySide6.QtGui import QMouseEvent
 
 
 class NPlotDataItem(PlotDataItem):

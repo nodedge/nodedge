@@ -147,19 +147,6 @@ class WorksheetsTabWidget(QTabWidget):
 
         return act
 
-    # def mousePressEvent(self, event: QMouseEvent) -> None:
-    #     if event.button() == Qt.RightButton:
-    #         a = QMenu(self)
-    #         self.createAction("&Create",
-    #                           self.addWorksheet,
-    #                           "Create worksheet",
-    #                           QKeySequence("Ctrl+N"), )
-    #         a.addAction("Create new worksheet")
-    #         a.popup(event.globalPosition().toPoint())
-    #
-    #
-    #         super().mousePressEvent(event)
-
     def addCurvePlot(self, x, y, name=""):
         index = self.currentIndex()
         plotWidget: NPlotWidget = self.worksheets[index]
