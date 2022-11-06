@@ -2,8 +2,8 @@ import argparse
 import sys
 
 import pandas as pd
-from PySide2.QtCharts import QtCharts
-from PySide2.QtCore import (
+from PySide6.QtCharts import QtCharts
+from PySide6.QtCore import (
     QAbstractTableModel,
     QDateTime,
     QModelIndex,
@@ -11,8 +11,8 @@ from PySide2.QtCore import (
     QTimeZone,
     Slot,
 )
-from PySide2.QtGui import QColor, QPainter
-from PySide2.QtWidgets import (
+from PySide6.QtGui import QColor, QPainter
+from PySide6.QtWidgets import (
     QAction,
     QApplication,
     QHBoxLayout,
