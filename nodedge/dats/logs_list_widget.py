@@ -1,5 +1,7 @@
 import logging
+from typing import Optional
 
+import pandas as pd
 from asammdf import MDF
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QListWidget, QListWidgetItem, QMessageBox
@@ -15,14 +17,23 @@ class LogsListWidget(QListWidget):
 
         self.itemClicked.connect(self.onItemClicked)  # type: ignore
 
-    def addLog(self, filename) -> MDF:
+    def addLog(self, filename) -> Optional[MDF]:
         shortname = filename.split("/")[-1]
         extension = shortname.split(".")[-1]
         shortname = shortname.split(".")[0]
 
-        if extension.lower() != "mf4":
+        log: MDF
+        if extension.lower() == "mf4":
+            log = MDF(filename)
+        elif extension.lower() == "csv":
+            df = pd.read_csv(filename)
+
+            log = MDF()
+
+            log.append(df)
+        else:
             logging.warning("Cannot open this extension")
-        log: MDF = MDF(filename)
+            return None
 
         startTimeStr = log.start_time.strftime("%Y/%m/%D, %H:%M:%S")
         shortname = f"[{startTimeStr}] {shortname}"
