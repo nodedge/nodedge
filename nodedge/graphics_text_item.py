@@ -5,11 +5,15 @@ ${FILE_NAME} module containing :class:`~nodedge.${FILE_NAME}.<ClassName>` class.
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QFocusEvent
 from PySide6.QtWidgets import (
+    QColorDialog,
     QFontDialog,
     QGraphicsItem,
     QGraphicsSceneMouseEvent,
     QGraphicsTextItem,
+    QMenu,
 )
+
+from nodedge.logger import logger
 
 
 class GraphicsTextItem(QGraphicsTextItem):
@@ -54,8 +58,23 @@ class GraphicsTextItem(QGraphicsTextItem):
         super().mouseReleaseEvent(event)
 
         if event.button() == Qt.RightButton:
-            ok, font = QFontDialog.getFont()
-            if not ok:
-                return
-            print(font)
-            self.setFont(font)
+            contextMenu = QMenu()
+            bezierAct = contextMenu.addAction("Change font")
+            directAct = contextMenu.addAction("Change color")
+            action = contextMenu.exec_(event.screenPos())
+            print(action)
+
+            if action.text() == "Change font":
+                ok, font = QFontDialog.getFont()
+                if not ok:
+                    return
+                logger.debug(font)
+                self.setFont(font)
+                event.accept()
+            elif action.text() == "Change color":
+                color = QColorDialog.getColor()
+                if color is None:
+                    return
+                logger.debug(color)
+                self.setDefaultTextColor(color)
+                event.accept()

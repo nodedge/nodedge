@@ -16,7 +16,7 @@ from PySide6.QtGui import (
     QMouseEvent,
     QPixmap,
 )
-from PySide6.QtWidgets import QGraphicsProxyWidget, QMenu
+from PySide6.QtWidgets import QGraphicsProxyWidget, QGraphicsTextItem, QMenu
 
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import BLOCKS, getClassFromOperationCode
@@ -222,6 +222,8 @@ class MdiWidget(EditorWidget):
             elif hasattr(item, "edge"):
                 self.handleEdgeContextMenu(event)
             # elif item is None:
+            elif isinstance(item, QGraphicsTextItem):
+                self.__contextLogger.debug("Right click on a comment.")
             else:
                 self.handleNewNodeContextMenu(event)
 
