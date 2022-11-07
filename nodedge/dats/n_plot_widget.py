@@ -30,21 +30,11 @@ class NPlotWidget(GraphicsLayoutWidget):
 
         # crosshair
         self.plotItems = []
+        self.plotProxies = []
         self.plotItem = self.addPlotItem(viewBox=NViewBox(self, self))
         vb: NViewBox = self.plotItem.vb
         vb.setBackgroundColor(QApplication.palette().base().color())
         self.setBackground(QApplication.palette().base().color())
-
-        p = QApplication.palette()
-        self.vLine: InfiniteLine = InfiniteLine(
-            angle=90, movable=False, pen=pg.mkPen(p.highlight().color())
-        )
-        self.hLine: InfiniteLine = InfiniteLine(
-            angle=0, movable=False, pen=pg.mkPen(p.highlight().color())
-        )
-        self.plotItem.addItem(self.vLine, ignoreBounds=True)
-        self.plotItem.addItem(self.hLine, ignoreBounds=True)
-        self.plotItem.addLegend()
 
         self.textItem: TextItem = TextItem(text="")
         self.arrow: ArrowItem = ArrowItem(angle=90)
@@ -54,12 +44,6 @@ class NPlotWidget(GraphicsLayoutWidget):
         self.legend.setParentItem(self.plotItem)
         self.items = OrderedDict()
 
-        self.proxy = SignalProxy(
-            self.plotItem.scene().sigMouseMoved,
-            rateLimit=60,
-            slot=self.plotItem.vb.mouseMoved,
-        )
-
         self.xLimits = np.array([np.NaN, np.NaN])
         self.yLimits = np.array([np.NaN, np.NaN])
 
@@ -67,12 +51,16 @@ class NPlotWidget(GraphicsLayoutWidget):
         plotItem = self.addPlot(*args, **kargs)
         self.plotItems.append(plotItem)
 
-        vLine: InfiniteLine = InfiniteLine(angle=90, movable=False)
-        hLine: InfiniteLine = InfiniteLine(angle=0, movable=False)
-        self.plotItems[-1].addItem(vLine, ignoreBounds=True)
-        self.plotItems[-1].addItem(hLine, ignoreBounds=True)
         self.plotItems[-1].addLegend()
         self.plotItems[-1].showGrid(x=True, y=True, alpha=1.0)
+
+        proxy = SignalProxy(
+            plotItem.scene().sigMouseMoved,
+            rateLimit=60,
+            slot=plotItem.vb.mouseMoved,
+        )
+
+        self.plotProxies.append(proxy)
 
         return plotItem
 
@@ -147,9 +135,6 @@ class NPlotWidget(GraphicsLayoutWidget):
         if self.plotItem.sceneBoundingRect().contains(pos):
             index = int(mousePoint.x())
 
-            self.vLine.setPos(mousePoint.x())
-            self.hLine.setPos(mousePoint.y())
-
         x = mousePoint.x()
 
         if not self.items:
@@ -220,15 +205,23 @@ class NViewBox(pg.ViewBox):
         self.curves = {}
         self.highlightedCurve: Optional[NPlotDataItem] = None
 
+        p = QApplication.palette()
+        self.vLine: InfiniteLine = InfiniteLine(
+            angle=90, movable=False, pen=pg.mkPen(p.highlight().color())
+        )
+        self.hLine: InfiniteLine = InfiniteLine(
+            angle=0, movable=False, pen=pg.mkPen(p.highlight().color())
+        )
+        self.addItem(self.vLine, ignoreBounds=True)
+        self.addItem(self.hLine, ignoreBounds=True)
+
     def mouseMoved(self, evt):
         # using signal proxy turns original arguments into a tuple
         pos: QPointF = evt[0]
         vb: ViewBox = self
         mousePoint = vb.mapSceneToView(pos)
-        if self.nPlotWidget.plotItem.sceneBoundingRect().contains(pos):
-
-            self.nPlotWidget.vLine.setPos(mousePoint.x())
-            self.nPlotWidget.hLine.setPos(mousePoint.y())
+        self.vLine.setPos(mousePoint.x())
+        self.hLine.setPos(mousePoint.y())
 
         x = mousePoint.x()
 
