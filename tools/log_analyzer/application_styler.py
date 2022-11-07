@@ -7,7 +7,7 @@ Application styler module containing
 import logging
 import os
 
-import pyqtconsole.highlighter as hl
+# import pyqtconsole.highlighter as hl
 from PySide6.QtCore import QFile, QTimer
 from PySide6.QtGui import QColor, QGuiApplication, QPalette, Qt
 from PySide6.QtWidgets import QApplication
@@ -55,20 +55,6 @@ class ApplicationStyler:
         p.setColor(QPalette.WindowText, white)
         if app is not None:
             app.setPalette(p)  # type: ignore
-
-        self.consoleStyle = {
-            "keyword": hl.format("blue", "bold"),
-            "operator": hl.format("white"),
-            "brace": hl.format("lightGray"),
-            "defclass": hl.format("white", "bold"),
-            "string": hl.format("magenta"),
-            "string2": hl.format("lightMagenta"),
-            "comment": hl.format("lightGreen", "italic"),
-            "self": hl.format("white", "italic"),
-            "numbers": hl.format("white"),
-            "inprompt": hl.format("lightBlue", "bold"),
-            "outprompt": hl.format("white", "bold"),
-        }
 
         self.styleSheetFilename = os.path.join(os.path.dirname(__file__), self.qssPath)
         loadStyleSheets(self.styleSheetFilename)
