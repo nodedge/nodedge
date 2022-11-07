@@ -100,7 +100,8 @@ class DatsWindow(QMainWindow):
                 worksheetsTabWidget.setCurrentIndex(index)
                 worksheet = worksheetsTabWidget.worksheets[index]
                 for vbConfig in worksheetConfig:
-                    worksheet.plotItem.vb.addSubPlot()
+                    if len(worksheet.items) > 1:
+                        worksheet.plotItem.vb.addSubPlot()
                     for signalName, curveOptions in vbConfig.items():
                         dataItem: PlotDataItem = NPlotDataItem(
                             clickable=True,

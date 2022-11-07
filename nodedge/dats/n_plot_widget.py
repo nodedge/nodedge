@@ -345,7 +345,8 @@ class NViewBox(pg.ViewBox):
                 vb.update()
                 if vb == self:
                     self.nPlotWidget.plotItem = p
-            self.setBorder({"color": "#FF0", "width": 2})
+            palette = QApplication.palette()
+            self.setBorder({"color": palette.highlight().color(), "width": 4})
 
     def as_dict(self):
         rep = {}

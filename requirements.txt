@@ -7,3 +7,4 @@ types-PyYAML
 pyqtgraph
 asammdf
 numpy
+pandas
