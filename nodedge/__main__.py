@@ -19,9 +19,7 @@ def main():
 
     window = MdiWindow()
     window.show()
-    window.openFile(
-        f"{os.path.dirname(__file__)}/../examples/calculator/calculator.json"
-    )
+    window.openFile(f"{os.path.dirname(__file__)}/examples/calculator/calculator.json")
     try:
         sys.exit(app.exec())
     except Exception as e:
