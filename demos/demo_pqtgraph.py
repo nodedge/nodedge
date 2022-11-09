@@ -1,5 +1,5 @@
 import pyqtgraph as pg
-from PySide2 import QtWidgets
+from PySide6 import QtWidgets
 
 
 class WdgPlot(QtWidgets.QWidget):

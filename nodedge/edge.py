@@ -204,7 +204,6 @@ class Edge(Serializable):
             )
             if self.graphicsEdge is not None:
                 self.graphicsEdge.sourcePos = sourcePos
-        # TODO: simplify terminology: end -> target | start -> source
 
         if self.targetSocket is not None:
             targetPos = (
@@ -243,8 +242,6 @@ class Edge(Serializable):
         """
         Set start and end :class:`~nodedge.socket.Socket` to ``None``
         """
-
-        # TODO: Is it meaningful?
         self.targetSocket = None
         self.sourceSocket = None
 
