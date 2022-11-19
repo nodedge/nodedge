@@ -29,5 +29,8 @@ History
 * Refine style and node displacement.
 * Add item details widget.
 
-
-
+0.3.0 (2022-11-09)
+------------------
+* Add support for numpy operations.
+* Add comment element.
+* Add dats, a log analyser.
