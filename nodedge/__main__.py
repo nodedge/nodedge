@@ -16,11 +16,13 @@ os.environ["QT_API"] = "pyside6"
 def main():
     app: QApplication = QApplication(sys.argv)
     splash = SplashScreen()
+    splash.show()
     setupLogging()
     highLightLoggingSetup()
 
     window = MdiWindow()
-    splash.closeSignal.connect(window.show)
+    # splash.closeSignal.connect(window.show)
+    window.show()
 
     window.openFile(
         f"{os.path.dirname(__file__)}/../examples/calculator/calculator.json"
