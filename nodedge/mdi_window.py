@@ -77,13 +77,13 @@ class MdiWindow(EditorWindow):
         self.companyName = "Nodedge"
         self.productName = "Nodedge"
         self.icon = QIcon(
-            os.path.join(os.path.dirname(__file__), "resources/nodedge_logo.png")
+            os.path.join(os.path.dirname(__file__), "../resources/nodedge_logo.png")
         )
         self.setWindowIcon(self.icon)
         self.setMinimumSize(QSize(880, 600))
 
         self.styleSheetFilename = os.path.join(
-            os.path.dirname(__file__), "qss/nodedge_style.qss"
+            os.path.dirname(__file__), "../resources/qss/nodedge_style.qss"
         )
         loadStyleSheets(
             # os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),

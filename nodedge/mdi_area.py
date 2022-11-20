@@ -26,7 +26,9 @@ class MdiArea(QMdiArea):
 
         QMdiArea.__init__(self, parent)
         self.background_pixmap = QPixmap(
-            os.path.join(os.path.dirname(__file__), "resources/background_mdiarea2.png")
+            os.path.join(
+                os.path.dirname(__file__), "../resources/background_mdiarea2.png"
+            )
         )
         self.centered = True
 

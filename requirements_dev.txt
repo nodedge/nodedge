@@ -5,3 +5,4 @@ bump2version
 pillow
 pre-commit
 wheel
+pip-licenses
