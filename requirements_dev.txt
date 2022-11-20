@@ -6,3 +6,4 @@ pillow
 pre-commit
 wheel
 pyinstaller
+pip-licenses
