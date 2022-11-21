@@ -16,10 +16,10 @@ class SignalsWidget(QWidget):
         self.signalsListWidget = SignalsListWidget()
         self.layout.addWidget(self.signalsListWidget)
         self.lineEdit = QLineEdit()
-        self.lineEdit.textChanged.connect(self.updateDisplay)  # type: ignore
+        self.lineEdit.textChanged.connect(self.updateDisplay)
         self.layout.addWidget(self.lineEdit)
         self.plotButton = QPushButton("Plot")
-        self.plotButton.clicked.connect(self.onButtonClicked)  # type: ignore
+        self.plotButton.clicked.connect(self.onButtonClicked)
         self.layout.addWidget(self.plotButton)
 
         self.setLayout(self.layout)
@@ -36,4 +36,4 @@ class SignalsWidget(QWidget):
 
     def onButtonClicked(self):
         items = self.signalsListWidget.selectedItems()
-        self.plotSelectedSignals.emit(items)  # type: ignore
+        self.plotSelectedSignals.emit(items)

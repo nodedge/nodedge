@@ -73,8 +73,6 @@ class GraphicsTextItem(QGraphicsTextItem):
                 event.accept()
             elif action.text() == "Change color":
                 color = QColorDialog.getColor()
-                if color is None:
-                    return
                 logger.debug(color)
                 self.setDefaultTextColor(color)
                 event.accept()
