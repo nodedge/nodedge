@@ -6,8 +6,8 @@
         {
             "id": 1583748004592,
             "title": "Input",
-            "posX": -510.0,
-            "posY": -330.0,
+            "posX": -379.140625,
+            "posY": -326.09375,
             "inputSockets": [],
             "outputSockets": [
                 {
@@ -26,8 +26,8 @@
         {
             "id": 1583747824656,
             "title": "Input1",
-            "posX": -515.0,
-            "posY": -225.0,
+            "posX": -384.140625,
+            "posY": -221.09375,
             "inputSockets": [],
             "outputSockets": [
                 {
@@ -178,7 +178,7 @@
         {
             "id": 1583749319792,
             "title": "Output",
-            "posX": 495.0,
+            "posX": 240.0,
             "posY": -330.0,
             "inputSockets": [
                 {
@@ -196,7 +196,7 @@
         {
             "id": 1583749804960,
             "title": "Output1",
-            "posX": 498.0,
+            "posX": 240.859375,
             "posY": -210.0,
             "inputSockets": [
                 {
@@ -214,7 +214,7 @@
         {
             "id": 1583749320560,
             "title": "Output2",
-            "posX": 498.0,
+            "posX": 240.859375,
             "posY": -105.0,
             "inputSockets": [
                 {
@@ -232,7 +232,7 @@
         {
             "id": 1583749320608,
             "title": "Output3",
-            "posX": 498.0,
+            "posX": 240.859375,
             "posY": 15.0,
             "inputSockets": [
                 {
@@ -250,7 +250,7 @@
         {
             "id": 192604048,
             "title": "Output4",
-            "posX": 498.0,
+            "posX": 240.859375,
             "posY": 120.0,
             "inputSockets": [
                 {
@@ -327,7 +327,7 @@
         {
             "id": 140474823730792,
             "title": "Input2",
-            "posX": -525.0,
+            "posX": -390.0,
             "posY": 225.0,
             "inputSockets": [],
             "outputSockets": [
@@ -347,7 +347,7 @@
         {
             "id": 140476592970272,
             "title": "Output5",
-            "posX": 498.0,
+            "posX": 240.859375,
             "posY": 225.0,
             "inputSockets": [
                 {
@@ -473,12 +473,5 @@
             "target": 140476592970720
         }
     ],
-    "elements": [
-        {
-            "id": 1771595162112,
-            "posX": 28.8125,
-            "posY": -419.3125,
-            "content": "Calculator"
-        }
-    ]
+    "elements": []
 }
