@@ -5,10 +5,13 @@ Application styler module containing
 """
 
 import logging
+import os
 
 import yaml
 from PySide6.QtGui import QColor, QGuiApplication, QPalette
 from PySide6.QtWidgets import QApplication
+
+from nodedge.logger import logger
 
 
 class ApplicationStyler:
@@ -21,8 +24,9 @@ class ApplicationStyler:
         app = QGuiApplication.instance()
 
         QApplication.setStyle("Fusion")
+        logger.debug(os.getcwd())
 
-        with open("../resources/palette/dark_palette.yml", "r") as file:
+        with open("resources/palette/dark_palette.yml", "r") as file:
             colors = yaml.safe_load(file)
         p = QApplication.palette()
         dark = QColor(colors["dark"])
