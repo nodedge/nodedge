@@ -60,3 +60,4 @@ recursive-include resources *.png
 recursive-include resources *.psd
 recursive-include resources *.py
 recursive-include resources *.qss
+recursive-include resources *.yml
