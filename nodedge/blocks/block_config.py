@@ -5,7 +5,7 @@ from typing import Dict
 # BlockType = TypeVar("BlockType", bound=Block)
 BLOCKS: Dict[int, type] = {}
 
-BLOCKS_ICONS_PATH = f"{os.path.dirname(__file__)}/../resources/node_icons"
+BLOCKS_ICONS_PATH = f"{os.path.dirname(__file__)}/../../resources/node_icons"
 
 
 # Way to register by function call

@@ -14,7 +14,7 @@ class WorkbooksTabWidget(QTabWidget):
 
         self.setTabsClosable(True)
         self.setMovable(True)
-        self.setElideMode(Qt.ElideRight)  # type: ignore
+        self.setElideMode(Qt.ElideRight)
         self.setUsesScrollButtons(True)
 
         self.addWorkbook()
@@ -23,8 +23,8 @@ class WorkbooksTabWidget(QTabWidget):
         self.tabBar.installEventFilter(self)
         self.clickedIndex = None
 
-        self.tabBarDoubleClicked.connect(self.renameWorkbook)  # type: ignore
-        self.tabCloseRequested.connect(self.removeWorkbook)  # type: ignore
+        self.tabBarDoubleClicked.connect(self.renameWorkbook)
+        self.tabCloseRequested.connect(self.removeWorkbook)
 
         self.createActions()
 
@@ -33,7 +33,7 @@ class WorkbooksTabWidget(QTabWidget):
         if watched == self.tabBar:
             if event.type() == QEvent.MouseButtonPress:
                 event: QMouseEvent
-                if event.button() == Qt.RightButton:  # type: ignore
+                if event.button() == Qt.RightButton:
                     self.openContextMenu(event.pos(), event.globalPos())
 
         return super().eventFilter(watched, event)

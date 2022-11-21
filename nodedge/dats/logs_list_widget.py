@@ -15,7 +15,7 @@ class LogsListWidget(QListWidget):
 
         self.logs = {}
 
-        self.itemClicked.connect(self.onItemClicked)  # type: ignore
+        self.itemClicked.connect(self.onItemClicked)
 
     def addLog(self, filename) -> Optional[MDF]:
         shortname = filename.split("/")[-1]
@@ -50,10 +50,10 @@ class LogsListWidget(QListWidget):
         item.setToolTip(startTimeStr)
         self.addItem(item)
 
-        self.logSelected.emit(log)  # type: ignore
+        self.logSelected.emit(log)
         self.setCurrentItem(item)
 
         return log
 
     def onItemClicked(self, item):
-        self.logSelected.emit(self.logs[item.text()])  # type: ignore
+        self.logSelected.emit(self.logs[item.text()])

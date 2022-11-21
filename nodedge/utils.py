@@ -6,10 +6,12 @@ Utils module with some helper functions.
 import logging
 import traceback
 from pprint import PrettyPrinter
+from typing import Callable, Optional, Union
 
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import QFile, QPoint
-from PySide6.QtWidgets import QApplication
+from PySide6.QtGui import QAction, QKeySequence
+from PySide6.QtWidgets import QApplication, QWidget
 
 pp = PrettyPrinter(indent=4).pprint
 
@@ -92,3 +94,42 @@ def indentCode(string: str):
     indentedLines = ["\n    " + line for line in lines]
     indentedCode = "".join(indentedLines)
     return indentedCode
+
+
+def createAction(
+    parent: Optional[QWidget] = None,
+    name: str = "",
+    callback: Callable = lambda: None,
+    statusTip: Optional[str] = None,
+    shortcut: Union[None, str, QKeySequence] = None,
+) -> QAction:
+    """
+    Create an action for this window and add it to actions list.
+
+    :param parent: parent widget
+    :type parent: ``QWidget``
+    :param name: action's name
+    :type name: ``str``
+    :param callback: function to be called when the action is triggered
+    :type callback: ``Callable``
+    :param statusTip: Description of the action displayed
+        at the bottom left of the application.
+    :type statusTip: Optional[``str``]
+    :param shortcut: Keyboard shortcut to trigger the action.
+    :type shortcut: ``Optional[str]``
+    :return:
+    """
+    act = QAction(name, parent)
+    act.triggered.connect(callback)  # type: ignore
+
+    if statusTip is not None:
+        act.setStatusTip(statusTip)
+        act.setToolTip(statusTip)
+
+    if shortcut is not None:
+        act.setShortcut(QKeySequence(shortcut))
+
+    if parent is not None:
+        parent.addAction(act)
+
+    return act

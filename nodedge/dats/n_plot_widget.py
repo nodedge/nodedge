@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from typing import Optional
+from typing import Dict, Optional
 
 import numpy as np
 import pyqtgraph as pg
@@ -106,7 +106,9 @@ class NPlotWidget(GraphicsLayoutWidget):
                 curve.setSymbol("x")
                 self.plotItem.vb.highlightedCurve = curve
                 if not hasattr(self, "curvePoint") or self.curvePoint is None:
-                    self.curvePoint = CurvePoint(self.plotItem.vb.highlightedCurve)
+                    self.curvePoint: CurvePoint = CurvePoint(
+                        self.plotItem.vb.highlightedCurve
+                    )
                     self.arrow = ArrowItem(angle=90)
                     self.plotItem.addItem(self.curvePoint)
                     self.textItem.setParentItem(self.curvePoint)
@@ -154,10 +156,10 @@ class NPlotWidget(GraphicsLayoutWidget):
 
         xData = self.plotItem.vb.highlightedCurve.xData
         yData = self.plotItem.vb.highlightedCurve.yData
-        index = np.argmin(abs(xData - x))
+        ind = np.argmin(abs(xData - x))
 
-        self.curvePoint.setPos(index / (len(xData) - 1))
-        self.textItem.setText(f"x: {xData[index]:.2f}, y: {yData[index]:.2f}")
+        self.curvePoint.setPos(ind / (len(xData) - 1))
+        self.textItem.setText(f"x: {xData[ind]:.2f}, y: {yData[ind]:.2f}")
 
     # def mousePressEvent(self, evt: QMouseEvent):
     #     super().mousePressEvent(evt)
@@ -179,7 +181,7 @@ class NViewBox(pg.ViewBox):
     # signalShowT0 = QtCore.Signal()
     # signalShowS0 = QtCore.Signal()
 
-    def __init__(self, parent=None, nPlotWidget: NPlotWidget = None):
+    def __init__(self, parent=None, nPlotWidget: Optional[NPlotWidget] = None):
         """
         Constructor of the NViewBox
         """
@@ -202,7 +204,7 @@ class NViewBox(pg.ViewBox):
         self.removeThisSubPlotAct.setEnabled(False)
         self.removeThisSubPlotAct.setVisible(False)
 
-        self.curves = {}
+        self.curves: Dict[str, NPlotDataItem] = {}
         self.highlightedCurve: Optional[NPlotDataItem] = None
 
         p = QApplication.palette()
@@ -331,7 +333,7 @@ class NViewBox(pg.ViewBox):
 
     def mouseClickEvent(self, ev):
         super().mouseClickEvent(ev)
-        if ev.button() == QtCore.Qt.MouseButton.LeftButton:
+        if ev.colorLabel() == QtCore.Qt.MouseButton.LeftButton:
             for p in self.nPlotWidget.plotItems:
                 vb = p.getViewBox()
                 vb.setBorder()

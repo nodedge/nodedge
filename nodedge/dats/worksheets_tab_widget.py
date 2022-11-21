@@ -18,16 +18,17 @@ class WorksheetsTabWidget(QTabWidget):
 
         self.setTabsClosable(True)
         self.setMovable(True)
-        self.setElideMode(Qt.ElideRight)  # type: ignore
+        # noinspection PyUnresolvedReferences
+        self.setElideMode(Qt.ElideRight)
         self.setUsesScrollButtons(True)
 
         self.tabBar = self.tabBar()
         self.tabBar.installEventFilter(self)
         self.clickedIndex = None
 
-        self.tabBarDoubleClicked.connect(self.renameWorksheet)  # type: ignore
-        self.tabBarClicked.connect(self.onTabBarClicked)  # type: ignore
-        self.tabCloseRequested.connect(self.removeWorksheet)  # type: ignore
+        self.tabBarDoubleClicked.connect(self.renameWorksheet)
+        self.tabBarClicked.connect(self.onTabBarClicked)
+        self.tabCloseRequested.connect(self.removeWorksheet)
 
         self.createActions()
 
@@ -36,7 +37,7 @@ class WorksheetsTabWidget(QTabWidget):
         if watched == self.tabBar:
             if event.type() == QEvent.MouseButtonPress:
                 event: QMouseEvent
-                if event.button() == Qt.RightButton:  # type: ignore
+                if event.button() == Qt.RightButton:
                     self.openContextMenu(event.pos(), event.globalPos())
 
         return super().eventFilter(watched, event)

@@ -8,14 +8,14 @@
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PackageRequirementsSettings">
+    <option name="requirementsPath" value="C:\work\git_nodedge\nodedge\requirements_dev.txt" />
     <option name="versionSpecifier" value="Don't specify version" />
-  </component>
-  <component name="PyDocumentationSettings">
-    <option name="format" value="PLAIN" />
-    <option name="myDocStringFormat" value="Plain" />
   </component>
   <component name="ReSTService">
     <option name="DOC_DIR" value="C:\work\git_nodedge\nodedge\docs" />
     <option name="TXT_IS_RST" value="true" />
+  </component>
+  <component name="TestRunnerService">
+    <option name="PROJECT_TEST_RUNNER" value="py.test" />
   </component>
 </module>

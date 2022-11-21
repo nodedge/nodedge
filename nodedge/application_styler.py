@@ -5,10 +5,13 @@ Application styler module containing
 """
 
 import logging
+import os
 
-# import pyqtconsole.highlighter as hl
+import yaml
 from PySide6.QtGui import QColor, QGuiApplication, QPalette
 from PySide6.QtWidgets import QApplication
+
+from nodedge.logger import logger
 
 
 class ApplicationStyler:
@@ -21,33 +24,37 @@ class ApplicationStyler:
         app = QGuiApplication.instance()
 
         QApplication.setStyle("Fusion")
+        logger.debug(os.getcwd())
+
+        with open("resources/palette/dark_palette.yml", "r") as file:
+            colors = yaml.safe_load(file)
         p = QApplication.palette()
-        raisinBlackDark = QColor("#1B1D23")
-        raisinBlackLight = QColor("#272C36")
-        raisinBlackMid = QColor("#23252E")
-        charCoal = QColor("#363A46")
-        independence = QColor("#464B5B")
-        white = QColor("#DDFFFFFF")
-        blue = QColor("#007BFF")
-        spanishGray = QColor("#8791AF")
-        dimGray = QColor("#6C748C")
-        p.setColor(QPalette.AlternateBase, blue)
-        p.setColor(QPalette.Base, charCoal)
-        p.setColor(QPalette.BrightText, blue)
-        p.setColor(QPalette.Button, raisinBlackDark)
-        p.setColor(QPalette.ButtonText, white)
-        p.setColor(QPalette.Dark, raisinBlackDark)
-        p.setColor(QPalette.Highlight, blue)
-        p.setColor(QPalette.HighlightedText, white)
-        p.setColor(QPalette.Light, independence)
-        p.setColor(QPalette.Link, spanishGray)
-        p.setColor(QPalette.LinkVisited, dimGray)
-        p.setColor(QPalette.Mid, raisinBlackMid)
-        p.setColor(QPalette.Midlight, raisinBlackLight)
-        p.setColor(QPalette.Shadow, independence)
-        p.setColor(QPalette.Text, white)
-        p.setColor(QPalette.Window, charCoal)
-        p.setColor(QPalette.WindowText, white)
+        dark = QColor(colors["dark"])
+        midLight = QColor(colors["midLight"])
+        mid = QColor(colors["mid"])
+        base = QColor(colors["base"])
+        light = QColor(colors["light"])
+        text = QColor(colors["text"])
+        highlight = QColor(colors["highlight"])
+        link = QColor(colors["link"])
+        visitedLink = QColor(colors["visitedLink"])
+        p.setColor(QPalette.AlternateBase, highlight)
+        p.setColor(QPalette.Base, base)
+        p.setColor(QPalette.BrightText, highlight)
+        p.setColor(QPalette.Button, dark)
+        p.setColor(QPalette.ButtonText, text)
+        p.setColor(QPalette.Dark, dark)
+        p.setColor(QPalette.Highlight, highlight)
+        p.setColor(QPalette.HighlightedText, text)
+        p.setColor(QPalette.Light, light)
+        p.setColor(QPalette.Link, link)
+        p.setColor(QPalette.LinkVisited, visitedLink)
+        p.setColor(QPalette.Mid, mid)
+        p.setColor(QPalette.Midlight, midLight)
+        p.setColor(QPalette.Shadow, light)
+        p.setColor(QPalette.Text, text)
+        p.setColor(QPalette.Window, base)
+        p.setColor(QPalette.WindowText, text)
         app.setPalette(p)
 
         # self.consoleStyle = {
