@@ -130,7 +130,6 @@ class GraphicsEdge(QGraphicsPathItem):
         p = QApplication.palette()
         self._defaultColor: QColor = p.dark().color()
         self._color: QColor = self._defaultColor
-
         self._colorSelected: QColor = QApplication.palette().highlight().color()
 
         self._pen: QPen = QPen(self._color)

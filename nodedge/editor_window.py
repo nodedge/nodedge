@@ -202,6 +202,17 @@ class EditorWindow(QMainWindow):
             QKeySequence("Ctrl+G"),
         )
 
+        self.evalAct = self.createAction(
+            "Eval all nodes",
+            self.evaluateAllNodes,
+            "",
+            QKeySequence("Ctrl+Space")
+        )
+
+    def evaluateAllNodes(self):
+        for n in self.editorWidget.scene.nodes:
+            n.eval()
+
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
     def createMenus(self) -> None:
         """

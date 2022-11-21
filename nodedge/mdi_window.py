@@ -204,6 +204,15 @@ class MdiWindow(EditorWindow):
             QKeySequence("Ctrl+Alt+C"),
         )
 
+
+    def evaluateAllNodes(self):
+        if self.currentEditorWidget is None:
+            return
+        for n in self.currentEditorWidget.scene.nodes:
+            n.isDirty = True
+        for n in self.currentEditorWidget.scene.nodes:
+            n.eval()
+
     # noinspection PyAttributeOutsideInit
     def createToolBars(self) -> None:
         """
