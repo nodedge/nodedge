@@ -278,9 +278,20 @@ class GraphicsNode(QGraphicsItem):
         # Handle when node moved
         if self._wasMoved:
             clipSize = self.node.scene.graphicsScene.gridSize
+            halfClipSize = round(clipSize/2)
             pos = event.scenePos() - event.pos()
-            newX = pos.x() - pos.x() % clipSize
-            newY = pos.y() - pos.y() % clipSize
+            xRest = pos.x() % clipSize
+            yRest = pos.y() % clipSize
+
+            if xRest < halfClipSize:
+                newX = pos.x() - xRest
+            else:
+                newX = pos.x() + (clipSize - xRest)
+
+            if yRest < halfClipSize:
+                newY = pos.y() - yRest
+            else:
+                newY = pos.y() + (clipSize - yRest)
 
             self.setPos(newX, newY)
             graphicsScene: GraphicsScene = cast(GraphicsScene, self.scene())
