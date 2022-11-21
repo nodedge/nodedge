@@ -10,6 +10,7 @@ include mypy.ini
 include .bumpversion.cfg
 include CODE_OF_CONDUCT.md
 include logging.yaml
+include deploy.py
 
 include .flake8
 include .isort.cfg
@@ -22,7 +23,6 @@ include pytest.ini
 include .coveragerc
 
 recursive-include nodedge/qss *
-recursive-include nodedge/resources *
 recursive-include tests *
 recursive-include examples *
 recursive-include tools *
@@ -53,3 +53,10 @@ recursive-include docs *.png
 recursive-include docs *.txt
 include SECURITY.md
 include docs/CNAME
+
+recursive-include nodedge/resources *
+recursive-include resources *.ico
+recursive-include resources *.png
+recursive-include resources *.psd
+recursive-include resources *.py
+recursive-include resources *.qss

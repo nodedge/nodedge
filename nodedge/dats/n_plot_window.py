@@ -357,7 +357,7 @@ if __name__ == "__main__":
     app.setOrganizationName("Nodedge")
     app.setOrganizationDomain("nodedge.io")
     app.setApplicationName("Dats")
-    pg.setConfigOption("background", app.palette().dark().color())  # type: ignore
+    pg.setConfigOption("background", app.palette().dark().color())
 
     dats = DatsWindow()
     dats.showMaximized()
