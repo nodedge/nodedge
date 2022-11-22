@@ -89,7 +89,7 @@ class EdgeDragging:
 
         :param graphicsSocket: socket being connected
         :type graphicsSocket: :class:`~nodedge.graphics_socket.GraphicsSocket`
-        :return: True is the operation is a success, false otherwise.
+        :return: True if the operation is a success, False otherwise.
         :rtype: ``bool``
         """
         self.mode = EdgeDraggingMode.NOOP
