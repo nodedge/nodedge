@@ -6,7 +6,7 @@ Graphics node module containing :class:`~nodedge.graphics_node.GraphicsNode` cla
 import logging
 from typing import Optional, cast
 
-from PySide6.QtCore import QRectF, Qt, QPointF
+from PySide6.QtCore import QPointF, QRectF, Qt
 from PySide6.QtGui import QBrush, QColor, QFont, QPainterPath, QPen
 from PySide6.QtWidgets import (
     QApplication,
