@@ -6,7 +6,7 @@ Graphics node module containing :class:`~nodedge.graphics_node.GraphicsNode` cla
 import logging
 from typing import Optional, cast
 
-from PySide6.QtCore import QRectF, Qt, QPointF
+from PySide6.QtCore import QPointF, QRectF, Qt
 from PySide6.QtGui import QBrush, QColor, QFont, QPainterPath, QPen
 from PySide6.QtWidgets import (
     QApplication,
@@ -278,7 +278,7 @@ class GraphicsNode(QGraphicsItem):
         # Handle when node moved
         if self._wasMoved:
             clipSize = self.node.scene.graphicsScene.gridSize
-            halfClipSize = round(clipSize/2)
+            halfClipSize = round(clipSize / 2)
             pos = event.scenePos() - event.pos()
             xRest = pos.x() % clipSize
             yRest = pos.y() % clipSize
@@ -293,7 +293,7 @@ class GraphicsNode(QGraphicsItem):
             for node in graphicsScene.scene.nodes:
                 if node.graphicsNode.isSelected():
                     nodePos = node.graphicsNode.pos()
-                    node.graphicsNode.setPos(nodePos.x()+dx, nodePos.y()+dy)
+                    node.graphicsNode.setPos(nodePos.x() + dx, nodePos.y() + dy)
                     node.updateConnectedEdges()
 
             self.__logger.debug(f"Current graphics node pos: {self.pos()}")

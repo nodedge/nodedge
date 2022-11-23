@@ -1,72 +1,136 @@
 import sys
+
 from PySide6 import QtCore
-from PySide6.QtCore import Signal
-from PySide6.QtGui import (QColor)
+from PySide6.QtCore import QRect, Signal
+from PySide6.QtGui import QColor, QFont, Qt
 from PySide6.QtWidgets import *
 
-from graphics_splash_screen import GraphicsSplashScreen
-
-# Define a global counter
 counter = 0
+SPLASH_WIDTH = 680
+SPLASH_HEIGHT = 400
 
 
 class SplashScreen(QMainWindow):
-    closeSignal = Signal()
+    closed = Signal()
 
     def __init__(self):
         QMainWindow.__init__(self, None)
-        self.ui = GraphicsSplashScreen()
-        self.ui.setupUi(self)
 
-        # Remove title bar
-        self.setWindowFlag(QtCore.Qt.FramelessWindowHint)
-        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.setWindowTitle("Nodedge loading")
 
-        # Drop shadow effect
+        self.setWindowFlag(
+            Qt.WindowType.FramelessWindowHint
+            ^ Qt.WindowType.WindowStaysOnTopHint
+            ^ Qt.WindowType.SplashScreen
+        )
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+
+        self.resize(SPLASH_WIDTH, SPLASH_HEIGHT)
+        self.centralWidget = QWidget(self)
+        self.setCentralWidget(self.centralWidget)
+
+        self.dropShadowFrame = QFrame(self.centralWidget)
+        self.dropShadowFrame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.dropShadowFrame.setFrameShadow(QFrame.Shadow.Raised)
+        self.dropShadowFrame.setStyleSheet(
+            "QFrame {	\n"
+            "	background-color: #23252E;	\n"
+            "	color: #272C36;\n"
+            "	border-radius: 10px;\n"
+            "}"
+        )
+
+        self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.setSpacing(0)
+        self.verticalLayout.setContentsMargins(10, 10, 10, 10)
+        self.verticalLayout.addWidget(self.dropShadowFrame)
+
+        self.labelTitle = QLabel(self.dropShadowFrame)
+        self.labelTitle.setGeometry(QRect(0, 90, 661, 61))
+        self.labelTitle.setFont(QFont(["Segoe UI"], 36, QFont.Weight.Bold))
+        self.labelTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.labelTitle.setText("NODEDGE")
+        self.labelTitle.setStyleSheet("color: #007BFF;")
+
+        self.labelDescription = QLabel(self.dropShadowFrame)
+        self.labelDescription.setGeometry(QRect(0, 150, 661, 61))
+        self.labelDescription.setFont(QFont(["Segoe UI"], 14))
+        self.labelDescription.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.labelDescription.setText("Welcome to Nodedge")
+        self.labelDescription.setStyleSheet("color: rgb(75, 80, 99);")
+
+        self.progressBar = QProgressBar(self.dropShadowFrame)
+        self.progressBar.setGeometry(QRect(50, 280, 561, 23))
+        self.progressBar.setValue(0)
+        self.progressBar.setStyleSheet(
+            "QProgressBar {\n"
+            "	\n"
+            "	background-color: rgb(75, 80, 99);\n"
+            "	color: rgb(200, 200, 200);\n"
+            "	border-style: none;\n"
+            "	border-radius: 10px;\n"
+            "	text-align: center;\n"
+            "}\n"
+            "QProgressBar::chunk{\n"
+            "	border-radius: 10px;\n"
+            "	background-color: qlineargradient("
+            "spread:pad, x1:0, y1:0.511364, x2:1, y2:0.523, "
+            "stop:0 rgba(251, 255, 0, 255), "
+            "stop:1 rgba(255, 150, 0, 255));\n"
+            "}"
+        )
+
+        self.labelLoading = QLabel(self.dropShadowFrame)
+        self.labelLoading.setGeometry(QRect(0, 320, 661, 21))
+        self.labelLoading.setFont(QFont(["Segoe UI"], 12))
+        self.labelLoading.setStyleSheet("color: rgb(75, 80, 99);")
+        self.labelLoading.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.labelLoading.setText("Loading ...")
+
+        self.labelCredits = QLabel(self.dropShadowFrame)
+        self.labelCredits.setGeometry(QRect(20, 350, 621, 21))
+        self.labelCredits.setFont(QFont(["Segoe UI"], 10))
+        self.labelCredits.setStyleSheet("color: rgb(75, 80, 99);")
+        self.labelCredits.setAlignment(
+            Qt.AlignmentFlag.AlignRight
+            | Qt.AlignmentFlag.AlignTrailing
+            | Qt.AlignmentFlag.AlignVCenter
+        )
+        self.labelCredits.setText("Copyright (c) 2020-2022 Nodedge Foundation")
+
         self.shadow = QGraphicsDropShadowEffect(self)
         self.shadow.setBlurRadius(20)
         self.shadow.setXOffset(0)
         self.shadow.setYOffset(0)
         self.shadow.setColor(QColor(0, 0, 0, 60))
-        self.ui.dropShadowFrame.setGraphicsEffect(self.shadow)
 
-        # Start QTimer (counting in milliseconds)
         self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.progress)
+        self.timer.timeout.connect(self.updateProgress)
         self.timer.start(35)
 
-        # Initial text
-        self.ui.labelDescription.setText("<strong>Welcome</strong> to Nodedge")
+        # QtCore.QTimer.singleShot(1000, lambda: self.labelDescription.setText("<strong>Loading</strong> Nodedge core"))
 
-        # You can change text indicating what is loading
-        # QtCore.QTimer.singleShot(1000, lambda: self.ui.labelDescription.setText("<strong>Loading</strong> Nodedge core"))
-        # QtCore.QTimer.singleShot(1000, lambda: self.ui.labelDescription.setText("<strong>Loading</strong> user interface"))
-
-        # Show Main Window
         self.show()
 
-    def progress(self):
+    def updateProgress(self):
 
         global counter
-        self.ui.progressBar.setValue(counter)
+        self.progressBar.setValue(counter)
 
         if counter > 100:
             self.timer.stop()
 
-            # Show Nodedge MainWindow
-            # Close splash screen
-            self.closeSignal.emit()
+            self.closed.emit()
             self.close()
 
-        # Increase counter
-        counter += 10
+        counter += 1
 
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    app = QApplication()
 
     window = SplashScreen()
     main = QMainWindow(None)
-    window.closeSignal.connect(main.show)
+    window.closed.connect(main.show)
 
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
