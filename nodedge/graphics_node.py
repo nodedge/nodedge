@@ -129,7 +129,7 @@ class GraphicsNode(QGraphicsItem):
         self._penSelected.setWidthF(2.0)
 
         self._penHovered: QPen = QPen(self._colorHovered)
-        self._penHovered.setWidthF(2.0)
+        self._penHovered.setWidthF(4.0)
 
         self._brushTitle: QBrush = QBrush(QColor("#FF313131"))
         self._brushBackground: QBrush = QBrush(QColor("#E3212121"))

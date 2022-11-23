@@ -11,6 +11,7 @@ from PySide6.QtWidgets import QGraphicsItem
 
 from nodedge.connector import Socket
 from nodedge.edge import Edge, EdgeType
+from nodedge.graphics_edge import GraphicsEdgeCircuit
 from nodedge.graphics_socket import GraphicsSocket
 from nodedge.utils import dumpException
 
@@ -21,7 +22,7 @@ class EdgeDraggingMode(IntEnum):
     """
 
     NOOP = 1  #: Mode representing ready state
-    EDGE_DRAG = 2  #: Mode representing when we drag edge state
+    EDGE_DRAG = 2  #: Mode representing when we drag a new edge
     EDGE_CUT = 3  #: Mode representing when we draw a cutting edge
 
 
@@ -76,7 +77,7 @@ class EdgeDragging:
             self.dragEdge = Edge(
                 self.graphicsView.graphicsScene.scene,
                 graphicsSocket.socket,
-                edgeType=EdgeType.BEZIER,
+                edgeType=EdgeType.CIRCUIT,
             )
             self.dragEdge.graphicsEdge.makeUnselectable()
 
