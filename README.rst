@@ -1,4 +1,4 @@
-.. image:: nodedge/resources/nodedge_logo.png
+.. image:: resources/nodedge_logo.png
   :width: 100px
 
 Nodedge
