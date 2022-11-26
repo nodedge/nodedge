@@ -9,7 +9,7 @@ Graphics edge module containing :class:`~nodedge.graphics_edge.GraphicsEdge`,
 
 import logging
 import math
-from typing import Optional, Union, cast
+from typing import Optional, Union, cast, List
 
 from PySide6.QtCore import QPointF, Qt
 from PySide6.QtGui import QColor, QPainterPath, QPen
@@ -54,7 +54,6 @@ class GraphicsEdge(QGraphicsPathItem):
 
         self._lastSelectedState: bool = False
         self.hovered: bool = False
-
         self._wasMoved: bool = False
 
         self.initUI()
@@ -161,6 +160,10 @@ class GraphicsEdge(QGraphicsPathItem):
         """
         self.edge.scene.graphicsScene.itemSelected.emit()
 
+    def mouseMoveEvent(self, event: QGraphicsSceneMouseEvent) -> None:
+        self._wasMoved = True
+        super().mouseMoveEvent(event)
+
     def mouseReleaseEvent(self, event: QGraphicsSceneMouseEvent) -> None:
         """
         Overridden Qt slot to handle mouse release on the edge.
@@ -169,6 +172,11 @@ class GraphicsEdge(QGraphicsPathItem):
         :type event: ``QGraphicsSceneMouseEvent``
         """
         super().mouseReleaseEvent(event)
+
+        if self._wasMoved:
+            self.edge.scene.history.store("Move an edge")
+            self._wasMoved = False
+
         isSelected = self.isSelected()
         if self._lastSelectedState != isSelected:
             self.edge.scene.resetLastSelectedStates()
@@ -206,7 +214,7 @@ class GraphicsEdge(QGraphicsPathItem):
         :rtype: ``QPainterPath``
         """
 
-        return self.calcPath()
+        return self.calcPath()[0]
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
         """
@@ -215,7 +223,8 @@ class GraphicsEdge(QGraphicsPathItem):
         .. note:: The path is calculated in
             :func:`~nodedge.graphics_edge.GraphicsEdge.calcPath` method.
         """
-        self.setPath(self.calcPath())
+        path, path2 = self.calcPath()
+        self.setPath(path2)
 
         painter.setBrush(Qt.NoBrush)
 
@@ -224,9 +233,9 @@ class GraphicsEdge(QGraphicsPathItem):
         else:
             painter.setPen(self._pen if not self.isSelected() else self._penSelected)
 
-        painter.drawPath(self.path())
+        painter.drawPath(path)
 
-    def calcPath(self) -> QPainterPath:
+    def calcPath(self) -> List[QPainterPath]:
         """
         Compute the graphical path between
         :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
@@ -236,7 +245,7 @@ class GraphicsEdge(QGraphicsPathItem):
             This method needs to be overridden.
 
         :returns: The computed path
-        :rtype: ``QPainterPath``
+        :rtype: ``List[QPainterPath]``
         """
         raise NotImplementedError("This method needs to be overridden in a child class")
 
@@ -316,7 +325,7 @@ class GraphicsEdgeDirect(GraphicsEdge):
     :attr:`~nodedge.graphics_edge.GraphicsEdge.targetPos`
     """
 
-    def calcPath(self) -> QPainterPath:
+    def calcPath(self) -> List[QPainterPath]:
         """Compute a straight line path between
         :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
         `~nodedge.graphics_edge.GraphicsEdge.targetPos`.
@@ -326,7 +335,7 @@ class GraphicsEdgeDirect(GraphicsEdge):
         """
         path = QPainterPath(self._sourcePos)
         path.lineTo(self._targetPos)
-        return path
+        return [path, path]
 
 
 class GraphicsEdgeBezier(GraphicsEdge):
@@ -336,14 +345,14 @@ class GraphicsEdgeBezier(GraphicsEdge):
     :attr:`~nodedge.graphics_edge.GraphicsEdge.targetPos`
     """
 
-    def calcPath(self) -> QPainterPath:
+    def calcPath(self) -> List[QPainterPath]:
         """
         Compute a Bezier curve path between
         :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
         :attr:`~nodedge.graphics_edge.GraphicsEdge.targetPos`.
 
         :returns: The computed path
-        :rtype: ``QPainterPath``
+        :rtype: ``List[QPainterPath]``
         """
         sx = self._sourcePos.x()
         sy = self._sourcePos.y()
@@ -383,7 +392,16 @@ class GraphicsEdgeBezier(GraphicsEdge):
             self._targetPos.x(),
             self._targetPos.y(),
         )
-        return path
+        path2 = path
+        path2.cubicTo(
+            dx + cpx_d,
+            dy + cpy_d,
+            sx + cpx_s,
+            sy + cpy_s,
+            self._sourcePos.x(),
+            self._sourcePos.y(),
+        )
+        return [path, path2]
 
 
 class GraphicsEdgeCircuit(GraphicsEdge):
@@ -399,7 +417,7 @@ class GraphicsEdgeCircuit(GraphicsEdge):
     ) -> None:
         super().__init__(edge, parent)
 
-    def calcPath(self) -> QPainterPath:
+    def calcPath(self) -> List[QPainterPath]:
         """
         Compute a path composed of vertical and horizontal segments between
         :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
@@ -407,7 +425,7 @@ class GraphicsEdgeCircuit(GraphicsEdge):
         Segments can be dragged to another position.
 
         :returns: The computed path
-        :rtype: ``QPainterPath``
+        :rtype: ``List[QPainterPath]``
         """
 
         sx = self._sourcePos.x()
@@ -422,15 +440,16 @@ class GraphicsEdgeCircuit(GraphicsEdge):
         # Compute middle points if they are not computed yet or if
         # source or target sockets are moving.
         if not self.middlePoints or abs(sy - self.middlePoints[0].y()) > tol or \
-                abs(dy - self.middlePoints[1].y()) > tol:
+                abs(dy - self.middlePoints[-1].y()) > tol:
             self.middlePoints = [QPointF(mx, sy), QPointF(mx, dy)]
-            path.lineTo(mx, sy)
-            path.lineTo(mx, dy)
-        else:
-            for point in self.middlePoints:
-                path.lineTo(point)
+        for point in self.middlePoints:
+            path.lineTo(point)
         path.lineTo(dx, dy)
-        return path
+        path2 = path
+        for point in reversed(self.middlePoints):
+            path2.lineTo(point)
+        path2.lineTo(self._sourcePos)
+        return [path, path2]
 
     def mouseMoveEvent(self, event):
         """
@@ -438,24 +457,19 @@ class GraphicsEdgeCircuit(GraphicsEdge):
         :class:`~nodedge.graphics_edge.GraphicsEdge`.
         """
         super().mouseMoveEvent(event)
-        self._wasMoved = True
 
-        if self._wasMoved:
-            pos = event.scenePos()
-            newX = pos.x()
+        pos = event.scenePos()
+        newX = pos.x()
 
-            self.middlePoints[0].setX(newX)
-            self.middlePoints[1].setX(newX)
+        self.middlePoints[0].setX(newX)
+        self.middlePoints[1].setX(newX)
 
-            self._wasMoved = False
-            self.edge.scene.history.store("Move an edge")
+        self.edge.scene.resetLastSelectedStates()
+        self.selectedState = True
 
-            self.edge.scene.resetLastSelectedStates()
-            self.selectedState = True
+        self.edge.scene.lastSelectedItems = self.edge.scene.selectedItems
 
-            self.edge.scene.lastSelectedItems = self.edge.scene.selectedItems
-
-            return
+        return
 
     def mouseReleaseEvent(self, event: QGraphicsSceneMouseEvent) -> None:
         """
@@ -466,8 +480,6 @@ class GraphicsEdgeCircuit(GraphicsEdge):
         :type event: ``QGraphicsSceneMouseEvent``
         """
         super().mouseReleaseEvent(event)
-
-        self._wasMoved = False
 
         # Handle when edge was clicked on
         isSelected = self.isSelected()
@@ -491,14 +503,14 @@ class GraphicsEdgeSmartCircuit(GraphicsEdge):
     FIXME: current implementation is a copy of Graphics Edge Circuit.
     """
 
-    def calcPath(self) -> QPainterPath:
+    def calcPath(self) -> List[QPainterPath]:
         """
         Compute a path composed of vertical and horizontal lines between
         :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
         :attr:`~nodedge.graphics_edge.GraphicsEdge.targetPos`.
 
         :returns: The computed path
-        :rtype: ``QPainterPath``
+        :rtype: ``List[QPainterPath]``
         """
 
         sx = self._sourcePos.x()
@@ -511,7 +523,8 @@ class GraphicsEdgeSmartCircuit(GraphicsEdge):
         self.pointsPos = [QPointF(mx, sy), QPointF(mx, dy)]
 
         path = QPainterPath(self._sourcePos)
+        path2 = path
         path.lineTo(mx, sy)
         path.lineTo(mx, dy)
         path.lineTo(dx, dy)
-        return path
+        return [path, path2]

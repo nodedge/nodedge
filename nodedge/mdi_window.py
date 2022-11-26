@@ -6,7 +6,7 @@ import os
 from typing import Any, Callable, List, Optional, cast
 
 # from pyqtconsole.console import PythonConsole
-from PySide6.QtCore import QSignalMapper, QSize, Qt, QTimer, Slot
+from PySide6.QtCore import QSignalMapper, QSize, Qt, QTimer, Slot, QPointF
 from PySide6.QtGui import QAction, QCloseEvent, QIcon, QKeySequence, QMouseEvent
 from PySide6.QtWidgets import (
     QDialog,
@@ -667,6 +667,10 @@ class MdiWindow(EditorWindow):
             self.sceneItemsTableWidget.scene = self.currentEditorWidget.scene
             graphicsScene = self.currentEditorWidget.scene.graphicsScene
             graphicsScene.itemsPressed.connect(self.showItemsInStatusBar)
+            graphicsScene.mouseMoved.connect(self.updateStatusBar)
+
+    def updateStatusBar(self, point: QPointF):
+        self.statusMousePos.setText(f"{point.x()}, {point.y()}")
 
     def checkStylesheet(self) -> None:
         """

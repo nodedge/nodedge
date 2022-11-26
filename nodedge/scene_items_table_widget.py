@@ -82,6 +82,8 @@ class SceneItemsTableWidget(QTableWidget):
 
                 self.setRowHeight(row, 30)
 
+
+
             # TODO: Activate elements in table widget.
             # for element in self.scene.elements:
             #     nameItem = QTableWidgetItem(element.content)
