@@ -379,7 +379,7 @@ class GraphicsView(QGraphicsView):
         # event.modifiers() & Qt.ControlModifier and event.modifiers() &
         # Qt.ShiftModifier: self.graphicsScene.scene.history.redo()
         dPos = [0, 0]
-        if event.modifiers() & Qt.AltModifier:
+        if event.modifiers() & Qt.ControlModifier:
             if event.key() == Qt.Key_Left:
                 dPos[0] = -10
             elif event.key() == Qt.Key_Right:
