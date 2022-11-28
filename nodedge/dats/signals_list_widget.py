@@ -10,7 +10,9 @@ class SignalsListWidget(QListWidget):
 
     def updateList(self, mdfFile: MDF):
         channels = list(mdfFile.channels_db.keys())
-        # channels = [c for c in channels if c[0:3]!="CAN"]
+        channels = [c for c in channels if c[0:3] != "CAN"]
+        channels = [c for c in channels if c[0:3] != "LIN"]
+        channels = [c for c in channels if c != "time"]
 
         self.clear()
         self.addItems(channels)

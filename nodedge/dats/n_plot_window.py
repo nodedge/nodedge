@@ -331,7 +331,7 @@ class DatsWindow(QMainWindow):
         :return: standard file open/save filter for ``QFileDialog``
         :rtype: ``str``
         """
-        return "MF4 (*.mf4);;All files (*)"
+        return "All files (*);;MF4 (*.mf4);;CSV (*.csv);;HDF5 (*.hdf5)"
 
     def createWorksheet(self):
         w: WorksheetsTabWidget = cast(
