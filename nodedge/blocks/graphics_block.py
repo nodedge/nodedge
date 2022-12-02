@@ -38,6 +38,4 @@ class GraphicsBlock(GraphicsNode):
         #     QRectF(-10.0, -10.0, 24.0, 24.0), self.icons, QRectF(offset, 0, 24.0, 24.0)
         # )
 
-        self.statusLabel.setPixmap(
-            QPixmap(self.icons).copy(offset, 0, 24.0, 24.0).scaled(16, 16)
-        )
+        self.statusLabel.setPixmap(QPixmap(self.icons).copy(offset, 0, 24.0, 24.0))

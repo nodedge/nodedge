@@ -11,6 +11,7 @@ background:palette(dark);
 color:palette(window-text);
 }
 
+
 QTabWidget{
 border:0;
 }
