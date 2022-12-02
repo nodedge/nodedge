@@ -55,27 +55,23 @@ class HeaderFrame(QFrame):
         self.layout.addWidget(self.rightFrame)
 
         searchButton = HeaderButton(
-            self, iconFile="resources/iconsModified/search_property_100.png"
+            self, iconFile="resources/white_icons/search_property.png"
         )
         self.rightLayout.addWidget(searchButton)
 
         notificationButton = HeaderButton(
-            self, iconFile="resources/iconsModified/alarm.png"
+            self, iconFile="resources/white_icons/alarm.png"
         )
         self.rightLayout.addWidget(notificationButton)
 
-        helpButton = HeaderButton(
-            self, iconFile="resources/iconsModified/questions.png"
-        )
+        helpButton = HeaderButton(self, iconFile="resources/white_icons/questions.png")
         self.rightLayout.addWidget(helpButton)
 
-        loginButton = HeaderButton(self, iconFile="resources/iconsModified/login.png")
+        loginButton = HeaderButton(self, iconFile="resources/white_icons/login.png")
         loginButton.setObjectName("loginButton")
         self.rightLayout.addWidget(loginButton)
 
-        self.menuButton = HeaderButton(
-            self, iconFile="resources/iconsModified/menu.png"
-        )
+        self.menuButton = HeaderButton(self, iconFile="resources/white_icons/menu.png")
 
         self.leftLayout.addWidget(self.menuButton)
 

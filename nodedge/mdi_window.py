@@ -288,6 +288,7 @@ class MdiWindow(EditorWindow):
         """
         self.helpMenu: QMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.aboutAct)
+        self.helpMenu.addAction(self.debugAct)
 
     # noinspection PyAttributeOutsideInit
     def createWindowMenu(self) -> None:
@@ -701,7 +702,7 @@ class MdiWindow(EditorWindow):
 
     def onDebugSwitched(self):
         """Event called when the debug action is triggered."""
-        pass
+        self.debugMode = not self.debugMode
 
     @Slot()
     def onShowDialogActions(self):

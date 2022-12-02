@@ -11,7 +11,6 @@ from PySide6.QtCore import (
     QIODevice,
     QMimeData,
     QPoint,
-    QSize,
     Qt,
     Signal,
 )
@@ -60,8 +59,8 @@ class NodeTreeWidget(QTreeWidget):
         and :class:`~nodedge.node.Node`.
         """
 
-        self.iconsSize: QSize = QSize(32, 32)
-        self.setIconSize(self.iconsSize)
+        # self.iconsSize: QSize = QSize(32, 32)
+        # self.setIconSize(self.iconsSize)
 
         self.setSelectionMode(QAbstractItemView.SingleSelection)
         self.setDragEnabled(True)
@@ -99,7 +98,7 @@ class NodeTreeWidget(QTreeWidget):
         pixmap = QPixmap(iconPath) if iconPath else "."
         # TODO: Investigate QIcon constructor
         item.setIcon(0, QIcon(pixmap))  # type: ignore
-        item.setSizeHint(0, self.iconsSize)
+        # item.setSizeHint(0, self.iconsSize)
 
         item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
 

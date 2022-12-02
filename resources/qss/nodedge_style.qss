@@ -71,12 +71,12 @@ QDockWidget{
 }
 
 QDockWidget::title{
-background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 palette(mid),
-stop : 0.2 palette(mid),stop : 0.1 palette(mid));
-color: transparent;
-text-align: center;
-border: none;
-height:25px;
+    background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 palette(mid),
+    stop : 0.2 palette(mid),stop : 0.1 palette(mid));
+    color: transparent;
+    text-align: center;
+    border: none;
+    height:25px;
 }
 
 QDockWidget::title:hover{
@@ -106,33 +106,33 @@ QMenuBar {
 }
 
 QMenuBar::item{
-spacing:3px;
-padding:3px 10px;
-color:palette(text);
-background:transparent;
+    spacing:3px;
+    padding:3px 10px;
+    color:palette(text);
+    background:transparent;
 }
 
 QMenuBar::item:pressed{
-background:palette(highlight);
+    background:palette(highlight);
 }
 
 QMenu{
-background:palette(dark);
-border:1px solid palette(light);
+    background:palette(dark);
+    border:1px solid palette(light);
 }
 
 QMenu::item{
-background:palette(dark);
-color:palette(text);
+    background:palette(dark);
+    color:palette(text);
 }
 
 QMenu::item:selected{
-background:palette(highlight);
+    background:palette(highlight);
 }
 
 QMenu::separator{
-height:1px;
-background:palette(light);
+    height:1px;
+    background:palette(light);
 }
 
 QToolButton {
@@ -142,7 +142,8 @@ QToolButton {
 
 QMenu:disabled,
 QMenu::item:disabled{
-color:palette(shadow);}
+    color:palette(shadow);
+}
 
 QListView{
 background-color:palette(window);
@@ -210,16 +211,14 @@ background:palette(window);
 border-color:palette(dark);
 }
 
-QPushButton:focus,
-QPushButton:hover,
-QPushButton:hover:focus,
+/*QPushButton:focus,*/
+/*QPushButton:hover,*/
+/*QPushButton:hover:focus,*/
 QPushButton:pressed,
 QPushButton:pressed:focus{
-color:palette(button-text);
-background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,
-    stop : 0 palette(highlight),
-    stop : 1 palette(highlight));
-border-color:palette(dark);
+    color:palette(button-text);
+    background:palette(highlight);
+    border-color:palette(dark);
 }
 
 QPushButton:default{
@@ -410,4 +409,31 @@ GraphicsNodeStatusLabel {
 GraphicsNodeTypeLabel {
     background: palette(dark);
     color: palette(light);
+}
+
+HeaderButton {
+    background-color: palette(base);
+    icon-background-color: palette(base);
+    icon-size: 30px;
+    text-align: center;
+    border: 1px solid palette(text);
+    border-radius: 4px;
+
+}
+
+#loginButton {
+    border-radius: 20px;
+    padding-right: 0.845em;
+    padding-top: 0.6em;
+}
+
+HeaderButton:hover{
+    border-color:palette(highlight);
+}
+
+HeaderButton:pressed,
+HeaderButton:pressed:focus{
+    color:palette(button-text);
+    background:palette(highlight);
+    border-color:palette(highlight);
 }
