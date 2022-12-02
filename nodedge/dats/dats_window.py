@@ -20,12 +20,14 @@ from PySide6.QtWidgets import (
 )
 
 from nodedge.application_styler import ApplicationStyler
+from nodedge.dats.curve_dialog import CurveDialog
 from nodedge.dats.logs_widget import LogsWidget
 from nodedge.dats.n_plot_data_item import NPlotDataItem
 from nodedge.dats.n_plot_widget import NPlotWidget
 from nodedge.dats.signals_widget import SignalsWidget
 from nodedge.dats.workbooks_tab_widget import WorkbooksTabWidget
 from nodedge.dats.worksheets_tab_widget import WorksheetsTabWidget
+from nodedge.logger import setupLogging
 from nodedge.utils import dumpException
 
 
@@ -63,14 +65,15 @@ class DatsWindow(QMainWindow):
         self.saveConfiguration()
 
     def saveConfiguration(self):
-        config = {}
+        layoutConfig = {}
         for workbook in self.workbooksTabWidget.workbooks:
             worksheet_config = {}
             for worksheet in workbook.worksheets:
                 worksheet_config.update(worksheet.as_dict())
-            config.update({workbook.name: worksheet_config})
+            layoutConfig.update({workbook.name: worksheet_config})
 
-        print(config)
+        curveConfig = {}
+        config = {"layout": layoutConfig, "curves": curveConfig}
 
         parsed = json.dumps(config, indent=2, sort_keys=True)
         with open("config.json", "w") as outfile:
@@ -90,8 +93,10 @@ class DatsWindow(QMainWindow):
         with open(filename) as f:
             config = json.load(f)
 
+        layoutConfig = config["layout"]
+
         self.workbooksTabWidget.removeWorkbook(0)
-        for workbookname, workbookConfig in config.items():
+        for workbookname, workbookConfig in layoutConfig.items():
             worksheetsTabWidget = self.workbooksTabWidget.addWorkbook(workbookname)
             worksheetsTabWidget.removeWorksheet(0)
             index = 0
@@ -190,6 +195,28 @@ class DatsWindow(QMainWindow):
             QKeySequence("Del"),
         )
 
+        self.createCurveAct = self.createAction(
+            "&Create curve",
+            self.createCurve,
+            "Create curve",
+            QKeySequence("Ctrl+M"),
+        )
+
+        self.viewAllAct = self.createAction(
+            "&View all",
+            self.viewAll,
+            "View all",
+            QKeySequence("Space"),
+        )
+
+    def viewAll(self):
+        w: WorksheetsTabWidget = self.workbooksTabWidget.currentWidget()
+        w.viewAll()
+
+    def createCurve(self):
+        w: CurveDialog = CurveDialog(self)
+        w.show()
+
     def deleteCurve(self):
 
         worksheetTabWidget: WorksheetsTabWidget = cast(
@@ -247,6 +274,12 @@ class DatsWindow(QMainWindow):
     def createMenus(self):
         self.createFileMenu()
         self.createHelpMenu()
+        self.createToolsMenu()
+
+    def createToolsMenu(self):
+        self.toolsMenu = self.menuBar().addMenu("&Tools")
+        self.toolsMenu.addAction(self.delAct)
+        self.toolsMenu.addAction(self.createCurveAct)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit
     def createFileMenu(self):
@@ -358,10 +391,11 @@ if __name__ == "__main__":
     app.setOrganizationDomain("nodedge.io")
     app.setApplicationName("Dats")
     pg.setConfigOption("background", app.palette().dark().color())
+    setupLogging()
 
     dats = DatsWindow()
     dats.showMaximized()
-    # dats.logsWidget.logsListWidget.addLog("data/log.mf4")
+    dats.logsWidget.logsListWidget.addLog("data/log.mf4")
     # dats.workbooksTabWidget.workbooks[0].renameWorksheet(0, "worksheetName")
     # dats.plotCurves(
     #     [

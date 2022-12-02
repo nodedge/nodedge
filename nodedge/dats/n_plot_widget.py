@@ -17,7 +17,7 @@ from pyqtgraph.GraphicsScene.mouseEvents import MouseClickEvent
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import QPointF, Qt
 from PySide6.QtGui import QMouseEvent
-from PySide6.QtWidgets import QApplication, QColorDialog, QInputDialog
+from PySide6.QtWidgets import QApplication, QColorDialog
 
 from nodedge.dats.n_plot_data_item import NPlotDataItem
 from nodedge.logger import logger
@@ -70,6 +70,7 @@ class NPlotWidget(GraphicsLayoutWidget):
         dataItem.sigClicked.connect(self.modifyCurve)
         self.plotItem.vb.curves.update({name: dataItem})
         self.updateRange(dataItem, reset=False)
+        self.plotItem.vb.autoRange()
         # try:
         #     print(self.plotItem.legend.items[0][1].text)
         # except Exception as e:
@@ -171,6 +172,10 @@ class NPlotWidget(GraphicsLayoutWidget):
 
     def __repr__(self):
         return str(self.as_dict())
+
+    def viewAll(self):
+        for item in self.plotItems:
+            item.vb.autoRange()
 
 
 class NViewBox(pg.ViewBox):
@@ -288,17 +293,21 @@ class NViewBox(pg.ViewBox):
 
     def customizeCurves(self):
 
-        curveName, ok = QInputDialog.getItem(
-            self.nPlotWidget,
-            "Select curve to modify",
-            "Curves",
-            list(self.curves.keys()),
-            0,
-        )
-        curve = self.curves[curveName]
+        # curveName, ok = QInputDialog.getItem(
+        #     self.nPlotWidget,
+        #     "Select curve to modify",
+        #     "Curves",
+        #     list(self.curves.keys()),
+        #     0,
+        # )
+        # curve = self.curves[curveName]
 
-        if not ok:
+        if self.highlightedCurve is None:
+            logger.warning("No curve selected")
             return
+
+        curve = self.highlightedCurve
+        curveName = curve.name
 
         color = QColorDialog.getColor()
         logger.info(f"New color for curve {curveName}: {color}")
