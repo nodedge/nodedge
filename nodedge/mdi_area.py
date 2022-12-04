@@ -6,11 +6,14 @@ import logging
 import os
 
 from PySide6.QtCore import QSize, Qt, Signal
-from PySide6.QtGui import QMouseEvent, QPainter, QPaintEvent, QPalette, QPixmap
+from PySide6.QtGui import QMouseEvent, QPainter, QPaintEvent, QPalette, QPixmap, QFont
 from PySide6.QtWidgets import QMdiArea
 
 from nodedge import DEBUG_ITEMS_PRESSED
 from nodedge.utils import widgetsAt
+
+
+SHOW_BACKGROUND_IMAGE = False
 
 
 class MdiArea(QMdiArea):
@@ -25,17 +28,19 @@ class MdiArea(QMdiArea):
         self.__logger.setLevel(logging.DEBUG)
 
         QMdiArea.__init__(self, parent)
-        self.background_pixmap = QPixmap(
-            os.path.join(
-                os.path.dirname(__file__), "../resources/background_mdiarea2.png"
+        if SHOW_BACKGROUND_IMAGE:
+            self.background_pixmap = QPixmap(
+                os.path.join(
+                    os.path.dirname(__file__), "../resources/background_mdiarea2.png"
+                )
             )
-        )
         self.centered = True
 
-        scale = 2
-        self.display_pixmap = self.background_pixmap.scaled(
-            QSize(1024 * scale, 768 * scale), Qt.KeepAspectRatio
-        )
+        if SHOW_BACKGROUND_IMAGE:
+            scale = 2
+            self.display_pixmap = self.background_pixmap.scaled(
+                QSize(1024 * scale, 768 * scale), Qt.KeepAspectRatio
+            )
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.setViewMode(QMdiArea.TabbedView)
@@ -54,15 +59,22 @@ class MdiArea(QMdiArea):
         painter = QPainter()
         painter.begin(self.viewport())
 
-        if not self.centered:
-            painter.drawPixmap(
-                0, 0, self.width(), self.height(), self.background_pixmap
-            )
+        if SHOW_BACKGROUND_IMAGE:
+            if not self.centered:
+                painter.drawPixmap(
+                    0, 0, self.width(), self.height(), self.background_pixmap
+                )
+            else:
+                painter.fillRect(event.rect(), self.palette().color(QPalette.Window))
+                x: int = (self.width() - self.display_pixmap.width()) // 2
+                y: int = (self.height() - self.display_pixmap.height()) // 2
+                painter.drawPixmap(x, y, self.display_pixmap)
         else:
             painter.fillRect(event.rect(), self.palette().color(QPalette.Window))
-            x: int = (self.width() - self.display_pixmap.width()) // 2
-            y: int = (self.height() - self.display_pixmap.height()) // 2
-            painter.drawPixmap(x, y, self.display_pixmap)
+            painter.setPen(self.palette().color(QPalette.Text))
+            painter.setOpacity(0.1)
+            painter.setFont(QFont("Segoe UI", 64, QFont.Weight.Bold))
+            painter.drawText(event.rect(), Qt.AlignCenter, "©Nodedge")
 
         painter.end()
 
