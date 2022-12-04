@@ -64,3 +64,5 @@ recursive-include resources *.yml
 
 recursive-exclude nodedge/resources/raw_black_icons *
 recursive-exclude nodedge/resources/raw_white_icons *
+
+recursive-exclude data *
