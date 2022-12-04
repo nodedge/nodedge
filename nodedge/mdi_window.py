@@ -430,6 +430,8 @@ class MdiWindow(EditorWindow):
             return
 
         self.mdiArea.setActiveSubWindow(subWindowToBeDeleted)
+        self.sceneItemsTableWidget.scene = None
+        self.sceneItemsTableWidget.clearContents()
 
         if self.maybeSave():
             event.accept()
