@@ -10,8 +10,8 @@ from PIL import Image
 
 
 def centerIcons(
-    folderInput: str = "white_icons",
-    folderOutput: str = "white_icons2",
+    folderInput: str = "raw_black_icons",
+    folderOutput: str = "black_icons",
 ) -> bool:
     """
     function to remove icon prefix from all icons contained in "icons" folder.
