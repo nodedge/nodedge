@@ -423,8 +423,6 @@ HeaderButton {
 
 #loginButton {
     border-radius: 20px;
-    padding-right: 0.845em;
-    padding-top: 0.6em;
 }
 
 HeaderButton:hover{
