@@ -240,6 +240,8 @@ class GraphicsEdge(QGraphicsPathItem):
         Compute the graphical path between
         :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
         `~nodedge.graphics_edge.GraphicsEdge.targetPos`.
+        It returns two paths, the first corresponding to the path
+        to be plotted, the second defining the hovering shape.
 
         .. warning::
             This method needs to be overridden.
@@ -263,7 +265,7 @@ class GraphicsEdge(QGraphicsPathItem):
         """
         cutpath: QPainterPath = QPainterPath(p1)
         cutpath.lineTo(p2)
-        path = self.calcPath()
+        path = self.calcPath()[0]
         return cutpath.intersects(path)
 
     # noinspection PyAttributeOutsideInit
@@ -329,9 +331,11 @@ class GraphicsEdgeDirect(GraphicsEdge):
         """Compute a straight line path between
         :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
         `~nodedge.graphics_edge.GraphicsEdge.targetPos`.
+        It returns two paths, the first corresponding to the path
+        to be plotted, the second defining the hovering shape.
 
         :returns: The computed path
-        :rtype: ``QPainterPath``
+        :rtype: ``List[QPainterPath]``
         """
         path = QPainterPath(self._sourcePos)
         path.lineTo(self._targetPos)
@@ -350,6 +354,8 @@ class GraphicsEdgeBezier(GraphicsEdge):
         Compute a Bezier curve path between
         :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
         :attr:`~nodedge.graphics_edge.GraphicsEdge.targetPos`.
+        It returns two paths, the first corresponding to the path
+        to be plotted, the second defining the hovering shape.
 
         :returns: The computed path
         :rtype: ``List[QPainterPath]``
@@ -423,6 +429,8 @@ class GraphicsEdgeCircuit(GraphicsEdge):
         :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
         :attr:`~nodedge.graphics_edge.GraphicsEdge.targetPos`.
         Segments can be dragged to another position.
+        It returns two paths, the first corresponding to the path
+        to be plotted, the second defining the hovering shape.
 
         :returns: The computed path
         :rtype: ``List[QPainterPath]``
@@ -508,6 +516,8 @@ class GraphicsEdgeSmartCircuit(GraphicsEdge):
         Compute a path composed of vertical and horizontal lines between
         :attr:`~nodedge.graphics_edge.GraphicsEdge.sourcePos` and
         :attr:`~nodedge.graphics_edge.GraphicsEdge.targetPos`.
+        It returns two paths, the first corresponding to the path
+        to be plotted, the second defining the hovering shape.
 
         :returns: The computed path
         :rtype: ``List[QPainterPath]``
