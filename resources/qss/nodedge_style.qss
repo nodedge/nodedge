@@ -412,7 +412,7 @@ GraphicsNodeTypeLabel {
 }
 
 HeaderButton {
-    background-color: palette(base);
+    background: palette(base);
     icon-background-color: palette(base);
     icon-size: 30px;
     text-align: center;
@@ -434,4 +434,49 @@ HeaderButton:pressed:focus{
     color:palette(button-text);
     background:palette(highlight);
     border-color:palette(highlight);
+}
+
+
+MenuButton
+{
+    background: palette(base);
+    icon-background-color: palette(base);
+    color: palette(text);
+    icon-size: 30px;
+    text-align: center;
+    text-align: left;
+    border: 0px;
+    border-left: 2px solid palette(text);
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+MenuButton:pressed:focus,
+MenuButton:pressed
+{
+    color:palette(button-text);
+    background:palette(highlight);
+    border-color:palette(highlight);
+}
+
+MenuButton:hover
+{
+    border-color:palette(highlight);
+}
+
+StackedWidget {
+    background-color: palette(dark);
+}
+
+TitleLabel {
+    background-color: palette(dark);
+    color: palette(text);
+    font-size: 24px;
+    font-weight: bold;
+    border: 0px;
+}
+
+ContentWidget {
+    background-color: palette(dark);
+    border: 0px;
 }

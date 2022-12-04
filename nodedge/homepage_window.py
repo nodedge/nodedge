@@ -1,6 +1,8 @@
+import logging
 import os
 import sys
 
+from PySide6.QtCore import QEasingCurve, QPropertyAnimation
 from PySide6.QtGui import QIcon, Qt
 from PySide6.QtWidgets import (
     QApplication,
@@ -10,6 +12,7 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QPushButton,
     QSizePolicy,
+    QSpacerItem,
     QStackedLayout,
     QVBoxLayout,
     QWidget,
@@ -18,18 +21,81 @@ from PySide6.QtWidgets import (
 from nodedge.application_styler import ApplicationStyler
 from nodedge.utils import loadStyleSheets
 
+MENU_ITEMS = {
+    "Home": "home_page.png",
+    "Search": "search_property.png",
+    "Help": "questions.png",
+    "Spacer": None,
+    "Settings": "settings.png",
+    "Account": "login.png",
+}
+
+ICON_PATH = "resources/white_icons/"
+
+HEADER_ITEMS = {
+    "Search": "search_property.png",
+    "Notifications": "alarm.png",
+    "Help": "questions.png",
+    "Login": "login.png",
+}
+
+logger = logging.getLogger(__name__)
+
 
 class HeaderButton(QPushButton):
     def __init__(self, parent=None, iconFile=None, text=None):
-        super().__init__(parent, text=text)
+        super().__init__(parent)
         # self.setFlat(True)
         # self.setCheckable(True)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.setFixedWidth(40)
         self.setFixedHeight(40)
+        self.text = text
 
-        icon = QIcon(iconFile)
+        self.icon = QIcon(iconFile)
+        self.setIcon(self.icon)
+
+
+class HeaderMenuButton(HeaderButton):
+    def __init__(self, parent=None, iconFile=None, text=None, toggleIconFile=None):
+        super().__init__(parent, iconFile, text)
+        self.setCheckable(True)
+        self.setFlat(True)
+        self.toggled.connect(self.onToggled)
+
+        self.toggleIcon = QIcon(toggleIconFile)
+
+    def onToggled(self, checked):
+        if checked:
+            self.setIcon(self.toggleIcon)
+        else:
+            self.setIcon(self.icon)
+
+
+class MenuButton(QPushButton):
+    def __init__(self, parent=None, icon=None, text=None):
+        super().__init__(parent, text=text)
+        self.setCheckable(True)
+        self.setFlat(True)
+
+        if isinstance(icon, str):
+            icon = QIcon(icon)
+        icon = QIcon(icon)
         self.setIcon(icon)
+
+        self.setFixedHeight(40)
+
+        cursor = Qt.PointingHandCursor
+        self.setCursor(cursor)
+
+        self.toggled.connect(self.onToggled)
+
+    def onToggled(self, checked):
+        if checked:
+            darkColor = QApplication.palette().dark().color().name()
+            self.setStyleSheet(f"background-color: {darkColor};")
+        else:
+            self.setStyleSheet(f"")
 
 
 class HeaderFrame(QFrame):
@@ -56,26 +122,27 @@ class HeaderFrame(QFrame):
         self.rightLayout.setAlignment(Qt.AlignRight)
         self.layout.addWidget(self.rightFrame)
 
-        searchButton = HeaderButton(
-            self, iconFile="resources/white_icons2/search_property.png"
+        self.menuButton = HeaderMenuButton(
+            self,
+            iconFile="resources/white_icons/menu.png",
+            toggleIconFile="resources/white_icons/chevron_left.png",
         )
-        self.rightLayout.addWidget(searchButton)
-
-        notificationButton = HeaderButton(
-            self, iconFile="resources/white_icons2/alarm.png"
-        )
-        self.rightLayout.addWidget(notificationButton)
-
-        helpButton = HeaderButton(self, iconFile="resources/white_icons2/questions.png")
-        self.rightLayout.addWidget(helpButton)
-
-        loginButton = HeaderButton(self, iconFile="resources/white_icons2/login.png")
-        loginButton.setObjectName("loginButton")
-        self.rightLayout.addWidget(loginButton)
-
-        self.menuButton = HeaderButton(self, iconFile="resources/white_icons2/menu.png")
 
         self.leftLayout.addWidget(self.menuButton)
+
+        self.rightButtons = []
+
+        for text, iconFile in HEADER_ITEMS.items():
+            iconFile = ICON_PATH + iconFile
+            logger.info(f"Adding header item: {text} with icon {iconFile}")
+
+            button = HeaderButton(self, iconFile=iconFile, text=text)
+            self.rightLayout.addWidget(button)
+            self.rightButtons.append(button)
+
+        for button in self.rightButtons:
+            if button.text == "Login":
+                button.setObjectName("loginButton")
 
 
 class LeftMenuWidget(QWidget):
@@ -84,37 +151,64 @@ class LeftMenuWidget(QWidget):
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
         self.setMinimumWidth(200)
         self.setMaximumWidth(200)
-        self.setStyleSheet("background-color: #2d2d2d;")
         self.layout = QVBoxLayout()
-        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.setContentsMargins(10, 0, 0, 0)
         self.layout.setSpacing(0)
         self.layout.setAlignment(Qt.AlignTop)
         self.setLayout(self.layout)
 
-        self.homeButton = QPushButton(
-            self, icon=QIcon("resources/white_icons2/home_page.png"), text="Home"
-        )
-        self.layout.addWidget(self.homeButton)
-        self.settingsButton = QPushButton(
-            self, icon=QIcon("resources/white_icons2/settings.png"), text="Settings"
-        )
-        self.layout.addWidget(self.settingsButton)
+        self.buttons = []
+        for text, iconFile in MENU_ITEMS.items():
+            if text == "Spacer":
+                spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+                self.layout.addSpacerItem(spacer)
+                continue
+            iconFile = ICON_PATH + iconFile
+            logger.info(f"Adding menu item: {text} with icon {iconFile}")
+
+            button = MenuButton(self, iconFile, text)
+            self.layout.addWidget(button)
+            self.buttons.append(button)
+
+        self.anim = QPropertyAnimation(self, b"minimumWidth")
+        self.anim.setDuration(500)
+        self.anim.setEasingCurve(QEasingCurve.InOutCubic)
+        # self.anim.setEasingCurve(QEasingCurve.OutBounce)
+        self.closedWidth = 0
+        self.openWidth = 200
+        self.anim.setStartValue(self.closedWidth)
+        self.anim.setEndValue(self.openWidth)
+        self.setFixedWidth(0)
+
+        self.open = False
+
+    def toggle(self):
+        if self.open:
+            self.open = False
+            self.anim.setStartValue(self.openWidth)
+            self.anim.setEndValue(self.closedWidth)
+        else:
+            self.open = True
+            self.anim.setStartValue(self.closedWidth)
+            self.anim.setEndValue(self.openWidth)
+
+        self.anim.start()
 
 
 class CentralWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.setStyleSheet("background-color: #3d3d3d;")
         self.layout = QStackedLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(0)
         self.setLayout(self.layout)
 
-        self.homePage = HomePageWidget(self)
-        self.layout.addWidget(self.homePage)
-        self.settingsWidget = SettingsWidget(self)
-        self.layout.addWidget(self.settingsWidget)
+        self.stackedWidgets = {}
+        for text, iconFile in MENU_ITEMS.items():
+            stackedWidget = StackedWidget(self, text)
+            self.layout.addWidget(stackedWidget)
+            self.stackedWidgets.update({text: stackedWidget})
 
 
 class HomePageWidget(QWidget):
@@ -149,6 +243,47 @@ class SettingsWidget(QWidget):
         self.layout.addWidget(self.settingsLabel)
 
 
+class TitleLabel(QLabel):
+    def __init__(self, parent=None, text=None):
+        super().__init__(parent)
+        self.setText(text)
+        self.setMaximumHeight(50)
+        self.setAlignment(Qt.AlignCenter)
+
+
+class ContentWidget(QLabel):
+    def __init__(self, parent=None, text=None):
+        super().__init__(parent)
+        self.setText(text)
+        self.setAlignment(Qt.AlignCenter)
+
+
+class StackedWidget(QWidget):
+    def __init__(self, parent=None, title=None, contentWidget=None):
+        super().__init__(parent)
+        self.layout = QVBoxLayout()
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.setSpacing(0)
+        # self.layout.setAlignment(Qt.AlignTop)
+        self.setLayout(self.layout)
+
+        if title is None:
+            title = "Untitled"
+        self.titleLabel = TitleLabel(self, title)
+        self.titleLabel.setMaximumHeight(50)
+        self.titleLabel.setAlignment(Qt.AlignCenter)
+
+        if contentWidget is None:
+            self.contentWidget = ContentWidget(self, "No content")
+            self.contentWidget.setAlignment(Qt.AlignCenter)
+
+        else:
+            self.contentWidget = contentWidget
+
+        self.layout.addWidget(self.titleLabel, Qt.AlignTop)
+        self.layout.addWidget(self.contentWidget)
+
+
 class MainBodyFrame(QFrame):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -159,6 +294,8 @@ class MainBodyFrame(QFrame):
         self.centralWidget = CentralWidget(self)
         self.rightMenuWidget = QWidget(self)
         self.layout = QHBoxLayout()
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.setSpacing(0)
         self.setLayout(self.layout)
         self.layout.addWidget(self.leftMenuWidget)
         self.layout.addWidget(self.centralWidget)
@@ -179,27 +316,26 @@ class MainWidget(QWidget):
 
         self.headerFrame.menuButton.clicked.connect(self.updateLeftMenu)
 
-        self.mainBodyFrame.leftMenuWidget.homeButton.clicked.connect(
-            self.updateCentralWidget
-        )
-        self.mainBodyFrame.leftMenuWidget.settingsButton.clicked.connect(
-            self.updateCentralWidget
-        )
+        for button in self.mainBodyFrame.leftMenuWidget.buttons:
+            print(button.text())
+            button.clicked.connect(self.updateCentralWidget)
 
     def updateLeftMenu(self):
-        print("updateLeftMenu")
+        self.mainBodyFrame.leftMenuWidget.toggle()
 
     def updateCentralWidget(self):
         senderText = self.sender().text()
-
-        if senderText == "Home":
+        try:
+            for button in self.mainBodyFrame.leftMenuWidget.buttons:
+                if button.text() == senderText:
+                    button.setChecked(True)
+                else:
+                    button.setChecked(False)
             self.mainBodyFrame.centralWidget.layout.setCurrentWidget(
-                self.mainBodyFrame.centralWidget.homePage
+                self.mainBodyFrame.centralWidget.stackedWidgets[self.sender().text()]
             )
-        elif senderText == "Settings":
-            self.mainBodyFrame.centralWidget.layout.setCurrentWidget(
-                self.mainBodyFrame.centralWidget.settingsWidget
-            )
+        except KeyError:
+            logger.error(f"KeyError: {senderText} not found in stackedWidgets")
 
 
 class HomePageWindow(QMainWindow):
