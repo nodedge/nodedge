@@ -56,9 +56,11 @@ def centerIcons(
                             pixels[x, y] = (0, 0, 0, 0)
                     else:
                         if y > distY:
-                            pixels[x, y] = pixels[x, y + distY]
+                            pixels[x, height - 1 - y] = pixels[
+                                x, height - 1 - y + distY
+                            ]
                         else:
-                            pixels[x, y] = (0, 0, 0, 0)
+                            pixels[x, height - 1 - y] = (0, 0, 0, 0)
                     # if x < distX:
                     #     temp[x, y] = pixels[x, y]
 
@@ -71,11 +73,11 @@ def centerIcons(
                             pixels[x, y] = (0, 0, 0, 0)
                     else:
                         if x > distX:
-                            pixels[x, y] = pixels[x + distX, y]
+                            pixels[width - 1 - x, y] = pixels[width - 1 - x + distX, y]
                         else:
-                            pixels[x, y] = (0, 0, 0, 0)
+                            pixels[width - 1 - x, y] = (0, 0, 0, 0)
         except IndexError:
-            logging.warning(f"IndexError: {filename}: {x}, {y}")
+            logging.warning(f"IndexError: {filename}: {x}, {y}, {distX}, {distY}")
             continue
 
         # temp = pixels[0:distY, :]
