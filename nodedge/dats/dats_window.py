@@ -323,7 +323,7 @@ class DatsWindow(QMainWindow):
                 return
 
         print(filename)
-        log = self.logsWidget.logsListWidget.addLog(filename)
+        log = self.logsWidget.logsListWidget.openLog(filename)
         self.updateDataItems(log)
 
     def updateDataItems(self, log):
@@ -395,7 +395,7 @@ if __name__ == "__main__":
 
     dats = DatsWindow()
     dats.showMaximized()
-    dats.logsWidget.logsListWidget.addLog("data/log.mf4")
+    dats.logsWidget.logsListWidget.openLog("data/log.mf4")
     # dats.workbooksTabWidget.workbooks[0].renameWorksheet(0, "worksheetName")
     # dats.plotCurves(
     #     [

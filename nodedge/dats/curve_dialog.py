@@ -9,6 +9,24 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from nodedge.dats.logs_list_widget import LogsListWidget
+from nodedge.dats.signals_list_widget import SignalsListWidget
+
+
+class CurveLineEdit(QLineEdit):
+    def __init__(self, parent=None, signals=[]):
+        super().__init__(parent)
+        self.parent = parent
+        self.curveNameEdit.setPlaceholderText("Enter curve name")
+
+        self.textChanged.connect(self.updateTextFont)
+
+    def updateTextFont(self):
+        if self.text() in self.signals:
+            self.setFont(self.parent.font)
+        else:
+            self.setFont(self.parent.boldFont)
+
 
 class CurveDialog(QDialog):
     def __init__(self, parent=None):
@@ -32,18 +50,19 @@ class CurveDialog(QDialog):
         self.layout.addWidget(self.mainFrame)
         self.mainFrame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-        self.logsWidget = self.parent.logsWidget.logsListWidget
-        self.signalsListWidget = self.parent.signalsWidget.signalsListWidget
-        self.parent.signalsWidget.signalsListWidget.itemDoubleClicked.connect(
-            self.onSignalDoubleClicked
-        )
+        logs = self.parent.logsWidget.logsListWidget.logs
+        self.logsWidget = LogsListWidget(logs=logs)
+        signals = self.parent.signalsWidget.signalsListWidget.signals
+        self.signalsWidget = SignalsListWidget(signals=signals)
+        self.signalsWidget.itemDoubleClicked.connect(self.onSignalDoubleClicked)
 
         self.leftLayout.addWidget(self.logsWidget)
-        self.leftLayout.addWidget(self.signalsListWidget)
+        self.leftLayout.addWidget(self.signalsWidget)
 
-        self.curveNameEdit = QLineEdit()
+        self.curveNameEdit = CurveLineEdit(signals=signals)
         self.mainLayout.addWidget(self.curveNameEdit)
         self.curveDefinitionEdit = QTextEdit()
+        self.curveDefinitionEdit.setPlaceholderText("Enter curve definition")
         self.mainLayout.addWidget(self.curveDefinitionEdit)
 
         self.unitWidget = QWidget()

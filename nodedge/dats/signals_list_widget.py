@@ -3,16 +3,21 @@ from PySide6.QtWidgets import QAbstractItemView, QListWidget
 
 
 class SignalsListWidget(QListWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, signals=[]):
         super().__init__(parent)
 
         self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
 
-    def updateList(self, mdfFile: MDF):
-        channels = list(mdfFile.channels_db.keys())
-        channels = [c for c in channels if c[0:3] != "CAN"]
-        channels = [c for c in channels if c[0:3] != "LIN"]
-        channels = [c for c in channels if c != "time"]
+        self.signals = signals
+        self.addItems(self.signals)
+
+    def updateList(self, log: MDF):
+        signals = list(log.channels_db.keys())
+        signals = [c for c in signals if c[0:3] != "CAN"]
+        signals = [c for c in signals if c[0:3] != "LIN"]
+        signals = [c for c in signals if c != "time"]
+
+        self.signals = signals
 
         self.clear()
-        self.addItems(channels)
+        self.addItems(signals)
