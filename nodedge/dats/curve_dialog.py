@@ -3,6 +3,7 @@ import json
 from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
+    QDoubleSpinBox,
     QHBoxLayout,
     QLineEdit,
     QSizePolicy,
@@ -39,6 +40,20 @@ class CurveLineEdit(QLineEdit):
             self.valid = True
 
 
+class CurveDefinitionEdit(QTextEdit):
+    def __init__(self):
+        super().__init__()
+        self.setPlaceholderText("Enter curve definition")
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        self.valid = False
+
+        self.textChanged.connect(self.updateTextFont)
+
+    def updateTextFont(self):
+        print(self.toPlainText())
+
+
 class CurveDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -72,14 +87,17 @@ class CurveDialog(QDialog):
 
         self.curveNameEdit = CurveLineEdit(signals=signals)
         self.mainLayout.addWidget(self.curveNameEdit)
-        self.curveDefinitionEdit = QTextEdit()
-        self.curveDefinitionEdit.setPlaceholderText("Enter curve definition")
+        self.curveDefinitionEdit = CurveDefinitionEdit()
         self.mainLayout.addWidget(self.curveDefinitionEdit)
 
         self.unitWidget = QWidget()
         self.unitLayout = QHBoxLayout()
         self.unitWidget.setLayout(self.unitLayout)
         self.mainLayout.addWidget(self.unitWidget)
+        self.rateWidget = QWidget()
+        self.rateLayout = QHBoxLayout()
+        self.rateWidget.setLayout(self.rateLayout)
+        self.mainLayout.addWidget(self.rateWidget)
 
         self.unitDomainCombo = QComboBox()
 
@@ -93,8 +111,28 @@ class CurveDialog(QDialog):
 
         self.unitCombo = QComboBox()
         self.unitCombo.addItems(self.unitsDict["Time"])
-        # self.unitCombo.addItems(["s", "ms", "us", "ns", "ps", "fs", "as"])
         self.unitLayout.addWidget(self.unitCombo)
+
+        self.typeRateCombo = QComboBox()
+        self.typeRateCombo.addItems(["Frequency", "Period"])
+        self.typeRateCombo.setCurrentText("Frequency")
+        self.typeRateCombo.currentTextChanged.connect(self.onTypeRateChanged)
+        self.rateLayout.addWidget(self.typeRateCombo)
+        self.rateSpin = QDoubleSpinBox()
+        self.rateSpin.setPrefix("Interpolation: ")
+        self.rateSpin.setRange(0, 100000)
+        self.rateSpin.setSingleStep(0.1)
+        self.rateSpin.setSuffix(" Hz")
+        self.rateSpin.setValue(1)
+        self.rateLayout.addWidget(self.rateSpin)
+
+        self.filterSpin = QDoubleSpinBox()
+        self.filterSpin.setPrefix("Filter: ")
+        self.filterSpin.setRange(0, 100000)
+        self.filterSpin.setSingleStep(0.1)
+        self.filterSpin.setSuffix(" Hz")
+        self.filterSpin.setValue(0)
+        self.rateLayout.addWidget(self.filterSpin)
 
     def onSignalDoubleClicked(self, item):
         if self.curveNameEdit.text() == "":
@@ -106,3 +144,15 @@ class CurveDialog(QDialog):
     def onUnitDomainChanged(self, text):
         self.unitCombo.clear()
         self.unitCombo.addItems(self.unitsDict[text])
+
+    def onTypeRateChanged(self, text):
+        if text == "Frequency":
+            self.rateSpin.setValue(1 / (self.rateSpin.value() + 1e-9))
+            self.rateSpin.setSuffix(" Hz")
+            self.filterSpin.setValue(1 / (self.filterSpin.value() + 1e-9))
+            self.filterSpin.setSuffix(" Hz")
+        else:
+            self.rateSpin.setSuffix(" s")
+            self.rateSpin.setValue(1 / (self.rateSpin.value() + 1e-9))
+            self.filterSpin.setSuffix(" s")
+            self.filterSpin.setValue(1 / (self.filterSpin.value() + 1e-9))
