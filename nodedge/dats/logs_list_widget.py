@@ -47,7 +47,7 @@ class LogsListWidget(QListWidget):
         if shortname in list(self.logs.keys()):
             msgBox = QMessageBox()
             msgBox.setText("The log has already been loaded.")
-            msgBox.setIcon(QMessageBox.Warning)  # type: ignore
+            msgBox.setIcon(QMessageBox.Warning)
             msgBox.exec()
             return log
 
