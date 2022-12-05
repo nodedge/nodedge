@@ -6,12 +6,11 @@ import logging
 import os
 
 from PySide6.QtCore import QSize, Qt, Signal
-from PySide6.QtGui import QMouseEvent, QPainter, QPaintEvent, QPalette, QPixmap, QFont
+from PySide6.QtGui import QFont, QMouseEvent, QPainter, QPaintEvent, QPalette, QPixmap
 from PySide6.QtWidgets import QMdiArea
 
 from nodedge import DEBUG_ITEMS_PRESSED
 from nodedge.utils import widgetsAt
-
 
 SHOW_BACKGROUND_IMAGE = False
 

@@ -6,7 +6,7 @@ import os
 from typing import Any, Callable, List, Optional, cast
 
 # from pyqtconsole.console import PythonConsole
-from PySide6.QtCore import QSignalMapper, QSize, Qt, QTimer, Slot, QPointF
+from PySide6.QtCore import QPointF, QSignalMapper, QSize, Qt, QTimer, Slot
 from PySide6.QtGui import QAction, QCloseEvent, QIcon, QKeySequence, QMouseEvent
 from PySide6.QtWidgets import (
     QDialog,

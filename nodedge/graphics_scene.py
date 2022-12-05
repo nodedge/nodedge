@@ -6,8 +6,8 @@ Graphics scene module containing :class:`~nodedge.graphics_scene.GraphicsScene` 
 from math import ceil, floor, log
 from typing import Optional
 
-from PySide6.QtCore import QLine, Qt, Signal, QPointF
-from PySide6.QtGui import QColor, QPen, QTransform, QPainter
+from PySide6.QtCore import QLine, QPointF, Qt, Signal
+from PySide6.QtGui import QColor, QPainter, QPen, QTransform
 from PySide6.QtWidgets import (
     QGraphicsItem,
     QGraphicsItemGroup,

@@ -9,7 +9,7 @@ Graphics edge module containing :class:`~nodedge.graphics_edge.GraphicsEdge`,
 
 import logging
 import math
-from typing import Optional, Union, cast, List
+from typing import List, Optional, Union, cast
 
 from PySide6.QtCore import QPointF, Qt
 from PySide6.QtGui import QColor, QPainterPath, QPen
@@ -33,7 +33,7 @@ class GraphicsEdge(QGraphicsPathItem):
     """
 
     def __init__(
-            self, edge: "Edge", parent: Optional[QGraphicsItem] = None  # type: ignore
+        self, edge: "Edge", parent: Optional[QGraphicsItem] = None  # type: ignore
     ) -> None:
         """
         :param edge: reference to :class:`~nodedge.edge.Edge`
@@ -50,7 +50,7 @@ class GraphicsEdge(QGraphicsPathItem):
 
         self._sourcePos: QPointF = QPointF(0.0, 0.0)
         self._targetPos: QPointF = QPointF(200.0, 200.0)
-        self._middlePoints: [QPointF] = []
+        self._middlePoints: List[QPointF] = []
 
         self._lastSelectedState: bool = False
         self.hovered: bool = False
@@ -111,7 +111,7 @@ class GraphicsEdge(QGraphicsPathItem):
         return self._middlePoints
 
     @middlePoints.setter
-    def middlePoints(self, value: [QPointF]):
+    def middlePoints(self, value: List[QPointF]):
         self._middlePoints = value
 
     def initUI(self):
@@ -376,16 +376,16 @@ class GraphicsEdgeBezier(GraphicsEdge):
             sourceSocketIsInput = self.edge.sourceSocket.isInput
 
             if (sx > dx and not sourceSocketIsInput) or (
-                    sx < dx and sourceSocketIsInput
+                sx < dx and sourceSocketIsInput
             ):
                 cpx_d *= -1.0
                 cpx_s *= -1.0
 
                 verticalDistance = sx - dx
                 cpy_d = (
-                        verticalDistance
-                        / (1e-4 + (math.fabs(verticalDistance)))
-                        * self._controlPointRoundness
+                    verticalDistance
+                    / (1e-4 + (math.fabs(verticalDistance)))
+                    * self._controlPointRoundness
                 )
                 cpy_s = -cpy_d
 
@@ -419,7 +419,7 @@ class GraphicsEdgeCircuit(GraphicsEdge):
     """
 
     def __init__(
-            self, edge: "Edge", parent: Optional[QGraphicsItem] = None  # type: ignore
+        self, edge: "Edge", parent: Optional[QGraphicsItem] = None  # type: ignore
     ) -> None:
         super().__init__(edge, parent)
 
@@ -447,8 +447,11 @@ class GraphicsEdgeCircuit(GraphicsEdge):
         tol = 0.000001
         # Compute middle points if they are not computed yet or if
         # source or target sockets are moving.
-        if not self.middlePoints or abs(sy - self.middlePoints[0].y()) > tol or \
-                abs(dy - self.middlePoints[-1].y()) > tol:
+        if (
+            not self.middlePoints
+            or abs(sy - self.middlePoints[0].y()) > tol
+            or abs(dy - self.middlePoints[-1].y()) > tol
+        ):
             self.middlePoints = [QPointF(mx, sy), QPointF(mx, dy)]
         for point in self.middlePoints:
             path.lineTo(point)
@@ -492,8 +495,8 @@ class GraphicsEdgeCircuit(GraphicsEdge):
         # Handle when edge was clicked on
         isSelected = self.isSelected()
         if (
-                self._lastSelectedState != isSelected
-                or self.edge.scene.lastSelectedItems != self.edge.scene.selectedItems
+            self._lastSelectedState != isSelected
+            or self.edge.scene.lastSelectedItems != self.edge.scene.selectedItems
         ):
             self.edge.scene.resetLastSelectedStates()
             self._lastSelectedState = isSelected
