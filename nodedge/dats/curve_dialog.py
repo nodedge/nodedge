@@ -1,11 +1,14 @@
 import json
+from string import ascii_letters, digits
 
 from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
+    QDialogButtonBox,
     QDoubleSpinBox,
     QHBoxLayout,
     QLineEdit,
+    QMessageBox,
     QSizePolicy,
     QTextEdit,
     QVBoxLayout,
@@ -28,9 +31,11 @@ class CurveLineEdit(QLineEdit):
         self.valid = False
 
     def updateTextFont(self):
+        diff = set(self.text()).difference(ascii_letters + digits + "_")
         if (
             self.text() in self.signals
             or " " in self.text()
+            or len(diff) > 0
             # or not (self.text().isalnum() or "_" not in self.text())
         ):
             self.setStyleSheet("color: red")
@@ -51,7 +56,15 @@ class CurveFormulaEdit(QTextEdit):
         self.textChanged.connect(self.updateTextFont)
 
     def updateTextFont(self):
-        print(self.toPlainText())
+        text = self.toPlainText()
+        diff = set(text).difference(ascii_letters + digits + "+-/*^()._")
+        diff2 = set(text).difference(ascii_letters + digits + "_")
+        if self.toPlainText() == "" or len(diff) > 0 or len(diff2) > 1:
+            self.setStyleSheet("color: red")
+            self.valid = False
+        else:
+            self.setStyleSheet("")
+            self.valid = True
 
 
 class CurveDialog(QDialog):
@@ -133,6 +146,29 @@ class CurveDialog(QDialog):
         self.filterSpin.setSuffix(" Hz")
         self.filterSpin.setValue(0)
         self.rateLayout.addWidget(self.filterSpin)
+
+        self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        # self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.accepted.connect(self.onAccepted)
+        self.buttonBox.rejected.connect(self.reject)
+        self.mainLayout.addWidget(self.buttonBox)
+
+    def onAccepted(self):
+        if self.curveNameEdit.valid and self.curveFormulaEdit.valid:
+
+            self.evaluateCurve()
+            self.accept()
+        else:
+            QMessageBox.warning(self, "Error", "Invalid curve name or formula")
+            # self.reject()
+
+    def evaluateCurve(self):
+        curveName = self.curveNameEdit.text()
+        curveFormula = self.curveFormulaEdit.toPlainText()
+        curveUnit = self.unitCombo.currentText()
+        curveRate = self.rateSpin.value()
+        curveFilter = self.filterSpin.value()
+        curveTypeRate = self.typeRateCombo.currentText()
 
     def onSignalDoubleClicked(self, item):
         if self.curveNameEdit.text() == "":
