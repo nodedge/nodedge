@@ -6,8 +6,8 @@ Graphics scene module containing :class:`~nodedge.graphics_scene.GraphicsScene` 
 from math import ceil, floor, log
 from typing import Optional
 
-from PySide6.QtCore import QLine, Qt, Signal
-from PySide6.QtGui import QColor, QPen, QTransform
+from PySide6.QtCore import QLine, QPointF, Qt, Signal
+from PySide6.QtGui import QColor, QPainter, QPen, QTransform
 from PySide6.QtWidgets import (
     QGraphicsItem,
     QGraphicsItemGroup,
@@ -31,6 +31,8 @@ class GraphicsScene(QGraphicsScene):
     itemsDeselected = Signal()
 
     itemsPressed = Signal(list)
+
+    mouseMoved = Signal(QPointF)
 
     def __init__(
         self, scene: "Scene", parent: Optional[QWidget] = None  # type: ignore
@@ -166,6 +168,10 @@ class GraphicsScene(QGraphicsScene):
             item.setSelected(True)
 
         super().mouseReleaseEvent(event)
+
+    def mouseMoveEvent(self, event: QGraphicsSceneMouseEvent) -> None:
+        self.mouseMoved.emit(event.scenePos())
+        super().mouseMoveEvent(event)
 
     def fitInView(self):
         """

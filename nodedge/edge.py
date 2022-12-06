@@ -13,6 +13,7 @@ from nodedge.graphics_edge import (
     GraphicsEdgeBezier,
     GraphicsEdgeCircuit,
     GraphicsEdgeDirect,
+    GraphicsEdgeSmartCircuit,
 )
 from nodedge.serializable import Serializable
 from nodedge.utils import dumpException
@@ -26,6 +27,7 @@ class EdgeType(IntEnum):
     STRAIGHT = 1  #:
     BEZIER = 2  #:
     CIRCUIT = 3  #:
+    SMART_CIRCUIT = 4  #:
 
 
 class Edge(Serializable):
@@ -164,8 +166,10 @@ class Edge(Serializable):
             self.graphicsEdge: GraphicsEdge = GraphicsEdgeDirect(self)
         elif self.edgeType == EdgeType.BEZIER:
             self.graphicsEdge = GraphicsEdgeBezier(self)
-        else:
+        elif self.edgeType == EdgeType.CIRCUIT:
             self.graphicsEdge = GraphicsEdgeCircuit(self)
+        else:
+            self.graphicsEdge = GraphicsEdgeSmartCircuit(self)
         self.scene.graphicsScene.addItem(self.graphicsEdge)
 
         if self.sourceSocket is not None:

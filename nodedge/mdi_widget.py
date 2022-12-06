@@ -348,8 +348,9 @@ class MdiWidget(EditorWidget):
         :type event: ``QContextMenuEvent``
         """
         contextMenu = QMenu()
-        bezierAct = contextMenu.addAction("Bezier Edge")
-        directAct = contextMenu.addAction("Direct Edge")
+        bezierAct = contextMenu.addAction("Bezier edge")
+        directAct = contextMenu.addAction("Direct edge")
+        circuitAct = contextMenu.addAction("Circuit edge")
         action = contextMenu.exec_(self.mapToGlobal(event.pos()))
 
         selected = None
@@ -358,10 +359,13 @@ class MdiWidget(EditorWidget):
         if hasattr(item, "edge"):
             selected = item.edge
 
-        if selected and action == bezierAct:
-            selected.edgeType = EdgeType.BEZIER
-        if selected and action == directAct:
-            selected.edgeType = EdgeType.STRAIGHT
+        if selected:
+            if action == bezierAct:
+                selected.edgeType = EdgeType.BEZIER
+            elif action == directAct:
+                selected.edgeType = EdgeType.STRAIGHT
+            elif action == circuitAct:
+                selected.edgeType = EdgeType.CIRCUIT
 
     def mouseReleaseEvent(self, event: QMouseEvent):
         """
