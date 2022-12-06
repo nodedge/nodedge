@@ -21,6 +21,7 @@ Submodules
    nodedge.blocks.graphics_block_content
    nodedge.blocks.graphics_input_block_content
    nodedge.blocks.graphics_output_block_content
+   nodedge.blocks.op_node
 
 Module contents
 ---------------

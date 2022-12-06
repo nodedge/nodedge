@@ -6,6 +6,7 @@ Subpackages
 
 .. toctree::
 
+   nodedge.blocks.autogen.numpy
    nodedge.blocks.autogen.operator
 
 Module contents
