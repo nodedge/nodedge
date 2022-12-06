@@ -24,7 +24,6 @@ jobs:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
-        os: ${{ matrix.platform }}
         python-version: ${{ matrix.python-version }}
         cache: 'pip'
     - name: Install linux dependencies
@@ -48,9 +47,3 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 #        PLATFORM: ${{ matrix.platform }}
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        languages: python
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
