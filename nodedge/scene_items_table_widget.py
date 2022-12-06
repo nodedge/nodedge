@@ -49,8 +49,9 @@ class SceneItemsTableWidget(QTableWidget):
         self.cellDoubleClicked.connect(self.onCellDoubleClicked)  # type: ignore
 
     def update(self, *__args) -> None:
+        self.setRowCount(0)
+
         if self.scene is not None:
-            self.setRowCount(0)
             for node in self.scene.nodes:
                 nameItem = QTableWidgetItem(node.title)
                 nameItem.setFlags(nameItem.flags() ^ Qt.ItemIsEditable)
