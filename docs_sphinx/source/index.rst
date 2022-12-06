@@ -23,6 +23,7 @@ Nodedge is a free and open-source software for graphical programming. Try it out
    evaluation
    events
    serialization
+   licenses
 
 * :ref:`genindex`
 
