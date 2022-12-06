@@ -31,7 +31,7 @@ class CurveLineEdit(QLineEdit):
         if (
             self.text() in self.signals
             or " " in self.text()
-            or not self.text().isalnum()
+            # or not (self.text().isalnum() or "_" not in self.text())
         ):
             self.setStyleSheet("color: red")
             self.valid = False
@@ -40,10 +40,10 @@ class CurveLineEdit(QLineEdit):
             self.valid = True
 
 
-class CurveDefinitionEdit(QTextEdit):
+class CurveFormulaEdit(QTextEdit):
     def __init__(self):
         super().__init__()
-        self.setPlaceholderText("Enter curve definition")
+        self.setPlaceholderText("Enter curve formula")
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         self.valid = False
@@ -87,8 +87,8 @@ class CurveDialog(QDialog):
 
         self.curveNameEdit = CurveLineEdit(signals=signals)
         self.mainLayout.addWidget(self.curveNameEdit)
-        self.curveDefinitionEdit = CurveDefinitionEdit()
-        self.mainLayout.addWidget(self.curveDefinitionEdit)
+        self.curveFormulaEdit = CurveFormulaEdit()
+        self.mainLayout.addWidget(self.curveFormulaEdit)
 
         self.unitWidget = QWidget()
         self.unitLayout = QHBoxLayout()
@@ -137,9 +137,7 @@ class CurveDialog(QDialog):
     def onSignalDoubleClicked(self, item):
         if self.curveNameEdit.text() == "":
             self.curveNameEdit.setText(item.text())
-        self.curveDefinitionEdit.setText(
-            self.curveDefinitionEdit.toPlainText() + item.text()
-        )
+        self.curveFormulaEdit.setText(self.curveFormulaEdit.toPlainText() + item.text())
 
     def onUnitDomainChanged(self, text):
         self.unitCombo.clear()
