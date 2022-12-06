@@ -23,7 +23,7 @@ language: python
 branches:
   only:
     - no-branch
-#    - master
+#    - main
 #    - /^v.*$/
 
 

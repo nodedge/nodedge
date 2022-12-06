@@ -333,7 +333,7 @@ class NViewBox(pg.ViewBox):
 
     def mouseClickEvent(self, ev):
         super().mouseClickEvent(ev)
-        if ev.colorLabel() == QtCore.Qt.MouseButton.LeftButton:
+        if ev.button() == QtCore.Qt.MouseButton.LeftButton:
             for p in self.nPlotWidget.plotItems:
                 vb = p.getViewBox()
                 vb.setBorder()

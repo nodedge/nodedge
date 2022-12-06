@@ -1,4 +1,4 @@
-.. image:: nodedge/resources/nodedge_logo.png
+.. image:: resources/nodedge_logo.png
   :width: 100px
 
 Nodedge
@@ -20,11 +20,11 @@ https://www.nodedge.io
    :target: https://choosealicense.com/licenses/gpl-3.0/
    :alt: License
 
-.. image:: https://travis-ci.org/nodedge/nodedge.svg?branch=master
-   :target: https://travis-ci.org/nodedge/nodedge
+.. image:: https://github.com/nodedge/nodedge/actions/workflows/python-test.yml/badge.svg
+   :target: https://github.com/nodedge/nodedge/actions/workflows/python-test.yml
    :alt: Test Status
 
-.. image:: https://codecov.io/gh/nodedge/nodedge/branch/master/graph/badge.svg
+.. image:: https://codecov.io/gh/nodedge/nodedge/branch/main/graph/badge.svg
    :target: https://codecov.io/gh/nodedge/nodedge
    :alt: Test Coverage
 

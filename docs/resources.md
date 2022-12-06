@@ -8,7 +8,7 @@ Nodedge’s user manual is available online and is automatically updated every t
 # Examples
 
 The list of examples is growing day by day.
-Find some [here](https://github.com/nodedge/nodedge/tree/master/examples).
+Find some [here](https://github.com/nodedge/nodedge/tree/main/examples).
 
 # Tutorials
 
