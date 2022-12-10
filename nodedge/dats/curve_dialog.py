@@ -77,10 +77,7 @@ class CurveFormulaEdit(QTextEdit):
     def updateTextFont(self):
         text = self.toPlainText()
         diff = set(text).difference(ascii_letters + digits + "+-/*^()._")
-        diff2 = set(text).difference(ascii_letters + digits + "_")
         operators = re.findall(r"[^a-zA-Z0-9_]+", text)
-        # length_operators = [len(i) for i in operators]
-        # max_op_length = max(length_operators) if length_operators else 0
         validOperation = True
         for op in operators:
             if op not in OPERATOR_LIST:

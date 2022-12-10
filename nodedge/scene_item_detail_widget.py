@@ -4,6 +4,7 @@ Scene item detail widget module containing
 :class:`~nodedge.scene_item_detail_widget.SceneItemDetailWidget` class.
 """
 import logging
+import re
 from typing import cast
 
 from PySide6.QtCore import Qt
@@ -108,11 +109,11 @@ class SceneItemDetailWidget(QWidget):
         self.__logger.debug(f"{newTitle}")
         self.__logger.debug(f"{alreadyExistingNames}")
         while newTitle in alreadyExistingNames:
-            # FIXME: This is not working 19 -> 110
             if newTitle[-1].isnumeric():
-                newLastCharacter = str(int(newTitle[-1]) + 1)
-                newTitle = newTitle[:-1]
-                newTitle += newLastCharacter
+                index = re.findall(r"[0-9]+", newTitle)[-1]
+                newLastCharacter = str(int(index) + 1)
+                newTitle = newTitle[: -len(index)] + newLastCharacter
+                print(index)
             else:
                 newTitle += "1"
 

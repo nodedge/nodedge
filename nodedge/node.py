@@ -5,6 +5,7 @@ Node module containing :class:`~nodedge.node.Node` class.
 
 
 import logging
+import re
 from collections import OrderedDict
 from typing import Callable, Collection, List, Optional, cast
 
@@ -17,6 +18,7 @@ from nodedge.graphics_node import GraphicsNode
 from nodedge.graphics_node_content import GraphicsNodeContent
 from nodedge.serializable import Serializable
 from nodedge.socket_type import SocketType
+
 # from nodedge.types import Pos
 from nodedge.utils import dumpException
 
@@ -210,9 +212,10 @@ class Node(Serializable):
 
         while newTitle in alreadyExistingNames:
             if newTitle[-1].isnumeric():
-                newLastCharacter = str(int(newTitle[-1]) + 1)
-                newTitle = newTitle[:-1]
-                newTitle += newLastCharacter
+                index = re.findall(r"[0-9]+", newTitle)[-1]
+                newLastCharacter = str(int(index) + 1)
+                newTitle = newTitle[: -len(index)] + newLastCharacter
+                print(index)
             else:
                 newTitle += "1"
 
