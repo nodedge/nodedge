@@ -7,6 +7,8 @@ Subpackages
 .. toctree::
 
    nodedge.blocks
+   nodedge.dats
+   nodedge.elements
 
 Submodules
 ----------
@@ -14,12 +16,14 @@ Submodules
 .. toctree::
 
    nodedge.application_styler
+   nodedge.calculator
    nodedge.connector
    nodedge.edge
    nodedge.edge_dragging
    nodedge.edge_validators
    nodedge.editor_widget
    nodedge.editor_window
+   nodedge.flow_layout
    nodedge.graphics_cut_line
    nodedge.graphics_edge
    nodedge.graphics_node
@@ -27,6 +31,8 @@ Submodules
    nodedge.graphics_node_title_label
    nodedge.graphics_scene
    nodedge.graphics_socket
+   nodedge.graphics_splash_screen
+   nodedge.graphics_text_item
    nodedge.graphics_view
    nodedge.history_list_widget
    nodedge.logger
@@ -35,6 +41,7 @@ Submodules
    nodedge.mdi_window
    nodedge.node
    nodedge.node_tree_widget
+   nodedge.ntypes
    nodedge.scene
    nodedge.scene_clipboard
    nodedge.scene_coder
@@ -43,6 +50,7 @@ Submodules
    nodedge.scene_items_table_widget
    nodedge.serializable
    nodedge.socket_type
+   nodedge.splash_screen
    nodedge.utils
 
 Module contents

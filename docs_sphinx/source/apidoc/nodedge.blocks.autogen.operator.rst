@@ -6,8 +6,10 @@ Submodules
 
 .. toctree::
 
+   nodedge.blocks.autogen.operator.abs_block
    nodedge.blocks.autogen.operator.add_block
    nodedge.blocks.autogen.operator.eq_block
+   nodedge.blocks.autogen.operator.floordiv_block
    nodedge.blocks.autogen.operator.ge_block
    nodedge.blocks.autogen.operator.gt_block
    nodedge.blocks.autogen.operator.le_block
