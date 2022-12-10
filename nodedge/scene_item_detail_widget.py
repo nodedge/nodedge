@@ -108,6 +108,7 @@ class SceneItemDetailWidget(QWidget):
         self.__logger.debug(f"{newTitle}")
         self.__logger.debug(f"{alreadyExistingNames}")
         while newTitle in alreadyExistingNames:
+            # FIXME: This is not working 19 -> 110
             if newTitle[-1].isnumeric():
                 newLastCharacter = str(int(newTitle[-1]) + 1)
                 newTitle = newTitle[:-1]

@@ -1,6 +1,10 @@
 import json
+import re
 from string import ascii_letters, digits
 
+import numpy as np
+from asammdf import MDF, Signal
+from asammdf.blocks.v4_blocks import Channel
 from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
@@ -17,6 +21,21 @@ from PySide6.QtWidgets import (
 
 from nodedge.dats.logs_list_widget import LogsListWidget
 from nodedge.dats.signals_list_widget import SignalsListWidget
+
+OPERATOR_LIST = [
+    "+",
+    "-",
+    "*",
+    "/",
+    "^",
+    "**",
+    "sin",
+    "cos",
+    "tan",
+    "asin",
+    "acos",
+    "atan",
+]
 
 
 class CurveLineEdit(QLineEdit):
@@ -59,7 +78,14 @@ class CurveFormulaEdit(QTextEdit):
         text = self.toPlainText()
         diff = set(text).difference(ascii_letters + digits + "+-/*^()._")
         diff2 = set(text).difference(ascii_letters + digits + "_")
-        if self.toPlainText() == "" or len(diff) > 0 or len(diff2) > 1:
+        operators = re.findall(r"[^a-zA-Z0-9_]+", text)
+        # length_operators = [len(i) for i in operators]
+        # max_op_length = max(length_operators) if length_operators else 0
+        validOperation = True
+        for op in operators:
+            if op not in OPERATOR_LIST:
+                validOperation = False
+        if self.toPlainText() == "" or len(diff) > 0 or not validOperation:
             self.setStyleSheet("color: red")
             self.valid = False
         else:
@@ -170,9 +196,66 @@ class CurveDialog(QDialog):
         curveFilter = self.filterSpin.value()
         curveTypeRate = self.typeRateCombo.currentText()
 
+        curveFormulaNames = re.findall(r"[a-zA-Z0-9_]+", curveFormula)
+        curveFormulaOperators = re.findall(r"[^a-zA-Z0-9_]+", curveFormula)
+
+        curveFormulaNames = [i for i in curveFormulaNames if i != ""]
+
+        for c in curveFormulaNames:
+            if c.isdigit():
+                curveFormulaNames.remove(c)
+                continue
+            if c not in self.signalsWidget.signals:
+                QMessageBox.warning(self, "Error", f"Signal {c} not found")
+                return
+
+        logName = self.logsWidget.selectedItems()[0].text()
+
+        log: MDF = self.logsWidget.logs[logName]
+
+        timestampsUnion = np.array([], dtype=np.float64)
+        for name in curveFormulaNames:
+            channel: Channel = log.get(name)
+            channel.samples = channel.samples.astype(np.float64)
+            channel.timestamps = channel.timestamps.astype(np.float64)
+            timestampsUnion = np.union1d(timestampsUnion, channel.timestamps)
+        timestampsUnion.sort()
+
+        # interpolatedSamples = np.zeros(
+        #     (len(timestampsUnion), len(curveFormulaNames)), dtype=np.float64
+        # )
+        for i, name in enumerate(curveFormulaNames):
+            channel: Channel = log.get(name)
+            # interpolatedSamples[:, i] = np.interp(
+            #     timestampsUnion, channel.timestamps, channel.samples
+            # )
+            if i == 0:
+                channel.samples = channel.samples[0:-2]
+                channel.timestamps = channel.timestamps[0:-2]
+            exec(f"{name} = channel")
+
+        newSignal: Signal = eval(curveFormula)
+        newSignal.name = curveName
+
+        self.signalsWidget.signals.append(curveName)
+        log.append([newSignal])
+
+        print(log.channels_db.keys())
+
+        self.parent.logsWidget.logsListWidget.logs[logName] = log
+        self.parent.signalsWidget.signalsListWidget.updateList(log)
+
     def onSignalDoubleClicked(self, item):
         if self.curveNameEdit.text() == "":
-            self.curveNameEdit.setText(item.text())
+
+            curveName = item.text()
+            if curveName[-1].isnumeric():
+                index = re.findall(r"[0-9]+", curveName)[-1]
+                newLastCharacter = str(int(index) + 1)
+                curveName = curveName[: -len(index)] + newLastCharacter
+            else:
+                curveName += "1"
+            self.curveNameEdit.setText(curveName)
         self.curveFormulaEdit.setText(self.curveFormulaEdit.toPlainText() + item.text())
 
     def onUnitDomainChanged(self, text):
