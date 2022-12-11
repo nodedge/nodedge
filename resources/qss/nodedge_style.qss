@@ -211,14 +211,12 @@ background:palette(window);
 border-color:palette(dark);
 }
 
-/*QPushButton:focus,*/
-/*QPushButton:hover,*/
-/*QPushButton:hover:focus,*/
+QPushButton:focus,
+QPushButton:hover,
+QPushButton:hover:focus,
 QPushButton:pressed,
 QPushButton:pressed:focus{
-    color:palette(button-text);
-    background:palette(highlight);
-    border-color:palette(dark);
+    background:palette(link-visited);
 }
 
 QPushButton:default{

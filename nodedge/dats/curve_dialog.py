@@ -206,7 +206,6 @@ class CurveDialog(QDialog):
         log.append([newSignal])
         self.signalsWidget.signals.append(curveName)
         self.parent.logsWidget.logsListWidget.logs[logName] = log
-        self.parent.signalsWidget.signalsTableWidget.updateItems(log)
 
         self.parent.curveConfig.update(
             {
@@ -219,6 +218,7 @@ class CurveDialog(QDialog):
                 }
             }
         )
+        self.parent.signalsWidget.signalsTableWidget.updateItems(log)
 
     def onSignalDoubleClicked(self, item):
 

@@ -14,13 +14,16 @@ class SignalsWidget(QWidget):
         self.layout.setContentsMargins(1, 1, 1, 1)
         self.layout.setSpacing(1)
         self.signalsTableWidget = SignalsTableWidget(parent, parent.curveConfig)
-        self.layout.addWidget(self.signalsTableWidget)
         self.lineEdit = QLineEdit()
+        self.lineEdit.setPlaceholderText("Search signals")
         self.lineEdit.textChanged.connect(self.updateDisplay)
-        self.layout.addWidget(self.lineEdit)
         self.plotButton = QPushButton("Plot")
+        self.plotButton.setFixedWidth(200)
         self.plotButton.clicked.connect(self.onButtonClicked)
-        self.layout.addWidget(self.plotButton)
+
+        self.layout.addWidget(self.lineEdit)
+        self.layout.addWidget(self.signalsTableWidget)
+        self.layout.addWidget(self.plotButton, alignment=Qt.AlignCenter)
 
         self.setLayout(self.layout)
 

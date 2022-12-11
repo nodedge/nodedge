@@ -15,6 +15,7 @@ COLUMNS = ["Type", "Name"]
 class SignalsTableWidget(QTableWidget):
     def __init__(self, parent=None, curveConfig={}, log: MDF = None):
         super().__init__(parent)
+        self.parent = parent
         self.setColumnCount(len(COLUMNS))
         self.setRowCount(1)
         self.setHorizontalHeaderLabels(COLUMNS)
@@ -30,7 +31,6 @@ class SignalsTableWidget(QTableWidget):
         self.cellClicked.connect(self.onCellClicked)
 
         self.log = log
-        self.curveConfig = curveConfig
         self.signals = []
         self.updateItems(self.log)
 
@@ -44,7 +44,8 @@ class SignalsTableWidget(QTableWidget):
 
         self.signals = sorted(signals)
 
-        configSignals = list(self.curveConfig.keys())
+        print(self.parent.curveConfig)
+        configSignals = list(self.parent.curveConfig.keys())
 
         self.clearContents()
         self.setRowCount(0)
@@ -57,6 +58,10 @@ class SignalsTableWidget(QTableWidget):
             # The signal is computed with a formula.
             if signal in configSignals:
                 typeItem.setText("ƒ")
+                typeItem.setToolTip("Computed with a formula")
+            else:
+                typeItem.setText("~")
+                typeItem.setToolTip("Raw signal")
 
             nameItem = QTableWidgetItem()
             nameItem.setFlags(nameItem.flags() & ~Qt.ItemIsEditable)
