@@ -4,7 +4,7 @@ from typing import Optional
 import pandas as pd
 from asammdf import MDF
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QListWidget, QListWidgetItem, QMessageBox
+from PySide6.QtWidgets import QInputDialog, QListWidget, QListWidgetItem, QMessageBox
 
 
 class LogsListWidget(QListWidget):
@@ -26,8 +26,22 @@ class LogsListWidget(QListWidget):
         log: MDF
         if extension.lower() == "mf4":
             log = MDF(filename)
-        elif extension.lower() == "csv":
-            df = pd.read_csv(filename)
+        elif extension.lower() in ["csv", "txt"]:
+            with open(filename, "r") as f:
+                line = f.readline()
+                separator = ","
+                if "," not in line:
+                    separator, ok = QInputDialog.getItem(
+                        self,
+                        "Separator",
+                        "Select the separator for the CSV file",
+                        [",", ";", "\t"],
+                    )
+
+                    if not ok:
+                        return
+
+            df = pd.read_csv(filename, sep=separator)
 
             log = MDF()
 

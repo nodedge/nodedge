@@ -44,7 +44,6 @@ class SignalsTableWidget(QTableWidget):
 
         self.signals = sorted(signals)
 
-        print(self.parent.curveConfig)
         configSignals = list(self.parent.curveConfig.keys())
 
         self.clearContents()

@@ -22,6 +22,7 @@ from PySide6.QtWidgets import (
 
 from nodedge.application_styler import ApplicationStyler
 from nodedge.dats.curve_dialog import CurveDialog
+from nodedge.dats.formula_evaluator import evaluateFormula
 from nodedge.dats.logs_widget import LogsWidget
 from nodedge.dats.n_plot_data_item import NPlotDataItem
 from nodedge.dats.n_plot_widget import NPlotWidget
@@ -61,9 +62,6 @@ class DatsWindow(QMainWindow):
         self.logsDock.setMinimumWidth(300)
         self.logsDock.setWidget(self.logsWidget)
         self.logsWidget.openButton.clicked.connect(self.openLog)
-        self.logsWidget.logsListWidget.logSelected.connect(
-            self.signalsWidget.signalsTableWidget.updateItems
-        )
         self.logsWidget.logsListWidget.logSelected.connect(self.updateDataItems)
 
         self.addDockWidget(Qt.LeftDockWidgetArea, self.logsDock)
@@ -73,8 +71,23 @@ class DatsWindow(QMainWindow):
         self.createMenus()
 
     def closeEvent(self, event: QCloseEvent) -> None:
-        # pass
-        self.saveConfiguration()
+
+        res = QMessageBox.warning(
+            self,
+            "Dats is about to close",
+            "There are unsaved modifications. \n" "Do you want to save your changes?",
+            QMessageBox.StandardButton.Save
+            | QMessageBox.StandardButton.Discard
+            | QMessageBox.StandardButton.Cancel,
+        )
+
+        if res == QMessageBox.StandardButton.Save:
+            self.saveConfiguration()
+            event.accept()
+        elif res == QMessageBox.StandardButton.Cancel:
+            event.ignore()
+        else:
+            event.accept()
 
     def saveConfiguration(self):
         layoutConfig = {}
@@ -110,11 +123,11 @@ class DatsWindow(QMainWindow):
         for workbookname, workbookConfig in layoutConfig.items():
             worksheetsTabWidget = self.workbooksTabWidget.addWorkbook(workbookname)
             worksheetsTabWidget.removeWorksheet(0)
-            index = 0
+            item = 0
             for worksheetname, worksheetConfig in workbookConfig.items():
                 worksheetsTabWidget.addWorksheet(worksheetname)
-                worksheetsTabWidget.setCurrentIndex(index)
-                worksheet = worksheetsTabWidget.worksheets[index]
+                worksheetsTabWidget.setCurrentIndex(item)
+                worksheet = worksheetsTabWidget.worksheets[item]
                 for vbConfig in worksheetConfig:
                     if len(worksheet.items) > 1:
                         worksheet.plotItem.vb.addSubPlot()
@@ -129,13 +142,21 @@ class DatsWindow(QMainWindow):
 
                         dataItem.setData(x=[0, 0], y=[0, 0], name=signalName)
                         worksheet.addDataItem(dataItem, signalName)
-                    index = index + 1
+                    item = item + 1
 
         self.curveConfig = config["curves"]
 
-        self.signalsWidget.signalsTableWidget.updateItems()
+        if self.logsWidget.logsListWidget.logs:
+            item = self.logsWidget.logsListWidget.currentItem()
+            log = self.logsWidget.logsListWidget.logs[item.text()]
+            for curveName in self.curveConfig:
+                formula = self.curveConfig[curveName]["formula"]
+                signals = self.signalsWidget.signalsTableWidget.signals
 
-        # TODO: Fill curveWidget
+                newSignal = evaluateFormula(curveName, formula, signals, log)
+
+                log.append(newSignal)
+            self.signalsWidget.signalsTableWidget.updateItems(log)
 
     def onPlotSelectedItems(self, items):
         channelNames = []
@@ -340,11 +361,33 @@ class DatsWindow(QMainWindow):
             if not ok:
                 return
 
-        print(filename)
         log = self.logsWidget.logsListWidget.openLog(filename)
         self.updateDataItems(log)
 
     def updateDataItems(self, log):
+        self.signalsWidget.signalsTableWidget.updateItems(log)
+
+        for curveName in self.curveConfig:
+            formula = self.curveConfig[curveName]["formula"]
+            signals = self.signalsWidget.signalsTableWidget.signals
+
+            newSignal = evaluateFormula(curveName, formula, signals, log)
+
+            if newSignal is None:
+                ret = QMessageBox.warning(
+                    self,
+                    "Error",
+                    f"Error evaluating formula for curve {curveName}.\n Do you want to continue computing curves?",
+                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                )
+
+                if ret == QMessageBox.StandardButton.No:
+                    break
+                elif ret == QMessageBox.StandardButton.Yes:
+                    continue
+
+            log.append(newSignal)
+        self.signalsWidget.signalsTableWidget.updateItems(log)
         for workbook in self.workbooksTabWidget.workbooks:
             for worksheet in workbook.worksheets:
                 signalName: str

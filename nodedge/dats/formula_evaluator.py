@@ -1,6 +1,8 @@
+import logging
 import re
 
 from asammdf import Signal
+from asammdf.blocks.utils import MdfException
 from asammdf.blocks.v4_blocks import Channel
 from PySide6.QtWidgets import QMessageBox
 
@@ -33,7 +35,12 @@ def evaluateFormula(curveName, curveFormula, signals, log):
     #     (len(timestampsUnion), len(curveFormulaNames)), dtype=np.float64
     # )
     for i, name in enumerate(curveFormulaNames):
-        channel: Channel = log.get(name)
+        try:
+            channel: Channel = log.get(name)
+        except MdfException as e:
+            logging.warning(e)
+            return
+
         # interpolatedSamples[:, i] = np.interp(
         #     timestampsUnion, channel.timestamps, channel.samples
         # )
