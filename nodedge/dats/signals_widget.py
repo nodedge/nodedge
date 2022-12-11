@@ -1,7 +1,7 @@
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QLineEdit, QPushButton, QVBoxLayout, QWidget
 
-from nodedge.dats.signals_list_widget import SignalsListWidget
+from nodedge.dats.signals_table_widget import SignalsTableWidget
 
 
 class SignalsWidget(QWidget):
@@ -13,8 +13,8 @@ class SignalsWidget(QWidget):
         self.layout = QVBoxLayout()
         self.layout.setContentsMargins(1, 1, 1, 1)
         self.layout.setSpacing(1)
-        self.signalsListWidget = SignalsListWidget()
-        self.layout.addWidget(self.signalsListWidget)
+        self.signalsTableWidget = SignalsTableWidget(parent, parent.curveConfig)
+        self.layout.addWidget(self.signalsTableWidget)
         self.lineEdit = QLineEdit()
         self.lineEdit.textChanged.connect(self.updateDisplay)
         self.layout.addWidget(self.lineEdit)
@@ -25,15 +25,22 @@ class SignalsWidget(QWidget):
         self.setLayout(self.layout)
 
     def updateDisplay(self):
-        allItems = self.signalsListWidget.findItems("", Qt.MatchContains)
+        allItems = self.signalsTableWidget.findItems("", Qt.MatchContains)
         for i in allItems:
-            i.setHidden(True)
-        items = self.signalsListWidget.findItems(
+            if i is not None:
+                self.signalsTableWidget.setRowHidden(i.row(), True)
+        items = self.signalsTableWidget.findItems(
             self.lineEdit.text(), Qt.MatchRegularExpression
         )
         for i in items:
-            i.setHidden(False)
+            if i is not None:
+                self.signalsTableWidget.setRowHidden(i.row(), False)
 
     def onButtonClicked(self):
-        items = self.signalsListWidget.selectedItems()
+        items = self.signalsTableWidget.selectedItems()
+
+        for i in items:
+            if i.column() != 1:
+                items.remove(i)
+
         self.plotSelectedSignals.emit(items)

@@ -232,7 +232,7 @@ color:palette(text);
 }
 
 QTextEdit{
-color:palette(light);
+color:palette(text);
 background:palette(window);
 }
 
@@ -473,6 +473,7 @@ HeaderButton:pressed:focus{
     border-color:palette(highlight);
 }
 
+
 MenuButton
 {
     background: palette(dark);
@@ -542,4 +543,14 @@ HeaderMenuButton {
 
 HeaderMenuButton:checked {
     icon: url("resources/black_icons/chevron_left.png");
+}
+
+LogsListWidget {
+    background-color: palette(dark);
+    border: 0px;
+}
+
+QListView::item {
+  height: 25px;
+  border: 1px solid transparent;
 }

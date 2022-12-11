@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import sys
 from typing import Callable, Optional, Union, cast
 
@@ -28,7 +29,7 @@ from nodedge.dats.signals_widget import SignalsWidget
 from nodedge.dats.workbooks_tab_widget import WorkbooksTabWidget
 from nodedge.dats.worksheets_tab_widget import WorksheetsTabWidget
 from nodedge.logger import setupLogging
-from nodedge.utils import dumpException
+from nodedge.utils import dumpException, loadStyleSheets
 
 
 class DatsWindow(QMainWindow):
@@ -36,10 +37,20 @@ class DatsWindow(QMainWindow):
         super().__init__(parent)
 
         self.appStyler = ApplicationStyler()
+        self.styleSheetFilename = os.path.join(
+            os.path.dirname(__file__), "../../resources/qss/nodedge_style.qss"
+        )
+        loadStyleSheets(
+            # os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),
+            self.styleSheetFilename
+        )
+
+        self.curveConfig = {}
+
         self.workbooksTabWidget = WorkbooksTabWidget(self)
         self.setCentralWidget(self.workbooksTabWidget)
 
-        self.signalsWidget = SignalsWidget()
+        self.signalsWidget = SignalsWidget(self)
         self.signalsDock = QDockWidget("Signals")
         self.signalsDock.setWidget(self.signalsWidget)
         self.signalsDock.setWidget(self.signalsWidget)
@@ -47,15 +58,16 @@ class DatsWindow(QMainWindow):
 
         self.logsWidget = LogsWidget()
         self.logsDock = QDockWidget("Logs")
+        self.logsDock.setMinimumWidth(300)
         self.logsDock.setWidget(self.logsWidget)
         self.logsWidget.openButton.clicked.connect(self.openLog)
         self.logsWidget.logsListWidget.logSelected.connect(
-            self.signalsWidget.signalsListWidget.updateList
+            self.signalsWidget.signalsTableWidget.updateItems
         )
         self.logsWidget.logsListWidget.logSelected.connect(self.updateDataItems)
 
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.signalsDock)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.logsDock)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.signalsDock)
 
         self.createActions()
         self.createMenus()
@@ -72,8 +84,7 @@ class DatsWindow(QMainWindow):
                 worksheet_config.update(worksheet.as_dict())
             layoutConfig.update({workbook.name: worksheet_config})
 
-        curveConfig = {}
-        config = {"layout": layoutConfig, "curves": curveConfig}
+        config = {"layout": layoutConfig, "curves": self.curveConfig}
 
         parsed = json.dumps(config, indent=2, sort_keys=True)
         with open("config.json", "w") as outfile:
@@ -119,6 +130,12 @@ class DatsWindow(QMainWindow):
                         dataItem.setData(x=[0, 0], y=[0, 0], name=signalName)
                         worksheet.addDataItem(dataItem, signalName)
                     index = index + 1
+
+        self.curveConfig = config["curves"]
+
+        self.signalsWidget.signalsTableWidget.updateItems()
+
+        # TODO: Fill curveWidget
 
     def onPlotSelectedItems(self, items):
         channelNames = []

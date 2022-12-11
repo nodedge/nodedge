@@ -2,9 +2,7 @@ import json
 import re
 from string import ascii_letters, digits
 
-import numpy as np
-from asammdf import MDF, Signal
-from asammdf.blocks.v4_blocks import Channel
+from asammdf import MDF
 from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
@@ -20,6 +18,7 @@ from PySide6.QtWidgets import (
 )
 
 from nodedge import utils
+from nodedge.dats.formula_evaluator import evaluateFormula
 from nodedge.dats.logs_list_widget import LogsListWidget
 from nodedge.dats.signals_list_widget import SignalsListWidget
 
@@ -114,11 +113,12 @@ class CurveDialog(QDialog):
         self.mainFrame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         logs = self.parent.logsWidget.logsListWidget.logs
-        print(logs.keys())
         self.logsWidget = LogsListWidget(logs=logs)
-        signals = self.parent.signalsWidget.signalsListWidget.signals
+        signals = self.parent.signalsWidget.signalsTableWidget.signals
         self.signalsWidget = SignalsListWidget(signals=signals)
         self.signalsWidget.itemDoubleClicked.connect(self.onSignalDoubleClicked)
+
+        self.logsWidget.logSelected.connect(self.signalsWidget.updateList)
 
         self.leftLayout.addWidget(self.logsWidget)
         self.leftLayout.addWidget(self.signalsWidget)
@@ -181,13 +181,13 @@ class CurveDialog(QDialog):
     def onAccepted(self):
         if self.curveNameEdit.valid and self.curveFormulaEdit.valid:
 
-            self.evaluateCurve()
+            self.interpretFormula()
             self.accept()
         else:
             QMessageBox.warning(self, "Error", "Invalid curve name or formula")
             # self.reject()
 
-    def evaluateCurve(self):
+    def interpretFormula(self):
         curveName = self.curveNameEdit.text()
         curveFormula = self.curveFormulaEdit.toPlainText()
         curveUnit = self.unitCombo.currentText()
@@ -195,54 +195,30 @@ class CurveDialog(QDialog):
         curveFilter = self.filterSpin.value()
         curveTypeRate = self.typeRateCombo.currentText()
 
-        curveFormulaNames = re.findall(r"[a-zA-Z0-9_]+", curveFormula)
-        curveFormulaOperators = re.findall(r"[^a-zA-Z0-9_]+", curveFormula)
-
-        curveFormulaNames = [i for i in curveFormulaNames if i != ""]
-
-        for c in curveFormulaNames:
-            if c.isdigit():
-                curveFormulaNames.remove(c)
-                continue
-            if c not in self.signalsWidget.signals:
-                QMessageBox.warning(self, "Error", f"Signal {c} not found")
-                return
-
         logName = self.logsWidget.selectedItems()[0].text()
 
         log: MDF = self.logsWidget.logs[logName]
 
-        timestampsUnion = np.array([], dtype=np.float64)
-        for name in curveFormulaNames:
-            channel: Channel = log.get(name)
-            channel.samples = channel.samples.astype(np.float64)
-            channel.timestamps = channel.timestamps.astype(np.float64)
-            timestampsUnion = np.union1d(timestampsUnion, channel.timestamps)
-        timestampsUnion.sort()
+        signals = self.signalsWidget.signals
 
-        # interpolatedSamples = np.zeros(
-        #     (len(timestampsUnion), len(curveFormulaNames)), dtype=np.float64
-        # )
-        for i, name in enumerate(curveFormulaNames):
-            channel: Channel = log.get(name)
-            # interpolatedSamples[:, i] = np.interp(
-            #     timestampsUnion, channel.timestamps, channel.samples
-            # )
-            if i == 0:
-                channel.samples = channel.samples[0:-2]
-                channel.timestamps = channel.timestamps[0:-2]
-            exec(f"{name} = channel")
+        newSignal = evaluateFormula(curveName, curveFormula, signals, log)
 
-        newSignal: Signal = eval(curveFormula)
-        newSignal.name = curveName
-
-        self.signalsWidget.signals.append(curveName)
         log.append([newSignal])
-
-        print(logName)
+        self.signalsWidget.signals.append(curveName)
         self.parent.logsWidget.logsListWidget.logs[logName] = log
-        print(self.parent.logsWidget.logsListWidget.logs.keys())
-        self.parent.signalsWidget.signalsListWidget.updateList(log)
+        self.parent.signalsWidget.signalsTableWidget.updateItems(log)
+
+        self.parent.curveConfig.update(
+            {
+                curveName: {
+                    "formula": curveFormula,
+                    "unit": curveUnit,
+                    "rate": curveRate,
+                    "filter": curveFilter,
+                    "typeRate": curveTypeRate,
+                }
+            }
+        )
 
     def onSignalDoubleClicked(self, item):
 
