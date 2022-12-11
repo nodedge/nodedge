@@ -3,8 +3,12 @@ from typing import Optional
 
 import pandas as pd
 from asammdf import MDF
+from asammdf import Signal as asammdfSignal
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QInputDialog, QListWidget, QListWidgetItem, QMessageBox
+
+from scipy.io import loadmat
+import numpy as np
 
 
 class LogsListWidget(QListWidget):
@@ -64,7 +68,23 @@ class LogsListWidget(QListWidget):
             #         df = pd.DataFrame([[f[key][:]]], columns=[key])
             #
             #         log.append(df)
+        elif extension.lower() == "mat":
+            mat = loadmat(filename)
 
+            keys = [key for key in mat.keys() if "__" not in key]
+
+            signals = []
+            for key in keys:
+                newCol = np.squeeze(mat[key])
+                dim = len(newCol.shape)
+                if dim != 1:
+                    logging.warning(f"Skipped variable {key} with {dim} dimensions")
+                    continue
+                timestamps = np.arange(len(newCol))
+                newSignal = asammdfSignal(samples=newCol, timestamps=timestamps, name=key)
+                signals.append(newSignal)
+            log = MDF()
+            log.append(signals)
         else:
             logging.warning("Cannot open this extension")
             return None
