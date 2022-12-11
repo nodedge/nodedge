@@ -19,6 +19,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from nodedge import utils
 from nodedge.dats.logs_list_widget import LogsListWidget
 from nodedge.dats.signals_list_widget import SignalsListWidget
 
@@ -113,6 +114,7 @@ class CurveDialog(QDialog):
         self.mainFrame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         logs = self.parent.logsWidget.logsListWidget.logs
+        print(logs.keys())
         self.logsWidget = LogsListWidget(logs=logs)
         signals = self.parent.signalsWidget.signalsListWidget.signals
         self.signalsWidget = SignalsListWidget(signals=signals)
@@ -237,21 +239,21 @@ class CurveDialog(QDialog):
         self.signalsWidget.signals.append(curveName)
         log.append([newSignal])
 
-        print(log.channels_db.keys())
-
+        print(logName)
         self.parent.logsWidget.logsListWidget.logs[logName] = log
+        print(self.parent.logsWidget.logsListWidget.logs.keys())
         self.parent.signalsWidget.signalsListWidget.updateList(log)
 
     def onSignalDoubleClicked(self, item):
+
+        # Automatically set the name only if it is empty
         if self.curveNameEdit.text() == "":
 
             curveName = item.text()
-            if curveName[-1].isnumeric():
-                index = re.findall(r"[0-9]+", curveName)[-1]
-                newLastCharacter = str(int(index) + 1)
-                curveName = curveName[: -len(index)] + newLastCharacter
-            else:
-                curveName += "1"
+
+            alreadyExistingNames = self.signalsWidget.signals
+            curveName = utils.setNewTitle(curveName, alreadyExistingNames)
+
             self.curveNameEdit.setText(curveName)
         self.curveFormulaEdit.setText(self.curveFormulaEdit.toPlainText() + item.text())
 

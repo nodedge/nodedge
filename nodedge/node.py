@@ -5,13 +5,13 @@ Node module containing :class:`~nodedge.node.Node` class.
 
 
 import logging
-import re
 from collections import OrderedDict
 from typing import Callable, Collection, List, Optional, cast
 
 from PySide6.QtCore import QPointF
 from PySide6.QtWidgets import QGraphicsSceneMouseEvent
 
+from nodedge import utils
 from nodedge.connector import Socket, SocketLocation
 from nodedge.edge import Edge
 from nodedge.graphics_node import GraphicsNode
@@ -208,16 +208,9 @@ class Node(Serializable):
         otherNodes = self.scene.nodes.copy()
         if self in self.scene.nodes:
             otherNodes.remove(self)
-        alreadyExistingNames = [node.title for node in otherNodes]
+        alreadyExistingTitles = [node.title for node in otherNodes]
 
-        while newTitle in alreadyExistingNames:
-            if newTitle[-1].isnumeric():
-                index = re.findall(r"[0-9]+", newTitle)[-1]
-                newLastCharacter = str(int(index) + 1)
-                newTitle = newTitle[: -len(index)] + newLastCharacter
-                print(index)
-            else:
-                newTitle += "1"
+        newTitle = utils.setNewTitle(newTitle, alreadyExistingTitles)
 
         self._title = newTitle
         self.graphicsNode.title = newTitle

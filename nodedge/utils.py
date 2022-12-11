@@ -4,6 +4,7 @@ Utils module with some helper functions.
 """
 
 import logging
+import re
 import traceback
 from pprint import PrettyPrinter
 from typing import Callable, Optional, Union
@@ -133,3 +134,14 @@ def createAction(
         parent.addAction(act)
 
     return act
+
+
+def setNewTitle(newTitle, alreadyExistingTitles):
+    while newTitle in alreadyExistingTitles:
+        if newTitle[-1].isnumeric():
+            index = re.findall(r"[0-9]+", newTitle)[-1]
+            newLastCharacter = str(int(index) + 1)
+            newTitle = newTitle[: -len(index)] + newLastCharacter
+        else:
+            newTitle += "1"
+    return newTitle

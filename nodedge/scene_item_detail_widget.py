@@ -4,11 +4,12 @@ Scene item detail widget module containing
 :class:`~nodedge.scene_item_detail_widget.SceneItemDetailWidget` class.
 """
 import logging
-import re
 from typing import cast
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QGridLayout, QLabel, QLineEdit, QSizePolicy, QWidget
+
+from nodedge import utils
 
 
 class SceneItemDetailWidget(QWidget):
@@ -104,18 +105,9 @@ class SceneItemDetailWidget(QWidget):
         if selectedNode in otherNodes:
             otherNodes.remove(selectedNode)
 
-        alreadyExistingNames = [node.title for node in otherNodes]
+        alreadyExistingTitles = [node.title for node in otherNodes]
         newTitle = self.titleLineEdit.text()
-        self.__logger.debug(f"{newTitle}")
-        self.__logger.debug(f"{alreadyExistingNames}")
-        while newTitle in alreadyExistingNames:
-            if newTitle[-1].isnumeric():
-                index = re.findall(r"[0-9]+", newTitle)[-1]
-                newLastCharacter = str(int(index) + 1)
-                newTitle = newTitle[: -len(index)] + newLastCharacter
-                print(index)
-            else:
-                newTitle += "1"
+        newTitle = utils.setNewTitle(newTitle, alreadyExistingTitles)
 
         self.titleLineEdit.setText(newTitle)
         selectedNode.title = newTitle
