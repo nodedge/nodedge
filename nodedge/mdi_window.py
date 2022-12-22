@@ -274,12 +274,13 @@ class MdiWindow(EditorWindow):
         self.homeMenu.aboutToShow.connect(self.openHome)
 
     def openHome(self):
-        msg = QMessageBox()
-        msg.setIcon(QMessageBox.Information)
-        msg.setInformativeText("It is not yet implemented.")
-        msg.setWindowTitle("Home page")
-        msg.setStandardButtons(QMessageBox.Ok)
-        msg.exec_()
+        pass
+        # msg = QMessageBox()
+        # msg.setIcon(QMessageBox.Information)
+        # msg.setInformativeText("It is not yet implemented.")
+        # msg.setWindowTitle("Home page")
+        # msg.setStandardButtons(QMessageBox.Ok)
+        # msg.exec_()
 
     # noinspection PyAttributeOutsideInit
     def createHelpMenu(self) -> None:

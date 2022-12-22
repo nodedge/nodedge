@@ -2,7 +2,7 @@ import logging
 import os
 import sys
 
-from PySide6.QtCore import QEasingCurve, QPropertyAnimation
+from PySide6.QtCore import QEasingCurve, QPropertyAnimation, Signal
 from PySide6.QtGui import QIcon, Qt
 from PySide6.QtWidgets import (
     QApplication,
@@ -43,6 +43,8 @@ logger = logging.getLogger(__name__)
 
 
 class HeaderButton(QPushButton):
+    switched = Signal(int)
+
     def __init__(self, parent=None, iconFile=None, text=None):
         super().__init__(parent)
         # self.setFlat(True)
@@ -54,6 +56,11 @@ class HeaderButton(QPushButton):
 
         self.icon = QIcon(iconFile)
         self.setIcon(self.icon)
+
+        self.clicked.connect(self.onClicked)
+
+    def onClicked(self):
+        self.switched.emit(0)
 
 
 class HeaderMenuButton(HeaderButton):
@@ -128,7 +135,10 @@ class HeaderFrame(QFrame):
             toggleIconFile="resources/white_icons/chevron_left.png",
         )
 
+        self.nodedgeButton = HeaderButton(self, iconFile="resources/Icon.ico")
+
         self.leftLayout.addWidget(self.menuButton)
+        self.leftLayout.addWidget(self.nodedgeButton)
 
         self.rightButtons = []
 

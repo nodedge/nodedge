@@ -237,8 +237,8 @@ background:palette(window);
 }
 
 QLineEdit{
-border:1px solid palette(button-text);
-background:palette(window);
+/*border:1px solid palette(button-text);*/
+background:palette(midLight);
 border-radius:2px;
 padding:1px 2px;
 }
@@ -285,7 +285,7 @@ QScrollBar:vertical {
 border: none;
 background: palette(light);
 width: 14px;
-margin: 21px 0 21px 0;
+/*margin: 21px 0 21px 0;*/
 border-radius: 0px;
 }
 
