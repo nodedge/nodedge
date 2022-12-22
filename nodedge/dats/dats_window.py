@@ -174,7 +174,12 @@ class DatsWindow(QMainWindow):
         log: MDF = self.logsWidget.logsListWidget.logs[logName]
 
         for name in channelNames:
-            channel: Channel = log.get(name)
+            try:
+                channel: Channel = log.get(name)
+            except Exception as e:
+                channelIndex, channelGroup = log.channels_db[name][0]
+                channel: Channel = log.get(name, channelIndex, channelGroup)
+
             w: WorksheetsTabWidget = self.workbooksTabWidget.currentWidget()
             w.addCurvePlot(channel.timestamps, channel.samples, channel.name)
 
@@ -456,7 +461,7 @@ if __name__ == "__main__":
 
     dats = DatsWindow()
     dats.showMaximized()
-    dats.logsWidget.logsListWidget.openLog("data/log.mf4")
+    # dats.logsWidget.logsListWidget.openLog("data/log.mf4")
     # dats.workbooksTabWidget.workbooks[0].renameWorksheet(0, "worksheetName")
     # dats.plotCurves(
     #     [

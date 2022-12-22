@@ -46,6 +46,25 @@ class LogsListWidget(QListWidget):
             log = MDF()
 
             log.append(df)
+
+        elif extension.lower() == "hdf5":
+            raise NotImplementedError("HDF5 not implemented yet")
+            # f = h5py.File(filename, "r")
+            # allKeys, allTypes, allVariableTypes = getAllKeysHdf5(f)
+            # print(allKeys)
+            # print(allTypes)
+            # print(allVariableTypes)
+            #
+            # s = {}
+            # log = MDF()
+            # for key, type, variableType in zip(allKeys, allTypes, allVariableTypes):
+            #     if type == H5Types.DATASET:
+            #         print(f"{key} {f[key][:]}")
+            #         series.update({key: f[key][:]})
+            #         df = pd.DataFrame([[f[key][:]]], columns=[key])
+            #
+            #         log.append(df)
+
         else:
             logging.warning("Cannot open this extension")
             return None

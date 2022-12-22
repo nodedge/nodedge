@@ -38,6 +38,12 @@ class SignalsTableWidget(QTableWidget):
         if log is None:
             return
         signals = list(log.channels_db.keys())
+
+        # TODO: Fix in case of multiple signals with the same name
+        # for s in signals:
+        #     if len(log.channels_db[s]) > 1:
+        #         for i in range(len(log.channels_db[s])):
+        #             signals.append(f"{s}_{log.channels_db[s][0]}")
         signals = [c for c in signals if c[0:3] != "CAN"]
         signals = [c for c in signals if c[0:3] != "LIN"]
         signals = [c for c in signals if c != "time"]
