@@ -10,10 +10,10 @@ from PIL import Image
 
 
 def changeIconsColor(
-    folderInput: str = "icons",
-    folderOutput: str = "iconsModified",
-    rgbOld: List[int] = (0, 0, 0),
-    rgbNew: List[int] = (255, 255, 255),
+    folderInput: str = "white_icons",
+    folderOutput: str = "black_icons",
+    rgbOld: List[int] = (255, 255, 255),
+    rgbNew: List[int] = (0, 0, 0),
     maxAlpha: int = 210,
 ) -> bool:
     """
@@ -38,7 +38,7 @@ def changeIconsColor(
 
 
 if __name__ == "__main__":
-    ret = changeIconsColor(folderOutput="iconsModified")
+    ret = changeIconsColor()
     if ret:
         print("Icons color has changed.")
     else:

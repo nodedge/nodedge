@@ -6,7 +6,7 @@ import os
 from typing import Any, Callable, List, Optional, cast
 
 # from pyqtconsole.console import PythonConsole
-from PySide6.QtCore import QPointF, QSignalMapper, QSize, Qt, QTimer, Slot
+from PySide6.QtCore import QPointF, QSignalMapper, QSize, Qt, Slot
 from PySide6.QtGui import QAction, QCloseEvent, QIcon, QKeySequence, QMouseEvent
 from PySide6.QtWidgets import (
     QDialog,
@@ -27,7 +27,6 @@ from nodedge.mdi_widget import MdiWidget
 from nodedge.node_tree_widget import NodeTreeWidget
 from nodedge.scene_item_detail_widget import SceneItemDetailWidget
 from nodedge.scene_items_table_widget import SceneItemsTableWidget
-from nodedge.utils import loadStyleSheets
 
 
 class MdiWindow(EditorWindow):
@@ -41,8 +40,6 @@ class MdiWindow(EditorWindow):
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
         self.currentEditorWidgetChangedListeners: List[Callable] = []
-
-        self.stylesheetLastModified: float = 0.0
 
         super(MdiWindow, self).__init__()
 
@@ -82,21 +79,15 @@ class MdiWindow(EditorWindow):
         self.setWindowIcon(self.icon)
         self.setMinimumSize(QSize(880, 600))
 
-        self.styleSheetFilename = os.path.join(
-            os.path.dirname(__file__), "../resources/qss/nodedge_style.qss"
-        )
-        loadStyleSheets(
-            # os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),
-            self.styleSheetFilename
-        )
+        # self.styleSheetFilename = os.path.join(
+        #     os.path.dirname(__file__), "../resources/qss/nodedge_style.qss"
+        # )
+        # loadStyleSheets(
+        #     # os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),
+        #     self.styleSheetFilename
+        # )
 
         self.setMouseTracking(True)
-
-        self.timer = QTimer()
-        self.timer.setTimerType(Qt.PreciseTimer)
-        self.timer.setInterval(500)
-        self.timer.timeout.connect(self.checkStylesheet)  # type: ignore
-        self.timer.start()
 
         self.mdiArea = MdiArea()
         self.setCentralWidget(self.mdiArea)
@@ -675,20 +666,6 @@ class MdiWindow(EditorWindow):
 
     def updateStatusBar(self, point: QPointF):
         self.statusMousePos.setText(f"{point.x()}, {point.y()}")
-
-    def checkStylesheet(self) -> None:
-        """
-        Helper function which checks if the stylesheet exists and has changed.
-        """
-        try:
-            modTime = os.path.getmtime(self.styleSheetFilename)
-        except FileNotFoundError:
-            self.__logger.warning("Stylesheet was not found")
-            return
-
-        if modTime != self.stylesheetLastModified:
-            self.stylesheetLastModified = modTime
-            loadStyleSheets(self.styleSheetFilename)
 
     @Slot(list)
     def showItemsInStatusBar(self, items: List[str]):

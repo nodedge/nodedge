@@ -80,7 +80,7 @@ class PaletteViewerWindow(QMainWindow):
         self.initializeColorWidgets()
 
     def initializeColorWidgets(self):
-        with open("../resources/palette/dark_palette.yml", "r") as file:
+        with open("resources/palette/dark_palette.yml", "r") as file:
             colors = yaml.safe_load(file)
 
         for index, (key, value) in enumerate(colors.items()):

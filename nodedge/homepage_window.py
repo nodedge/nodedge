@@ -1,11 +1,12 @@
 import logging
-import os
 import sys
 
 from PySide6.QtCore import QEasingCurve, QPropertyAnimation, Signal
 from PySide6.QtGui import QIcon, Qt
 from PySide6.QtWidgets import (
     QApplication,
+    QComboBox,
+    QFormLayout,
     QFrame,
     QHBoxLayout,
     QLabel,
@@ -54,6 +55,9 @@ class HeaderButton(QPushButton):
         self.setFixedHeight(40)
         self.text = text
 
+        if text is not None:
+            self.setObjectName(f"{text.lower()}Button")
+
         self.icon = QIcon(iconFile)
         self.setIcon(self.icon)
 
@@ -73,10 +77,11 @@ class HeaderMenuButton(HeaderButton):
         self.toggleIcon = QIcon(toggleIconFile)
 
     def onToggled(self, checked):
-        if checked:
-            self.setIcon(self.toggleIcon)
-        else:
-            self.setIcon(self.icon)
+        self.setChecked(checked)
+        # if checked:
+        #     self.setIcon(self.toggleIcon)
+        # else:
+        #     self.setIcon(self.icon)
 
 
 class MenuButton(QPushButton):
@@ -84,11 +89,12 @@ class MenuButton(QPushButton):
         super().__init__(parent, text=text)
         self.setCheckable(True)
         self.setFlat(True)
+        self.setObjectName(f"{text.lower()}MenuButton")
 
-        if isinstance(icon, str):
-            icon = QIcon(icon)
-        icon = QIcon(icon)
-        self.setIcon(icon)
+        # if isinstance(icon, str):
+        #     icon = QIcon(icon)
+        # icon = QIcon(icon)
+        # self.setIcon(icon)
 
         self.setFixedHeight(40)
 
@@ -98,11 +104,12 @@ class MenuButton(QPushButton):
         self.toggled.connect(self.onToggled)
 
     def onToggled(self, checked):
-        if checked:
-            darkColor = QApplication.palette().dark().color().name()
-            self.setStyleSheet(f"background-color: {darkColor};")
-        else:
-            self.setStyleSheet(f"")
+        self.setChecked(checked)
+        # if checked:
+        #     darkColor = QApplication.palette().dark().color().name()
+        #     self.setStyleSheet(f"background-color: {darkColor};")
+        # else:
+        #     self.setStyleSheet(f"")
 
 
 class HeaderFrame(QFrame):
@@ -144,15 +151,15 @@ class HeaderFrame(QFrame):
 
         for text, iconFile in HEADER_ITEMS.items():
             iconFile = ICON_PATH + iconFile
-            logger.info(f"Adding header item: {text} with icon {iconFile}")
+            logger.debug(f"Adding header item: {text} with icon {iconFile}")
 
             button = HeaderButton(self, iconFile=iconFile, text=text)
             self.rightLayout.addWidget(button)
             self.rightButtons.append(button)
-
-        for button in self.rightButtons:
-            if button.text == "Login":
-                button.setObjectName("loginButton")
+        #
+        # for button in self.rightButtons:
+        #     if button.text == "Login":
+        #         button.setObjectName("loginButton")
 
 
 class LeftMenuWidget(QWidget):
@@ -177,9 +184,12 @@ class LeftMenuWidget(QWidget):
             logger.info(f"Adding menu item: {text} with icon {iconFile}")
 
             button = MenuButton(self, iconFile, text)
+            if text == "Home":
+                button.setChecked(True)
             self.layout.addWidget(button)
             self.buttons.append(button)
 
+        # self.
         self.anim = QPropertyAnimation(self, b"minimumWidth")
         self.anim.setDuration(500)
         self.anim.setEasingCurve(QEasingCurve.InOutCubic)
@@ -205,6 +215,42 @@ class LeftMenuWidget(QWidget):
         self.anim.start()
 
 
+class ContentWidget(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+
+class SettingsContentWidget(ContentWidget):
+
+    paletteChanged = Signal()
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.layout = QFormLayout()
+        # self.layout.setContentsMargins(0, 0, 0, 0)
+        # self.layout.setSpacing(0)
+        self.setLayout(self.layout)
+
+        self.paletteCombo = QComboBox()
+        self.paletteCombo.addItems(["Dark", "Light"])
+        self.layout.addRow("Theme: ", self.paletteCombo)
+
+        self.styler = ApplicationStyler()
+        self.paletteCombo.currentTextChanged.connect(self.onPaletteChanged)
+
+    def onPaletteChanged(self, text):
+        self.styler.setCustomPalette(text)
+        p = QApplication.palette()
+
+        loadStyleSheets(
+            # os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),
+            self.styler.styleSheetFilename
+        )
+
+        self.paletteChanged.emit()
+
+
 class CentralWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -216,7 +262,12 @@ class CentralWidget(QWidget):
 
         self.stackedWidgets = {}
         for text, iconFile in MENU_ITEMS.items():
-            stackedWidget = StackedWidget(self, text)
+            if text == "Settings":
+                stackedWidget = StackedWidget(
+                    self, text, contentWidget=SettingsContentWidget()
+                )
+            else:
+                stackedWidget = StackedWidget(self, text)
             self.layout.addWidget(stackedWidget)
             self.stackedWidgets.update({text: stackedWidget})
 
@@ -261,7 +312,7 @@ class TitleLabel(QLabel):
         self.setAlignment(Qt.AlignCenter)
 
 
-class ContentWidget(QLabel):
+class ContentLabel(QLabel):
     def __init__(self, parent=None, text=None):
         super().__init__(parent)
         self.setText(text)
@@ -284,7 +335,7 @@ class StackedWidget(QWidget):
         self.titleLabel.setAlignment(Qt.AlignCenter)
 
         if contentWidget is None:
-            self.contentWidget = ContentWidget(self, "No content")
+            self.contentWidget = ContentLabel(self, "No content")
             self.contentWidget.setAlignment(Qt.AlignCenter)
 
         else:
@@ -327,7 +378,6 @@ class MainWidget(QWidget):
         self.headerFrame.menuButton.clicked.connect(self.updateLeftMenu)
 
         for button in self.mainBodyFrame.leftMenuWidget.buttons:
-            print(button.text())
             button.clicked.connect(self.updateCentralWidget)
 
     def updateLeftMenu(self):
@@ -356,13 +406,6 @@ class HomePageWindow(QMainWindow):
 
         self.mainWidget = MainWidget()
         self.setCentralWidget(self.mainWidget)
-        self.styleSheetFilename = os.path.join(
-            os.path.dirname(__file__), "../resources/qss/nodedge_style.qss"
-        )
-        loadStyleSheets(
-            # os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),
-            self.styleSheetFilename
-        )
 
 
 if __name__ == "__main__":
