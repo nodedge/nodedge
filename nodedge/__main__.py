@@ -5,6 +5,7 @@ import sys
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication, QMainWindow, QStackedLayout, QWidget
 
+from nodedge.dats.dats_window import DatsWindow
 from nodedge.homepage.homepage_window import HomePageWindow
 from nodedge.logger import highLightLoggingSetup, setupLogging
 from nodedge.mdi_window import MdiWindow
@@ -36,15 +37,28 @@ def main():
     #     f"{os.path.dirname(__file__)}/../examples/calculator/calculator.json"
     # )
     homePageWindow: HomePageWindow = HomePageWindow()
+    datsWindow: DatsWindow = DatsWindow()
 
     layout.addWidget(mdiWindow)
     layout.addWidget(homePageWindow)
+    layout.addWidget(datsWindow)
     window.setCentralWidget(widget)
     homePageWindow.mainWidget.headerFrame.nodedgeButton.switched.connect(
-        window.centralWidget().layout().setCurrentIndex
+        lambda: layout.setCurrentWidget(mdiWindow)
     )
     mdiWindow.homeMenu.aboutToShow.connect(
-        lambda: window.centralWidget().layout().setCurrentIndex(1)
+        lambda: layout.setCurrentWidget(homePageWindow)
+    )
+
+    homePageWindow.mainWidget.headerFrame.datsButton.switched.connect(
+        lambda: layout.setCurrentWidget(datsWindow)
+    )
+    mdiWindow.homeMenu.aboutToShow.connect(
+        lambda: layout.setCurrentWidget(homePageWindow)
+    )
+
+    datsWindow.homeMenu.aboutToShow.connect(
+        lambda: layout.setCurrentWidget(homePageWindow)
     )
     # window = MdiWindow()
     # splash.closeSignal.connect(window.show)

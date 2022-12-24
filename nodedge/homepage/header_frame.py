@@ -45,9 +45,11 @@ class HeaderFrame(QFrame):
         )
 
         self.nodedgeButton = HeaderButton(self, iconFile="resources/Icon.ico")
+        self.datsButton = HeaderButton(self, iconFile="resources/Icon.ico", text="Dats")
 
         self.leftLayout.addWidget(self.menuButton)
         self.leftLayout.addWidget(self.nodedgeButton)
+        self.leftLayout.addWidget(self.datsButton)
 
         self.rightButtons = []
 

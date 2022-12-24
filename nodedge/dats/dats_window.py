@@ -272,12 +272,13 @@ class DatsWindow(QMainWindow):
         return act
 
     def createMenus(self):
+        self.homeMenu: QMenu = self.menuBar().addMenu("&Home")
         self.createFileMenu()
         self.createHelpMenu()
         self.createToolsMenu()
 
     def createToolsMenu(self):
-        self.toolsMenu = self.menuBar().addMenu("&Tools")
+        self.toolsMenu: QMenu = self.menuBar().addMenu("&Tools")
         self.toolsMenu.addAction(self.delAct)
         self.toolsMenu.addAction(self.createCurveAct)
 

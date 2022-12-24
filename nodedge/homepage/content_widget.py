@@ -17,6 +17,18 @@ class ContentWidget(QWidget):
         super().__init__(parent)
 
 
+class HelpContentWidget(ContentWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.layout = QFormLayout()
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.setSpacing(0)
+        self.setLayout(self.layout)
+
+        self.layout.addRow(QLabel("Help"))
+
+
 class HomeContentWidget(ContentWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -26,7 +38,7 @@ class HomeContentWidget(ContentWidget):
         self.layout.setSpacing(0)
         self.setLayout(self.layout)
 
-        self.label = QLabel("Home")
+        self.label = QLabel("Welcome to Nodedge")
         self.layout.addWidget(self.label)
 
 

@@ -457,6 +457,10 @@ HeaderButton {
     icon: url("resources/white_icons/home_page.png");
 }
 
+#datsButton {
+    icon: url("resources/white_icons/line_chart.png");
+}
+
 HeaderButton:hover{
     border-color:palette(highlight);
     background:palette(base);
