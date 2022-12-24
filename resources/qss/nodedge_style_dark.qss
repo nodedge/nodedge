@@ -411,11 +411,11 @@ GraphicsNodeTypeLabel {
 }
 
 HeaderButton {
-    background: palette(dark);
+    background: palette(midLight);
     icon-background-color: palette(base);
     icon-size: 30px;
     text-align: center;
-    border: 1px solid palette(text);
+    border: 0px solid palette(text);
     border-radius: 4px;
 
 }
@@ -459,6 +459,7 @@ HeaderButton {
 
 HeaderButton:hover{
     border-color:palette(highlight);
+    background:palette(base);
 }
 
 HeaderButton:pressed,

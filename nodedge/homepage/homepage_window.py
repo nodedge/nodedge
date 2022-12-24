@@ -1,0 +1,28 @@
+import logging
+import sys
+
+from PySide6.QtWidgets import QApplication, QMainWindow
+
+from nodedge.application_styler import ApplicationStyler
+from nodedge.homepage.main_widget import MainWidget
+
+logger = logging.getLogger(__name__)
+
+
+class HomePageWindow(QMainWindow):
+    def __init__(self):
+        super(HomePageWindow, self).__init__()
+
+        self.setWindowTitle("Nodedge")
+
+        self.mainWidget = MainWidget()
+        self.setCentralWidget(self.mainWidget)
+
+
+if __name__ == "__main__":
+
+    app = QApplication(sys.argv)
+    styler = ApplicationStyler()
+    win = HomePageWindow()
+    win.showMaximized()
+    sys.exit(app.exec())
