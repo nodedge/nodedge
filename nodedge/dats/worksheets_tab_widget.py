@@ -165,3 +165,7 @@ class WorksheetsTabWidget(QTabWidget):
         dataItem.getViewBox().setAutoPan(x=True, y=True)
 
         self.setTabToolTip(index, str(list(plotWidget.items.keys())))
+
+    def viewAll(self):
+        for worksheet in self.worksheets:
+            worksheet.viewAll()

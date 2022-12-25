@@ -21,7 +21,7 @@ class GraphicsBlock(GraphicsNode):
     def initStyle(self):
         super().initStyle()
         self.icons = QImage(
-            f"{os.path.dirname(__file__)}/../resources/node_icons/status_icons.png"
+            f"{os.path.dirname(__file__)}/../../resources/node_icons/status_icons.png"
         )
 
     def paint(self, painter, QStyleOptionGraphicsItem, widget=None):
@@ -38,4 +38,6 @@ class GraphicsBlock(GraphicsNode):
         #     QRectF(-10.0, -10.0, 24.0, 24.0), self.icons, QRectF(offset, 0, 24.0, 24.0)
         # )
 
-        self.statusLabel.setPixmap(QPixmap(self.icons).copy(offset, 0, 24.0, 24.0))
+        self.statusLabel.setPixmap(
+            QPixmap(self.icons).copy(offset, 0, 24.0, 24.0).scaled(16, 16)
+        )

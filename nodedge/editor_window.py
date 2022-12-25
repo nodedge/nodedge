@@ -24,7 +24,6 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from nodedge.application_styler import ApplicationStyler
 from nodedge.editor_widget import EditorWidget
 from nodedge.scene_coder import SceneCoder
 
@@ -63,7 +62,7 @@ class EditorWindow(QMainWindow):
             QGuiApplication, QGuiApplication.instance()
         )
 
-        self.styler = ApplicationStyler()
+        # self.styler = ApplicationStyler()
 
         self.clipboard: QClipboard = self.instance.clipboard()
 

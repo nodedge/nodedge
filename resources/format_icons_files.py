@@ -3,29 +3,48 @@
 Module containing function to format icons file contained in
 "icons" folder.
 """
+import logging
 import os
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
-def formatIconsFiles() -> bool:
+
+def formatIconsFiles(folder: str, overwrite: bool = True) -> bool:
     """
     function to remove icon prefix from all icons contained in "icons" folder.
     It also translates "-" into "_".
 
+    :param folder: folder containing icons
+    :type folder: str
+    :param overwrite: overwrite existing files, defaults to True
+    :type overwrite: bool, optional
     :return: ``True`` if the operation is successful, ``False`` otherwise.
     """
-    for count, filename in enumerate(os.listdir("icons")):
+    for count, filename in enumerate(os.listdir(folder)):
         modifiedFilename = filename.replace("icons8-", "")
         modifiedFilename = modifiedFilename.replace("-", "_")
-        print(f"{count}: {filename} -> {modifiedFilename}")
+        modifiedFilename = modifiedFilename.replace("_100", "")
+        modifiedFilename = modifiedFilename.replace("_96", "")
 
-        os.rename("icons/" + filename, "icons/" + modifiedFilename)
+        logger.debug(f"{count}: {filename} -> {modifiedFilename}")
+
+        if filename != modifiedFilename:
+            try:
+                if overwrite and os.path.exists(os.path.join(folder, modifiedFilename)):
+                    logger.info(f"Overwriting {modifiedFilename}.")
+                    os.remove(folder + "/" + filename)
+                os.rename(folder + "/" + filename, folder + "/" + modifiedFilename)
+            except FileExistsError as e:
+                logger.warning(f"File {modifiedFilename} already exists. Skipping.")
 
     return True
 
 
 if __name__ == "__main__":
-    ret = formatIconsFiles()
+    ret = formatIconsFiles("icons")
+    ret &= formatIconsFiles("iconsModified")
     if ret:
-        print("icon8 prefix has been removed from all icons.")
+        logger.info("Formatting all icon files done.")
     else:
-        print("Something went wrong during renaming of icons.")
+        logger.info("Something went wrong during renaming of icons.")

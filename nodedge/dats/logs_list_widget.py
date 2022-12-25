@@ -10,14 +10,15 @@ from PySide6.QtWidgets import QListWidget, QListWidgetItem, QMessageBox
 class LogsListWidget(QListWidget):
     logSelected = Signal(object)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, logs={}):
         super().__init__(parent)
 
         self.logs = {}
+        self.addLogs(logs)
 
         self.itemClicked.connect(self.onItemClicked)
 
-    def addLog(self, filename) -> Optional[MDF]:
+    def openLog(self, filename) -> Optional[MDF]:
         shortname = filename.split("/")[-1]
         extension = shortname.split(".")[-1]
         shortname = shortname.split(".")[0]
@@ -35,13 +36,18 @@ class LogsListWidget(QListWidget):
             logging.warning("Cannot open this extension")
             return None
 
+        self.addLog(log, shortname)
+
+        return log
+
+    def addLog(self, log, shortname):
         startTimeStr = log.start_time.strftime("%Y/%m/%D, %H:%M:%S")
         shortname = f"[{startTimeStr}] {shortname}"
 
         if shortname in list(self.logs.keys()):
             msgBox = QMessageBox()
             msgBox.setText("The log has already been loaded.")
-            msgBox.setIcon(QMessageBox.Warning)  # type: ignore
+            msgBox.setIcon(QMessageBox.Warning)
             msgBox.exec()
             return log
 
@@ -53,7 +59,10 @@ class LogsListWidget(QListWidget):
         self.logSelected.emit(log)
         self.setCurrentItem(item)
 
-        return log
+    def addLogs(self, logs):
+        for logName, log in logs.items():
+
+            self.addLog(log, logName)
 
     def onItemClicked(self, item):
         self.logSelected.emit(self.logs[item.text()])

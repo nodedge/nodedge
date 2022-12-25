@@ -61,3 +61,8 @@ recursive-include resources *.psd
 recursive-include resources *.py
 recursive-include resources *.qss
 recursive-include resources *.yml
+
+recursive-exclude nodedge/resources/raw_black_icons *
+recursive-exclude nodedge/resources/raw_white_icons *
+
+recursive-exclude data *

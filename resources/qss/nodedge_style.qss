@@ -11,7 +11,6 @@ background:palette(dark);
 color:palette(window-text);
 }
 
-
 QTabWidget{
 border:0;
 }
@@ -49,21 +48,21 @@ background:palette(highlight);
 }
 
 QMdiArea QTabBar::close-button{
-image:url("resources/iconsModified/close_window_100.png");
+image:url("resources/black_icons/close_window.png");
 subcontrol-position:right bottom;
 icon-size: 16px;
 padding: 0px;
 }
 
 QMdiArea QTabBar::close-button:!selected{
-image:url("close_window_100.png");
+image:url("close_window.png");
 }
 
 QDockWidget{
     font-size: 16px;
     color: palette(window-text);
     /*font-weight:bold;*/
-    titlebar-close-icon: url("resources/iconsModified/close_window_100.png");
+    titlebar-close-icon: url("resources/black_icons/close_window.png");
     titlebar-normal-icon: url(":icons/docktitle-normal-btn-light.png");
     icon-size: 50px;
     width: 25px;
@@ -71,12 +70,12 @@ QDockWidget{
 }
 
 QDockWidget::title{
-background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 palette(mid),
-stop : 0.2 palette(mid),stop : 0.1 palette(mid));
-color: transparent;
-text-align: center;
-border: none;
-height:25px;
+    background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,stop : 0 palette(mid),
+    stop : 0.2 palette(mid),stop : 0.1 palette(mid));
+    color: transparent;
+    text-align: center;
+    border: none;
+    height:25px;
 }
 
 QDockWidget::title:hover{
@@ -94,7 +93,7 @@ background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,
 }
 
 QDockWidget::close-button {
-    image: url("resources/iconsModified/close_window_100.png");
+    image: url("resources/black_icons/close_window.png");
     icon-size: 25px;
     padding: 0px;
     margin: 0px;
@@ -106,33 +105,33 @@ QMenuBar {
 }
 
 QMenuBar::item{
-spacing:3px;
-padding:3px 10px;
-color:palette(text);
-background:transparent;
+    spacing:3px;
+    padding:3px 10px;
+    color:palette(text);
+    background:transparent;
 }
 
 QMenuBar::item:pressed{
-background:palette(highlight);
+    background:palette(highlight);
 }
 
 QMenu{
-background:palette(dark);
-border:1px solid palette(light);
+    background:palette(dark);
+    border:1px solid palette(light);
 }
 
 QMenu::item{
-background:palette(dark);
-color:palette(text);
+    background:palette(dark);
+    color:palette(text);
 }
 
 QMenu::item:selected{
-background:palette(highlight);
+    background:palette(highlight);
 }
 
 QMenu::separator{
-height:1px;
-background:palette(light);
+    height:1px;
+    background:palette(light);
 }
 
 QToolButton {
@@ -142,7 +141,8 @@ QToolButton {
 
 QMenu:disabled,
 QMenu::item:disabled{
-color:palette(shadow);}
+    color:palette(shadow);
+}
 
 QListView{
 background-color:palette(window);
@@ -210,16 +210,14 @@ background:palette(window);
 border-color:palette(dark);
 }
 
-QPushButton:focus,
-QPushButton:hover,
-QPushButton:hover:focus,
+/*QPushButton:focus,*/
+/*QPushButton:hover,*/
+/*QPushButton:hover:focus,*/
 QPushButton:pressed,
 QPushButton:pressed:focus{
-color:palette(button-text);
-background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,
-    stop : 0 palette(highlight),
-    stop : 1 palette(highlight));
-border-color:palette(dark);
+    color:palette(button-text);
+    background:palette(highlight);
+    border-color:palette(dark);
 }
 
 QPushButton:default{
@@ -238,8 +236,8 @@ background:palette(window);
 }
 
 QLineEdit{
-border:1px solid palette(button-text);
-background:palette(window);
+/*border:1px solid palette(button-text);*/
+background:palette(midLight);
 border-radius:2px;
 padding:1px 2px;
 }
@@ -286,7 +284,7 @@ QScrollBar:vertical {
 border: none;
 background: palette(light);
 width: 14px;
-margin: 21px 0 21px 0;
+/*margin: 21px 0 21px 0;*/
 border-radius: 0px;
 }
 
@@ -307,7 +305,7 @@ GraphicsNodeTitleLabel:hover{
 }
 
 QMenu{
-image:url("resources/iconsModified/close_window_100.png");
+image:url("resources/black_icons/close_window.png");
 }
 
 GraphicsNodeContent QFrame {
@@ -410,4 +408,137 @@ GraphicsNodeStatusLabel {
 GraphicsNodeTypeLabel {
     background: palette(dark);
     color: palette(light);
+}
+
+HeaderButton {
+    background: palette(base);
+    icon-background-color: palette(base);
+    icon-size: 30px;
+    text-align: center;
+    border: 1px solid palette(text);
+    border-radius: 4px;
+
+}
+
+#loginButton {
+    border-radius: 20px;
+    icon: url("resources/black_icons/login.png");
+}
+
+#searchButton {
+    icon: url("resources/black_icons/search_property.png");
+}
+
+#notificationsButton {
+    icon: url("resources/black_icons/alarm.png");
+}
+
+#helpButton {
+    icon: url("resources/black_icons/questions.png");
+}
+
+#searchMenuButton {
+    icon: url("resources/black_icons/search_property.png");
+}
+
+#helpMenuButton {
+    icon: url("resources/black_icons/questions.png");
+}
+
+#settingsMenuButton {
+    icon: url("resources/black_icons/settings.png");
+}
+
+#accountMenuButton {
+    icon: url("resources/black_icons/login.png");
+}
+
+#homeMenuButton {
+    icon: url("resources/black_icons/home_page.png");
+}
+
+#datsButton {
+    icon: url("resources/black_icons/line_chart.png");
+}
+
+HeaderButton:hover{
+    border-color:palette(highlight);
+}
+
+HeaderButton:pressed,
+HeaderButton:pressed:focus{
+    color:palette(button-text);
+    background:palette(highlight);
+    border-color:palette(highlight);
+}
+
+MenuButton
+{
+    background: palette(dark);
+    icon-background-color: palette(base);
+    color: palette(text);
+    icon-size: 30px;
+    text-align: center;
+    text-align: left;
+    border: 0px;
+/*    border-left: 2px solid palette(text);*/
+/*    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;*/
+    border-right: 1px solid palette(base)
+}
+
+MenuButton:pressed:focus,
+MenuButton:pressed
+{
+    color:palette(button-text);
+    background:palette(highlight);
+    border-color:palette(highlight);
+}
+
+MenuButton:hover
+{
+    border-color:palette(highlight);
+}
+
+MenuButton:checked
+{
+    color:palette(button-text);
+    background:palette(midLight);
+    border-color:palette(highlight);
+}
+
+StackedWidget {
+    background-color: palette(dark);
+}
+
+TitleLabel {
+    background-color: palette(dark);
+    color: palette(text);
+    font-size: 24px;
+    font-weight: bold;
+    border: 0px;
+}
+
+ContentLabel {
+    background-color: palette(dark);
+    border: 0px;
+}
+
+SettingsContentWidget {
+    background-color: palette(dark);
+    border: 0px;
+}
+
+QComboBox {
+    background-color: palette(dark);
+    color: palette(text);
+    border: 0px;
+}
+
+HeaderMenuButton {
+    icon: url("resources/black_icons/menu.png");
+}
+
+HeaderMenuButton:checked {
+    icon: url("resources/black_icons/chevron_left.png");
 }
