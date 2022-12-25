@@ -1,3 +1,5 @@
+from typing import List
+
 from asammdf import MDF
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
@@ -15,7 +17,7 @@ COLUMNS = ["Type", "Name"]
 class SignalsTableWidget(QTableWidget):
     def __init__(self, parent=None, curveConfig={}, log: MDF = None):
         super().__init__(parent)
-        self.parent = parent
+        self._parent = parent
         self.setColumnCount(len(COLUMNS))
         self.setRowCount(1)
         self.setHorizontalHeaderLabels(COLUMNS)
@@ -31,7 +33,7 @@ class SignalsTableWidget(QTableWidget):
         self.cellClicked.connect(self.onCellClicked)
 
         self.log = log
-        self.signals = []
+        self.signals: List[str] = []
         self.updateItems(self.log)
 
     def updateItems(self, log: MDF):
@@ -50,7 +52,7 @@ class SignalsTableWidget(QTableWidget):
 
         self.signals = sorted(signals)
 
-        configSignals = list(self.parent.curveConfig.keys())
+        configSignals = list(self._parent.curveConfig.keys())
 
         self.clearContents()
         self.setRowCount(0)

@@ -39,7 +39,7 @@ class LogsListWidget(QListWidget):
                     )
 
                     if not ok:
-                        return
+                        return None
 
             df = pd.read_csv(filename, sep=separator)
 
