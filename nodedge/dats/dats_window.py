@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 import sys
 from typing import Callable, Optional, Union, cast
 
@@ -20,7 +19,6 @@ from PySide6.QtWidgets import (
     QMessageBox,
 )
 
-from nodedge.application_styler import ApplicationStyler
 from nodedge.dats.curve_dialog import CurveDialog
 from nodedge.dats.formula_evaluator import evaluateFormula
 from nodedge.dats.logs_widget import LogsWidget
@@ -30,21 +28,12 @@ from nodedge.dats.signals_widget import SignalsWidget
 from nodedge.dats.workbooks_tab_widget import WorkbooksTabWidget
 from nodedge.dats.worksheets_tab_widget import WorksheetsTabWidget
 from nodedge.logger import setupLogging
-from nodedge.utils import dumpException, loadStyleSheets
+from nodedge.utils import dumpException
 
 
 class DatsWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        self.appStyler = ApplicationStyler()
-        self.styleSheetFilename = os.path.join(
-            os.path.dirname(__file__), "../../resources/qss/nodedge_style.qss"
-        )
-        loadStyleSheets(
-            # os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),
-            self.styleSheetFilename
-        )
 
         self.curveConfig = {}
 

@@ -230,7 +230,7 @@ color:palette(text);
 }
 
 QTextEdit{
-color:palette(light);
+color:palette(text);
 background:palette(window);
 }
 
@@ -491,7 +491,7 @@ MenuButton:pressed:focus,
 MenuButton:pressed
 {
     color:palette(button-text);
-    background:palette(light);
+    background:palette(highlight);
     border-color:palette(highlight);
 }
 
@@ -541,4 +541,24 @@ HeaderMenuButton {
 
 HeaderMenuButton:checked {
     icon: url("resources/white_icons/chevron_left.png");
+}
+
+LogsListWidget {
+    background-color: palette(dark);
+    border: 0px;
+}
+
+QListView::item {
+  height: 25px;
+  border: 1px solid transparent;
+}
+
+LogsListWidget {
+    background-color: palette(dark);
+    border: 0px;
+}
+
+QListView::item {
+  height: 25px;
+  border: 1px solid transparent;
 }
