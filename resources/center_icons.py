@@ -10,8 +10,8 @@ from PIL import Image
 
 
 def centerIcons(
-    folderInput: str = "raw_black_icons",
-    folderOutput: str = "black_icons",
+    folderInput: str = "white_icons",
+    folderOutput: str = "white_icons2",
 ) -> bool:
     """
     function to remove icon prefix from all icons contained in "icons" folder.
@@ -56,11 +56,9 @@ def centerIcons(
                             pixels[x, y] = (0, 0, 0, 0)
                     else:
                         if y > distY:
-                            pixels[x, height - 1 - y] = pixels[
-                                x, height - 1 - y + distY
-                            ]
+                            pixels[x, y] = pixels[x, y + distY]
                         else:
-                            pixels[x, height - 1 - y] = (0, 0, 0, 0)
+                            pixels[x, y] = (0, 0, 0, 0)
                     # if x < distX:
                     #     temp[x, y] = pixels[x, y]
 
@@ -73,11 +71,11 @@ def centerIcons(
                             pixels[x, y] = (0, 0, 0, 0)
                     else:
                         if x > distX:
-                            pixels[width - 1 - x, y] = pixels[width - 1 - x + distX, y]
+                            pixels[x, y] = pixels[x + distX, y]
                         else:
-                            pixels[width - 1 - x, y] = (0, 0, 0, 0)
+                            pixels[x, y] = (0, 0, 0, 0)
         except IndexError:
-            logging.warning(f"IndexError: {filename}: {x}, {y}, {distX}, {distY}")
+            logging.warning(f"IndexError: {filename}: {x}, {y}")
             continue
 
         # temp = pixels[0:distY, :]

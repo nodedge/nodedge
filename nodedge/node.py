@@ -11,12 +11,14 @@ from typing import Callable, Collection, List, Optional, cast
 from PySide6.QtCore import QPointF
 from PySide6.QtWidgets import QGraphicsSceneMouseEvent
 
+from nodedge import utils
 from nodedge.connector import Socket, SocketLocation
 from nodedge.edge import Edge
 from nodedge.graphics_node import GraphicsNode
 from nodedge.graphics_node_content import GraphicsNodeContent
 from nodedge.serializable import Serializable
 from nodedge.socket_type import SocketType
+
 # from nodedge.types import Pos
 from nodedge.utils import dumpException
 
@@ -206,15 +208,9 @@ class Node(Serializable):
         otherNodes = self.scene.nodes.copy()
         if self in self.scene.nodes:
             otherNodes.remove(self)
-        alreadyExistingNames = [node.title for node in otherNodes]
+        alreadyExistingTitles = [node.title for node in otherNodes]
 
-        while newTitle in alreadyExistingNames:
-            if newTitle[-1].isnumeric():
-                newLastCharacter = str(int(newTitle[-1]) + 1)
-                newTitle = newTitle[:-1]
-                newTitle += newLastCharacter
-            else:
-                newTitle += "1"
+        newTitle = utils.setNewTitle(newTitle, alreadyExistingTitles)
 
         self._title = newTitle
         self.graphicsNode.title = newTitle

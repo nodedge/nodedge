@@ -5,6 +5,7 @@ import numpy as np
 import pyqtgraph as pg
 from pyqtgraph import (
     ArrowItem,
+    AxisItem,
     CurvePoint,
     GraphicsLayoutWidget,
     InfiniteLine,
@@ -15,7 +16,7 @@ from pyqtgraph import (
 )
 from pyqtgraph.GraphicsScene.mouseEvents import MouseClickEvent
 from PySide6 import QtCore, QtGui
-from PySide6.QtCore import QPointF, Qt
+from PySide6.QtCore import QEvent, QPointF, Qt
 from PySide6.QtGui import QMouseEvent
 from PySide6.QtWidgets import QApplication, QColorDialog
 
@@ -49,7 +50,19 @@ class NPlotWidget(GraphicsLayoutWidget):
 
     def addPlotItem(self, *args, **kargs):
         plotItem = self.addPlot(*args, **kargs)
+        axis: AxisItem = plotItem.axes["left"]["item"]
+        axis.setPen(pg.mkPen(QApplication.palette().text().color()))
+        axis: AxisItem = plotItem.axes["bottom"]["item"]
+        axis.setPen(pg.mkPen(QApplication.palette().text().color()))
+
+        maxWidth = 0
         self.plotItems.append(plotItem)
+        for item in self.plotItems:
+            axis = item.axes["left"]["item"]
+            maxWidth = max(maxWidth, axis.width())
+
+        for item in self.plotItems:
+            item.axes["left"]["item"].setWidth(maxWidth)
 
         self.plotItems[-1].addLegend()
         self.plotItems[-1].showGrid(x=True, y=True, alpha=1.0)
@@ -71,10 +84,6 @@ class NPlotWidget(GraphicsLayoutWidget):
         self.plotItem.vb.curves.update({name: dataItem})
         self.updateRange(dataItem, reset=False)
         self.plotItem.vb.autoRange()
-        # try:
-        #     print(self.plotItem.legend.items[0][1].text)
-        # except Exception as e:
-        #     print(e)
 
     def updateRange(self, dataItem, reset=True):
         if reset is True:
@@ -212,15 +221,28 @@ class NViewBox(pg.ViewBox):
         self.curves: Dict[str, NPlotDataItem] = {}
         self.highlightedCurve: Optional[NPlotDataItem] = None
 
-        p = QApplication.palette()
+        palette = QApplication.palette()
         self.vLine: InfiniteLine = InfiniteLine(
-            angle=90, movable=False, pen=pg.mkPen(p.highlight().color())
+            angle=90, movable=False, pen=pg.mkPen(palette.highlight().color())
         )
         self.hLine: InfiniteLine = InfiniteLine(
-            angle=0, movable=False, pen=pg.mkPen(p.highlight().color())
+            angle=0, movable=False, pen=pg.mkPen(palette.highlight().color())
         )
+
+        self.setBorder({"color": palette.text().color(), "width": 1})
+
         self.addItem(self.vLine, ignoreBounds=True)
         self.addItem(self.hLine, ignoreBounds=True)
+
+        self.setAcceptHoverEvents(True)
+
+    def hoverEnterEvent(self, ev: QEvent):
+        self.vLine.show()
+        self.hLine.show()
+
+    def hoverLeaveEvent(self, ev: QEvent):
+        self.vLine.hide()
+        self.hLine.hide()
 
     def mouseMoved(self, evt):
         # using signal proxy turns original arguments into a tuple
@@ -342,14 +364,15 @@ class NViewBox(pg.ViewBox):
 
     def mouseClickEvent(self, ev):
         super().mouseClickEvent(ev)
+        palette = QApplication.palette()
+
         if ev.button() == QtCore.Qt.MouseButton.LeftButton:
             for p in self.nPlotWidget.plotItems:
                 vb = p.getViewBox()
-                vb.setBorder()
+                vb.setBorder({"color": palette.text().color(), "width": 1})
                 vb.update()
                 if vb == self:
                     self.nPlotWidget.plotItem = p
-            palette = QApplication.palette()
             self.setBorder({"color": palette.highlight().color(), "width": 4})
 
     def as_dict(self):

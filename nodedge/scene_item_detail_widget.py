@@ -9,6 +9,8 @@ from typing import cast
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QGridLayout, QLabel, QLineEdit, QSizePolicy, QWidget
 
+from nodedge import utils
+
 
 class SceneItemDetailWidget(QWidget):
     """:class:`~nodedge.scene_item_detail_widget.SceneItemDetailWidget` class ."""
@@ -103,17 +105,9 @@ class SceneItemDetailWidget(QWidget):
         if selectedNode in otherNodes:
             otherNodes.remove(selectedNode)
 
-        alreadyExistingNames = [node.title for node in otherNodes]
+        alreadyExistingTitles = [node.title for node in otherNodes]
         newTitle = self.titleLineEdit.text()
-        self.__logger.debug(f"{newTitle}")
-        self.__logger.debug(f"{alreadyExistingNames}")
-        while newTitle in alreadyExistingNames:
-            if newTitle[-1].isnumeric():
-                newLastCharacter = str(int(newTitle[-1]) + 1)
-                newTitle = newTitle[:-1]
-                newTitle += newLastCharacter
-            else:
-                newTitle += "1"
+        newTitle = utils.setNewTitle(newTitle, alreadyExistingTitles)
 
         self.titleLineEdit.setText(newTitle)
         selectedNode.title = newTitle

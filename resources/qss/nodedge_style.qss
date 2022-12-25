@@ -197,7 +197,6 @@ QPushButton{
 border: 1px solid palette(light);
 border-radius: 0;
 color: palette(dark);
-font-size: 12px;
 padding: 6px 16px;
 background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
 stop: 0.0 palette(light), stop: 0.3 palette(light),
@@ -210,9 +209,9 @@ background:palette(window);
 border-color:palette(dark);
 }
 
-/*QPushButton:focus,*/
-/*QPushButton:hover,*/
-/*QPushButton:hover:focus,*/
+/*QPushButton:focus,
+QPushButton:hover,
+QPushButton:hover:focus,*/
 QPushButton:pressed,
 QPushButton:pressed:focus{
     color:palette(button-text);
@@ -231,7 +230,7 @@ color:palette(text);
 }
 
 QTextEdit{
-color:palette(light);
+color:palette(text);
 background:palette(window);
 }
 
@@ -410,14 +409,14 @@ GraphicsNodeTypeLabel {
     color: palette(light);
 }
 
-HeaderButton {
-    background: palette(base);
+HeaderIconButton, HeaderTextButton {
+    background: palette(midLight);
     icon-background-color: palette(base);
     icon-size: 30px;
     text-align: center;
-    border: 1px solid palette(text);
+    border: 0px solid palette(text);
     border-radius: 4px;
-
+    color: palette(text);
 }
 
 #loginButton {
@@ -461,16 +460,19 @@ HeaderButton {
     icon: url("resources/black_icons/line_chart.png");
 }
 
-HeaderButton:hover{
+HeaderIconButton:hover{
     border-color:palette(highlight);
+        background:palette(base);
+
 }
 
-HeaderButton:pressed,
-HeaderButton:pressed:focus{
+HeaderIconButton:pressed,
+HeaderIconButton:pressed:focus{
     color:palette(button-text);
     background:palette(highlight);
     border-color:palette(highlight);
 }
+
 
 MenuButton
 {
@@ -541,4 +543,14 @@ HeaderMenuButton {
 
 HeaderMenuButton:checked {
     icon: url("resources/black_icons/chevron_left.png");
+}
+
+LogsListWidget {
+    background-color: palette(dark);
+    border: 0px;
+}
+
+QListView::item {
+  height: 25px;
+  border: 1px solid transparent;
 }

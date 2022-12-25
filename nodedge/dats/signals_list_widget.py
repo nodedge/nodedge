@@ -18,6 +18,7 @@ class SignalsListWidget(QListWidget):
         signals = [c for c in signals if c != "time"]
 
         self.signals = signals
+        self.signals = sorted(self.signals)
 
         self.clear()
-        self.addItems(signals)
+        self.addItems(self.signals)

@@ -11,6 +11,7 @@ from PySide6.QtCore import (
     QIODevice,
     QMimeData,
     QPoint,
+    QSize,
     Qt,
     Signal,
 )
