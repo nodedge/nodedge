@@ -35,7 +35,7 @@ class ApplicationStyler:
         self.timer = QTimer()
         self.timer.setTimerType(Qt.PreciseTimer)
         self.timer.setInterval(500)
-        self.timer.timeout.connect(self.checkStylesheet)  # type: ignore
+        self.timer.timeout.connect(self.checkStylesheet)
         # self.timer.start()
 
     def setCustomPalette(self, palette="Dark"):
