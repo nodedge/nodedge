@@ -1,6 +1,7 @@
 import logging
 from typing import Optional
 
+import numpy as np
 import pandas as pd
 from asammdf import MDF
 from asammdf import Signal as asammdfSignal
@@ -8,7 +9,6 @@ from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QInputDialog, QListWidget, QListWidgetItem, QMessageBox
 
 from scipy.io import loadmat
-import numpy as np
 
 
 class LogsListWidget(QListWidget):
