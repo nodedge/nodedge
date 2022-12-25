@@ -11,11 +11,11 @@ background:palette(dark);
 color:palette(window-text);
 }
 
-QTabWidget{
+/*QTabWidget{
 border:0;
-}
+}*/
 
-QMdiArea QTabBar::tab
+QMdiArea QTabBar,QTabBar::tab
 {
 font-size: 14px;
 height:25px;
@@ -47,15 +47,15 @@ QMdiArea QTabBar::tab:top:hover{
 background:palette(highlight);
 }
 
-QMdiArea QTabBar::close-button{
+QMdiArea QTabBar,QTabBar::close-button{
 image:url("resources/white_icons/close_window.png");
 subcontrol-position:right bottom;
-icon-size: 16px;
+icon-size: 14px;
 padding: 0px;
 }
 
 QMdiArea QTabBar::close-button:!selected{
-image:url("close_window.png");
+image:url("resources/white_icons/close_window.png");
 }
 
 QDockWidget{
@@ -101,7 +101,6 @@ QDockWidget::close-button {
 
 QMenuBar {
     background: palette(dark);
-    font-size: 12px;
 }
 
 QMenuBar::item{
@@ -136,7 +135,6 @@ QMenu::separator{
 
 QToolButton {
     padding: 0px 1px;
-    font-size: 12px;
 }
 
 QMenu:disabled,
@@ -196,7 +194,7 @@ QTableView::item:selected,QTableView::item:active:selected {
 QPushButton{
 border: 1px solid palette(light);
 border-radius: 0;
-color: palette(dark);
+color: palette(text);
 padding: 6px 16px;
 background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
 stop: 0.0 palette(light), stop: 0.3 palette(light),

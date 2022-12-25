@@ -101,7 +101,6 @@ QDockWidget::close-button {
 
 QMenuBar {
     background: palette(dark);
-    font-size: 12px;
 }
 
 QMenuBar::item{
@@ -136,7 +135,6 @@ QMenu::separator{
 
 QToolButton {
     padding: 0px 1px;
-    font-size: 12px;
 }
 
 QMenu:disabled,
