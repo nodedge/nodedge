@@ -5,11 +5,14 @@ from PySide6.QtWidgets import (
     QFormLayout,
     QLabel,
     QSizePolicy,
+    QVBoxLayout,
     QWidget,
 )
 
 from nodedge.application_styler import ApplicationStyler
 from nodedge.utils import loadStyleSheets
+
+MIN_HEIGHT = 30
 
 
 class ContentWidget(QWidget):
@@ -21,24 +24,50 @@ class HelpContentWidget(ContentWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.layout = QFormLayout()
-        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout = QVBoxLayout()
+        # self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(0)
+        self.layout.setAlignment(Qt.AlignCenter)
         self.setLayout(self.layout)
 
-        self.layout.addRow(QLabel("Help"))
+        urlLink = '<a href="http://www.nodedge.io">Nodedge website</a>'
+        text: str = (
+            "For more information on Nodedge features and the latest news, please visit "
+            + urlLink
+            + "."
+        )
+        label = QLabel(text)
+        label.setMinimumHeight(MIN_HEIGHT)
+        self.layout.addWidget(label)
+        label.setOpenExternalLinks(True)
+
+        urlLink = '<a href="https://nodedge.readthedocs.io/en/latest/">Nodedge API documentation</a>'
+        text: str = "For more information on the API, please visit " + urlLink + "."
+        label = QLabel(text)
+        label.setMinimumHeight(MIN_HEIGHT)
+        self.layout.addWidget(label)
+        label.setOpenExternalLinks(True)
+
+        urlLink = (
+            '<a href="https://github.com/nodedge/nodedge">Nodedge Github repository</a>'
+        )
+        text: str = "To checkout out the code, please visit " + urlLink + "."
+        label = QLabel(text)
+        label.setMinimumHeight(MIN_HEIGHT)
+        self.layout.addWidget(label)
+        label.setOpenExternalLinks(True)
 
 
 class HomeContentWidget(ContentWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.layout = QFormLayout()
-        self.layout.setContentsMargins(0, 0, 0, 0)
-        self.layout.setSpacing(0)
+        self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
         self.label = QLabel("Welcome to Nodedge")
+        self.label.setAlignment(Qt.AlignCenter)
+
         self.layout.addWidget(self.label)
 
 

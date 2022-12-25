@@ -43,14 +43,14 @@ def main():
     layout.addWidget(homePageWindow)
     layout.addWidget(datsWindow)
     window.setCentralWidget(widget)
-    homePageWindow.mainWidget.headerFrame.nodedgeButton.switched.connect(
+    homePageWindow.mainWidget.headerFrame.nodedgeButton.clicked.connect(
         lambda: layout.setCurrentWidget(mdiWindow)
     )
     mdiWindow.homeMenu.aboutToShow.connect(
         lambda: layout.setCurrentWidget(homePageWindow)
     )
 
-    homePageWindow.mainWidget.headerFrame.datsButton.switched.connect(
+    homePageWindow.mainWidget.headerFrame.datsButton.clicked.connect(
         lambda: layout.setCurrentWidget(datsWindow)
     )
     mdiWindow.homeMenu.aboutToShow.connect(

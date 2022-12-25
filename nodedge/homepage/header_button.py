@@ -1,11 +1,8 @@
-from PySide6.QtCore import Signal
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QPushButton, QSizePolicy
 
 
-class HeaderButton(QPushButton):
-    switched = Signal(int)
-
+class HeaderIconButton(QPushButton):
     def __init__(self, parent=None, iconFile=None, text=None):
         super().__init__(parent)
         # self.setFlat(True)
@@ -16,12 +13,38 @@ class HeaderButton(QPushButton):
         self.text = text
 
         if text is not None:
-            self.setObjectName(f"{text.lower()}Button")
+            text = text.lower()
+            text = text.replace(" ", "")
+            self.setObjectName(f"{text}Button")
 
         self.icon = QIcon(iconFile)
         self.setIcon(self.icon)
 
-        self.clicked.connect(self.onClicked)
 
-    def onClicked(self):
-        self.switched.emit(0)
+class HeaderTextButton(QPushButton):
+    def __init__(self, parent=None, text=None):
+        super().__init__(parent)
+        self.text = text
+        self.setText(self.text)
+
+        if text is not None:
+            text = text.lower()
+            text = text.replace(" ", "")
+            self.setObjectName(f"{text}Button")
+
+
+class HeaderMenuIconButton(HeaderIconButton):
+    def __init__(self, parent=None, iconFile=None, text=None, toggleIconFile=None):
+        super().__init__(parent, iconFile, text)
+        self.setCheckable(True)
+        self.setFlat(True)
+        self.toggled.connect(self.onToggled)
+
+        self.toggleIcon = QIcon(toggleIconFile)
+
+    def onToggled(self, checked):
+        self.setChecked(checked)
+        # if checked:
+        #     self.setIcon(self.toggleIcon)
+        # else:
+        #     self.setIcon(self.icon)

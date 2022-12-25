@@ -1,14 +1,16 @@
 from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QFrame, QHBoxLayout, QSizePolicy
 
-from nodedge.homepage.header_button import HeaderButton
-from nodedge.homepage.header_menu_button import HeaderMenuButton
+from nodedge.homepage.header_button import (
+    HeaderIconButton,
+    HeaderMenuIconButton,
+    HeaderTextButton,
+)
 
 HEADER_ITEMS = {
-    "Search": "search_property.png",
-    "Notifications": "alarm.png",
-    "Help": "questions.png",
-    "Login": "login.png",
+    "Sign In": "text",
+    "Sign Up": "text",
+    "Login": "icon",
 }
 
 ICON_PATH = "resources/white_icons/"
@@ -38,29 +40,50 @@ class HeaderFrame(QFrame):
         self.rightLayout.setAlignment(Qt.AlignRight)
         self.layout.addWidget(self.rightFrame)
 
-        self.menuButton = HeaderMenuButton(
+        self.menuButton = HeaderMenuIconButton(
             self,
             iconFile="resources/white_icons/menu.png",
             toggleIconFile="resources/white_icons/chevron_left.png",
         )
 
-        self.nodedgeButton = HeaderButton(self, iconFile="resources/Icon.ico")
-        self.datsButton = HeaderButton(self, iconFile="resources/Icon.ico", text="Dats")
+        self.nodedgeButton = HeaderIconButton(self, iconFile="resources/Icon.ico")
+        self.datsButton = HeaderIconButton(
+            self, iconFile="resources/Icon.ico", text="Dats"
+        )
 
         self.leftLayout.addWidget(self.menuButton)
         self.leftLayout.addWidget(self.nodedgeButton)
         self.leftLayout.addWidget(self.datsButton)
 
-        self.rightButtons = []
+        self.rightButtons = {}
 
-        for text, iconFile in HEADER_ITEMS.items():
-            iconFile = ICON_PATH + iconFile
-            # logger.debug(f"Adding header item: {text} with icon {iconFile}")
+        for buttonName, buttonType in HEADER_ITEMS.items():
 
-            button = HeaderButton(self, iconFile=iconFile, text=text)
+            if buttonType == "text":
+                button = HeaderTextButton(self, text=buttonName)
+            else:
+                button = HeaderIconButton(self, text=buttonName)
             self.rightLayout.addWidget(button)
-            self.rightButtons.append(button)
+            self.rightButtons.update({buttonName: button})
+
+        self.rightButtons["Sign In"].clicked.connect(self.signIn)
+        self.rightButtons["Login"].hide()
+
         #
         # for button in self.rightButtons:
         #     if button.text == "Login":
         #         button.setObjectName("loginButton")
+
+    def signIn(self):
+        self.rightButtons["Sign In"].setText("Sign Out")
+        self.rightButtons["Sign In"].clicked.disconnect(self.signIn)
+        self.rightButtons["Sign In"].clicked.connect(self.signOut)
+        self.rightButtons["Sign Up"].hide()
+        self.rightButtons["Login"].show()
+
+    def signOut(self):
+        self.rightButtons["Sign In"].setText("Sign In")
+        self.rightButtons["Sign In"].clicked.disconnect(self.signOut)
+        self.rightButtons["Sign In"].clicked.connect(self.signIn)
+        self.rightButtons["Sign Up"].show()
+        self.rightButtons["Login"].hide()
