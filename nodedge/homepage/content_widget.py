@@ -1,6 +1,5 @@
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import (
-    QApplication,
     QComboBox,
     QFormLayout,
     QLabel,
@@ -10,7 +9,6 @@ from PySide6.QtWidgets import (
 )
 
 from nodedge.application_styler import ApplicationStyler
-from nodedge.utils import loadStyleSheets
 
 MIN_HEIGHT = 30
 
@@ -92,13 +90,6 @@ class SettingsContentWidget(ContentWidget):
 
     def onPaletteChanged(self, text):
         self.styler.setCustomPalette(text)
-        p = QApplication.palette()
-
-        loadStyleSheets(
-            # os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),
-            self.styler.styleSheetFilename
-        )
-
         self.paletteChanged.emit()
 
 

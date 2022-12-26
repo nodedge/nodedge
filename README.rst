@@ -36,6 +36,9 @@ https://www.nodedge.io
    :target: https://github.com/psf/black
    :alt: Code Style
 
+.. image:: https://github.com/nodedge/nodedge/actions/workflows/code-scanning.yml/badge.svg
+    :target: https:github.com/nodedge/nodedge/actions/workflows/code-scanning.yml
+    :alt: Code Scanning
 
 How to install
 --------------

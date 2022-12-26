@@ -13,7 +13,7 @@ from PySide6.QtGui import QColor, QGuiApplication, QPalette, Qt
 from PySide6.QtWidgets import QApplication
 
 from nodedge.logger import logger
-from nodedge.utils import loadStyleSheets
+from nodedge.utils import loadStyleSheet
 
 
 class ApplicationStyler:
@@ -40,19 +40,15 @@ class ApplicationStyler:
 
     def setCustomPalette(self, palette="Dark"):
         app = QGuiApplication.instance()
-
         if palette == "Dark":
             with open("resources/palette/dark_palette.yml", "r") as file:
                 colors = yaml.safe_load(file)
-                self.styleSheetFilename = os.path.join(
-                    os.path.dirname(__file__), "../resources/qss/nodedge_style_dark.qss"
-                )
+            iconPath = "resources/white_icons"
         else:
             with open("resources/palette/light_palette.yml", "r") as file:
                 colors = yaml.safe_load(file)
-                self.styleSheetFilename = os.path.join(
-                    os.path.dirname(__file__), "../resources/qss/nodedge_style.qss"
-                )
+            iconPath = "resources/black_icons"
+
         p = QApplication.palette()
         dark = QColor(colors["dark"])
         midLight = QColor(colors["midLight"])
@@ -84,9 +80,11 @@ class ApplicationStyler:
         app.setPalette(p)
         QApplication.setStyle("Fusion")
 
-        loadStyleSheets(
+        print(iconPath)
+        loadStyleSheet(
             # os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),
-            self.styleSheetFilename
+            self.styleSheetFilename,
+            iconPath=iconPath,
         )
 
         # self.consoleStyle = {
@@ -116,4 +114,4 @@ class ApplicationStyler:
         if modTime != self.stylesheetLastModified:
             pass
         self.stylesheetLastModified = modTime
-        loadStyleSheets(self.styleSheetFilename)
+        loadStyleSheet(self.styleSheetFilename)

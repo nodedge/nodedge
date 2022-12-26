@@ -265,7 +265,10 @@ class MdiWindow(EditorWindow):
         self.homeMenu.aboutToShow.connect(self.openHome)
 
     def openHome(self):
-        pass
+        # pass
+        self.homeMenu.clearFocus()
+        self.menuBar().clearFocus()
+        self.menuBar().hide()
         # msg = QMessageBox()
         # msg.setIcon(QMessageBox.Information)
         # msg.setInformativeText("It is not yet implemented.")

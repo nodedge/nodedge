@@ -11,11 +11,11 @@ background:palette(dark);
 color:palette(window-text);
 }
 
-QTabWidget{
+/*QTabWidget{
 border:0;
-}
+}*/
 
-QMdiArea QTabBar::tab
+QMdiArea QTabBar,QTabBar::tab
 {
 font-size: 14px;
 height:25px;
@@ -47,22 +47,22 @@ QMdiArea QTabBar::tab:top:hover{
 background:palette(highlight);
 }
 
-QMdiArea QTabBar::close-button{
-image:url("resources/black_icons/close_window.png");
+QMdiArea QTabBar,QTabBar::close-button{
+image:url("resources/white_icons/close_window.png");
 subcontrol-position:right bottom;
-icon-size: 16px;
+icon-size: 14px;
 padding: 0px;
 }
 
 QMdiArea QTabBar::close-button:!selected{
-image:url("close_window.png");
+image:url("resources/white_icons/close_window.png");
 }
 
 QDockWidget{
     font-size: 16px;
     color: palette(window-text);
     /*font-weight:bold;*/
-    titlebar-close-icon: url("resources/black_icons/close_window.png");
+    titlebar-close-icon: url("resources/white_icons/close_window.png");
     titlebar-normal-icon: url(":icons/docktitle-normal-btn-light.png");
     icon-size: 50px;
     width: 25px;
@@ -93,7 +93,7 @@ background:qlineargradient(x1 : 0,y1 : 0,x2 : 0,y2 : 1,
 }
 
 QDockWidget::close-button {
-    image: url("resources/black_icons/close_window.png");
+    image: url("resources/white_icons/close_window.png");
     icon-size: 25px;
     padding: 0px;
     margin: 0px;
@@ -194,7 +194,7 @@ QTableView::item:selected,QTableView::item:active:selected {
 QPushButton{
 border: 1px solid palette(light);
 border-radius: 0;
-color: palette(dark);
+color: palette(text);
 padding: 6px 16px;
 background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
 stop: 0.0 palette(light), stop: 0.3 palette(light),
@@ -207,9 +207,9 @@ background:palette(window);
 border-color:palette(dark);
 }
 
-/*QPushButton:focus,
-QPushButton:hover,
-QPushButton:hover:focus,*/
+/*QPushButton:focus,*/
+/*QPushButton:hover,*/
+/*QPushButton:hover:focus,*/
 QPushButton:pressed,
 QPushButton:pressed:focus{
     color:palette(button-text);
@@ -302,7 +302,7 @@ GraphicsNodeTitleLabel:hover{
 }
 
 QMenu{
-image:url("resources/black_icons/close_window.png");
+image:url("resources/white_icons/close_window.png");
 }
 
 GraphicsNodeContent QFrame {
@@ -419,49 +419,48 @@ HeaderIconButton, HeaderTextButton {
 
 #loginButton {
     border-radius: 20px;
-    icon: url("resources/black_icons/login.png");
+    icon: url("resources/white_icons/login.png");
 }
 
 #searchButton {
-    icon: url("resources/black_icons/search_property.png");
+    icon: url("resources/white_icons/search_property.png");
 }
 
 #notificationsButton {
-    icon: url("resources/black_icons/alarm.png");
+    icon: url("resources/white_icons/alarm.png");
 }
 
 #helpButton {
-    icon: url("resources/black_icons/questions.png");
+    icon: url("resources/white_icons/questions.png");
 }
 
 #searchMenuButton {
-    icon: url("resources/black_icons/search_property.png");
+    icon: url("resources/white_icons/search_property.png");
 }
 
 #helpMenuButton {
-    icon: url("resources/black_icons/questions.png");
+    icon: url("resources/white_icons/questions.png");
 }
 
 #settingsMenuButton {
-    icon: url("resources/black_icons/settings.png");
+    icon: url("resources/white_icons/settings.png");
 }
 
 #accountMenuButton {
-    icon: url("resources/black_icons/login.png");
+    icon: url("resources/white_icons/login.png");
 }
 
 #homeMenuButton {
-    icon: url("resources/black_icons/home_page.png");
+    icon: url("resources/white_icons/home_page.png");
 }
 
 #datsButton {
-    icon: url("resources/black_icons/line_chart.png");
+    icon: url("resources/white_icons/line_chart.png");
 }
 
 HeaderIconButton:hover{
     border-color:palette(highlight);
-        background:palette(base);
-
+    background:palette(base);
 }
 
 HeaderIconButton:pressed,
@@ -470,7 +469,6 @@ HeaderIconButton:pressed:focus{
     background:palette(highlight);
     border-color:palette(highlight);
 }
-
 
 MenuButton
 {
@@ -536,11 +534,21 @@ QComboBox {
 }
 
 HeaderMenuButton {
-    icon: url("resources/black_icons/menu.png");
+    icon: url("resources/white_icons/menu.png");
 }
 
 HeaderMenuButton:checked {
-    icon: url("resources/black_icons/chevron_left.png");
+    icon: url("resources/white_icons/chevron_left.png");
+}
+
+LogsListWidget {
+    background-color: palette(dark);
+    border: 0px;
+}
+
+QListView::item {
+  height: 25px;
+  border: 1px solid transparent;
 }
 
 LogsListWidget {

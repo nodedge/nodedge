@@ -34,7 +34,7 @@ def dumpException(e=None, file=None):
         traceback.print_exc()
 
 
-def loadStyleSheet(fileName):
+def loadStyleSheet(fileName, iconPath=None):
     """
     Load an qss stylesheet to current QApplication instance.
 
@@ -44,8 +44,19 @@ def loadStyleSheet(fileName):
     logging.info(f"Style loading: {fileName}")
     file = QFile(fileName)
     file.open(QFile.ReadOnly or QFile.Text)
-    styleSheet = file.readAll()
-    QApplication.instance().setStyleSheet(str(styleSheet, encoding="utf-8"))
+    styleSheet = str(file.readAll(), encoding="utf-8")
+    if iconPath is not None:
+        styleSheet = re.sub(r"(?<=url\(\")(.*)(?=\/)", iconPath, styleSheet, count=0)
+        # file2 = QFile(fileName + "2")
+        # file2.open(QFile.WriteOnly or QFile.Text)
+        # file2.write(styleSheet.encode("utf-8"))
+        # file2.close()
+        #
+        # file3 = QFile(fileName + "2")
+        # file3.open(QFile.ReadOnly or QFile.Text)
+        # styleSheet = str(file3.readAll(), encoding="utf-8")
+
+    QApplication.instance().setStyleSheet(styleSheet)
 
 
 def loadStyleSheets(*args):

@@ -1,4 +1,3 @@
-import os
 import sys
 
 from PySide6.QtGui import QIcon, Qt
@@ -14,7 +13,6 @@ from PySide6.QtWidgets import (
 )
 
 from nodedge.application_styler import ApplicationStyler
-from nodedge.utils import loadStyleSheets
 
 
 class HeaderButton(QPushButton):
@@ -113,13 +111,6 @@ class HomePageWindow(QMainWindow):
 
         self.centralWidget = HomePageWidget()
         self.setCentralWidget(self.centralWidget)
-        self.styleSheetFilename = os.path.join(
-            os.path.dirname(__file__), "../resources/qss/nodedge_style.qss"
-        )
-        loadStyleSheets(
-            # os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),
-            self.styleSheetFilename
-        )
 
 
 if __name__ == "__main__":
