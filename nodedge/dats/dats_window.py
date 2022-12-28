@@ -8,7 +8,7 @@ from asammdf import MDF
 from asammdf.blocks.utils import MdfException
 from asammdf.blocks.v2_v3_blocks import Channel
 from pyqtgraph import PlotDataItem
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QAction, QCloseEvent, QKeySequence
 from PySide6.QtWidgets import (
     QApplication,
@@ -305,9 +305,14 @@ class DatsWindow(QMainWindow):
 
     def createMenus(self):
         self.homeMenu: QMenu = self.menuBar().addMenu("&Home")
+        self.homeMenu.aboutToShow.connect(self.closeHomeMenu)
         self.createFileMenu()
         self.createHelpMenu()
         self.createToolsMenu()
+
+    def closeHomeMenu(self):
+        timer = QTimer(self)
+        timer.singleShot(1, self.homeMenu.hide)
 
     def createToolsMenu(self):
         self.toolsMenu: QMenu = self.menuBar().addMenu("&Tools")

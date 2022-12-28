@@ -7,7 +7,6 @@ from asammdf import MDF
 from asammdf import Signal as asammdfSignal
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QInputDialog, QListWidget, QListWidgetItem, QMessageBox
-
 from scipy.io import loadmat
 
 

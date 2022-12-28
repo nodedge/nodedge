@@ -5,8 +5,7 @@ import logging
 import os
 from typing import Any, Callable, List, Optional, cast
 
-# from pyqtconsole.console import PythonConsole
-from PySide6.QtCore import QPointF, QSignalMapper, QSize, Qt, Slot
+from PySide6.QtCore import QPointF, QSignalMapper, QSize, Qt, QTimer, Slot
 from PySide6.QtGui import QAction, QCloseEvent, QIcon, QKeySequence, QMouseEvent
 from PySide6.QtWidgets import (
     QDialog,
@@ -262,16 +261,11 @@ class MdiWindow(EditorWindow):
         self.homeMenu: QMenu = self.menuBar().addMenu(
             QIcon("../../nodedge/resources/iconsModified/home_page_100.png"), "&Home"
         )
-        self.homeMenu.aboutToShow.connect(self.openHome)
+        self.homeMenu.aboutToShow.connect(self.closeHomeMenu)
 
-    def openHome(self):
-        pass
-        # msg = QMessageBox()
-        # msg.setIcon(QMessageBox.Information)
-        # msg.setInformativeText("It is not yet implemented.")
-        # msg.setWindowTitle("Home page")
-        # msg.setStandardButtons(QMessageBox.Ok)
-        # msg.exec_()
+    def closeHomeMenu(self):
+        timer = QTimer(self)
+        timer.singleShot(1, self.homeMenu.hide)
 
     # noinspection PyAttributeOutsideInit
     def createHelpMenu(self) -> None:
