@@ -1,4 +1,4 @@
-<div style="text-align: center">
+<div align="center">
 <img src="resources/nodedge_logo.png" alt="drawing" width="150"/>
 
 Nodedge
@@ -29,39 +29,44 @@ Nodedge is written in Python and its code is freely accessible on Github.
 </div>
 <br>
 
-<center><img src="docs/media/nodedge_interface.png" alt="nodedge_interface" width="500" /></center>
+<div align="center"><img src="docs/media/nodedge_interface.png" alt="nodedge_interface" width="500" /></div>
 <br>
 
 
 <h3>Physical simulation</h3>
 Within Nodedge simulation app, you can simulate physical models, chemical processes, robotic systems, and many others.
 
-<center>
+<div align="center">
 <img src="docs/media/simulator_icon.png" alt="nodedge_interface" height=150px/>
-</center>
+</div>
 
 <h3>Data plotting and analysis</h3>
 Within Nodedge plotting app, you can easily import data from the simulation app or a file, plot them and analyze them.
 
-<center>
+<div align="center">
 <img src="docs/media/plotter_icon.png" alt="nodedge_interface" height=150px/>
-</center>
+</div>
 
 <h3>Code generation</h3>
 Within Nodedge code generation app, you can graphically design the software for supported target hardware, and flash it to your platform.
 
-<center>
+<div align="center">
 <img src="docs/media/code_generation_icon.png" alt="nodedge_interface" height=150px/>
-</center>
+</div>
 
 # Getting started
 
-For getting started [download](https://github.com/nodedge/nodedge/releases/download/v0.3.0/NodedgeSetup.exe) our software or clone our repository from [Github](https://github.com/nodedge/nodedge).
+For getting started [download](https://github.com/nodedge/nodedge/releases/download/v0.3.0/NodedgeSetup.exe) our software or clone our repository with:
 
+```
+git clone https://github.com/nodedge/nodedge.git
+```
 
-# How to install from source
+Alternatively, you can install Nodedge with pip:
 
-`pip install nodedge`
+```
+pip install nodedge
+```
 
 # Roadmap
 
