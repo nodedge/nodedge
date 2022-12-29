@@ -26,6 +26,7 @@ from PySide6.QtWidgets import (
 
 from nodedge.editor_widget import EditorWidget
 from nodedge.scene_coder import SceneCoder
+from nodedge.solver_dialog import SolverDialog
 
 
 class EditorWindow(QMainWindow):
@@ -202,6 +203,13 @@ class EditorWindow(QMainWindow):
             QKeySequence("Ctrl+G"),
         )
 
+        self.configureSolverAct = self.createAction(
+            "Configure solver",
+            self.configureSolver,
+            "Configure solver",
+            QKeySequence("Ctrl+K"),
+        )
+
         self.evalAct = self.createAction(
             "Eval all nodes", self.evaluateAllNodes, "", QKeySequence("Ctrl+Space")
         )
@@ -224,7 +232,11 @@ class EditorWindow(QMainWindow):
     def createCoderMenu(self):
         self.coderMenu: QMenu = self.menuBar().addMenu("&Coder")
         self.coderMenu.addAction(self.generateCodeAct)
-        self.coderMenu.addAction(self.evalAct)
+        self.coderMenu.addAction(self.configureSolverAct)
+
+    def configureSolver(self):
+        self.solverDialog = SolverDialog()
+        self.solverDialog.show()
 
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
     def createFileMenu(self):
@@ -347,6 +359,8 @@ class EditorWindow(QMainWindow):
                 )
 
                 self.updateTitle()
+
+        self.fitInViewAct.trigger()
 
     def saveFile(self):
         """

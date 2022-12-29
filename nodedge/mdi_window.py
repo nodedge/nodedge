@@ -233,12 +233,14 @@ class MdiWindow(EditorWindow):
         self.editToolBar.addAction(self.cutAct)
         self.editToolBar.addAction(self.copyAct)
         self.editToolBar.addAction(self.pasteAct)
+        self.editToolBar.addAction(self.addCommentElementAct)
         self.editToolBar.addSeparator()
         self.toolBars.append(self.editToolBar)
 
         self.coderToolBar = self.addToolBar("Coder")
+        # self.coderToolBar.setMovable(False)
         self.coderToolBar.addAction(self.generateCodeAct)
-        self.coderToolBar.addAction(self.addCommentElementAct)
+        self.coderToolBar.addAction(self.configureSolverAct)
         self.toolBars.append(self.coderToolBar)
 
     def hideToolBars(self):
@@ -259,7 +261,6 @@ class MdiWindow(EditorWindow):
         self.createHomeMenu()
 
         super().createMenus()
-
         self.createWindowMenu()
         self.createHelpMenu()
 
@@ -285,6 +286,7 @@ class MdiWindow(EditorWindow):
         self.helpMenu: QMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.aboutAct)
         self.helpMenu.addAction(self.debugAct)
+        self.helpMenu.addAction(self.showDialogActionsAct)
 
     # noinspection PyAttributeOutsideInit
     def createWindowMenu(self) -> None:
