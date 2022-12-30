@@ -1,0 +1,15 @@
+black==23.1a1
+codecov==2.1.12
+flake8==6.0.0
+isort==5.11.4
+mypy==0.991
+pre-commit==2.21.0
+pydocstyle==6.1.1
+pytest==7.2.0
+pytest-cov==4.0.0
+pytest-mock==3.10.0
+pytest-qt==4.2.0
+pytest-xdist==3.1.0
+pytest-xvfb==2.0.0
+tox==4.1.1
+types-PyYAML==6.0.12.2

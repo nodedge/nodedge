@@ -1,0 +1,6 @@
+-r requirements.txt
+pydocstyle==6.1.1
+recommonmark==0.7.1
+Sphinx==6.0.0
+sphinx_autodoc_typehints==1.19.5
+sphinx-rtd-theme==0.5.1
