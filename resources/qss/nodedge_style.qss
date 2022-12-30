@@ -349,7 +349,7 @@ GraphicsNodeContent QLabel#OutputBlockContent {
 }
 
 GraphicsNodeContent QLineEdit#InputBlockContent {
-background: palette(light);
+background: palette(midLight);
 qproperty-alignment: AlignLeft;
 width: 140px;
 height: 20px;
