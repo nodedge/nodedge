@@ -1,6 +1,6 @@
 import os
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QComboBox,
@@ -13,18 +13,12 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
-
-class SolverConfiguration:
-    def __init__(self):
-        self.solver = None
-        self.solverName = None
-        self.solverOptions = None
-        self.timeStep = None
-        self.maxIterations = None
-        self.tolerance = None
+from nodedge.scene_simulator import SolverConfiguration
 
 
 class SolverDialog(QDialog):
+    solverConfigChanged = Signal(SolverConfiguration)
+
     def __init__(self):
         super(SolverDialog, self).__init__()
         self.setWindowTitle("Solver")
@@ -48,7 +42,7 @@ class SolverDialog(QDialog):
         self.configFrame.setLayout(self.configLayout)
         self.solverCombo = QComboBox()
         self.solverCombo.addItems(["No Solver", "Solver2", "Solver3"])
-        self.solverCombo.currentIndexChanged.connect(self.solverChanged)
+        self.solverCombo.currentIndexChanged.connect(self.updateSolverConfig)
 
         self.solverOptions = QLineEdit()
         self.solverName = QLineEdit()
@@ -62,11 +56,11 @@ class SolverDialog(QDialog):
         self.configLayout.addRow("Time step", self.timestepSpinBox)
         self.configLayout.addRow("Max iterations", self.maxIterationsSpinBox)
         self.configLayout.addRow("Tolerance", self.toleranceSpinBox)
-        self.solverName.textChanged.connect(self.solverChanged)
-        self.solverOptions.textChanged.connect(self.solverChanged)
-        self.timestepSpinBox.valueChanged.connect(self.solverChanged)
-        self.maxIterationsSpinBox.valueChanged.connect(self.solverChanged)
-        self.toleranceSpinBox.valueChanged.connect(self.solverChanged)
+        self.solverName.textChanged.connect(self.updateSolverConfig)
+        self.solverOptions.textChanged.connect(self.updateSolverConfig)
+        self.timestepSpinBox.valueChanged.connect(self.updateSolverConfig)
+        self.maxIterationsSpinBox.valueChanged.connect(self.updateSolverConfig)
+        self.toleranceSpinBox.valueChanged.connect(self.updateSolverConfig)
 
         buttons = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
         self.buttonBox = QDialogButtonBox(buttons)
@@ -75,7 +69,7 @@ class SolverDialog(QDialog):
         self.buttonBox.rejected.connect(self.reject)
         self.mainLayout.addWidget(self.buttonBox)
 
-    def solverChanged(self, index):
+    def updateSolverConfig(self, index):
         if index == 0:
             self.solverOptions.setDisabled(True)
             self.solverName.setDisabled(True)
@@ -92,3 +86,4 @@ class SolverDialog(QDialog):
 
     def onAccepted(self):
         self.accept()
+        self.solverConfigChanged.emit(self.solverConfiguration)

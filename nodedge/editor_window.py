@@ -233,6 +233,16 @@ class EditorWindow(QMainWindow):
             "Eval all nodes", self.evaluateAllNodes, "", QKeySequence("Ctrl+Space")
         )
 
+        self.simulateAct = self.createAction(
+            "Simulate",
+            self.onSimulate,
+            "Simulate",
+            QKeySequence("Ctrl+Shift+S"),
+        )
+
+    def onSimulate(self):
+        self.currentEditorWidget.scene.simulator.run()
+
     def onShowGraph(self):
         QMessageBox.information(self, "Graph", "Show graph")
 
@@ -273,8 +283,9 @@ class EditorWindow(QMainWindow):
         Create the simulation menu.
         """
         self.simMenu: QMenu = self.menuBar().addMenu("&Simulation")
-        self.coderMenu.addAction(self.configureSolverAct)
+        self.simMenu.addAction(self.configureSolverAct)
         self.simMenu.addAction(self.showGraphAct)
+        self.simMenu.addAction(self.simulateAct)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
     def createCoderMenu(self):
@@ -284,6 +295,9 @@ class EditorWindow(QMainWindow):
 
     def configureSolver(self):
         self.solverDialog = SolverDialog()
+        self.solverDialog.solverConfigChanged.connect(
+            self.currentEditorWidget.scene.simulator.updateConfig
+        )
         self.solverDialog.show()
 
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
