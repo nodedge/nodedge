@@ -68,3 +68,5 @@ recursive-exclude nodedge/resources/raw_white_icons *
 recursive-exclude data *
 
 recursive-include requirements *
+
+recursive-include docs_sphinx *.md
