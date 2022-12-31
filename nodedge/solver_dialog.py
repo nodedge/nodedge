@@ -1,5 +1,5 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QComboBox, QDialog, QFormLayout, QLineEdit
+from PySide6.QtWidgets import QComboBox, QDialog, QDoubleSpinBox, QFormLayout, QLineEdit
 
 
 class SolverConfiguration:
@@ -16,23 +16,30 @@ class SolverDialog(QDialog):
         # self.setWindowIcon("")
         self.setWindowFlags(Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint)
         self.setWindowModality(Qt.ApplicationModal)
-        self.setFixedSize(400, 300)
+        # self.setFixedSize(400, 300)
         self.layout = QFormLayout()
         self.setLayout(self.layout)
         self.solverConfiguration = SolverConfiguration()
+
+        self.initUI()
 
     def initUI(self):
         self.solverCombo = QComboBox()
         self.solverCombo.addItems(["No Solver", "Solver2", "Solver3"])
         self.solverCombo.currentIndexChanged.connect(self.solverChanged)
-        self.layout.addRow("Solver", self.solverCombo)
 
         self.solverOptions = QLineEdit()
-        self.layout.addRow("Solver Options", self.solverOptions)
 
         self.solverName = QLineEdit()
-        self.layout.addRow("Solver Name", self.solverName)
 
+        self.timestepSpinBox = QDoubleSpinBox()
+
+        self.layout.addRow("Solver Name", self.solverName)
+        self.layout.addRow("Solver Options", self.solverOptions)
+        self.layout.addRow("Solver", self.solverCombo)
+        self.layout.addRow(
+            "Time step",
+        )
         # self.solverOptions.setDisabled(True)
         # self.solverName.setDisabled(True)
 
