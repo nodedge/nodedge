@@ -76,7 +76,7 @@ class ApplicationStyler:
         p.setColor(QPalette.Text, text)
         p.setColor(QPalette.Window, dark)
         p.setColor(QPalette.WindowText, text)
-        p.setColor(QPalette.PlaceholderText, link)
+        p.setColor(QPalette.PlaceholderText, light)
         app.setPalette(p)
         QApplication.setStyle("Fusion")
 
