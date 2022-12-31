@@ -203,10 +203,7 @@ class EditorWindow(QMainWindow):
         )
 
         self.evalAct = self.createAction(
-            "Eval all nodes",
-            self.evaluateAllNodes,
-            "",
-            QKeySequence("Ctrl+Space")
+            "Eval all nodes", self.evaluateAllNodes, "", QKeySequence("Ctrl+Space")
         )
 
     def evaluateAllNodes(self):
@@ -227,6 +224,7 @@ class EditorWindow(QMainWindow):
     def createCoderMenu(self):
         self.coderMenu: QMenu = self.menuBar().addMenu("&Coder")
         self.coderMenu.addAction(self.generateCodeAct)
+        self.coderMenu.addAction(self.evalAct)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
     def createFileMenu(self):
