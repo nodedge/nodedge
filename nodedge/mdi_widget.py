@@ -12,7 +12,6 @@ from PySide6.QtGui import (
     QContextMenuEvent,
     QDragEnterEvent,
     QDropEvent,
-    QIcon,
     QMouseEvent,
     QPixmap,
 )
@@ -69,15 +68,20 @@ class MdiWidget(EditorWidget):
         :class:`~nodedge.node_list_widget.NodeListWidget`.
         """
         self.nodeActions = {}
+        self.libraryMenus = {}
 
         keys = list(BLOCKS.keys())
         keys.sort()
 
         for key in keys:
             node: Block = BLOCKS[key]
-            self.nodeActions[node.operationCode] = QAction(
-                QIcon(node.icon), node.operationTitle
+            self.nodeActions[node.operationCode] = QAction(  # QIcon(node.icon),
+                node.operationTitle
             )
+            if node.library not in self.libraryMenus.keys():
+                menu = QMenu(node.library)
+                self.libraryMenus[node.library] = menu
+
             self.nodeActions[node.operationCode].setData(node.operationCode)
 
     def initNodesContextMenu(self):
@@ -89,8 +93,17 @@ class MdiWidget(EditorWidget):
         contextMenu = QMenu(self)
         keys = list(BLOCKS.keys())
         keys.sort()
+        menus = {}
         for key in keys:
-            contextMenu.addAction(self.nodeActions[key])
+            node = getClassFromOperationCode(key)
+            library = node.library
+            if library not in menus.keys():
+                contextMenu.addMenu(self.libraryMenus[library])
+                menus[library] = self.libraryMenus[library]
+            else:
+                menu = menus[library]
+            menus[library].addAction(self.nodeActions[node.operationCode])
+            # contextMenu.addAction(self.nodeActions[key])
 
         return contextMenu
 
