@@ -13,7 +13,7 @@ with open("README.md") as readme_file:
 with open("HISTORY.md") as history_file:
     history = history_file.read()
 
-with open("requirements.txt") as requirements_file:
+with open("requirements/packages/requirements.in") as requirements_file:
     requirements = requirements_file.read()
 
 setup_requirements = ["pytest-runner"]
@@ -66,7 +66,7 @@ CLASSIFIERS = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
-    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.10",
 ]
 
 PLATFORMS = ["Windows", "Linux", "Mac OS-X", "Unix"]
@@ -88,7 +88,7 @@ setup(
     license="MIT",
     author="Anthony De Bortoli",
     author_email="anthony.debortoli@nodedge.io",
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     classifiers=CLASSIFIERS,
     install_requires=requirements,
     long_description=readme + "\n\n" + history + "\n",

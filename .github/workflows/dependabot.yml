@@ -1,0 +1,22 @@
+# Set update schedule for GitHub Actions
+
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      # Check for updates to GitHub Actions every week
+      interval: "weekly"
+    reviewers:
+      - "Nodedge"
+      - "don4get"
+
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    # Allow up to 10 open pull requests for pip dependencies
+    open-pull-requests-limit: 10
+    reviewers:
+      - "Nodedge"
+      - "don4get"
