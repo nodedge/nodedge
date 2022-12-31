@@ -54,6 +54,8 @@ class MdiWindow(EditorWindow):
 
         :type: :class:`~nodedge.editor_widget.EditorWidget`
         """
+        if not self.mdiArea.subWindowList():
+            self.lastActiveEditorWidget = None
         activeSubWindow = self.mdiArea.activeSubWindow()
         if (
             activeSubWindow is not None
@@ -203,6 +205,14 @@ class MdiWindow(EditorWindow):
             "Add comment element in current scene",
             QKeySequence("Ctrl+Alt+C"),
         )
+
+    def evaluateAllNodes(self):
+        if self.currentEditorWidget is None:
+            return
+        for n in self.currentEditorWidget.scene.nodes:
+            n.isDirty = True
+        for n in self.currentEditorWidget.scene.nodes:
+            n.eval()
 
     # noinspection PyAttributeOutsideInit
     def createToolBars(self) -> None:
