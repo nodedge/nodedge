@@ -80,7 +80,6 @@ class ApplicationStyler:
         app.setPalette(p)
         QApplication.setStyle("Fusion")
 
-        print(iconPath)
         loadStyleSheet(
             # os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),
             self.styleSheetFilename,

@@ -28,11 +28,13 @@ class SceneCoder(QObject):
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
 
+        self.generatedCode = ""
+
     def generateCodeAndSave(self):
 
         orderedNodeList, generatedCode = self.generateCode()
-        generatedFileString = self.addImports(orderedNodeList, generatedCode)
-        self.saveFileAs(generatedFileString)
+        self.generatedCode = self.addImports(orderedNodeList, generatedCode)
+        self.saveFileAs(self.generatedCode)
         return
 
     def generateCode(self) -> Tuple[List[Node], str]:

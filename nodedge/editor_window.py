@@ -16,11 +16,14 @@ from PySide6.QtGui import (
     QKeySequence,
 )
 from PySide6.QtWidgets import (
+    QDialog,
     QFileDialog,
     QLabel,
     QMainWindow,
     QMenu,
     QMessageBox,
+    QTextEdit,
+    QVBoxLayout,
     QWidget,
 )
 
@@ -210,9 +213,45 @@ class EditorWindow(QMainWindow):
             QKeySequence("Ctrl+K"),
         )
 
+        self.showCodeAct = self.createAction(
+            "Show code",
+            self.onShowCode,
+            "Show python code",
+            QKeySequence("Ctrl+Shift+C"),
+        )
+        self.showCodeAct.setEnabled(False)
+
+        self.showGraphAct = self.createAction(
+            "Show graph",
+            self.onShowGraph,
+            "Show graph",
+            QKeySequence("Ctrl+Shift+G"),
+        )
+        self.showGraphAct.setEnabled(False)
+
         self.evalAct = self.createAction(
             "Eval all nodes", self.evaluateAllNodes, "", QKeySequence("Ctrl+Space")
         )
+
+    def onShowGraph(self):
+        QMessageBox.information(self, "Graph", "Show graph")
+
+    def onShowCode(self):
+        """
+        Show the generated code.
+        """
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Code")
+        dialog.setLayout(QVBoxLayout())
+        dialog.layout().addWidget(QLabel(f"{self.currentEditorWidget.shortName} code:"))
+        codeEdit = QTextEdit()
+        codeEdit.setReadOnly(True)
+        codeEdit.setPlainText(self.currentEditorWidget.scene.coder.generatedCode)
+        dialog.layout().addWidget(codeEdit)
+
+        dialog.exec()
+
 
     def evaluateAllNodes(self):
         for n in self.editorWidget.scene.nodes:
@@ -227,12 +266,21 @@ class EditorWindow(QMainWindow):
         self.createEditMenu()
         self.createViewMenu()
         self.createCoderMenu()
+        self.createSimulationMenu()
+
+    def createSimulationMenu(self) -> None:
+        """
+        Create the simulation menu.
+        """
+        self.simMenu: QMenu = self.menuBar().addMenu("&Simulation")
+        self.coderMenu.addAction(self.configureSolverAct)
+        self.simMenu.addAction(self.showGraphAct)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
     def createCoderMenu(self):
         self.coderMenu: QMenu = self.menuBar().addMenu("&Coder")
         self.coderMenu.addAction(self.generateCodeAct)
-        self.coderMenu.addAction(self.configureSolverAct)
+        self.coderMenu.addAction(self.showCodeAct)
 
     def configureSolver(self):
         self.solverDialog = SolverDialog()
@@ -301,6 +349,7 @@ class EditorWindow(QMainWindow):
             self.setWindowTitle(title)
 
             self.currentEditorWidget.updateTitle()
+            self.showCodeAct.setEnabled(False)
 
     def onClipboardChanged(self) -> None:
         """
@@ -582,6 +631,7 @@ class EditorWindow(QMainWindow):
                 successStr = f"File saved to {coder.filename}"
                 self.__logger.debug(successStr)
                 self.statusBar().showMessage(successStr, 5000)
+                self.showCodeAct.setEnabled(True)
 
     def createAction(
         self,
