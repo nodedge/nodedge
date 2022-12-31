@@ -259,19 +259,16 @@ class GraphicsView(QGraphicsView):
 
         if DEBUG_MMB_SCENE_ITEMS:
             if item is None:
-                if event.modifiers() & Qt.SHIFT:
+                if event.modifiers() & Qt.ShiftModifier:
                     lastSelectedItems = self.graphicsScene.scene.lastSelectedItems
                     logger.info(
                         f"\n||||Last selected items: {lastSelectedItems}",
                     )
-                    return
                 logger.info(self)
-                return
             elif isinstance(item, GraphicsSocket):
                 logger.info(
                     f"\n||||{item.socket} connected to \n||||{item.socket.edges}"
                 )
-                return
             elif isinstance(item, GraphicsEdge):
                 log = f"\n||||{item.edge} connects"
                 log += (
@@ -279,7 +276,6 @@ class GraphicsView(QGraphicsView):
                     f"{item.edge.targetSocket.node}"
                 )
                 logger.info(log)
-                return
 
         # Faking event to enable mouse dragging the scene
         release_event = QMouseEvent(
