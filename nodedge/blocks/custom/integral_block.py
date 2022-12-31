@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 import logging
-from scipy.integrate import quad
-import numpy as np
 from typing import List
+
+from scipy.integrate import quad
 
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
 from nodedge.blocks.block_exception import EvaluationError
 from nodedge.socket_type import SocketType
-
 
 _LOG = logging.getLogger(__name__)
 
@@ -58,7 +57,7 @@ class IntegralBlock(Block):
 
             # Integrated signal
             result = quad(my_func, t0, t)
-            self.state[0] = self.state[0]+result[0]
+            self.state[0] = self.state[0] + result[0]
             print(self.state[0])
             self.state[1] = result[1]
 
@@ -68,4 +67,3 @@ class IntegralBlock(Block):
         self.value = self.state[0]
 
         return self.value
-
