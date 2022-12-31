@@ -1,4 +1,7 @@
+import os
+
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
@@ -25,7 +28,10 @@ class SolverDialog(QDialog):
     def __init__(self):
         super(SolverDialog, self).__init__()
         self.setWindowTitle("Solver")
-        # self.setWindowIcon("")
+        self.icon = QIcon(
+            os.path.join(os.path.dirname(__file__), "../resources/nodedge_logo.png")
+        )
+        self.setWindowIcon(self.icon)
         self.setWindowFlags(Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint)
         self.setWindowModality(Qt.ApplicationModal)
         # self.setFixedSize(400, 300)
