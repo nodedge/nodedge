@@ -2,13 +2,10 @@
 import os
 import sys
 
-from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QApplication, QMainWindow, QStackedLayout, QWidget
+from PySide6.QtWidgets import QApplication
 
-from nodedge.dats.dats_window import DatsWindow
-from nodedge.homepage.homepage_window import HomePageWindow
 from nodedge.logger import highLightLoggingSetup, setupLogging
-from nodedge.mdi_window import MdiWindow
+from nodedge.nodedge_app_window import NodedgeAppWindow
 from nodedge.splash_screen import SplashScreen
 from nodedge.utils import dumpException
 
@@ -23,47 +20,11 @@ def main():
     setupLogging()
     highLightLoggingSetup()
 
-    window = QMainWindow()
-    window.setWindowTitle("Nodedge")
-    icon = QIcon(
-        os.path.join(os.path.dirname(__file__), "../resources/nodedge_logo.png")
-    )
-    window.setWindowIcon(icon)
-    widget = QWidget()
-    layout = QStackedLayout()
-    widget.setLayout(layout)
-    mdiWindow = MdiWindow()
-    # mdiWindow.openFile(
-    #     f"{os.path.dirname(__file__)}/../examples/calculator/calculator.json"
-    # )
-    homePageWindow: HomePageWindow = HomePageWindow()
-    datsWindow: DatsWindow = DatsWindow()
+    window = NodedgeAppWindow()
 
-    layout.addWidget(mdiWindow)
-    layout.addWidget(homePageWindow)
-    layout.addWidget(datsWindow)
-    window.setCentralWidget(widget)
-    homePageWindow.mainWidget.headerFrame.nodedgeButton.clicked.connect(
-        lambda: layout.setCurrentWidget(mdiWindow)
-    )
-    mdiWindow.homeMenu.aboutToShow.connect(
-        lambda: layout.setCurrentWidget(homePageWindow)
-    )
-
-    homePageWindow.mainWidget.headerFrame.datsButton.clicked.connect(
-        lambda: layout.setCurrentWidget(datsWindow)
-    )
-    mdiWindow.homeMenu.aboutToShow.connect(
-        lambda: layout.setCurrentWidget(homePageWindow)
-    )
-
-    datsWindow.homeMenu.aboutToShow.connect(
-        lambda: layout.setCurrentWidget(homePageWindow)
-    )
     # window = MdiWindow()
     # splash.closeSignal.connect(window.show)
     window.show()
-    window.centralWidget().layout().setCurrentIndex(1)
     splash.close()
 
     try:

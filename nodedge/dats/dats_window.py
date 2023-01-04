@@ -59,22 +59,28 @@ class DatsWindow(QMainWindow):
         self.createActions()
         self.createMenus()
 
+        self.modifiedConfig = False
+
     def closeEvent(self, event: QCloseEvent) -> None:
 
-        res = QMessageBox.warning(
-            self,
-            "Dats is about to close",
-            "There are unsaved modifications. \n" "Do you want to save your changes?",
-            QMessageBox.StandardButton.Save
-            | QMessageBox.StandardButton.Discard
-            | QMessageBox.StandardButton.Cancel,
-        )
+        if self.modifiedConfig:
+            res = QMessageBox.warning(
+                self,
+                "Dats is about to close",
+                "There are unsaved modifications. \n"
+                "Do you want to save your changes?",
+                QMessageBox.StandardButton.Save
+                | QMessageBox.StandardButton.Discard
+                | QMessageBox.StandardButton.Cancel,
+            )
 
-        if res == QMessageBox.StandardButton.Save:
-            self.saveConfiguration()
-            event.accept()
-        elif res == QMessageBox.StandardButton.Cancel:
-            event.ignore()
+            if res == QMessageBox.StandardButton.Save:
+                self.saveConfiguration()
+                event.accept()
+            elif res == QMessageBox.StandardButton.Cancel:
+                event.ignore()
+            else:
+                event.accept()
         else:
             event.accept()
 
@@ -91,6 +97,7 @@ class DatsWindow(QMainWindow):
         parsed = json.dumps(config, indent=2, sort_keys=True)
         with open("config.json", "w") as outfile:
             outfile.write(parsed)
+        self.modifiedConfig = False
 
     def restoreConfiguration(self):
         filename, _ = QFileDialog.getOpenFileName(
@@ -248,6 +255,7 @@ class DatsWindow(QMainWindow):
     def createCurve(self):
         w: CurveDialog = CurveDialog(self)
         w.show()
+        self.modifiedConfig = True
 
     def deleteCurve(self):
 
@@ -265,6 +273,7 @@ class DatsWindow(QMainWindow):
             lastKey = list(nPlotWidget.items.keys())[-1]
             curve = nPlotWidget.items.pop(lastKey)
             nPlotWidget.removeItem(curve)
+        self.modifiedConfig = True
 
     # TODO: Remove duplicates of createAction
     # noinspection DuplicatedCode
@@ -362,6 +371,7 @@ class DatsWindow(QMainWindow):
 
         log = self.logsWidget.logsListWidget.openLog(filename)
         self.updateDataItems(log)
+        self.modifiedConfig = True
 
     def updateDataItems(self, log):
         self.signalsWidget.signalsTableWidget.updateItems(log)
@@ -431,9 +441,11 @@ class DatsWindow(QMainWindow):
             self.workbooksTabWidget.currentWidget(), WorksheetsTabWidget
         )
         w.addWorksheet(True)
+        self.modifiedConfig = True
 
     def createWorkbook(self):
         self.workbooksTabWidget.addWorkbook(True)
+        self.modifiedConfig = True
 
     # def convertLogAndOpen(self):
     #     d = QFileDialog()
