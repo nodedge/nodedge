@@ -17,6 +17,9 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QMenu,
     QMessageBox,
+    QSlider,
+    QVBoxLayout,
+    QWidget,
 )
 
 from nodedge.dats.curve_dialog import CurveDialog
@@ -28,6 +31,7 @@ from nodedge.dats.signals_widget import SignalsWidget
 from nodedge.dats.workbooks_tab_widget import WorkbooksTabWidget
 from nodedge.dats.worksheets_tab_widget import WorksheetsTabWidget
 from nodedge.logger import setupLogging
+from nodedge.range_slider import RangeSlider
 from nodedge.utils import dumpException
 
 
@@ -38,7 +42,15 @@ class DatsWindow(QMainWindow):
         self.curveConfig = {}
 
         self.workbooksTabWidget = WorkbooksTabWidget(self)
-        self.setCentralWidget(self.workbooksTabWidget)
+        self.mainWidget = QWidget()
+        self.mainLayout = QVBoxLayout()
+        self.mainWidget.setLayout(self.mainLayout)
+        self.slider = RangeSlider(Qt.Horizontal)
+        self.slider.setTickPosition(QSlider.NoTicks)
+        self.mainLayout.addWidget(self.workbooksTabWidget)
+        self.mainLayout.addWidget(self.slider)
+        self.slider.sliderMoved.connect(self.workbooksTabWidget.updateXAxis)
+        self.setCentralWidget(self.mainWidget)
 
         self.signalsWidget = SignalsWidget(self)
         self.signalsDock = QDockWidget("Signals")
