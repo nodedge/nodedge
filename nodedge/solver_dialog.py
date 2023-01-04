@@ -19,7 +19,7 @@ from nodedge.scene_simulator import SolverConfiguration
 class SolverDialog(QDialog):
     solverConfigChanged = Signal(SolverConfiguration)
 
-    def __init__(self):
+    def __init__(self, solverConfig: SolverConfiguration):
         super(SolverDialog, self).__init__()
         self.setWindowTitle("Solver")
         self.icon = QIcon(
@@ -29,9 +29,9 @@ class SolverDialog(QDialog):
         self.setWindowFlags(Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint)
         self.setWindowModality(Qt.ApplicationModal)
         # self.setFixedSize(400, 300)
-        self.solverConfiguration = SolverConfiguration()
-
         self.initUI()
+        self.solverConfiguration = solverConfig
+        self.updateUIFromConfig()
 
     def initUI(self):
         self.mainLayout = QVBoxLayout()
@@ -69,6 +69,28 @@ class SolverDialog(QDialog):
         self.buttonBox.rejected.connect(self.reject)
         self.mainLayout.addWidget(self.buttonBox)
 
+    def updateUIFromConfig(self):
+        self.solverCombo.currentIndexChanged.disconnect(self.updateSolverConfig)
+        self.solverName.textChanged.disconnect(self.updateSolverConfig)
+        self.solverOptions.textChanged.disconnect(self.updateSolverConfig)
+        self.timestepSpinBox.valueChanged.disconnect(self.updateSolverConfig)
+        self.maxIterationsSpinBox.valueChanged.disconnect(self.updateSolverConfig)
+        self.toleranceSpinBox.valueChanged.disconnect(self.updateSolverConfig)
+
+        self.solverCombo.setCurrentText(self.solverConfiguration.solver)
+        self.solverName.setText(self.solverConfiguration.solverName)
+        self.solverOptions.setText(self.solverConfiguration.solverOptions)
+        self.timestepSpinBox.setValue(self.solverConfiguration.timeStep)
+        self.maxIterationsSpinBox.setValue(self.solverConfiguration.maxIterations)
+        self.toleranceSpinBox.setValue(self.solverConfiguration.tolerance)
+
+        self.solverCombo.currentIndexChanged.connect(self.updateSolverConfig)
+        self.solverName.textChanged.connect(self.updateSolverConfig)
+        self.solverOptions.textChanged.connect(self.updateSolverConfig)
+        self.timestepSpinBox.valueChanged.connect(self.updateSolverConfig)
+        self.maxIterationsSpinBox.valueChanged.connect(self.updateSolverConfig)
+        self.toleranceSpinBox.valueChanged.connect(self.updateSolverConfig)
+
     def updateSolverConfig(self, index):
         if index == 0:
             self.solverOptions.setDisabled(True)
@@ -77,7 +99,7 @@ class SolverDialog(QDialog):
             self.solverOptions.setDisabled(False)
             self.solverName.setDisabled(False)
 
-        self.solverConfiguration.solver = index
+        self.solverConfiguration.solver = self.solverCombo.currentText()
         self.solverConfiguration.solverName = self.solverName.text()
         self.solverConfiguration.solverOptions = self.solverOptions.text()
         self.solverConfiguration.timeStep = self.timestepSpinBox.value()
@@ -87,3 +109,4 @@ class SolverDialog(QDialog):
     def onAccepted(self):
         self.accept()
         self.solverConfigChanged.emit(self.solverConfiguration)
+        print(self.solverConfiguration.to_dict())

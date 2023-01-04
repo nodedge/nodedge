@@ -262,7 +262,6 @@ class EditorWindow(QMainWindow):
 
         dialog.exec()
 
-
     def evaluateAllNodes(self):
         for n in self.editorWidget.scene.nodes:
             n.eval()
@@ -286,6 +285,7 @@ class EditorWindow(QMainWindow):
         self.simMenu.addAction(self.configureSolverAct)
         self.simMenu.addAction(self.showGraphAct)
         self.simMenu.addAction(self.simulateAct)
+        self.simMenu.addAction(self.evalAct)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
     def createCoderMenu(self):
@@ -294,7 +294,9 @@ class EditorWindow(QMainWindow):
         self.coderMenu.addAction(self.showCodeAct)
 
     def configureSolver(self):
-        self.solverDialog = SolverDialog()
+        simulatorConfig = self.currentEditorWidget.scene.simulator.config
+        print(simulatorConfig.to_dict())
+        self.solverDialog = SolverDialog(simulatorConfig)
         self.solverDialog.solverConfigChanged.connect(
             self.currentEditorWidget.scene.simulator.updateConfig
         )

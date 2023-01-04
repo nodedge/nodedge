@@ -20,6 +20,7 @@ class SolverConfiguration:
             "solverOptions": self.solverOptions,
             "timeStep": self.timeStep,
             "maxIterations": self.maxIterations,
+            "tolerance": self.tolerance,
         }
 
     def from_dict(self, data: dict) -> bool:
@@ -28,6 +29,7 @@ class SolverConfiguration:
         self.solverOptions = data["solverOptions"]
         self.timeStep = data["timeStep"]
         self.maxIterations = data["maxIterations"]
+        self.tolerance = data["tolerance"]
 
         return True
 
