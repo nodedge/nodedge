@@ -22,6 +22,7 @@ from nodedge.node import Node
 from nodedge.scene_clipboard import SceneClipboard
 from nodedge.scene_coder import SceneCoder
 from nodedge.scene_history import SceneHistory
+from nodedge.scene_simulator import SceneSimulator
 from nodedge.serializable import Serializable
 from nodedge.utils import dumpException
 
@@ -52,6 +53,7 @@ class Scene(Serializable):
         self.history: SceneHistory = SceneHistory(self)
         self.clipboard: SceneClipboard = SceneClipboard(self)
         self.coder: SceneCoder = SceneCoder(scene=self)
+        self.simulator: SceneSimulator = SceneSimulator(self)
 
         self._isModified: bool = False
         self.isModified: bool = False
@@ -396,6 +398,8 @@ class Scene(Serializable):
         for element in self.elements:
             elements.append(element.serialize())
 
+        simulator = self.simulator.serialize()
+
         return OrderedDict(
             [
                 ("id", self.id),
@@ -404,6 +408,7 @@ class Scene(Serializable):
                 ("nodes", nodes),
                 ("edges", edges),
                 ("elements", elements),
+                ("simulator", simulator),
             ]
         )
 
@@ -500,6 +505,10 @@ class Scene(Serializable):
                 while allElements:
                     element = allElements.pop()
                     element.remove()
+
+            simulatorData = data.get("simulator")
+            if simulatorData is not None:
+                self.simulator.deserialize(simulatorData)
             return True
         except Exception as e:
 

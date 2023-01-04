@@ -33,15 +33,18 @@ class IntegralBlock(Block):
         SocketType.Number,
     ]
 
-    def __init__(self, scene):
+    def __init__(self, scene: "Scene"):  # type: ignore
         super().__init__(
             scene,
             inputSocketTypes=self.__class__.inputSocketTypes,
             outputSocketTypes=self.__class__.outputSocketTypes,
         )
 
+        scene: "Scene" = self.scene  # type: ignore
+
         self.state = [0, 0]
-        self.dt = 0.1
+        self.dt = scene.simulator.config.timeStep
+        # self.dt = 0.1
 
         self.eval()
 
@@ -52,6 +55,7 @@ class IntegralBlock(Block):
             return my_input
 
         try:
+            self.dt = self.scene.simulator.config.timeStep
             t0 = 0
             t = t0 + self.dt
 

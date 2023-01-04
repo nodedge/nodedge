@@ -24,7 +24,7 @@ def main():
 
     # window = MdiWindow()
     # splash.closeSignal.connect(window.show)
-    window.show()
+    window.showMaximized()
     splash.close()
 
     try:

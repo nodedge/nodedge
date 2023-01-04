@@ -533,11 +533,11 @@ QComboBox {
     border: 0px;
 }
 
-HeaderMenuButton {
+HeaderMenuIconButton {
     icon: url("resources/white_icons/menu.png");
 }
 
-HeaderMenuButton:checked {
+HeaderMenuIconButton:checked {
     icon: url("resources/white_icons/chevron_left.png");
 }
 
