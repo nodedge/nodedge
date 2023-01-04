@@ -45,7 +45,7 @@ class NPlotWidget(GraphicsLayoutWidget):
         self.legend.setParentItem(self.plotItem)
         self.items = OrderedDict()
 
-        self.xLimits = np.array([np.NaN, np.NaN])
+        self.xLimits = np.array([0, 1])
         self.yLimits = np.array([np.NaN, np.NaN])
 
     def addPlotItem(self, *args, **kargs):
@@ -185,6 +185,22 @@ class NPlotWidget(GraphicsLayoutWidget):
     def viewAll(self):
         for item in self.plotItems:
             item.vb.autoRange()
+
+    def updateXAxis(self, minValue: int, maxValue: int):
+        """
+        Update the x-axis
+        :param min:
+        :param max:
+        :return:
+        """
+        minRange = (
+            (100 - minValue) * self.xLimits[0] + minValue * self.xLimits[1]
+        ) / 100
+        maxRange = (
+            (100 - maxValue) * self.xLimits[0] + maxValue * self.xLimits[1]
+        ) / 100
+        self.plotItem.setRange(xRange=(minRange, maxRange))
+        # self.plotItem.vb.xAxis.setRange(minRange, maxRange)
 
 
 class NViewBox(pg.ViewBox):

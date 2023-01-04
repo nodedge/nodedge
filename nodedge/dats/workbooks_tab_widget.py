@@ -155,3 +155,16 @@ class WorkbooksTabWidget(QTabWidget):
     #
     #
     #         super().mousePressEvent(event)
+
+    def updateXAxis(self, minValue: int, maxValue: int):
+        """
+        Update the x-axis of the chart.
+
+        :param min: minimum value of the x-axis
+        :type min: ``int``
+        :param max: maximum value of the x-axis
+        :type max: ``int``
+        """
+        for workbook in self.workbooks:
+            for worksheet in workbook.worksheets:
+                worksheet.updateXAxis(minValue, maxValue)
