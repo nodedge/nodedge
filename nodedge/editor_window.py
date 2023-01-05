@@ -570,7 +570,7 @@ class EditorWindow(QMainWindow):
         defaultWorkspacePath = QStandardPaths.writableLocation(
             QStandardPaths.DocumentsLocation
         )
-        workspacePath = settings.value("workspacePath", defaultWorkspacePath)
+        workspacePath = str(settings.value("workspacePath", defaultWorkspacePath))
         return workspacePath
 
     @staticmethod
