@@ -1,14 +1,22 @@
-from PySide6.QtCore import Qt, Signal
+from pathlib import Path
+
+from PySide6.QtCore import QSettings, Qt, Signal
 from PySide6.QtWidgets import (
     QComboBox,
+    QDialog,
+    QFileDialog,
     QFormLayout,
+    QHBoxLayout,
     QLabel,
+    QLineEdit,
+    QMessageBox,
     QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
 
 from nodedge.application_styler import ApplicationStyler
+from nodedge.homepage.workspace_selection_button import WorkspaceSelectionButton
 
 MIN_HEIGHT = 30
 
@@ -72,6 +80,7 @@ class HomeContentWidget(ContentWidget):
 class SettingsContentWidget(ContentWidget):
 
     paletteChanged = Signal()
+    workspaceChanged = Signal(str)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -88,9 +97,45 @@ class SettingsContentWidget(ContentWidget):
         self.styler = ApplicationStyler()
         self.paletteCombo.currentTextChanged.connect(self.onPaletteChanged)
 
+        self.workspacePath = Path("~/Nodedge")
+        self.workspaceWidget = QWidget()
+        self.workspaceLayout = QHBoxLayout()
+        self.workspaceWidget.setLayout(self.workspaceLayout)
+        self.workspaceLineEdit = QLineEdit()
+        self.workspaceLineEdit.setPlaceholderText(str(self.workspacePath))
+        self.workspaceLineEdit.editingFinished.connect(self.onWorkspaceChanged)
+        button = WorkspaceSelectionButton(self, "...")
+        self.workspaceLayout.addWidget(self.workspaceLineEdit)
+        self.workspaceLayout.addWidget(button)
+        self.layout.addRow("Workspace: ", self.workspaceWidget)
+        button.clicked.connect(self.getPath)
+
+    def getPath(self):
+        selectedFolder = QFileDialog.getExistingDirectory(self, "Select Folder")
+        self.workspaceLineEdit.setText(selectedFolder)
+        self.workspacePath = Path(selectedFolder)
+
     def onPaletteChanged(self, text):
         self.styler.setCustomPalette(text)
         self.paletteChanged.emit()
+
+    def onWorkspaceChanged(self):
+        text = self.workspaceLineEdit.text()
+        validPath = Path.exists(Path(text))
+        if validPath:
+            self.workspacePath = text
+
+        else:
+            QMessageBox.warning(
+                self,
+                "Invalid path",
+                "Invalid workspace path entered. "
+                "Please, add a valid one or leave the default.",
+            )
+            self.workspaceLineEdit.setPlaceholderText(str(self.workspacePath))
+            self.workspaceLineEdit.setText("")
+
+        self.workspaceChanged.emit(self.workspacePath)
 
 
 class TitleLabel(QLabel):

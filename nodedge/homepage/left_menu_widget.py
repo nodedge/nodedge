@@ -43,7 +43,6 @@ class LeftMenuWidget(QWidget):
             self.layout.addWidget(button)
             self.buttons.append(button)
 
-        # self.
         self.anim = QPropertyAnimation(self, b"minimumWidth")
         self.anim.setDuration(500)
         self.anim.setEasingCurve(QEasingCurve.InOutCubic)

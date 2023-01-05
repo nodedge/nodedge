@@ -59,6 +59,7 @@ class ApplicationStyler:
         highlight = QColor(colors["highlight"])
         link = QColor(colors["link"])
         visitedLink = QColor(colors["visitedLink"])
+        extraLight = QColor(colors["extraLight"])
         p.setColor(QPalette.AlternateBase, highlight)
         p.setColor(QPalette.Base, base)
         p.setColor(QPalette.BrightText, highlight)
