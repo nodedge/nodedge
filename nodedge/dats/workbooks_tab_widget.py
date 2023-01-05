@@ -12,6 +12,7 @@ from nodedge.dats.worksheets_tab_widget import WorksheetsTabWidget
 class WorkbooksTabWidget(QTabWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.window = parent
         self.workbooks: List[WorksheetsTabWidget] = []
 
         self.setTabsClosable(True)
@@ -82,7 +83,9 @@ class WorkbooksTabWidget(QTabWidget):
             if not ok:
                 return None
 
-        worksheetsTabWidget = WorksheetsTabWidget(workbookName=workbookName)
+        worksheetsTabWidget = WorksheetsTabWidget(
+            parent=self, workbookName=workbookName
+        )
 
         self.addTab(worksheetsTabWidget, workbookName)
         self.workbooks.append(worksheetsTabWidget)

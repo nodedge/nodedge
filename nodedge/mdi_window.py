@@ -269,9 +269,9 @@ class MdiWindow(EditorWindow):
 
     # noinspection PyAttributeOutsideInit
     def createHomeMenu(self):
-        self.homeMenu: QMenu = self.menuBar().addMenu(
-            QIcon("../../nodedge/resources/iconsModified/home_page_100.png"), "&Home"
-        )
+        # QIcon("../resources/white_icons/home_page.png")
+        self.homeMenu: QMenu = self.menuBar().addMenu("&Home")
+
         self.homeMenu.aboutToShow.connect(self.closeHomeMenu)
 
     def closeHomeMenu(self):
