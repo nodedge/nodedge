@@ -233,11 +233,11 @@ background:palette(window);
 }
 
 QLineEdit{
-/*border:1px solid palette(button-text);*/
-background:palette(midLight);
-border-radius:2px;
-padding:1px 2px;
 font-size: 16px;
+/*border: 1px solid palette(button-text);*/
+background: palette(midLight);
+border-radius: 2px;
+padding: 1px 2px;
 }
 
 QGraphicsView {
@@ -349,7 +349,7 @@ GraphicsNodeContent QLabel#OutputBlockContent {
 }
 
 GraphicsNodeContent QLineEdit#InputBlockContent {
-background: palette(light);
+background: palette(midLight);
 qproperty-alignment: AlignLeft;
 width: 140px;
 height: 20px;

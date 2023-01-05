@@ -470,7 +470,7 @@ class MdiWindow(EditorWindow):
         """
         self.sceneItemDetailsWidget = SceneItemDetailWidget(self)
 
-        self.sceneItemDetailsDock = QDockWidget("Selected node details")
+        self.sceneItemDetailsDock = QDockWidget("Node details")
         self.sceneItemDetailsDock.setWidget(self.sceneItemDetailsWidget)
         self.sceneItemDetailsDock.setFloating(False)
 
@@ -484,7 +484,7 @@ class MdiWindow(EditorWindow):
         self.nodesTreeWidget = NodeTreeWidget()
         self.nodesTreeWidget.itemsPressed.connect(self.showItemsInStatusBar)
 
-        self.nodesDock = QDockWidget("Nodes")
+        self.nodesDock = QDockWidget("Node libraries")
         self.nodesDock.setWidget(self.nodesTreeWidget)
         self.nodesDock.setFloating(False)
 

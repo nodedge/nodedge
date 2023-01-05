@@ -34,8 +34,8 @@ class SplashScreen(QMainWindow):
         self.dropShadowFrame.setFrameShadow(QFrame.Shadow.Raised)
         self.dropShadowFrame.setStyleSheet(
             "QFrame {	\n"
-            "	background-color: #23252E;	\n"
-            "	color: #272C36;\n"
+            "	background-color: #1B1D23;	\n"
+            "	color: #23252E;\n"
             "	border-radius: 10px;\n"
             "}"
         )
@@ -57,7 +57,7 @@ class SplashScreen(QMainWindow):
         self.labelDescription.setFont(QFont(["Segoe UI"], 14))
         self.labelDescription.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.labelDescription.setText("Welcome to Nodedge")
-        self.labelDescription.setStyleSheet("color: rgb(75, 80, 99);")
+        self.labelDescription.setStyleSheet("color: #4B5063;")
 
         self.progressBar = QProgressBar(self.dropShadowFrame)
         self.progressBar.setGeometry(QRect(50, 280, 561, 23))
@@ -65,8 +65,8 @@ class SplashScreen(QMainWindow):
         self.progressBar.setStyleSheet(
             "QProgressBar {\n"
             "	\n"
-            "	background-color: rgb(75, 80, 99);\n"
-            "	color: rgb(200, 200, 200);\n"
+            "	background-color: #23252E;\n"
+            "	color: #C8C8C8;\n"
             "	border-style: none;\n"
             "	border-radius: 10px;\n"
             "	text-align: center;\n"
@@ -83,14 +83,14 @@ class SplashScreen(QMainWindow):
         self.labelLoading = QLabel(self.dropShadowFrame)
         self.labelLoading.setGeometry(QRect(0, 320, 661, 21))
         self.labelLoading.setFont(QFont(["Segoe UI"], 12))
-        self.labelLoading.setStyleSheet("color: rgb(75, 80, 99);")
+        self.labelLoading.setStyleSheet("color: #4B5063;")
         self.labelLoading.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.labelLoading.setText("Loading ...")
 
         self.labelCredits = QLabel(self.dropShadowFrame)
         self.labelCredits.setGeometry(QRect(20, 350, 621, 21))
         self.labelCredits.setFont(QFont(["Segoe UI"], 10))
-        self.labelCredits.setStyleSheet("color: rgb(75, 80, 99);")
+        self.labelCredits.setStyleSheet("color: #4B5063;")
         self.labelCredits.setAlignment(
             Qt.AlignmentFlag.AlignRight
             | Qt.AlignmentFlag.AlignTrailing

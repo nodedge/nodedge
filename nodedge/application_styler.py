@@ -59,6 +59,7 @@ class ApplicationStyler:
         highlight = QColor(colors["highlight"])
         link = QColor(colors["link"])
         visitedLink = QColor(colors["visitedLink"])
+        extraLight = QColor(colors["extraLight"])
         p.setColor(QPalette.AlternateBase, highlight)
         p.setColor(QPalette.Base, base)
         p.setColor(QPalette.BrightText, highlight)
@@ -76,7 +77,7 @@ class ApplicationStyler:
         p.setColor(QPalette.Text, text)
         p.setColor(QPalette.Window, dark)
         p.setColor(QPalette.WindowText, text)
-        p.setColor(QPalette.PlaceholderText, link)
+        p.setColor(QPalette.PlaceholderText, light)
         app.setPalette(p)
         QApplication.setStyle("Fusion")
 

@@ -7,7 +7,7 @@ import logging
 import os
 from typing import Callable, Optional, Union, cast
 
-from PySide6.QtCore import QSettings, QSize, Qt
+from PySide6.QtCore import QSettings, QSize, QStandardPaths, Qt
 from PySide6.QtGui import (
     QAction,
     QClipboard,
@@ -436,10 +436,15 @@ class EditorWindow(QMainWindow):
         if not self.currentEditorWidget.hasName:
             self.saveFileAs()
 
-        self.currentEditorWidget.saveFile(self.currentEditorWidget.filename)
-        self.statusBar().showMessage(
-            f"Successfully saved to {self.currentEditorWidget.shortName}", 5000
-        )
+        else:
+            self.currentEditorWidget.saveFile(self.currentEditorWidget.filename)
+
+        if self.currentEditorWidget.hasName:
+            self.statusBar().showMessage(
+                f"Successfully saved to {self.currentEditorWidget.shortName}", 5000
+            )
+        else:
+            self.statusBar().showMessage(f"Save aborted", 5000)
         self.updateTitle()
         self.currentEditorWidget.updateTitle()
 
@@ -456,7 +461,8 @@ class EditorWindow(QMainWindow):
             filter=EditorWindow.getFileDialogFilter(),
         )
 
-        if filename == "":
+        print(filename)
+        if filename in [None, "", ""]:
             return
 
         self.beforeSaveFileAs(self.currentEditorWidget, filename)
@@ -559,7 +565,13 @@ class EditorWindow(QMainWindow):
         :return: starting directory for ``QFileDialog`` file open/save
         :rtype: ``str``
         """
-        return ""
+        settings = QSettings("Nodedge", "Nodedge")
+
+        defaultWorkspacePath = QStandardPaths.writableLocation(
+            QStandardPaths.DocumentsLocation
+        )
+        workspacePath = str(settings.value("workspacePath", defaultWorkspacePath))
+        return workspacePath
 
     @staticmethod
     def getFileDialogFilter() -> str:

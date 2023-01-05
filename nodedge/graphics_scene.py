@@ -9,6 +9,7 @@ from typing import Optional
 from PySide6.QtCore import QLine, QPointF, Qt, Signal
 from PySide6.QtGui import QColor, QPainter, QPen, QTransform
 from PySide6.QtWidgets import (
+    QApplication,
     QGraphicsItem,
     QGraphicsItemGroup,
     QGraphicsScene,
@@ -58,13 +59,14 @@ class GraphicsScene(QGraphicsScene):
     # noinspection PyAttributeOutsideInit
     def initStyle(self) -> None:
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
-        self._colorBackground = QColor("#363A46")
-        self._colorLight = QColor("#666666")
-        self._colorDark = QColor("#999999")
+        p = QApplication.palette()
+        self._colorBackground = p.base().color()
+        self._colorSmallSquares = p.linkVisited().color()
+        self._colorBigSquares = p.link().color()
 
-        self._penSmallSquares = QPen(self._colorLight, 0.3, Qt.DotLine)
+        self._penSmallSquares = QPen(self._colorSmallSquares, 0.3, Qt.DotLine)
 
-        self._penBigSquares = QPen(self._colorDark, 0.6)
+        self._penBigSquares = QPen(self._colorBigSquares, 0.6)
         self._penBigSquares.setDashPattern([2, 6])
 
     # noinspection PyAttributeOutsideInit

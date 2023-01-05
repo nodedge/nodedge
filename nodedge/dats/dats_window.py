@@ -8,12 +8,13 @@ from asammdf import MDF
 from asammdf.blocks.utils import MdfException
 from asammdf.blocks.v2_v3_blocks import Channel
 from pyqtgraph import PlotDataItem
-from PySide6.QtCore import Qt, QTimer
+from PySide6.QtCore import QSettings, QStandardPaths, Qt, QTimer
 from PySide6.QtGui import QAction, QCloseEvent, QKeySequence
 from PySide6.QtWidgets import (
     QApplication,
     QDockWidget,
     QFileDialog,
+    QLabel,
     QMainWindow,
     QMenu,
     QMessageBox,
@@ -74,7 +75,30 @@ class DatsWindow(QMainWindow):
         self.createActions()
         self.createMenus()
 
+        self.statusBar().showMessage("Welcome in Dats", timeout=5000)
+
+        self._configPath = ""
+        self.createStatusBar()
+
         self.modifiedConfig = False
+
+    @property
+    def configPath(self):
+        return self._configPath
+
+    @configPath.setter
+    def configPath(self, path):
+        self._configPath = path
+        self.configPathLabel.setText(self._configPath)
+
+    def createStatusBar(self) -> None:
+        """
+        Create Status bar and connect to
+        :class:`~nodedge.graphics_view.GraphicsView`'s scenePosChanged event.
+        """
+        self.statusBar().showMessage("")
+        self.configPathLabel = QLabel(self.configPath)
+        self.statusBar().addPermanentWidget(self.configPathLabel)
 
     def updatePlotAxes(self, low, high):
         self.workbooksTabWidget.workbooks[0].worksheets[0].xRangeUpdated.disconnect(
@@ -123,8 +147,20 @@ class DatsWindow(QMainWindow):
 
         config = {"layout": layoutConfig, "curves": self.curveConfig}
 
+        if self.configPath == "":
+            filename, _ = QFileDialog.getSaveFileName(
+                parent=self,
+                caption="Save config to file",
+                dir=DatsWindow.getFileDialogDirectory(),
+                filter="*.json",
+            )
+            if filename:
+                self.configPath = filename
+            else:
+                return
+
         parsed = json.dumps(config, indent=2, sort_keys=True)
-        with open("config.json", "w") as outfile:
+        with open(self.configPath, "w") as outfile:
             outfile.write(parsed)
         self.modifiedConfig = False
 
@@ -135,6 +171,8 @@ class DatsWindow(QMainWindow):
             dir=DatsWindow.getFileDialogDirectory(),
             filter="All files (*)",
         )
+
+        self.configPath = filename
 
         if "json" not in filename:
             return
@@ -446,16 +484,6 @@ class DatsWindow(QMainWindow):
                         dataItem.scatter.hide()
 
     @staticmethod
-    def getFileDialogDirectory() -> str:
-        """
-        Returns starting directory for ``QFileDialog`` file open/save
-
-        :return: starting directory for ``QFileDialog`` file open/save
-        :rtype: ``str``
-        """
-        return "data"
-
-    @staticmethod
     def getFileDialogFilter() -> str:
         """
         Returns ``str`` standard file open/save filter for ``QFileDialog``
@@ -484,6 +512,22 @@ class DatsWindow(QMainWindow):
     #         logName = csv_converter.convert()
     #
     #         self.openLog(logName)
+
+    @staticmethod
+    def getFileDialogDirectory() -> str:
+        """
+        Returns starting directory for ``QFileDialog`` file open/save
+
+        :return: starting directory for ``QFileDialog`` file open/save
+        :rtype: ``str``
+        """
+        settings = QSettings("Nodedge", "Nodedge")
+
+        defaultWorkspacePath = QStandardPaths.writableLocation(
+            QStandardPaths.DocumentsLocation
+        )
+        workspacePath = str(settings.value("workspacePath", defaultWorkspacePath))
+        return workspacePath
 
 
 if __name__ == "__main__":
