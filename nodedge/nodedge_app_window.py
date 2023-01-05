@@ -51,12 +51,12 @@ class NodedgeAppWindow(QMainWindow):
 
     def closeEvent(self, event: QCloseEvent) -> None:
         ok = self.mdiWindow.close()
-        ok &= self.datsWindow.close()
-        self.homepageWindow.close()
-        if ok:
-            event.accept()
-        else:
+        if not ok:
             event.ignore()
-        # super(NodedgeAppWindow, self).closeEvent(event)
-
-        # pass
+            return
+        ok = self.datsWindow.close()
+        if not ok:
+            event.ignore()
+            return
+        self.homepageWindow.close()
+        event.accept()
