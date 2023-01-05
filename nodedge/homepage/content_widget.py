@@ -1,9 +1,8 @@
 from pathlib import Path
 
-from PySide6.QtCore import QSettings, Qt, Signal
+from PySide6.QtCore import QSettings, QStandardPaths, Qt, Signal
 from PySide6.QtWidgets import (
     QComboBox,
-    QDialog,
     QFileDialog,
     QFormLayout,
     QHBoxLayout,
@@ -86,6 +85,8 @@ class SettingsContentWidget(ContentWidget):
         super().__init__(parent)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.layout = QFormLayout()
+        self.layout.setAlignment(Qt.AlignCenter)
+
         # self.layout.setContentsMargins(0, 0, 0, 0)
         # self.layout.setSpacing(0)
         self.setLayout(self.layout)
@@ -97,14 +98,21 @@ class SettingsContentWidget(ContentWidget):
         self.styler = ApplicationStyler()
         self.paletteCombo.currentTextChanged.connect(self.onPaletteChanged)
 
-        self.workspacePath = Path("~/Nodedge")
+        self.defaultWorkspacePath = QStandardPaths.writableLocation(
+            QStandardPaths.DocumentsLocation
+        )
+        self.restoreDefaultPath()
+        self.workspacePath = Path(self.defaultWorkspacePath)
         self.workspaceWidget = QWidget()
         self.workspaceLayout = QHBoxLayout()
         self.workspaceWidget.setLayout(self.workspaceLayout)
+        self.workspaceLayout.setSpacing(10)
+        self.workspaceLayout.setContentsMargins(0, 0, 0, 0)
         self.workspaceLineEdit = QLineEdit()
-        self.workspaceLineEdit.setPlaceholderText(str(self.workspacePath))
+        self.workspaceLineEdit.setText(str(self.workspacePath))
         self.workspaceLineEdit.editingFinished.connect(self.onWorkspaceChanged)
         button = WorkspaceSelectionButton(self, "...")
+        button.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
         self.workspaceLayout.addWidget(self.workspaceLineEdit)
         self.workspaceLayout.addWidget(button)
         self.layout.addRow("Workspace: ", self.workspaceWidget)
@@ -114,6 +122,16 @@ class SettingsContentWidget(ContentWidget):
         selectedFolder = QFileDialog.getExistingDirectory(self, "Select Folder")
         self.workspaceLineEdit.setText(selectedFolder)
         self.workspacePath = Path(selectedFolder)
+
+    def restoreDefaultPath(self):
+        settings = QSettings("Nodedge", "Nodedge")
+
+        defaultWorkspacePath = QStandardPaths.writableLocation(
+            QStandardPaths.DocumentsLocation
+        )
+        self.defaultWorkspacePath = settings.value(
+            "workspacePath", defaultWorkspacePath
+        )
 
     def onPaletteChanged(self, text):
         self.styler.setCustomPalette(text)
@@ -125,6 +143,9 @@ class SettingsContentWidget(ContentWidget):
         if validPath:
             self.workspacePath = text
 
+            settings = QSettings("Nodedge", "Nodedge")
+            settings.setValue("workspacePath", self.workspacePath)
+
         else:
             QMessageBox.warning(
                 self,
@@ -132,8 +153,8 @@ class SettingsContentWidget(ContentWidget):
                 "Invalid workspace path entered. "
                 "Please, add a valid one or leave the default.",
             )
-            self.workspaceLineEdit.setPlaceholderText(str(self.workspacePath))
-            self.workspaceLineEdit.setText("")
+            self.workspaceLineEdit.setText(str(self.workspacePath))
+            # self.workspaceLineEdit.setText("")
 
         self.workspaceChanged.emit(self.workspacePath)
 

@@ -9,12 +9,13 @@ from typing import Optional
 from PySide6.QtCore import QLine, QPointF, Qt, Signal
 from PySide6.QtGui import QColor, QPainter, QPen, QTransform
 from PySide6.QtWidgets import (
+    QApplication,
     QGraphicsItem,
     QGraphicsItemGroup,
     QGraphicsScene,
     QGraphicsSceneDragDropEvent,
     QGraphicsSceneMouseEvent,
-    QWidget, QApplication,
+    QWidget,
 )
 
 from nodedge.logger import logger

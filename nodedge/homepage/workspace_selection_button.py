@@ -1,6 +1,7 @@
 from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QPushButton
 
+
 class WorkspaceSelectionButton(QPushButton):
     def __init__(self, parent=None, text=None):
         super().__init__(parent, text=text)
