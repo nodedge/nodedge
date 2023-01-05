@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 import numpy as np
 import pyqtgraph as pg
@@ -16,8 +16,8 @@ from pyqtgraph import (
 )
 from pyqtgraph.GraphicsScene.mouseEvents import MouseClickEvent
 from PySide6 import QtCore, QtGui
-from PySide6.QtCore import QEvent, QPointF, Qt
-from PySide6.QtGui import QMouseEvent
+from PySide6.QtCore import QEvent, QPointF, Qt, Signal
+from PySide6.QtGui import QDragEnterEvent, QDropEvent, QMouseEvent
 from PySide6.QtWidgets import QApplication, QColorDialog
 
 from nodedge.dats.n_plot_data_item import NPlotDataItem
@@ -25,9 +25,12 @@ from nodedge.logger import logger
 
 
 class NPlotWidget(GraphicsLayoutWidget):
+    xRangeUpdated = Signal(int, int)
+
     def __init__(self, parent=None, name=""):
         super().__init__(parent)
         self.name = name
+        self.worksheetsTabWidget = parent
 
         # crosshair
         self.plotItems = []
@@ -47,6 +50,19 @@ class NPlotWidget(GraphicsLayoutWidget):
 
         self.xLimits = np.array([0, 1])
         self.yLimits = np.array([np.NaN, np.NaN])
+
+        self.setAcceptDrops(True)
+
+        self.plotItem.vb.sigXRangeChanged.connect(self.onXRangeChanged)
+
+    def onXRangeChanged(self, plotitem, range):
+        minValue = (
+            (range[0] - self.xLimits[0]) / (self.xLimits[1] - self.xLimits[0]) * 100
+        )
+        maxValue = (
+            (range[1] - self.xLimits[0]) / (self.xLimits[1] - self.xLimits[0]) * 100
+        )
+        self.xRangeUpdated.emit(minValue, maxValue)
 
     def addPlotItem(self, *args, **kargs):
         plotItem = self.addPlot(*args, **kargs)
@@ -82,7 +98,7 @@ class NPlotWidget(GraphicsLayoutWidget):
         self.plotItem.addItem(dataItem)
         dataItem.sigClicked.connect(self.modifyCurve)
         self.plotItem.vb.curves.update({name: dataItem})
-        self.updateRange(dataItem, reset=False)
+        self.updateRange(dataItem, reset=True)
         self.plotItem.vb.autoRange()
 
     def updateRange(self, dataItem, reset=True):
@@ -202,6 +218,26 @@ class NPlotWidget(GraphicsLayoutWidget):
         self.plotItem.setRange(xRange=(minRange, maxRange))
         # self.plotItem.vb.xAxis.setRange(minRange, maxRange)
 
+    def dragEnterEvent(self, e: QDragEnterEvent) -> None:
+        """
+        Handle drag enter event. If the MIME data contains plain text, then accept the drag event.
+        :param e: `QDragEnterEvent`
+        :return: None
+        """
+        if e.mimeData().hasFormat("text/plain"):
+            e.acceptProposedAction()
+
+    def dropEvent(self, event: QDropEvent) -> None:
+        """
+        Handle drop event. Plot curves from curves names in MIME text.
+        :param event: `QDropEvent`
+        :return: None
+        """
+        curvesNamesStr: str = event.mimeData().text()
+        curvesNames: List[str] = curvesNamesStr.split("\n")
+        self.worksheetsTabWidget.workbookTabsWidget.window.plotCurves(curvesNames)
+        event.accept()
+
 
 class NViewBox(pg.ViewBox):
     """
@@ -251,6 +287,7 @@ class NViewBox(pg.ViewBox):
         self.addItem(self.hLine, ignoreBounds=True)
 
         self.setAcceptHoverEvents(True)
+        self.setAcceptDrops(True)
 
     def hoverEnterEvent(self, ev: QEvent):
         self.vLine.show()
@@ -380,16 +417,19 @@ class NViewBox(pg.ViewBox):
 
     def mouseClickEvent(self, ev):
         super().mouseClickEvent(ev)
-        palette = QApplication.palette()
 
         if ev.button() == QtCore.Qt.MouseButton.LeftButton:
-            for p in self.nPlotWidget.plotItems:
-                vb = p.getViewBox()
-                vb.setBorder({"color": palette.text().color(), "width": 1})
-                vb.update()
-                if vb == self:
-                    self.nPlotWidget.plotItem = p
-            self.setBorder({"color": palette.highlight().color(), "width": 4})
+            self.getFocus()
+
+    def getFocus(self):
+        palette = QApplication.palette()
+        for p in self.nPlotWidget.plotItems:
+            vb = p.getViewBox()
+            vb.setBorder({"color": palette.text().color(), "width": 1})
+            vb.update()
+            if vb == self:
+                self.nPlotWidget.plotItem = p
+        self.setBorder({"color": palette.highlight().color(), "width": 4})
 
     def as_dict(self):
         rep = {}
@@ -397,3 +437,7 @@ class NViewBox(pg.ViewBox):
             rep.update({k: v.opts["pen"]})
 
         return rep
+
+    def dragEnterEvent(self, ev):
+        self.getFocus()
+        ev.acceptProposedAction()

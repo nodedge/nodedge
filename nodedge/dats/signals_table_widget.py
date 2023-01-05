@@ -1,7 +1,8 @@
 from typing import List
 
 from asammdf import MDF
-from PySide6.QtCore import Qt
+from PySide6.QtCore import QByteArray, QMimeData, Qt
+from PySide6.QtGui import QDrag, QKeyEvent
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QHBoxLayout,
@@ -10,6 +11,8 @@ from PySide6.QtWidgets import (
     QTableWidgetItem,
     QWidget,
 )
+
+from nodedge.utils import dumpException
 
 COLUMNS = ["Type", "Name"]
 
@@ -29,12 +32,24 @@ class SignalsTableWidget(QTableWidget):
         self.setShowGrid(False)
 
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.setDragEnabled(True)
 
         self.cellClicked.connect(self.onCellClicked)
 
+        self.multiSelectionMode = False
         self.log = log
         self.signals: List[str] = []
         self.updateItems(self.log)
+
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        super().keyPressEvent(event)
+        if event.modifiers() & Qt.KeyboardModifier.ControlModifier:
+            self.multiSelectionMode = True
+
+    def keyReleaseEvent(self, event: QKeyEvent) -> None:
+        super().keyReleaseEvent(event)
+        if event.modifiers() & Qt.KeyboardModifier.ControlModifier:
+            self.multiSelectionMode = False
 
     def updateItems(self, log: MDF):
         if log is None:
@@ -81,7 +96,8 @@ class SignalsTableWidget(QTableWidget):
             self.setItem(row, 1, nameItem)
 
     def onCellClicked(self, row, column):
-        self.clearSelection()
+        if not self.multiSelectionMode:
+            self.clearSelection()
 
         for i in range(self.columnCount()):
             item = self.item(row, i)
@@ -89,6 +105,24 @@ class SignalsTableWidget(QTableWidget):
                 item.setSelected(True)
             else:
                 widget = self.cellWidget(row, i)
+
+    def startDrag(self, supportedActions: Qt.DropAction) -> None:
+        try:
+            items = self.selectedItems()
+            itemsNames = [item.text() for item in items if item.column() == 1]
+            itemData = QByteArray()
+
+            mimeData = QMimeData()
+            mimeData.setData("text/plain", itemData)
+            mimeData.setText("\n".join(itemsNames))
+
+            drag = QDrag(self)
+            drag.setMimeData(mimeData)
+
+            drag.exec_(Qt.MoveAction)
+
+        except Exception as e:
+            dumpException(e)
 
 
 class CurveWidget(QWidget):

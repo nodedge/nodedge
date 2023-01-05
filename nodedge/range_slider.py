@@ -42,6 +42,10 @@ class RangeSlider(QtWidgets.QSlider):
         self._high = high
         self.update()
 
+    def setRange(self, low, high):
+        self.setLow(low)
+        self.setHigh(high)
+
     def paintEvent(self, event):
 
         painter = QtGui.QPainter(self)

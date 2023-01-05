@@ -49,7 +49,10 @@ class DatsWindow(QMainWindow):
         self.slider.setTickPosition(QSlider.NoTicks)
         self.mainLayout.addWidget(self.workbooksTabWidget)
         self.mainLayout.addWidget(self.slider)
-        self.slider.sliderMoved.connect(self.workbooksTabWidget.updateXAxis)
+        self.slider.sliderMoved.connect(self.updatePlotAxes)
+        self.workbooksTabWidget.workbooks[0].worksheets[0].xRangeUpdated.connect(
+            self.updateSlider
+        )
         self.setCentralWidget(self.mainWidget)
 
         self.signalsWidget = SignalsWidget(self)
@@ -72,6 +75,20 @@ class DatsWindow(QMainWindow):
         self.createMenus()
 
         self.modifiedConfig = False
+
+    def updatePlotAxes(self, low, high):
+        self.workbooksTabWidget.workbooks[0].worksheets[0].xRangeUpdated.disconnect(
+            self.updateSlider
+        )
+        self.workbooksTabWidget.updateXAxis(low, high)
+        self.workbooksTabWidget.workbooks[0].worksheets[0].xRangeUpdated.connect(
+            self.updateSlider
+        )
+
+    def updateSlider(self, low, high):
+        self.slider.sliderMoved.disconnect(self.updatePlotAxes)
+        self.slider.setRange(low, high)
+        self.slider.sliderMoved.connect(self.updatePlotAxes)
 
     def closeEvent(self, event: QCloseEvent) -> None:
 

@@ -12,6 +12,7 @@ from nodedge.dats.n_plot_widget import NPlotWidget
 class WorksheetsTabWidget(QTabWidget):
     def __init__(self, parent=None, workbookName="Workbook1"):
         super().__init__(parent)
+        self.workbookTabsWidget = parent
         self.worksheets: List[NPlotWidget] = []
         self.addWorksheet()
         self.name = workbookName
@@ -151,20 +152,21 @@ class WorksheetsTabWidget(QTabWidget):
     def addCurvePlot(self, x, y, name=""):
         index = self.currentIndex()
         plotWidget: NPlotWidget = self.worksheets[index]
+        colorIndex = len(plotWidget.plotItem.vb.curves.keys())
         dataItem: NPlotDataItem = NPlotDataItem(
             clickable=True,
-            pen=({"color": (len(plotWidget.items.keys()), 13), "width": 2}),
+            pen=({"color": (colorIndex, 13), "width": 2}),
             skipFiniteCheck=True,
-            symbolPen=({"color": (len(plotWidget.items.keys()), 13), "width": 2}),
+            symbolPen=({"color": (colorIndex, 13), "width": 2}),
             symbol=None,
-            symbolBrush=pg.intColor(len(plotWidget.items.keys()), 13),
+            symbolBrush=pg.intColor(colorIndex, 13),
         )
 
         dataItem.setData(x=x, y=y, name=name)
         plotWidget.addDataItem(dataItem, name)
         dataItem.getViewBox().setAutoPan(x=True, y=True)
 
-        self.setTabToolTip(index, str(list(plotWidget.items.keys())))
+        self.setTabToolTip(index, "\n".join(list(plotWidget.items.keys())))
 
     def viewAll(self):
         for worksheet in self.worksheets:

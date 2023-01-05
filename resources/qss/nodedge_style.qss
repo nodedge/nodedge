@@ -17,7 +17,7 @@ border:0;
 
 QMdiArea QTabBar,QTabBar::tab
 {
-font-size: 14px;
+/*font-size: 14px;*/
 height:25px;
 }
 
@@ -50,7 +50,7 @@ background:palette(highlight);
 QMdiArea QTabBar,QTabBar::close-button{
 image:url("resources/white_icons/close_window.png");
 subcontrol-position:right bottom;
-icon-size: 14px;
+icon-size: 10px;
 padding: 0px;
 }
 
@@ -59,7 +59,7 @@ image:url("resources/white_icons/close_window.png");
 }
 
 QDockWidget{
-    font-size: 16px;
+    /*font-size: 16px;*/
     color: palette(window-text);
     /*font-weight:bold;*/
     titlebar-close-icon: url("resources/white_icons/close_window.png");
@@ -237,6 +237,7 @@ QLineEdit{
 background:palette(midLight);
 border-radius:2px;
 padding:1px 2px;
+font-size: 16px;
 }
 
 QGraphicsView {
@@ -559,4 +560,8 @@ LogsListWidget {
 QListView::item {
   height: 25px;
   border: 1px solid transparent;
+}
+
+QTreeWidget {
+    font-size: 16px;
 }
