@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 import numpy as np
 import pyqtgraph as pg
@@ -17,7 +17,7 @@ from pyqtgraph import (
 from pyqtgraph.GraphicsScene.mouseEvents import MouseClickEvent
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import QEvent, QPointF, Qt, Signal
-from PySide6.QtGui import QDropEvent, QMouseEvent
+from PySide6.QtGui import QDragEnterEvent, QDropEvent, QMouseEvent
 from PySide6.QtWidgets import QApplication, QColorDialog
 
 from nodedge.dats.n_plot_data_item import NPlotDataItem
@@ -218,13 +218,23 @@ class NPlotWidget(GraphicsLayoutWidget):
         self.plotItem.setRange(xRange=(minRange, maxRange))
         # self.plotItem.vb.xAxis.setRange(minRange, maxRange)
 
-    def dragEnterEvent(self, e):
+    def dragEnterEvent(self, e: QDragEnterEvent) -> None:
+        """
+        Handle drag enter event. If the MIME data contains plain text, then accept the drag event.
+        :param e: `QDragEnterEvent`
+        :return: None
+        """
         if e.mimeData().hasFormat("text/plain"):
             e.acceptProposedAction()
 
-    def dropEvent(self, event: QDropEvent):
-        curvesNames = event.mimeData().text()
-        curvesNames = curvesNames.split("\n")
+    def dropEvent(self, event: QDropEvent) -> None:
+        """
+        Handle drop event. Plot curves from curves names in MIME text.
+        :param event: `QDropEvent`
+        :return: None
+        """
+        curvesNamesStr: str = event.mimeData().text()
+        curvesNames: List[str] = curvesNamesStr.split("\n")
         self.worksheetsTabWidget.workbookTabsWidget.window.plotCurves(curvesNames)
         event.accept()
 
