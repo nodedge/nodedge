@@ -457,7 +457,6 @@ class EditorWindow(QMainWindow):
                     dir=EditorWindow.getFileDialogDirectory(),
                     filter=EditorWindow.getFileDialogFilter(),
                 )
-                print(ok)
 
             if filename == "":
                 self.newFile()
@@ -505,7 +504,6 @@ class EditorWindow(QMainWindow):
         filename = filename.replace(".json", "")
 
         filePath = os.path.join(data_path, filename + ".png")
-        print(filePath)
 
         if not os.path.exists(data_path):
             os.makedirs(data_path)
@@ -531,7 +529,6 @@ class EditorWindow(QMainWindow):
         self.writeRecentFilesSettings()
         self.updateRecentFilesMenu()
 
-        print(self.recentFiles)
         self.recentFilesUpdated.emit(self.recentFiles)
 
     def saveFileAs(self):
