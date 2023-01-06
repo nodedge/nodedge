@@ -473,5 +473,20 @@
             "target": 140476592970720
         }
     ],
-    "elements": []
+    "elements": [
+        {
+            "id": 2042182421760,
+            "posX": 2.0,
+            "posY": -412.0,
+            "content": "Calculator example."
+        }
+    ],
+    "simulator": {
+        "solver": null,
+        "solverName": null,
+        "solverOptions": null,
+        "timeStep": null,
+        "maxIterations": null,
+        "tolerance": null
+    }
 }

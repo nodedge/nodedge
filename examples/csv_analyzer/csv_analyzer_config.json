@@ -1,0 +1,77 @@
+{
+  "curves": {},
+  "layout": {
+    "Workbook1": {
+      "Woorksheet2": [
+        {
+          "dist_to_target": {
+            "color": [
+              0,
+              13
+            ],
+            "width": 2
+          }
+        },
+        {
+          "movement_time": {
+            "color": [
+              0,
+              13
+            ],
+            "width": 2
+          }
+        }
+      ],
+      "Worksheet1": [
+        {
+          "init_x": {
+            "color": [
+              0,
+              13
+            ],
+            "width": 2
+          },
+          "target_x": {
+            "color": [
+              1,
+              13
+            ],
+            "width": 2
+          }
+        },
+        {
+          "init_y": {
+            "color": [
+              0,
+              13
+            ],
+            "width": 2
+          },
+          "target_y": {
+            "color": [
+              1,
+              13
+            ],
+            "width": 2
+          }
+        },
+        {
+          "init_z": {
+            "color": [
+              0,
+              13
+            ],
+            "width": 2
+          },
+          "target_z": {
+            "color": [
+              1,
+              13
+            ],
+            "width": 2
+          }
+        }
+      ]
+    }
+  }
+}
