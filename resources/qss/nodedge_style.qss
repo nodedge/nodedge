@@ -133,9 +133,6 @@ QMenu::separator{
     background:palette(light);
 }
 
-QToolButton {
-    padding: 0px 1px;
-}
 
 QMenu:disabled,
 QMenu::item:disabled{
@@ -203,9 +200,28 @@ stop: 0.7 palette(light), stop: 1.0 palette(light));
 
 QPushButton:hover{
 color:palette(button-text);
+/*background:palette(dark);*/
 background:palette(base);
 border-color:palette(dark);
 }
+
+FileToolButton:hover{
+background-color:palette(base);
+}
+
+QToolButton {
+    padding: 0px 1px;
+}
+
+FileToolButton
+{
+    color: palette(text);
+    background-color: palette(midlight);
+    border: 0px solid palette(light);
+    border-radius: 5px;
+}
+
+
 
 /*QPushButton:focus,*/
 /*QPushButton:hover,*/
@@ -565,3 +581,9 @@ QListView::item {
 QTreeWidget {
     font-size: 16px;
 }
+/*
+#newNodedgeFileButton {
+    icon: url("resources/white_icons/create.png");
+    icon-size: 300px;
+}
+*/

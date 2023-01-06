@@ -401,6 +401,7 @@ class MdiWindow(EditorWindow):
             self.onSceneCoderOutputSocketDisconnect
         )
         subWindow = self.mdiArea.addSubWindow(editor)
+        self.mdiArea.setActiveSubWindow(subWindow)
 
         icon = QIcon(".")
         subWindow.setWindowIcon(icon)
@@ -578,12 +579,14 @@ class MdiWindow(EditorWindow):
         :return: ``None``
         """
         if isinstance(filenames, bool) or filenames is None:
-            filenames, _ = QFileDialog.getOpenFileNames(
+            filenames, ok = QFileDialog.getOpenFileNames(
                 parent=self,
                 caption="Open graph from file",
                 dir=EditorWindow.getFileDialogDirectory(),
                 filter=EditorWindow.getFileDialogFilter(),
             )
+            if not ok:
+                return
         else:
             # If only one file is given as input,
             # convert the string in list to let the next for loop work properly.
@@ -610,6 +613,12 @@ class MdiWindow(EditorWindow):
                     else:
                         self.__logger.debug("Loading fail")
                         editor.close()
+            else:
+                editor = MdiWidget()
+                editor.newFile()
+                subWindow = self._createMdiSubWindow(editor)
+                subWindow.show()
+                self.sceneItemsTableWidget.update()
 
     def about(self) -> None:
         """

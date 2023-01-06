@@ -17,6 +17,12 @@ class HomePageWindow(QMainWindow):
         self.mainWidget = MainWidget()
         self.setCentralWidget(self.mainWidget)
 
+    @property
+    def homeContentWidget(self):
+        return self.mainWidget.mainBodyFrame.centralWidget.stackedWidgets[
+            "Home"
+        ].contentWidget
+
 
 if __name__ == "__main__":
 

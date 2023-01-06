@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
+import logging
 import os
 import sys
 
+_logger_canmatrix = logging.getLogger("canmatrix")
+_logger_canmatrix.setLevel(100)
+
 from PySide6.QtWidgets import QApplication
 
-from nodedge.logger import highLightLoggingSetup, setupLogging
+from nodedge.logger import setupLogging
 from nodedge.nodedge_app_window import NodedgeAppWindow
 from nodedge.splash_screen import SplashScreen
 from nodedge.utils import dumpException
@@ -15,12 +19,12 @@ os.environ["QT_API"] = "pyside6"
 
 def main():
     app: QApplication = QApplication(sys.argv)
+    app.setApplicationName("Nodedge")
     splash = SplashScreen()
     splash.show()
-    setupLogging()
-    highLightLoggingSetup()
 
     window = NodedgeAppWindow()
+    setupLogging()
 
     # window = MdiWindow()
     # splash.closeSignal.connect(window.show)

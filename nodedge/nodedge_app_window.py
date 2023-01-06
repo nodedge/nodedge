@@ -37,6 +37,19 @@ class NodedgeAppWindow(QMainWindow):
             lambda: self.layout.setCurrentWidget(self.homepageWindow)
         )
 
+        self.mdiWindow.recentFilesUpdated.connect(
+            self.homepageWindow.homeContentWidget.updateNodedgeRecentFilesButtons
+        )
+        self.mdiWindow.recentFilesUpdated.emit(self.mdiWindow.recentFiles)
+
+        def openNodeEdgeFile(text):
+            self.layout.setCurrentWidget(self.mdiWindow)
+            self.mdiWindow.openFile(text)
+
+        self.homepageWindow.homeContentWidget.nodedgeFileClicked.connect(
+            openNodeEdgeFile
+        )
+
         self.homepageWindow.mainWidget.headerFrame.datsButton.clicked.connect(
             lambda: self.layout.setCurrentWidget(self.datsWindow)
         )

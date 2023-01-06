@@ -12,18 +12,15 @@ from PySide6.QtCore import QTimer
 from PySide6.QtGui import QColor, QGuiApplication, QPalette, Qt
 from PySide6.QtWidgets import QApplication
 
-from nodedge.logger import logger
 from nodedge.utils import loadStyleSheet
+
+logger = logging.getLogger(__name__)
 
 
 class ApplicationStyler:
     """:class:`~nodedge.application_styler.ApplicationStyler` class ."""
 
     def __init__(self, palette="Dark"):
-        self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.INFO)
-
-        logger.debug(os.getcwd())
 
         self.styleSheetFilename = os.path.join(
             os.path.dirname(__file__), "../resources/qss/nodedge_style.qss"
@@ -36,6 +33,8 @@ class ApplicationStyler:
         self.timer.setTimerType(Qt.PreciseTimer)
         self.timer.setInterval(500)
         self.timer.timeout.connect(self.checkStylesheet)
+
+        logger.debug("Application styler set up.")
         # self.timer.start()
 
     def setCustomPalette(self, palette="Dark"):
@@ -108,7 +107,7 @@ class ApplicationStyler:
         try:
             modTime = os.path.getmtime(self.styleSheetFilename)
         except FileNotFoundError:
-            self.__logger.warning("Stylesheet was not found")
+            logger.warning("Stylesheet was not found")
             return
 
         if modTime != self.stylesheetLastModified:
