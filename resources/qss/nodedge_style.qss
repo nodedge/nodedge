@@ -190,7 +190,7 @@ QTableView::item:selected,QTableView::item:active:selected {
 
 QPushButton{
 border: 1px solid palette(light);
-border-radius: 0;
+border-radius: 5px;
 color: palette(text);
 padding: 6px 16px;
 background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
@@ -581,9 +581,8 @@ QListView::item {
 QTreeWidget {
     font-size: 16px;
 }
-/*
+
 #newNodedgeFileButton {
-    icon: url("resources/white_icons/create.png");
+    image: url("resources/white_icons/create.png");
     icon-size: 300px;
 }
-*/

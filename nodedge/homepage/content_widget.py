@@ -85,12 +85,15 @@ class HomeContentWidget(ContentWidget):
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
-        self.label = QLabel("Welcome to Nodedge")
+        self.label = QLabel("<b>Open Nodedge file</b>")
         self.label.setAlignment(Qt.AlignCenter)
 
         self.layout.addWidget(self.label)
 
         self.createNodedgeRecentFilesWidget()
+        self.datsLabel = QLabel("<b>Open Dats file</b>")
+        self.datsLabel.setAlignment(Qt.AlignCenter)
+        self.layout.addWidget(self.datsLabel)
         self.createDatsRecentFilesWidget()
 
     def createNodedgeRecentFilesWidget(self):
@@ -103,7 +106,9 @@ class HomeContentWidget(ContentWidget):
 
     def updateNodedgeRecentFilesButtons(self, filepaths):
         self.recentFilesLayout.clear()
-        for filepath in filepaths:
+        for index, filepath in enumerate(filepaths):
+            if index > 3:
+                break
             shortpath = filepath.replace("\\", "/")
             shortpath = shortpath.split("/")[-1]
             fileButton = FileToolButton()
@@ -128,8 +133,11 @@ class HomeContentWidget(ContentWidget):
             fileButton.clicked.connect(self.onNodedgeRecentFileClicked)
         newFileButton = FileToolButton()
         newFileButton.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        # icon = QIcon("resources/white_icons/create.png")
+        # newFileButton.setIcon(icon)
+        # newFileButton.setIconSize(QSize(BUTTON_SIZE, BUTTON_SIZE))
         newFileButton.setFixedSize(BUTTON_SIZE, BUTTON_SIZE)
-        newFileButton.setText("New file")
+        # newFileButton.setText("New file")
         newFileButton.setToolTip("")
         newFileButton.setObjectName("newNodedgeFileButton")
         newFileButton.clicked.connect(self.onNodedgeRecentFileClicked)
@@ -144,7 +152,7 @@ class HomeContentWidget(ContentWidget):
         self.datsRecentFilesLayout = FlowLayout()
         self.datsRecentFilesLayout.setAlignment(Qt.AlignCenter)
         self.datsRecentFilesWidget.setLayout(self.datsRecentFilesLayout)
-        for i in range(5):
+        for i in range(4):
             fileButton = QPushButton()
             fileButton.setFixedSize(BUTTON_SIZE, BUTTON_SIZE)
             fileButton.setText("File " + str(i))

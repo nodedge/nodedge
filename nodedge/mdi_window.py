@@ -189,7 +189,8 @@ class MdiWindow(EditorWindow):
             "&Debug",
             self.onDebugSwitched,
             "Enable/Disable the debug mode",
-            QKeySequence("ctrl+alt+shift+d"),
+            QKeySequence("ctrl+shift+d"),
+            checkable=True,
         )
 
         self.showDialogActionsAct = self.createAction(
@@ -520,6 +521,7 @@ class MdiWindow(EditorWindow):
         self.sceneItemsDock.setFloating(False)
 
         self.addDockWidget(Qt.LeftDockWidgetArea, self.sceneItemsDock)
+        self.sceneItemsDock.hide()
 
     # noinspection PyAttributeOutsideInit
     def createPythonConsole(self) -> None:
@@ -696,6 +698,16 @@ class MdiWindow(EditorWindow):
     def onDebugSwitched(self):
         """Event called when the debug action is triggered."""
         self.debugMode = not self.debugMode
+        if self.debugMode:
+            self.__logger.debug("Debug mode activated")
+            self.statusBar().showMessage("Debug mode activated")
+            self.sceneItemsDock.show()
+            self.debugAct.setChecked(True)
+        else:
+            self.__logger.debug("Debug mode deactivated")
+            self.statusBar().showMessage("Debug mode deactivated")
+            self.sceneItemsDock.hide()
+            self.debugAct.setChecked(False)
 
     @Slot()
     def onShowDialogActions(self):

@@ -701,7 +701,13 @@ class EditorWindow(QMainWindow):
         settings = QSettings(self.companyName, self.productName)
         self.restoreGeometry(settings.value("geometry"))
         self.restoreState(settings.value("windowState"))
-        self.debugMode = settings.value("debug", False)
+        debugMode = settings.value("debug", False)
+        if debugMode == "false":
+            self.debugMode = False
+        elif debugMode == "true":
+            self.debugMode = True
+        else:
+            self.debugMode = debugMode
         self.recentFiles = list(settings.value("recent_files", []))
 
     def writeSettings(self):
@@ -759,6 +765,7 @@ class EditorWindow(QMainWindow):
         callback: Callable,
         statusTip: Optional[str] = None,
         shortcut: Union[None, str, QKeySequence] = None,
+        checkable: bool = False,
     ) -> QAction:
         """
         Create an action for this window and add it to actions list.
@@ -774,7 +781,7 @@ class EditorWindow(QMainWindow):
         :type shortcut: ``Optional[str]``
         :return:
         """
-        act = QAction(name, self)
+        act = QAction(name, self, checkable=checkable)
         act.triggered.connect(callback)  # type: ignore
 
         if statusTip is not None:

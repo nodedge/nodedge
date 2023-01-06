@@ -28,6 +28,7 @@ class NPlotWidget(GraphicsLayoutWidget):
     xRangeUpdated = Signal(int, int)
 
     def __init__(self, parent=None, name=""):
+        print(parent)
         super().__init__(parent)
         self.name = name
         self.worksheetsTabWidget = parent

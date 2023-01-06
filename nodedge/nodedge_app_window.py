@@ -1,8 +1,10 @@
 import os
 
-from PySide6.QtGui import QCloseEvent, QIcon
-from PySide6.QtWidgets import QMainWindow, QStackedLayout, QWidget
+from PySide6.QtCore import QEasingCurve
+from PySide6.QtGui import QCloseEvent, QIcon, Qt
+from PySide6.QtWidgets import QMainWindow
 
+from custom_widgets import QCustomStackedWidget
 from nodedge.dats.dats_window import DatsWindow
 from nodedge.homepage.homepage_window import HomePageWindow
 from nodedge.mdi_window import MdiWindow
@@ -16,25 +18,34 @@ class NodedgeAppWindow(QMainWindow):
             os.path.join(os.path.dirname(__file__), "../resources/nodedge_logo.png")
         )
         self.setWindowIcon(icon)
-        self.mainWidget = QWidget()
-        self.layout = QStackedLayout()
-        self.mainWidget.setLayout(self.layout)
+        self.mainWidget = QCustomStackedWidget()
+        self.mainWidget.setTransitionSpeed(1000)
+        # self.mainWidget.setTransitionEasingCurve(QEasingCurve.InOutQuart)
+        self.mainWidget.setTransitionEasingCurve(QEasingCurve.OutCubic)
+        self.mainWidget.setTransitionDirection(Qt.Horizontal)
+
+        self.mainWidget.setSlideTransition(True)
+        # self.mainWidget.setFadeTransition(True)
+        # self.layout = QStackedLayout()
+        # self.mainWidget.setLayout(self.layout)
+        # self.widget = QCustomStackedWidget()
+        self.setCentralWidget(self.mainWidget)
         # mdiWindow.openFile(
         #     f"{os.path.dirname(__file__)}/../examples/calculator/calculator.json"
         # )
 
-        self.mdiWindow = MdiWindow()
-        self.layout.addWidget(self.mdiWindow)
         self.homepageWindow = HomePageWindow()
-        self.layout.addWidget(self.homepageWindow)
+        self.mainWidget.addWidget(self.homepageWindow)
+        self.mdiWindow = MdiWindow()
+        self.mainWidget.addWidget(self.mdiWindow)
         self.datsWindow = DatsWindow()
-        self.layout.addWidget(self.datsWindow)
-        self.setCentralWidget(self.mainWidget)
+        self.mainWidget.addWidget(self.datsWindow)
+        # self.setCentralWidget(self.mainWidget)
         self.homepageWindow.mainWidget.headerFrame.nodedgeButton.clicked.connect(
-            lambda: self.layout.setCurrentWidget(self.mdiWindow)
+            lambda: self.mainWidget.setCurrentWidget(self.mdiWindow)
         )
         self.mdiWindow.homeMenu.aboutToShow.connect(
-            lambda: self.layout.setCurrentWidget(self.homepageWindow)
+            lambda: self.mainWidget.setCurrentWidget(self.homepageWindow)
         )
 
         self.mdiWindow.recentFilesUpdated.connect(
@@ -43,7 +54,7 @@ class NodedgeAppWindow(QMainWindow):
         self.mdiWindow.recentFilesUpdated.emit(self.mdiWindow.recentFiles)
 
         def openNodeEdgeFile(text):
-            self.layout.setCurrentWidget(self.mdiWindow)
+            self.mainWidget.setCurrentWidget(self.mdiWindow)
             self.mdiWindow.openFile(text)
 
         self.homepageWindow.homeContentWidget.nodedgeFileClicked.connect(
@@ -51,16 +62,16 @@ class NodedgeAppWindow(QMainWindow):
         )
 
         self.homepageWindow.mainWidget.headerFrame.datsButton.clicked.connect(
-            lambda: self.layout.setCurrentWidget(self.datsWindow)
+            lambda: self.mainWidget.setCurrentWidget(self.datsWindow)
         )
         self.mdiWindow.homeMenu.aboutToShow.connect(
-            lambda: self.layout.setCurrentWidget(self.homepageWindow)
+            lambda: self.mainWidget.setCurrentWidget(self.homepageWindow)
         )
 
         self.datsWindow.homeMenu.aboutToShow.connect(
-            lambda: self.layout.setCurrentWidget(self.homepageWindow)
+            lambda: self.mainWidget.setCurrentWidget(self.homepageWindow)
         )
-        self.centralWidget().layout().setCurrentIndex(1)
+        self.mainWidget.setCurrentIndex(0)
 
     def closeEvent(self, event: QCloseEvent) -> None:
         ok = self.mdiWindow.close()
