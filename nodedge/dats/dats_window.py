@@ -315,6 +315,29 @@ class DatsWindow(QMainWindow):
             QKeySequence("Space"),
         )
 
+        self.takeScreenShotAct = self.createAction(
+            "Take screenShot",
+            self.onScreenShot,
+            "Take screenShot",
+            QKeySequence("Ctrl+Shift+Space"),
+        )
+
+    def onScreenShot(self):
+        """
+        Take screenShot
+        """
+        filename, _ = QFileDialog.getSaveFileName(
+            parent=self,
+            caption="Save graph to file",
+            dir=DatsWindow.getFileDialogDirectory(),
+            filter="PNG (*.png);; JPG (*.jpg);; JPEG (*.jpeg)",
+        )
+
+        if not filename:
+            return
+
+        self.workbooksTabWidget.currentWidget().grab().save(filename)
+
     def viewAll(self):
         w: WorksheetsTabWidget = self.workbooksTabWidget.currentWidget()
         w.viewAll()
@@ -399,10 +422,14 @@ class DatsWindow(QMainWindow):
     def createFileMenu(self):
         self.fileMenu: QMenu = self.menuBar().addMenu("&File")
         self.fileMenu.addAction(self.openAct)
+        self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.createWorksheetAct)
         self.fileMenu.addAction(self.createWorkbookAct)
+        self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.saveConfigAct)
         self.fileMenu.addAction(self.restoreConfigAct)
+        self.fileMenu.addSeparator()
+        self.fileMenu.addAction(self.takeScreenShotAct)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit
     def createHelpMenu(self):

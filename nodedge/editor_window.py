@@ -240,6 +240,31 @@ class EditorWindow(QMainWindow):
             QKeySequence("Ctrl+Shift+S"),
         )
 
+        self.takeScreenShotAct = self.createAction(
+            "Take screenShot",
+            self.takeScreenshot,
+            "Take screenShot",
+            QKeySequence("Ctrl+Shift+Space"),
+        )
+
+    def takeScreenshot(self, filename=None):
+        """
+        Take screenShot
+        """
+        self.__logger.debug("Take screenShot")
+        if filename is None:
+            filename, _ = QFileDialog.getSaveFileName(
+                parent=self,
+                caption="Save graph to file",
+                dir=EditorWindow.getFileDialogDirectory(),
+                filter="PNG (*.png);; JPG (*.jpg);; JPEG (*.jpeg)",
+            )
+
+        if not filename:
+            return
+
+        self.currentEditorWidget.scene.graphicsView.grab().save(filename)
+
     def onSimulate(self):
         self.currentEditorWidget.scene.simulator.run()
 
@@ -313,6 +338,8 @@ class EditorWindow(QMainWindow):
         self.fileMenu.addAction(self.openAct)
         self.fileMenu.addAction(self.saveAct)
         self.fileMenu.addAction(self.saveAsAct)
+        self.fileMenu.addSeparator()
+        self.fileMenu.addAction(self.takeScreenShotAct)
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.quitAct)
 
