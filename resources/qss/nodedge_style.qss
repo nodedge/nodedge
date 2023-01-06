@@ -203,7 +203,7 @@ stop: 0.7 palette(light), stop: 1.0 palette(light));
 
 QPushButton:hover{
 color:palette(button-text);
-background:palette(window);
+background:palette(base);
 border-color:palette(dark);
 }
 
@@ -459,10 +459,10 @@ HeaderIconButton, HeaderTextButton {
     icon: url("resources/white_icons/line_chart.png");
 }
 
-HeaderIconButton:hover{
+/*HeaderIconButton:hover{
     border-color:palette(highlight);
     background:palette(base);
-}
+}*/
 
 HeaderIconButton:pressed,
 HeaderIconButton:pressed:focus{
@@ -494,10 +494,10 @@ MenuButton:pressed
     border-color:palette(highlight);
 }
 
-MenuButton:hover
+/*MenuButton:hover
 {
     border-color:palette(highlight);
-}
+}*/
 
 MenuButton:checked
 {
