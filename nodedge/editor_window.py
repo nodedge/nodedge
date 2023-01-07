@@ -797,7 +797,7 @@ class EditorWindow(QMainWindow):
         :type checkable: ``bool``
         :return:
         """
-        act = QAction(parent=self, text=name, checkable=checkable)
+        act = QAction(parent=self, text=name, checkable=checkable)  # type: ignore
         act.triggered.connect(callback)
 
         if statusTip is not None:
@@ -809,4 +809,4 @@ class EditorWindow(QMainWindow):
 
         self.addAction(act)
 
-        return act
+        return act  # type: ignore
