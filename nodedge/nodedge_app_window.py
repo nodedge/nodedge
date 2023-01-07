@@ -61,6 +61,17 @@ class NodedgeAppWindow(QMainWindow):
             openNodeEdgeFile
         )
 
+        self.datsWindow.recentFilesUpdated.connect(
+            self.homepageWindow.homeContentWidget.updateDatsRecentFilesWidget
+        )
+        self.datsWindow.recentFilesUpdated.emit(self.datsWindow.recentFiles)
+
+        def openDatsFile(text):
+            self.mainWidget.setCurrentWidget(self.datsWindow)
+            self.datsWindow.openLog(text)
+
+        self.homepageWindow.homeContentWidget.datsFileClicked.connect(openDatsFile)
+
         self.homepageWindow.mainWidget.headerFrame.datsButton.clicked.connect(
             lambda: self.mainWidget.setCurrentWidget(self.datsWindow)
         )

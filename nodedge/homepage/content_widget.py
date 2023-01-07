@@ -12,7 +12,6 @@ from PySide6.QtWidgets import (
     QLabel,
     QLineEdit,
     QMessageBox,
-    QPushButton,
     QSizePolicy,
     QToolButton,
     QVBoxLayout,
@@ -133,11 +132,7 @@ class HomeContentWidget(ContentWidget):
             fileButton.clicked.connect(self.onNodedgeRecentFileClicked)
         newFileButton = FileToolButton()
         newFileButton.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-        # icon = QIcon("resources/white_icons/create.png")
-        # newFileButton.setIcon(icon)
-        # newFileButton.setIconSize(QSize(BUTTON_SIZE, BUTTON_SIZE))
         newFileButton.setFixedSize(BUTTON_SIZE, BUTTON_SIZE)
-        # newFileButton.setText("New file")
         newFileButton.setToolTip("")
         newFileButton.setObjectName("newNodedgeFileButton")
         newFileButton.clicked.connect(self.onNodedgeRecentFileClicked)
@@ -152,20 +147,37 @@ class HomeContentWidget(ContentWidget):
         self.datsRecentFilesLayout = FlowLayout()
         self.datsRecentFilesLayout.setAlignment(Qt.AlignCenter)
         self.datsRecentFilesWidget.setLayout(self.datsRecentFilesLayout)
-        for i in range(4):
-            fileButton = QPushButton()
+
+    def updateDatsRecentFilesWidget(self, filePaths):
+        self.datsRecentFilesLayout.clear()
+        for index, filepath in enumerate(filePaths):
+            if index > 4:
+                break
+            shortpath = filepath.replace("\\", "/")
+            shortpath = shortpath.split("/")[-1]
+            fileButton = FileToolButton()
             fileButton.setFixedSize(BUTTON_SIZE, BUTTON_SIZE)
-            fileButton.setText("File " + str(i))
+            fileButton.setText(shortpath)
+            fileButton.setToolTip(filepath)
+
+            dataPath = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation)
+            filename = filepath
+            filename = filename.replace("\\", "_")
+            filename = filename.replace("/", "_")
+            filename = filename.replace(":", "_")
+            filename = filename.replace(".json", "")
+
+            filePath = os.path.join(dataPath, filename + ".png")
+            if os.path.exists(filePath):
+                QIcon(filePath)
+                fileButton.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+                fileButton.setIcon(QIcon(filePath))
+                fileButton.setIconSize(QSize(BUTTON_SIZE, BUTTON_SIZE))
             self.datsRecentFilesLayout.addWidget(fileButton)
             fileButton.clicked.connect(self.onDatsRecentFileClicked)
-        newFileButton = QPushButton()
-        newFileButton.setFixedSize(BUTTON_SIZE, BUTTON_SIZE)
-        newFileButton.setText("New file")
-        newFileButton.clicked.connect(self.onDatsRecentFileClicked)
-        self.datsRecentFilesLayout.addWidget(newFileButton)
 
     def onDatsRecentFileClicked(self):
-        print("Nodedge " + self.sender().text() + " clicked")
+        self.datsFileClicked.emit(self.sender().toolTip())
 
 
 class SettingsContentWidget(ContentWidget):

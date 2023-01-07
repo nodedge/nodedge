@@ -1,14 +1,14 @@
 import json
 import logging
 import sys
-from typing import Callable, Optional, Union
+from typing import Callable, List, Optional, Union
 
 import pyqtgraph as pg
 from asammdf import MDF
 from asammdf.blocks.utils import MdfException
 from asammdf.blocks.v2_v3_blocks import Channel
 from pyqtgraph import PlotDataItem
-from PySide6.QtCore import QSettings, QStandardPaths, Qt, QTimer
+from PySide6.QtCore import QSettings, QStandardPaths, Qt, QTimer, Signal
 from PySide6.QtGui import QAction, QCloseEvent, QKeySequence
 from PySide6.QtWidgets import (
     QApplication,
@@ -36,9 +36,15 @@ from nodedge.utils import dumpException
 
 
 class DatsWindow(QMainWindow):
+    recentFilesUpdated = Signal(object)
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        self.companyName = "Nodedge"
+        self.productName = "Dats"
+
+        self.recentFiles: List[str] = []
         self.curveConfig = {}
 
         self.workbooksTabWidget = WorkbooksTabWidget(self)
@@ -81,6 +87,8 @@ class DatsWindow(QMainWindow):
 
         self.modifiedConfig = False
 
+        self.readSettings()
+
     @property
     def configPath(self):
         return self._configPath
@@ -114,6 +122,7 @@ class DatsWindow(QMainWindow):
         self.slider.sliderMoved.connect(self.updatePlotAxes)
 
     def closeEvent(self, event: QCloseEvent) -> None:
+        self.writeSettings()
 
         if self.modifiedConfig:
             res = QMessageBox.warning(
@@ -421,6 +430,8 @@ class DatsWindow(QMainWindow):
     def createFileMenu(self):
         self.fileMenu: QMenu = self.menuBar().addMenu("&File")
         self.fileMenu.addAction(self.openAct)
+        self.recentFilesMenu = self.fileMenu.addMenu("Open recent")
+        self.updateRecentFilesMenu()
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.createWorksheetAct)
         self.fileMenu.addAction(self.createWorkbookAct)
@@ -465,6 +476,55 @@ class DatsWindow(QMainWindow):
         log = self.logsWidget.logsListWidget.openLog(filename)
         self.updateDataItems(log)
         self.modifiedConfig = True
+
+        self.addToRecentFiles(filename)
+
+    def addToRecentFiles(self, filepath):
+        """
+        Add to the recent files list.
+
+        :param filepath: absolute path and filename of the file to open.
+        :type filepath: ``str``
+        """
+        if filepath in self.recentFiles:
+            self.recentFiles.remove(filepath)
+        self.recentFiles.insert(0, filepath)
+
+        if len(self.recentFiles) > 10:
+            self.recentFiles.pop()
+
+        self.writeRecentFilesSettings()
+        self.updateRecentFilesMenu()
+
+        self.recentFilesUpdated.emit(self.recentFiles)
+
+    def removeFromRecentFiles(self, filePath: str):
+        """
+        Remove from the recent files list.
+
+        :param filePath: absolute path and filename of the file to open.
+        :type filePath: ``str``
+        """
+        if filePath in self.recentFiles:
+            self.recentFiles.remove(filePath)
+
+        self.writeRecentFilesSettings()
+        self.updateRecentFilesMenu()
+
+        self.recentFilesUpdated.emit(self.recentFiles)
+
+    def updateRecentFilesMenu(self):
+        self.recentFilesMenu.clear()
+        for index, filePath in enumerate(self.recentFiles):
+            shortpath = filePath.replace("\\", "/")
+            shortpath = filePath.split("/")[-1]
+            action = self.createAction(
+                shortpath,
+                lambda: self.openFile(filePath),
+                f"Open {filePath}",
+                QKeySequence(f"Ctrl+Shift+{1}"),
+            )
+            self.recentFilesMenu.addAction(action)
 
     def updateDataItems(self, log):
         self.signalsWidget.signalsTableWidget.updateItems(log)
@@ -551,6 +611,20 @@ class DatsWindow(QMainWindow):
         )
         workspacePath = str(settings.value("workspacePath", defaultWorkspacePath))
         return workspacePath
+
+    def readSettings(self):
+        settings = QSettings(self.companyName, self.productName)
+        self.recentFiles = list(settings.value("recent_files", []))
+
+    def writeSettings(self):
+        self.writeRecentFilesSettings()
+
+    def writeRecentFilesSettings(self):
+        """
+        Write the recent files settings for this application.
+        """
+        settings = QSettings(self.companyName, self.productName)
+        settings.setValue("recent_files", self.recentFiles)
 
 
 if __name__ == "__main__":
