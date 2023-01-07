@@ -344,6 +344,23 @@ class DatsWindow(QMainWindow):
             QKeySequence("Ctrl+Shift+Space"),
         )
 
+        self.removeLogAct = self.createAction(
+            "Remove log",
+            self.removeLog,
+            "Remove log",
+            QKeySequence("Ctrl+Shift+Delete"),
+        )
+
+    def removeLog(self):
+        for item in self.logsWidget.logsListWidget.selectedItems():
+            self.logsWidget.logsListWidget.logs.pop(item.text())
+            self.logsWidget.logsListWidget.takeItem(
+                self.logsWidget.logsListWidget.row(item)
+            )
+            logger.debug(self.logsWidget.logsListWidget.selectedItems())
+
+        self.updateDataItems(MDF())
+
     def onScreenShot(self):
         """
         Take screenShot
@@ -452,6 +469,7 @@ class DatsWindow(QMainWindow):
         self.fileMenu.addAction(self.openAct)
         self.recentFilesMenu = self.fileMenu.addMenu("Open recent")
         self.updateRecentFilesMenu()
+        self.fileMenu.addAction(self.removeLogAct)
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.createWorksheetAct)
         self.fileMenu.addAction(self.createWorkbookAct)
