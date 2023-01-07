@@ -586,8 +586,14 @@ class DatsWindow(QMainWindow):
 
                     except MdfException as mdfException:
                         logging.warning(mdfException)
+                        dataItem.setData(x=[0, 1], y=[0, 0])
+                        worksheet.updateRange(dataItem)
+
                         dataItem.curve.hide()
                         dataItem.scatter.hide()
+                        self.viewAll()
+
+        self.viewAll()
 
     @staticmethod
     def getFileDialogFilter() -> str:
