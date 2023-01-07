@@ -4,7 +4,7 @@ from PySide6.QtCore import QEasingCurve
 from PySide6.QtGui import QCloseEvent, QIcon, Qt
 from PySide6.QtWidgets import QMainWindow
 
-from custom_widgets import QCustomStackedWidget
+from nodedge.animated_stack_widget import AnimatedStackWidget
 from nodedge.dats.dats_window import DatsWindow
 from nodedge.homepage.homepage_window import HomePageWindow
 from nodedge.mdi_window import MdiWindow
@@ -18,7 +18,7 @@ class NodedgeAppWindow(QMainWindow):
             os.path.join(os.path.dirname(__file__), "../resources/nodedge_logo.png")
         )
         self.setWindowIcon(icon)
-        self.mainWidget = QCustomStackedWidget()
+        self.mainWidget = AnimatedStackWidget()
         self.mainWidget.setTransitionSpeed(1000)
         # self.mainWidget.setTransitionEasingCurve(QEasingCurve.InOutQuart)
         self.mainWidget.setTransitionEasingCurve(QEasingCurve.OutCubic)
