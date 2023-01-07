@@ -248,7 +248,7 @@ background:palette(window);
 }
 
 QLineEdit{
-font-size: 16px;
+/*font-size: 16px;*/
 /*border: 1px solid palette(button-text);*/
 background: palette(midLight);
 border-radius: 2px;
@@ -578,7 +578,7 @@ QListView::item {
 }
 
 QTreeWidget {
-    font-size: 16px;
+    /*font-size: 16px;*/
 }
 
 #newNodedgeFileButton {

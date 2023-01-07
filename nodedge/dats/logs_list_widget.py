@@ -1,6 +1,7 @@
 import logging
 from typing import Optional
 
+import nptdms
 import numpy as np
 import pandas as pd
 from asammdf import MDF
@@ -8,6 +9,8 @@ from asammdf import Signal as asammdfSignal
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QInputDialog, QListWidget, QListWidgetItem, QMessageBox
 from scipy.io import loadmat
+
+DUMMY_CHAR = ["'", "\\", " ", "-", "+", "*"]
 
 
 class LogsListWidget(QListWidget):
@@ -80,10 +83,41 @@ class LogsListWidget(QListWidget):
                     logging.warning(f"Skipped variable {key} with {dim} dimensions")
                     continue
                 timestamps = np.arange(len(newCol))
-                newSignal = asammdfSignal(samples=newCol, timestamps=timestamps, name=key)
+                newSignal = asammdfSignal(
+                    samples=newCol, timestamps=timestamps, name=key
+                )
                 signals.append(newSignal)
             log = MDF()
             log.append(signals)
+
+        elif extension.lower() == "tdms":
+            tdmsFile = nptdms.TdmsFile(filename)
+
+            # Convert file to dataframe and rename columns
+            df = tdmsFile.as_dataframe()
+            refactor_string = lambda text: remove_slash_from_string(
+                remove_dummy_char_from_string(text)
+            )
+            columns_dict = {column: refactor_string(column) for column in df.keys()}
+            df = df.rename(columns=columns_dict)
+
+            keys = df.keys()
+
+            signals = []
+            for key in keys:
+                newCol = np.squeeze(df[key])
+                dim = len(newCol.shape)
+                if dim != 1:
+                    logging.warning(f"Skipped variable {key} with {dim} dimensions")
+                    continue
+                timestamps = np.arange(len(newCol))
+                newSignal = asammdfSignal(
+                    samples=newCol, timestamps=timestamps, name=key
+                )
+                signals.append(newSignal)
+            log = MDF()
+            log.append(signals)
+
         else:
             logging.warning("Cannot open this extension")
             return None
@@ -120,3 +154,15 @@ class LogsListWidget(QListWidget):
 
     def onItemClicked(self, item):
         self.logSelected.emit(self.logs[item.text()])
+
+
+def remove_dummy_char_from_string(string, dummy_char=DUMMY_CHAR):
+    for c in dummy_char:
+        string = string.replace(c, "")
+
+    return string
+
+
+def remove_slash_from_string(string):
+    string = string.replace("/", "_")
+    return string
