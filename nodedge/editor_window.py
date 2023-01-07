@@ -483,9 +483,8 @@ class EditorWindow(QMainWindow):
             self.currentEditorWidget.saveFile(self.currentEditorWidget.filename)
 
         if self.currentEditorWidget.hasName:
-            self.updateRecentFiles(self.currentEditorWidget.filename)
-
             self.saveSnapshot()
+            self.updateRecentFiles(self.currentEditorWidget.filename)
 
             self.statusBar().showMessage(
                 f"Successfully saved to {self.currentEditorWidget.shortName}", 5000

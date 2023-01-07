@@ -219,9 +219,8 @@ FileToolButton
     background-color: palette(midlight);
     border: 0px solid palette(light);
     border-radius: 5px;
+    text-align: bottom;
 }
-
-
 
 /*QPushButton:focus,*/
 /*QPushButton:hover,*/
