@@ -1,3 +1,4 @@
+import logging
 import os
 from pathlib import Path
 
@@ -21,6 +22,8 @@ from PySide6.QtWidgets import (
 from nodedge.application_styler import ApplicationStyler
 from nodedge.flow_layout import FlowLayout
 from nodedge.homepage.workspace_selection_button import WorkspaceSelectionButton
+
+logger = logging.getLogger(__name__)
 
 MIN_HEIGHT = 30
 BUTTON_SIZE = 300
@@ -214,6 +217,7 @@ class SettingsContentWidget(ContentWidget):
         self.workspaceLayout.setContentsMargins(0, 0, 0, 0)
         self.workspaceLineEdit = QLineEdit()
         self.workspaceLineEdit.setText(str(self.workspacePath))
+        self.workspaceLineEdit.returnPressed.connect(self.workspaceLineEdit.clearFocus)
         self.workspaceLineEdit.editingFinished.connect(self.onWorkspaceChanged)
         button = WorkspaceSelectionButton(self, "...")
         button.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
@@ -224,8 +228,12 @@ class SettingsContentWidget(ContentWidget):
 
     def getPath(self):
         selectedFolder = QFileDialog.getExistingDirectory(self, "Select Folder")
+        if not selectedFolder:
+            return
         self.workspaceLineEdit.setText(selectedFolder)
-        self.workspacePath = Path(selectedFolder)
+        self.workspacePath = selectedFolder
+
+        self.onWorkspaceChanged()
 
     def restoreDefaultPath(self):
         settings = QSettings("Nodedge", "Nodedge")
@@ -244,8 +252,9 @@ class SettingsContentWidget(ContentWidget):
     def onWorkspaceChanged(self):
         text = self.workspaceLineEdit.text()
         validPath = Path.exists(Path(text))
-        if validPath:
+        if validPath and text != "":
             self.workspacePath = text
+            logger.debug(f"Workspace path updated: {self.workspacePath}")
 
             settings = QSettings("Nodedge", "Nodedge")
             settings.setValue("workspacePath", self.workspacePath)
