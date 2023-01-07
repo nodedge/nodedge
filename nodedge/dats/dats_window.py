@@ -303,7 +303,7 @@ class DatsWindow(QMainWindow):
         )
 
         self.delAct = self.createAction(
-            "&Delete",
+            "&Delete curve",
             self.deleteCurve,
             "Delete highlighted curve or last curve",
             QKeySequence("Del"),
@@ -414,8 +414,14 @@ class DatsWindow(QMainWindow):
         self.homeMenu: QMenu = self.menuBar().addMenu("&Home")
         self.homeMenu.aboutToShow.connect(self.closeHomeMenu)
         self.createFileMenu()
+        self.createViewMenu()
         self.createHelpMenu()
         self.createToolsMenu()
+
+    def createViewMenu(self):
+        self.viewMenu: QMenu = self.menuBar().addMenu("&View")
+        self.viewMenu.addAction(self.viewAllAct)
+        self.viewMenu.addSeparator()
 
     def closeHomeMenu(self):
         timer = QTimer(self)
