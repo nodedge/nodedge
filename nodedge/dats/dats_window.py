@@ -1,7 +1,7 @@
 import json
 import logging
 import sys
-from typing import Callable, Optional, Union, cast
+from typing import Callable, Optional, Union
 
 import pyqtgraph as pg
 from asammdf import MDF
@@ -27,7 +27,6 @@ from nodedge.dats.curve_dialog import CurveDialog
 from nodedge.dats.formula_evaluator import evaluateFormula
 from nodedge.dats.logs_widget import LogsWidget
 from nodedge.dats.n_plot_data_item import NPlotDataItem
-from nodedge.dats.n_plot_widget import NPlotWidget
 from nodedge.dats.signals_widget import SignalsWidget
 from nodedge.dats.workbooks_tab_widget import WorkbooksTabWidget
 from nodedge.dats.worksheets_tab_widget import WorksheetsTabWidget
@@ -349,20 +348,20 @@ class DatsWindow(QMainWindow):
 
     def deleteCurve(self):
 
-        worksheetTabWidget: WorksheetsTabWidget = cast(
-            self.workbooksTabWidget.currentWidget(), WorksheetsTabWidget
-        )
-        nPlotWidget = cast(worksheetTabWidget.currentWidget(), NPlotWidget)
+        worksheetTabWidget = self.workbooksTabWidget.currentWidget()
+        nPlotWidget = worksheetTabWidget.currentWidget()
         if not nPlotWidget.items:
             return
 
-        if nPlotWidget.highlightedCurve is not None:
-            nPlotWidget.items.pop(nPlotWidget.highlightedCurve.name())
-            nPlotWidget.removeItem(nPlotWidget.highlightedCurve)
+        if nPlotWidget.plotItem.vb.highlightedCurve is not None:
+            nPlotWidget.plotItem.vb.curves.pop(
+                nPlotWidget.plotItem.vb.highlightedCurve.name()
+            )
+            nPlotWidget.plotItem.removeItem(nPlotWidget.plotItem.vb.highlightedCurve)
         else:
-            lastKey = list(nPlotWidget.items.keys())[-1]
-            curve = nPlotWidget.items.pop(lastKey)
-            nPlotWidget.removeItem(curve)
+            lastKey = list(nPlotWidget.plotItem.vb.curves.keys())[-1]
+            curve = nPlotWidget.plotItem.vb.curves.pop(lastKey)
+            nPlotWidget.plotItem.removeItem(curve)
         self.modifiedConfig = True
 
     # TODO: Remove duplicates of createAction
