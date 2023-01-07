@@ -195,9 +195,9 @@ class EditorWindow(QMainWindow):
         )
 
         self.fitInViewAct = self.createAction(
-            "Fit in view",
+            "Fit to view",
             self.onFitInView,
-            "Fit content in view",
+            "Fit content to view",
             QKeySequence(Qt.Key_Space),
         )
 
