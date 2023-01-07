@@ -46,7 +46,7 @@
       <option name="checkSyntaxErrors" value="true" />
       <option name="description" />
       <option name="exitCodeBehavior" value="ERROR" />
-      <option name="fileExtension" value="UNKNOWN" />
+      <option name="fileExtension" value="py" />
       <option name="immediateSync" value="true" />
       <option name="name" value="mypy" />
       <option name="output" value="$FilePath$" />
