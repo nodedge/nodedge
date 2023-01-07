@@ -580,7 +580,7 @@ class DatsWindow(QMainWindow):
         return "All files (*);;MF4 (*.mf4);;CSV (*.csv);;HDF5 (*.hdf5)"
 
     def createWorksheet(self):
-        self.workbooksTabWidget.currentWidget().addWorksheet(True)  # type: ignore
+        self.workbooksTabWidget.currentWidget().addWorksheet(True)
         self.modifiedConfig = True
 
     def createWorkbook(self):

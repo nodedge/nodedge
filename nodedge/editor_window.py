@@ -793,10 +793,12 @@ class EditorWindow(QMainWindow):
         :type statusTip: Optional[``str``]
         :param shortcut: Keyboard shortcut to trigger the action.
         :type shortcut: ``Optional[str]``
+        :param checkable: if checkable, a mark will appear near the action in the menu when active.
+        :type checkable: ``bool``
         :return:
         """
-        act = QAction(name, self, checkable=checkable)
-        act.triggered.connect(callback)  # type: ignore
+        act = QAction(parent=self, text=name, checkable=checkable)
+        act.triggered.connect(callback)
 
         if statusTip is not None:
             act.setStatusTip(statusTip)

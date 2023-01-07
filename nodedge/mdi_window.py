@@ -602,7 +602,7 @@ class MdiWindow(EditorWindow):
             if filename:
                 if not os.path.exists(filename):
                     ok = QMessageBox.warning(
-                        None,
+                        self,
                         "File not found",
                         f"File {filename} does not exist. \n"
                         "Do you want to open a new file?",
