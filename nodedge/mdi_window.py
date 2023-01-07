@@ -203,7 +203,7 @@ class MdiWindow(EditorWindow):
         )
 
         self.addCommentElementAct = self.createAction(
-            "Add Comment",
+            "Add comment",
             self.addCommentElement,
             "Add comment element in current scene",
             QKeySequence("Ctrl+Alt+C"),
