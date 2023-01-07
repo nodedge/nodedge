@@ -27,6 +27,8 @@ from nodedge.node_tree_widget import NodeTreeWidget
 from nodedge.scene_item_detail_widget import SceneItemDetailWidget
 from nodedge.scene_items_table_widget import SceneItemsTableWidget
 
+logger = logging.getLogger(__name__)
+
 
 class MdiWindow(EditorWindow):
     """
@@ -598,6 +600,22 @@ class MdiWindow(EditorWindow):
         for filename in filenames:
             self.__logger.debug(f"Loading {filename}")
             if filename:
+                if not os.path.exists(filename):
+                    ok = QMessageBox.warning(
+                        None,
+                        "File not found",
+                        f"File {filename} does not exist. \n"
+                        "Do you want to open a new file?",
+                        QMessageBox.StandardButton.Ok
+                        | QMessageBox.StandardButton.Cancel,
+                    )
+                    self.removeFromRecentFiles(filename)
+                    if ok == QMessageBox.StandardButton.Ok:
+                        self.newFile()
+                    else:
+                        logger.warning(f"File {filename} not found.")
+                        continue
+
                 existingSubWindow = self.findMdiSubWindow(filename)
                 if existingSubWindow:
                     self.__logger.debug("Existing sub window")

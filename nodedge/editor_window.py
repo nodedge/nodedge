@@ -484,7 +484,7 @@ class EditorWindow(QMainWindow):
 
         if self.currentEditorWidget.hasName:
             self.saveSnapshot()
-            self.updateRecentFiles(self.currentEditorWidget.filename)
+            self.addToRecentFiles(self.currentEditorWidget.filename)
 
             self.statusBar().showMessage(
                 f"Successfully saved to {self.currentEditorWidget.shortName}", 5000
@@ -511,9 +511,9 @@ class EditorWindow(QMainWindow):
         self.currentEditorWidget.graphicsView.graphicsScene.fitInView()
         self.takeScreenshot(filePath)
 
-    def updateRecentFiles(self, filepath):
+    def addToRecentFiles(self, filepath):
         """
-        Update the recent files list.
+        Add to the recent files list.
 
         :param filepath: absolute path and filename of the file to open.
         :type filepath: ``str``
@@ -524,6 +524,21 @@ class EditorWindow(QMainWindow):
 
         if len(self.recentFiles) > 10:
             self.recentFiles.pop()
+
+        self.writeRecentFilesSettings()
+        self.updateRecentFilesMenu()
+
+        self.recentFilesUpdated.emit(self.recentFiles)
+
+    def removeFromRecentFiles(self, filePath: str):
+        """
+        Remove from the recent files list.
+
+        :param filePath: absolute path and filename of the file to open.
+        :type filePath: ``str``
+        """
+        if filePath in self.recentFiles:
+            self.recentFiles.remove(filePath)
 
         self.writeRecentFilesSettings()
         self.updateRecentFilesMenu()
