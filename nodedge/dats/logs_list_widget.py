@@ -48,6 +48,8 @@ class LogsListWidget(QListWidget):
                         return None
 
             df = pd.read_csv(filename, sep=separator)
+            df_filtered = df.select_dtypes(exclude=["object"])
+            df = df.drop(columns=df.columns.difference(df_filtered.columns))
 
             log = MDF()
 
