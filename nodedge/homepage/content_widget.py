@@ -1,23 +1,29 @@
+import os
 from pathlib import Path
 
-from PySide6.QtCore import QSettings, QStandardPaths, Qt, Signal
+from PySide6.QtCore import QSettings, QSize, QStandardPaths, Qt, Signal
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QComboBox,
     QFileDialog,
     QFormLayout,
+    QFrame,
     QHBoxLayout,
     QLabel,
     QLineEdit,
     QMessageBox,
     QSizePolicy,
+    QToolButton,
     QVBoxLayout,
     QWidget,
 )
 
 from nodedge.application_styler import ApplicationStyler
+from nodedge.flow_layout import FlowLayout
 from nodedge.homepage.workspace_selection_button import WorkspaceSelectionButton
 
 MIN_HEIGHT = 30
+BUTTON_SIZE = 300
 
 
 class ContentWidget(QWidget):
@@ -63,17 +69,115 @@ class HelpContentWidget(ContentWidget):
         label.setOpenExternalLinks(True)
 
 
+class FileToolButton(QToolButton):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+
 class HomeContentWidget(ContentWidget):
+    nodedgeFileClicked = Signal(str)
+    datsFileClicked = Signal(str)
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
-        self.label = QLabel("Welcome to Nodedge")
+        self.label = QLabel("<b>Open Nodedge file</b>")
         self.label.setAlignment(Qt.AlignCenter)
 
         self.layout.addWidget(self.label)
+
+        self.createNodedgeRecentFilesWidget()
+        self.datsLabel = QLabel("<b>Open Dats file</b>")
+        self.datsLabel.setAlignment(Qt.AlignCenter)
+        self.layout.addWidget(self.datsLabel)
+        self.createDatsRecentFilesWidget()
+
+    def createNodedgeRecentFilesWidget(self):
+        self.recentFilesWidget = QFrame()
+        self.layout.addWidget(self.recentFilesWidget)
+        self.recentFilesLayout = FlowLayout()
+        self.recentFilesLayout.setAlignment(Qt.AlignCenter)
+        self.recentFilesWidget.setLayout(self.recentFilesLayout)
+        # self.updateNodedgeRecentFilesButtons()
+
+    def updateNodedgeRecentFilesButtons(self, filepaths):
+        self.recentFilesLayout.clear()
+        for index, filepath in enumerate(filepaths):
+            if index > 3:
+                break
+            shortpath = filepath.replace("\\", "/")
+            shortpath = shortpath.split("/")[-1]
+            fileButton = FileToolButton()
+            fileButton.setFixedSize(BUTTON_SIZE, BUTTON_SIZE)
+            fileButton.setText(shortpath)
+            fileButton.setToolTip(filepath)
+
+            dataPath = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation)
+            filename = filepath
+            filename = filename.replace("\\", "_")
+            filename = filename.replace("/", "_")
+            filename = filename.replace(":", "_")
+            filename = filename.replace(".json", "")
+
+            filePath = os.path.join(dataPath, filename + ".png")
+            if os.path.exists(filePath):
+                QIcon(filePath)
+                fileButton.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+                fileButton.setIcon(QIcon(filePath))
+                fileButton.setIconSize(QSize(BUTTON_SIZE, BUTTON_SIZE))
+            self.recentFilesLayout.addWidget(fileButton)
+            fileButton.clicked.connect(self.onNodedgeRecentFileClicked)
+        newFileButton = FileToolButton()
+        newFileButton.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        newFileButton.setFixedSize(BUTTON_SIZE, BUTTON_SIZE)
+        newFileButton.setToolTip("")
+        newFileButton.setObjectName("newNodedgeFileButton")
+        newFileButton.clicked.connect(self.onNodedgeRecentFileClicked)
+        self.recentFilesLayout.addWidget(newFileButton)
+
+    def onNodedgeRecentFileClicked(self):
+        self.nodedgeFileClicked.emit(self.sender().toolTip())
+
+    def createDatsRecentFilesWidget(self):
+        self.datsRecentFilesWidget = QFrame()
+        self.layout.addWidget(self.datsRecentFilesWidget)
+        self.datsRecentFilesLayout = FlowLayout()
+        self.datsRecentFilesLayout.setAlignment(Qt.AlignCenter)
+        self.datsRecentFilesWidget.setLayout(self.datsRecentFilesLayout)
+
+    def updateDatsRecentFilesWidget(self, filePaths):
+        self.datsRecentFilesLayout.clear()
+        for index, filepath in enumerate(filePaths):
+            if index > 4:
+                break
+            shortpath = filepath.replace("\\", "/")
+            shortpath = shortpath.split("/")[-1]
+            fileButton = FileToolButton()
+            fileButton.setFixedSize(BUTTON_SIZE, BUTTON_SIZE)
+            fileButton.setText(shortpath)
+            fileButton.setToolTip(filepath)
+
+            dataPath = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation)
+            filename = filepath
+            filename = filename.replace("\\", "_")
+            filename = filename.replace("/", "_")
+            filename = filename.replace(":", "_")
+            filename = filename.replace(".json", "")
+
+            filePath = os.path.join(dataPath, filename + ".png")
+            if os.path.exists(filePath):
+                QIcon(filePath)
+                fileButton.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+                fileButton.setIcon(QIcon(filePath))
+                fileButton.setIconSize(QSize(BUTTON_SIZE, BUTTON_SIZE))
+            self.datsRecentFilesLayout.addWidget(fileButton)
+            fileButton.clicked.connect(self.onDatsRecentFileClicked)
+
+    def onDatsRecentFileClicked(self):
+        self.datsFileClicked.emit(self.sender().toolTip())
 
 
 class SettingsContentWidget(ContentWidget):

@@ -2,12 +2,12 @@
 """
 Graphics scene module containing :class:`~nodedge.graphics_scene.GraphicsScene` class.
 """
-
+import logging
 from math import ceil, floor, log
 from typing import Optional
 
 from PySide6.QtCore import QLine, QPointF, Qt, Signal
-from PySide6.QtGui import QColor, QPainter, QPen, QTransform
+from PySide6.QtGui import QPen, QTransform
 from PySide6.QtWidgets import (
     QApplication,
     QGraphicsItem,
@@ -18,7 +18,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from nodedge.logger import logger
+logger = logging.getLogger(__name__)
 
 
 class GraphicsScene(QGraphicsScene):

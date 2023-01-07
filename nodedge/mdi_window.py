@@ -27,6 +27,8 @@ from nodedge.node_tree_widget import NodeTreeWidget
 from nodedge.scene_item_detail_widget import SceneItemDetailWidget
 from nodedge.scene_items_table_widget import SceneItemsTableWidget
 
+logger = logging.getLogger(__name__)
+
 
 class MdiWindow(EditorWindow):
     """
@@ -189,7 +191,8 @@ class MdiWindow(EditorWindow):
             "&Debug",
             self.onDebugSwitched,
             "Enable/Disable the debug mode",
-            QKeySequence("ctrl+alt+shift+d"),
+            QKeySequence("ctrl+shift+d"),
+            checkable=True,
         )
 
         self.showDialogActionsAct = self.createAction(
@@ -401,6 +404,7 @@ class MdiWindow(EditorWindow):
             self.onSceneCoderOutputSocketDisconnect
         )
         subWindow = self.mdiArea.addSubWindow(editor)
+        self.mdiArea.setActiveSubWindow(subWindow)
 
         icon = QIcon(".")
         subWindow.setWindowIcon(icon)
@@ -519,6 +523,7 @@ class MdiWindow(EditorWindow):
         self.sceneItemsDock.setFloating(False)
 
         self.addDockWidget(Qt.LeftDockWidgetArea, self.sceneItemsDock)
+        self.sceneItemsDock.hide()
 
     # noinspection PyAttributeOutsideInit
     def createPythonConsole(self) -> None:
@@ -578,12 +583,14 @@ class MdiWindow(EditorWindow):
         :return: ``None``
         """
         if isinstance(filenames, bool) or filenames is None:
-            filenames, _ = QFileDialog.getOpenFileNames(
+            filenames, ok = QFileDialog.getOpenFileNames(
                 parent=self,
                 caption="Open graph from file",
                 dir=EditorWindow.getFileDialogDirectory(),
                 filter=EditorWindow.getFileDialogFilter(),
             )
+            if not ok:
+                return
         else:
             # If only one file is given as input,
             # convert the string in list to let the next for loop work properly.
@@ -593,6 +600,22 @@ class MdiWindow(EditorWindow):
         for filename in filenames:
             self.__logger.debug(f"Loading {filename}")
             if filename:
+                if not os.path.exists(filename):
+                    ok = QMessageBox.warning(
+                        self,
+                        "File not found",
+                        f"File {filename} does not exist. \n"
+                        "Do you want to open a new file?",
+                        QMessageBox.StandardButton.Ok
+                        | QMessageBox.StandardButton.Cancel,
+                    )
+                    self.removeFromRecentFiles(filename)
+                    if ok == QMessageBox.StandardButton.Ok:
+                        self.newFile()
+                    else:
+                        logger.warning(f"File {filename} not found.")
+                        continue
+
                 existingSubWindow = self.findMdiSubWindow(filename)
                 if existingSubWindow:
                     self.__logger.debug("Existing sub window")
@@ -610,6 +633,12 @@ class MdiWindow(EditorWindow):
                     else:
                         self.__logger.debug("Loading fail")
                         editor.close()
+            else:
+                editor = MdiWidget()
+                editor.newFile()
+                subWindow = self._createMdiSubWindow(editor)
+                subWindow.show()
+                self.sceneItemsTableWidget.update()
 
     def about(self) -> None:
         """
@@ -687,6 +716,16 @@ class MdiWindow(EditorWindow):
     def onDebugSwitched(self):
         """Event called when the debug action is triggered."""
         self.debugMode = not self.debugMode
+        if self.debugMode:
+            self.__logger.debug("Debug mode activated")
+            self.statusBar().showMessage("Debug mode activated")
+            self.sceneItemsDock.show()
+            self.debugAct.setChecked(True)
+        else:
+            self.__logger.debug("Debug mode deactivated")
+            self.statusBar().showMessage("Debug mode deactivated")
+            self.sceneItemsDock.hide()
+            self.debugAct.setChecked(False)
 
     @Slot()
     def onShowDialogActions(self):

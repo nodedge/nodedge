@@ -21,6 +21,8 @@ from nodedge.socket_type import SocketType
 # from nodedge.types import Pos
 from nodedge.utils import dumpException
 
+logger = logging.getLogger(__name__)
+
 
 class NodesAndSockets:
     """
@@ -379,7 +381,7 @@ class Node(Serializable):
         """
         Safely remove this node.
         """
-        self.__logger.debug(f"Removing {self}")
+        logger.debug(f"Removing {self}")
         self.__logger.debug("Removing all edges connected to the node.")
         for socket in self.inputSockets + self.outputSockets:
             socket.removeAllEdges()

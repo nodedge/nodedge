@@ -22,6 +22,7 @@ class HeaderFrame(QFrame):
         self.setFrameStyle(QFrame.StyledPanel | QFrame.Raised)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.setMinimumHeight(50)
+        self.setFixedHeight(65)
 
         self.layout = QHBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)

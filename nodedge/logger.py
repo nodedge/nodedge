@@ -11,12 +11,11 @@ import os
 import coloredlogs
 import yaml
 
-logger = logging.getLogger(__file__)
-logger.setLevel(logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
 def setupLogging(
-    defaultPath: str = "../logging.yaml",
+    defaultPath: str = "logging.yaml",
     defaultLevel: int = logging.DEBUG,
     envKey: str = "LOG_CFG",
 ):
@@ -38,19 +37,17 @@ def setupLogging(
                     fmt=logging.getLogger().handlers[0].formatter._fmt,  # type: ignore
                 )
             except Exception as e:
-                print(e)
-                print("Error in Logging Configuration. Using default configs")
+                logger.warning(e)
+                logger.info("Error in Logging Configuration. Using default configs")
                 logging.basicConfig(level=defaultLevel)
                 coloredlogs.install(level=defaultLevel)
     else:
         logging.basicConfig(level=defaultLevel)
         coloredlogs.install(level=defaultLevel)
-        print("Failed to load configuration file. Using default configs")
+        logger.info("Failed to load configuration file. Using default configs")
+
+    highLightLoggingSetup()
 
 
 def highLightLoggingSetup():
-    logging.debug("DEBUG is being sent")
-    logging.info("INFO is being sent")
-    logging.warning("WARNING is being sent")
-    logging.error("ERROR is being sent")
-    logging.critical("CRITICAL is being sent")
+    logger.debug("Logger configured.")

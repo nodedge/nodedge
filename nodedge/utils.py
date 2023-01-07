@@ -16,6 +16,8 @@ from PySide6.QtWidgets import QApplication, QWidget
 
 pp = PrettyPrinter(indent=4).pprint
 
+logger = logging.getLogger(__name__)
+
 
 def dumpException(e=None, file=None):
     """
@@ -41,7 +43,7 @@ def loadStyleSheet(fileName, iconPath=None):
     :param fileName: filename of qss stylesheet
     :type fileName: ``str``
     """
-    logging.info(f"Style loading: {fileName}")
+    logger.info(f"Style loading: {fileName}")
     file = QFile(fileName)
     file.open(QFile.ReadOnly or QFile.Text)
     styleSheet = str(file.readAll(), encoding="utf-8")

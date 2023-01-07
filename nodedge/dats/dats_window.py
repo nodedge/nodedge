@@ -1,14 +1,14 @@
 import json
 import logging
 import sys
-from typing import Callable, Optional, Union, cast
+from typing import Callable, List, Optional, Union
 
 import pyqtgraph as pg
 from asammdf import MDF
 from asammdf.blocks.utils import MdfException
 from asammdf.blocks.v2_v3_blocks import Channel
 from pyqtgraph import PlotDataItem
-from PySide6.QtCore import QSettings, QStandardPaths, Qt, QTimer
+from PySide6.QtCore import QSettings, QStandardPaths, Qt, QTimer, Signal
 from PySide6.QtGui import QAction, QCloseEvent, QKeySequence
 from PySide6.QtWidgets import (
     QApplication,
@@ -27,7 +27,6 @@ from nodedge.dats.curve_dialog import CurveDialog
 from nodedge.dats.formula_evaluator import evaluateFormula
 from nodedge.dats.logs_widget import LogsWidget
 from nodedge.dats.n_plot_data_item import NPlotDataItem
-from nodedge.dats.n_plot_widget import NPlotWidget
 from nodedge.dats.signals_widget import SignalsWidget
 from nodedge.dats.workbooks_tab_widget import WorkbooksTabWidget
 from nodedge.dats.worksheets_tab_widget import WorksheetsTabWidget
@@ -37,9 +36,15 @@ from nodedge.utils import dumpException
 
 
 class DatsWindow(QMainWindow):
+    recentFilesUpdated = Signal(object)
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        self.companyName = "Nodedge"
+        self.productName = "Dats"
+
+        self.recentFiles: List[str] = []
         self.curveConfig = {}
 
         self.workbooksTabWidget = WorkbooksTabWidget(self)
@@ -82,6 +87,8 @@ class DatsWindow(QMainWindow):
 
         self.modifiedConfig = False
 
+        self.readSettings()
+
     @property
     def configPath(self):
         return self._configPath
@@ -115,6 +122,7 @@ class DatsWindow(QMainWindow):
         self.slider.sliderMoved.connect(self.updatePlotAxes)
 
     def closeEvent(self, event: QCloseEvent) -> None:
+        self.writeSettings()
 
         if self.modifiedConfig:
             res = QMessageBox.warning(
@@ -295,7 +303,7 @@ class DatsWindow(QMainWindow):
         )
 
         self.delAct = self.createAction(
-            "&Delete",
+            "&Delete curve",
             self.deleteCurve,
             "Delete highlighted curve or last curve",
             QKeySequence("Del"),
@@ -315,6 +323,29 @@ class DatsWindow(QMainWindow):
             QKeySequence("Space"),
         )
 
+        self.takeScreenShotAct = self.createAction(
+            "Take screenShot",
+            self.onScreenShot,
+            "Take screenShot",
+            QKeySequence("Ctrl+Shift+Space"),
+        )
+
+    def onScreenShot(self):
+        """
+        Take screenShot
+        """
+        filename, _ = QFileDialog.getSaveFileName(
+            parent=self,
+            caption="Save graph to file",
+            dir=DatsWindow.getFileDialogDirectory(),
+            filter="PNG (*.png);; JPG (*.jpg);; JPEG (*.jpeg)",
+        )
+
+        if not filename:
+            return
+
+        self.workbooksTabWidget.currentWidget().grab().save(filename)
+
     def viewAll(self):
         w: WorksheetsTabWidget = self.workbooksTabWidget.currentWidget()
         w.viewAll()
@@ -326,20 +357,20 @@ class DatsWindow(QMainWindow):
 
     def deleteCurve(self):
 
-        worksheetTabWidget: WorksheetsTabWidget = cast(
-            self.workbooksTabWidget.currentWidget(), WorksheetsTabWidget
-        )
-        nPlotWidget = cast(worksheetTabWidget.currentWidget(), NPlotWidget)
+        worksheetTabWidget = self.workbooksTabWidget.currentWidget()
+        nPlotWidget = worksheetTabWidget.currentWidget()
         if not nPlotWidget.items:
             return
 
-        if nPlotWidget.highlightedCurve is not None:
-            nPlotWidget.items.pop(nPlotWidget.highlightedCurve.name())
-            nPlotWidget.removeItem(nPlotWidget.highlightedCurve)
+        if nPlotWidget.plotItem.vb.highlightedCurve is not None:
+            nPlotWidget.plotItem.vb.curves.pop(
+                nPlotWidget.plotItem.vb.highlightedCurve.name()
+            )
+            nPlotWidget.plotItem.removeItem(nPlotWidget.plotItem.vb.highlightedCurve)
         else:
-            lastKey = list(nPlotWidget.items.keys())[-1]
-            curve = nPlotWidget.items.pop(lastKey)
-            nPlotWidget.removeItem(curve)
+            lastKey = list(nPlotWidget.plotItem.vb.curves.keys())[-1]
+            curve = nPlotWidget.plotItem.vb.curves.pop(lastKey)
+            nPlotWidget.plotItem.removeItem(curve)
         self.modifiedConfig = True
 
     # TODO: Remove duplicates of createAction
@@ -383,8 +414,14 @@ class DatsWindow(QMainWindow):
         self.homeMenu: QMenu = self.menuBar().addMenu("&Home")
         self.homeMenu.aboutToShow.connect(self.closeHomeMenu)
         self.createFileMenu()
+        self.createViewMenu()
         self.createHelpMenu()
         self.createToolsMenu()
+
+    def createViewMenu(self):
+        self.viewMenu: QMenu = self.menuBar().addMenu("&View")
+        self.viewMenu.addAction(self.viewAllAct)
+        self.viewMenu.addSeparator()
 
     def closeHomeMenu(self):
         timer = QTimer(self)
@@ -399,10 +436,16 @@ class DatsWindow(QMainWindow):
     def createFileMenu(self):
         self.fileMenu: QMenu = self.menuBar().addMenu("&File")
         self.fileMenu.addAction(self.openAct)
+        self.recentFilesMenu = self.fileMenu.addMenu("Open recent")
+        self.updateRecentFilesMenu()
+        self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.createWorksheetAct)
         self.fileMenu.addAction(self.createWorkbookAct)
+        self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.saveConfigAct)
         self.fileMenu.addAction(self.restoreConfigAct)
+        self.fileMenu.addSeparator()
+        self.fileMenu.addAction(self.takeScreenShotAct)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit
     def createHelpMenu(self):
@@ -439,6 +482,55 @@ class DatsWindow(QMainWindow):
         log = self.logsWidget.logsListWidget.openLog(filename)
         self.updateDataItems(log)
         self.modifiedConfig = True
+
+        self.addToRecentFiles(filename)
+
+    def addToRecentFiles(self, filepath):
+        """
+        Add to the recent files list.
+
+        :param filepath: absolute path and filename of the file to open.
+        :type filepath: ``str``
+        """
+        if filepath in self.recentFiles:
+            self.recentFiles.remove(filepath)
+        self.recentFiles.insert(0, filepath)
+
+        if len(self.recentFiles) > 10:
+            self.recentFiles.pop()
+
+        self.writeRecentFilesSettings()
+        self.updateRecentFilesMenu()
+
+        self.recentFilesUpdated.emit(self.recentFiles)
+
+    def removeFromRecentFiles(self, filePath: str):
+        """
+        Remove from the recent files list.
+
+        :param filePath: absolute path and filename of the file to open.
+        :type filePath: ``str``
+        """
+        if filePath in self.recentFiles:
+            self.recentFiles.remove(filePath)
+
+        self.writeRecentFilesSettings()
+        self.updateRecentFilesMenu()
+
+        self.recentFilesUpdated.emit(self.recentFiles)
+
+    def updateRecentFilesMenu(self):
+        self.recentFilesMenu.clear()
+        for index, filePath in enumerate(self.recentFiles):
+            shortpath = filePath.replace("\\", "/")
+            shortpath = filePath.split("/")[-1]
+            action = self.createAction(
+                shortpath,
+                lambda: self.openFile(filePath),
+                f"Open {filePath}",
+                QKeySequence(f"Ctrl+Shift+{1}"),
+            )
+            self.recentFilesMenu.addAction(action)
 
     def updateDataItems(self, log):
         self.signalsWidget.signalsTableWidget.updateItems(log)
@@ -494,10 +586,7 @@ class DatsWindow(QMainWindow):
         return "All files (*);;MF4 (*.mf4);;CSV (*.csv);;HDF5 (*.hdf5)"
 
     def createWorksheet(self):
-        w: WorksheetsTabWidget = cast(
-            self.workbooksTabWidget.currentWidget(), WorksheetsTabWidget
-        )
-        w.addWorksheet(True)
+        self.workbooksTabWidget.currentWidget().addWorksheet(True)
         self.modifiedConfig = True
 
     def createWorkbook(self):
@@ -528,6 +617,20 @@ class DatsWindow(QMainWindow):
         )
         workspacePath = str(settings.value("workspacePath", defaultWorkspacePath))
         return workspacePath
+
+    def readSettings(self):
+        settings = QSettings(self.companyName, self.productName)
+        self.recentFiles = list(settings.value("recent_files", []))
+
+    def writeSettings(self):
+        self.writeRecentFilesSettings()
+
+    def writeRecentFilesSettings(self):
+        """
+        Write the recent files settings for this application.
+        """
+        settings = QSettings(self.companyName, self.productName)
+        settings.setValue("recent_files", self.recentFiles)
 
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@ Scene module containing :class:`~nodedge.scene.Scene`.
 """
 
 import json
+import logging
 import os
 from collections import OrderedDict
 from typing import Callable, List, Optional, cast
@@ -17,7 +18,6 @@ from nodedge.elements.element import Element
 from nodedge.graphics_node import GraphicsNode
 from nodedge.graphics_scene import GraphicsScene
 from nodedge.graphics_view import GraphicsView
-from nodedge.logger import logger
 from nodedge.node import Node
 from nodedge.scene_clipboard import SceneClipboard
 from nodedge.scene_coder import SceneCoder
@@ -25,6 +25,8 @@ from nodedge.scene_history import SceneHistory
 from nodedge.scene_simulator import SceneSimulator
 from nodedge.serializable import Serializable
 from nodedge.utils import dumpException
+
+logger = logging.getLogger(__name__)
 
 
 class Scene(Serializable):

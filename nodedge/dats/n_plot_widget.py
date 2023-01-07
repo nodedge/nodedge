@@ -1,3 +1,4 @@
+import logging
 from collections import OrderedDict
 from typing import Dict, List, Optional
 
@@ -21,13 +22,15 @@ from PySide6.QtGui import QDragEnterEvent, QDropEvent, QMouseEvent
 from PySide6.QtWidgets import QApplication, QColorDialog
 
 from nodedge.dats.n_plot_data_item import NPlotDataItem
-from nodedge.logger import logger
+
+logger = logging.getLogger(__name__)
 
 
 class NPlotWidget(GraphicsLayoutWidget):
     xRangeUpdated = Signal(int, int)
 
     def __init__(self, parent=None, name=""):
+        print(parent)
         super().__init__(parent)
         self.name = name
         self.worksheetsTabWidget = parent
@@ -234,6 +237,9 @@ class NPlotWidget(GraphicsLayoutWidget):
         :return: None
         """
         curvesNamesStr: str = event.mimeData().text()
+        logger.debug("Curve names dropped: " + curvesNamesStr)
+        if not curvesNamesStr:
+            return
         curvesNames: List[str] = curvesNamesStr.split("\n")
         self.worksheetsTabWidget.workbookTabsWidget.window.plotCurves(curvesNames)
         event.accept()

@@ -180,6 +180,19 @@ class EditorWidget(QWidget):
         """
         QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
+            if not os.path.exists(filename):
+                QApplication.restoreOverrideCursor()
+                ok = QMessageBox.warning(
+                    self,
+                    "File not found",
+                    f"File {filename} does not exist. \n"
+                    "Do you want to open a new file?",
+                    QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel,
+                )
+                if ok == QMessageBox.StandardButton.Ok:
+                    self.newFile()
+                else:
+                    raise FileNotFoundError(f"File {filename} not found.")
             self.scene.loadFromFile(filename)
             self.filename = filename
             # Don't store initial stamp because the file has still not been changed.
@@ -188,13 +201,8 @@ class EditorWidget(QWidget):
             self.evalNodes()
             return True
         except FileNotFoundError as e:
-            self.__logger.warning(f"File {filename} not found: {e}")
+            self.__logger.warning(e)
             dumpException(e)
-            QMessageBox.warning(
-                self,
-                "Error loading %s" % os.path.basename(filename),
-                str(e).replace("[Errno 2]", ""),
-            )
             return False
         except InvalidFile as e:
             self.__logger.warning(f"Error loading {filename}: {e}")

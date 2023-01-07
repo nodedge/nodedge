@@ -18,6 +18,8 @@ from nodedge.graphics_edge import (
 from nodedge.serializable import Serializable
 from nodedge.utils import dumpException
 
+logger = logging.getLogger(__name__)
+
 
 class EdgeType(IntEnum):
     """
@@ -68,9 +70,6 @@ class Edge(Serializable):
         """
 
         super().__init__()
-
-        self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.INFO)
 
         # Default initialization
         self._sourceSocket: Optional[Socket] = None
@@ -220,8 +219,8 @@ class Edge(Serializable):
                 if sourcePos is not None:
                     self.graphicsEdge.targetPos = sourcePos
 
-        self.__logger.debug(f"Start socket: {self.sourceSocket}")
-        self.__logger.debug(f"End socket: {self.targetSocket}")
+        logger.debug(f"Start socket: {self.sourceSocket}")
+        logger.debug(f"End socket: {self.targetSocket}")
         if self.graphicsEdge is not None:
             self.graphicsEdge.update()
 
@@ -274,21 +273,21 @@ class Edge(Serializable):
         if self.graphicsEdge is not None:
             self.graphicsEdge.hide()
 
-        self.__logger.debug(f"Removing {self} from all sockets.")
+        logger.debug(f"Removing {self} from all sockets.")
         self.removeFromSockets()
 
-        self.__logger.debug(f"Removing Graphical edge: {self.graphicsEdge}")
+        logger.debug(f"Removing Graphical edge: {self.graphicsEdge}")
         self.scene.graphicsScene.removeItem(self.graphicsEdge)
         self.scene.graphicsScene.update()
         self.graphicsEdge = None  # type: ignore
 
-        self.__logger.debug(f"Removing {self}")
+        logger.debug(f"Removing {self}")
         try:
             self.scene.removeEdge(self)
         except ValueError as e:
-            self.__logger.debug(e)
+            logger.debug(e)
 
-        self.__logger.debug("Edge has been deleted.")
+        logger.debug("Edge has been deleted.")
 
         # Notify nodes from old sockets
         try:

@@ -5,9 +5,9 @@ Editor window module containing :class:`~nodedge.editor_window.EditorWindow` cla
 import json
 import logging
 import os
-from typing import Callable, Optional, Union, cast
+from typing import Callable, List, Optional, Union, cast
 
-from PySide6.QtCore import QSettings, QSize, QStandardPaths, Qt
+from PySide6.QtCore import QSettings, QSize, QStandardPaths, Qt, Signal
 from PySide6.QtGui import (
     QAction,
     QClipboard,
@@ -46,6 +46,8 @@ class EditorWindow(QMainWindow):
 
     EditorWidgetClass = EditorWidget
 
+    recentFilesUpdated = Signal(object)
+
     def __init__(self, parent: Optional[QWidget] = None):
         """
         :Instance Attributes:
@@ -60,7 +62,7 @@ class EditorWindow(QMainWindow):
         self.__logger.setLevel(logging.INFO)
 
         self.companyName = "Nodedge"
-        self.productName = "Editor"
+        self.productName = "Nodedge"
 
         self.instance: QGuiApplication = cast(
             QGuiApplication, QGuiApplication.instance()
@@ -75,8 +77,8 @@ class EditorWindow(QMainWindow):
         self.clipboard.dataChanged.connect(self.onClipboardChanged)  # type: ignore
 
         self.lastActiveEditorWidget: Optional[EditorWidget] = None
-
         self.debugMode: bool = False
+        self.recentFiles: List[str] = []
 
         self.initUI()
 
@@ -240,6 +242,31 @@ class EditorWindow(QMainWindow):
             QKeySequence("Ctrl+Shift+S"),
         )
 
+        self.takeScreenShotAct = self.createAction(
+            "Take screenShot",
+            self.takeScreenshot,
+            "Take screenShot",
+            QKeySequence("Ctrl+Shift+Space"),
+        )
+
+    def takeScreenshot(self, filename=None):
+        """
+        Take screenShot
+        """
+        self.__logger.debug("Take screenShot")
+        if filename is None:
+            filename, _ = QFileDialog.getSaveFileName(
+                parent=self,
+                caption="Save graph to file",
+                dir=EditorWindow.getFileDialogDirectory(),
+                filter="PNG (*.png);; JPG (*.jpg);; JPEG (*.jpeg)",
+            )
+
+        if not filename:
+            return
+
+        self.currentEditorWidget.scene.graphicsView.grab().save(filename)
+
     def onSimulate(self):
         self.currentEditorWidget.scene.simulator.run()
 
@@ -295,7 +322,6 @@ class EditorWindow(QMainWindow):
 
     def configureSolver(self):
         simulatorConfig = self.currentEditorWidget.scene.simulator.config
-        print(simulatorConfig.to_dict())
         self.solverDialog = SolverDialog(simulatorConfig)
         self.solverDialog.solverConfigChanged.connect(
             self.currentEditorWidget.scene.simulator.updateConfig
@@ -311,10 +337,27 @@ class EditorWindow(QMainWindow):
         self.fileMenu.addAction(self.newAct)
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.openAct)
+        self.recentFilesMenu = self.fileMenu.addMenu("Open recent")
+        self.updateRecentFilesMenu()
         self.fileMenu.addAction(self.saveAct)
         self.fileMenu.addAction(self.saveAsAct)
         self.fileMenu.addSeparator()
+        self.fileMenu.addAction(self.takeScreenShotAct)
+        self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.quitAct)
+
+    def updateRecentFilesMenu(self):
+        self.recentFilesMenu.clear()
+        for index, filePath in enumerate(self.recentFiles):
+            shortpath = filePath.replace("\\", "/")
+            shortpath = filePath.split("/")[-1]
+            action = self.createAction(
+                shortpath,
+                lambda: self.openFile(filePath),
+                f"Open {filePath}",
+                QKeySequence(f"Ctrl+Shift+{1}"),
+            )
+            self.recentFilesMenu.addAction(action)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
     def createEditMenu(self):
@@ -408,7 +451,7 @@ class EditorWindow(QMainWindow):
         self.__logger.debug("Opening graph")
         if self.maybeSave():
             if filename is None:
-                filename, _ = QFileDialog.getOpenFileName(
+                filename, ok = QFileDialog.getOpenFileName(
                     parent=self,
                     caption="Open graph from file",
                     dir=EditorWindow.getFileDialogDirectory(),
@@ -416,7 +459,7 @@ class EditorWindow(QMainWindow):
                 )
 
             if filename == "":
-                return
+                self.newFile()
             if os.path.isfile(filename):
                 self.currentEditorWidget.loadFile(filename)
                 self.statusBar().showMessage(
@@ -432,7 +475,7 @@ class EditorWindow(QMainWindow):
         Save serialized JSON version of the currently opened file, in a JSON file
         based on the editor's filename.
         """
-        self.__logger.debug("Saving graph")
+        self.__logger.warning("Saving graph")
         if not self.currentEditorWidget.hasName:
             self.saveFileAs()
 
@@ -440,6 +483,9 @@ class EditorWindow(QMainWindow):
             self.currentEditorWidget.saveFile(self.currentEditorWidget.filename)
 
         if self.currentEditorWidget.hasName:
+            self.saveSnapshot()
+            self.addToRecentFiles(self.currentEditorWidget.filename)
+
             self.statusBar().showMessage(
                 f"Successfully saved to {self.currentEditorWidget.shortName}", 5000
             )
@@ -447,6 +493,57 @@ class EditorWindow(QMainWindow):
             self.statusBar().showMessage(f"Save aborted", 5000)
         self.updateTitle()
         self.currentEditorWidget.updateTitle()
+
+    def saveSnapshot(self):
+        data_path = QStandardPaths.writableLocation(QStandardPaths.AppDataLocation)
+        filename = self.currentEditorWidget.filename
+        filename = filename.replace("\\", "_")
+        filename = filename.replace("/", "_")
+        filename = filename.replace(":", "_")
+        filename = filename.replace(".json", "")
+
+        filePath = os.path.join(data_path, filename + ".png")
+
+        if not os.path.exists(data_path):
+            os.makedirs(data_path)
+
+        # self.onFitInView()
+        self.currentEditorWidget.graphicsView.graphicsScene.fitInView()
+        self.takeScreenshot(filePath)
+
+    def addToRecentFiles(self, filepath):
+        """
+        Add to the recent files list.
+
+        :param filepath: absolute path and filename of the file to open.
+        :type filepath: ``str``
+        """
+        if filepath in self.recentFiles:
+            self.recentFiles.remove(filepath)
+        self.recentFiles.insert(0, filepath)
+
+        if len(self.recentFiles) > 10:
+            self.recentFiles.pop()
+
+        self.writeRecentFilesSettings()
+        self.updateRecentFilesMenu()
+
+        self.recentFilesUpdated.emit(self.recentFiles)
+
+    def removeFromRecentFiles(self, filePath: str):
+        """
+        Remove from the recent files list.
+
+        :param filePath: absolute path and filename of the file to open.
+        :type filePath: ``str``
+        """
+        if filePath in self.recentFiles:
+            self.recentFiles.remove(filePath)
+
+        self.writeRecentFilesSettings()
+        self.updateRecentFilesMenu()
+
+        self.recentFilesUpdated.emit(self.recentFiles)
 
     def saveFileAs(self):
         """
@@ -461,7 +558,6 @@ class EditorWindow(QMainWindow):
             filter=EditorWindow.getFileDialogFilter(),
         )
 
-        print(filename)
         if filename in [None, "", ""]:
             return
 
@@ -619,7 +715,14 @@ class EditorWindow(QMainWindow):
         settings = QSettings(self.companyName, self.productName)
         self.restoreGeometry(settings.value("geometry"))
         self.restoreState(settings.value("windowState"))
-        self.debugMode = settings.value("debug", False)
+        debugMode = settings.value("debug", False)
+        if debugMode == "false":
+            self.debugMode = False
+        elif debugMode == "true":
+            self.debugMode = True
+        else:
+            self.debugMode = debugMode
+        self.recentFiles = list(settings.value("recent_files", []))
 
     def writeSettings(self):
         """
@@ -629,6 +732,15 @@ class EditorWindow(QMainWindow):
         settings.setValue("geometry", self.saveGeometry())
         settings.setValue("windowState", self.saveState())
         settings.setValue("debug", self.debugMode)
+
+        self.writeRecentFilesSettings()
+
+    def writeRecentFilesSettings(self):
+        """
+        Write the recent files settings for this application.
+        """
+        settings = QSettings(self.companyName, self.productName)
+        settings.setValue("recent_files", self.recentFiles)
 
     def beforeSaveFileAs(
         self, currentEditorWidget: EditorWidget, filename: str
@@ -667,6 +779,7 @@ class EditorWindow(QMainWindow):
         callback: Callable,
         statusTip: Optional[str] = None,
         shortcut: Union[None, str, QKeySequence] = None,
+        checkable: bool = False,
     ) -> QAction:
         """
         Create an action for this window and add it to actions list.
@@ -680,10 +793,12 @@ class EditorWindow(QMainWindow):
         :type statusTip: Optional[``str``]
         :param shortcut: Keyboard shortcut to trigger the action.
         :type shortcut: ``Optional[str]``
+        :param checkable: if checkable, a mark will appear near the action in the menu when active.
+        :type checkable: ``bool``
         :return:
         """
-        act = QAction(name, self)
-        act.triggered.connect(callback)  # type: ignore
+        act = QAction(parent=self, text=name, checkable=checkable)  # type: ignore
+        act.triggered.connect(callback)
 
         if statusTip is not None:
             act.setStatusTip(statusTip)
@@ -694,4 +809,4 @@ class EditorWindow(QMainWindow):
 
         self.addAction(act)
 
-        return act
+        return act  # type: ignore

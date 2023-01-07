@@ -3,7 +3,7 @@
 Graphics View module containing :class:`~nodedge.graphics_view.GraphicsView`
 and :class:`~nodedge.graphics_view.DragMode` classes.
 """
-
+import logging
 from typing import Callable, List, Optional
 
 from PySide6.QtCore import QEvent, QPointF, Qt, Signal
@@ -16,7 +16,6 @@ from nodedge.graphics_cut_line import CutLine
 from nodedge.graphics_edge import GraphicsEdge
 from nodedge.graphics_scene import GraphicsScene
 from nodedge.graphics_socket import GraphicsSocket
-from nodedge.logger import logger
 from nodedge.node import Node
 from nodedge.utils import dumpException
 
@@ -24,6 +23,8 @@ from nodedge.utils import dumpException
 EDGE_START_DRAG_THRESHOLD = 40
 
 DEBUG_MMB_SCENE_ITEMS = True
+
+logger = logging.getLogger(__name__)
 
 
 class GraphicsView(QGraphicsView):
