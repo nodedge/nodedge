@@ -318,9 +318,9 @@ GraphicsNodeTitleLabel:hover{
     background: palette(dark);
 }
 
-QMenu{
+/*QMenu{
 image:url("resources/white_icons/close_window.png");
-}
+}*/
 
 GraphicsNodeContent QFrame {
 background: transparent;
