@@ -397,6 +397,8 @@ class GraphicsView(QGraphicsView):
 
         if event.key() == Qt.Key_H:
             logger.info(f"{self.graphicsScene.scene.history}")
+            super().keyPressEvent(event)
+
         else:
             super().keyPressEvent(event)
 
