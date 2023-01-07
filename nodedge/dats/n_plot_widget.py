@@ -30,7 +30,6 @@ class NPlotWidget(GraphicsLayoutWidget):
     xRangeUpdated = Signal(int, int)
 
     def __init__(self, parent=None, name=""):
-        print(parent)
         super().__init__(parent)
         self.name = name
         self.worksheetsTabWidget = parent
@@ -408,6 +407,8 @@ class NViewBox(pg.ViewBox):
         for index, plotItem in enumerate(self.nPlotWidget.plotItems):
             plotItem.vb.removeThisSubPlotAct.setEnabled(True)
             plotItem.vb.removeThisSubPlotAct.setVisible(True)
+
+        self.nPlotWidget.plotItem = plotItem
 
     def removeThisSubPlot(self):
         for index, plotItem in enumerate(self.nPlotWidget.plotItems):

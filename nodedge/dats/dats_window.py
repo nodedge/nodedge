@@ -34,6 +34,8 @@ from nodedge.logger import setupLogging
 from nodedge.range_slider import RangeSlider
 from nodedge.utils import dumpException
 
+logger = logging.getLogger(__name__)
+
 
 class DatsWindow(QMainWindow):
     recentFilesUpdated = Signal(object)
@@ -190,7 +192,8 @@ class DatsWindow(QMainWindow):
 
         layoutConfig = config["layout"]
 
-        self.workbooksTabWidget.removeWorkbook(0)
+        self.workbooksTabWidget.clear()
+        # self.workbooksTabWidget.removeWorkbook(0)
         for workbookname, workbookConfig in layoutConfig.items():
             worksheetsTabWidget = self.workbooksTabWidget.addWorkbook(workbookname)
             worksheetsTabWidget.removeWorksheet(0)
@@ -199,9 +202,10 @@ class DatsWindow(QMainWindow):
                 worksheetsTabWidget.addWorksheet(worksheetname)
                 worksheetsTabWidget.setCurrentIndex(item)
                 worksheet = worksheetsTabWidget.worksheets[item]
-                for vbConfig in worksheetConfig:
-                    if len(worksheet.items) > 1:
+                for index, vbConfig in enumerate(worksheetConfig):
+                    if index >= 1:
                         worksheet.plotItem.vb.addSubPlot()
+
                     for signalName, curveOptions in vbConfig.items():
                         dataItem: PlotDataItem = NPlotDataItem(
                             clickable=True,
@@ -211,8 +215,18 @@ class DatsWindow(QMainWindow):
                             symbol=None,
                         )
 
-                        dataItem.setData(x=[0, 0], y=[0, 0], name=signalName)
-                        worksheet.addDataItem(dataItem, signalName)
+                        if self.logsWidget.logsListWidget.logs:
+                            # logItem = self.logsWidget.logsListWidget.currentItem()
+                            # log = self.logsWidget.logsListWidget.logs[logItem.text()]
+                            logger.debug(f"Signal {signalName} is being restored")
+                            self.plotCurves([signalName])
+                        else:
+                            dataItem.setData(
+                                x=[0, 1],
+                                y=[0, 0],
+                                name=signalName,
+                            )
+                            worksheet.addDataItem(dataItem, signalName)
                     item = item + 1
 
         self.curveConfig = config["curves"]
@@ -572,8 +586,14 @@ class DatsWindow(QMainWindow):
 
                     except MdfException as mdfException:
                         logging.warning(mdfException)
+                        dataItem.setData(x=[0, 1], y=[0, 0])
+                        worksheet.updateRange(dataItem)
+
                         dataItem.curve.hide()
                         dataItem.scatter.hide()
+                        self.viewAll()
+
+        self.viewAll()
 
     @staticmethod
     def getFileDialogFilter() -> str:
