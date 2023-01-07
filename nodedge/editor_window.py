@@ -682,7 +682,7 @@ class EditorWindow(QMainWindow):
         :type shortcut: ``Optional[str]``
         :return:
         """
-        act = QAction(name, self)
+        act = QAction(name, self)  # type: ignore
         act.triggered.connect(callback)  # type: ignore
 
         if statusTip is not None:
@@ -694,4 +694,4 @@ class EditorWindow(QMainWindow):
 
         self.addAction(act)
 
-        return act
+        return act  # type: ignore
