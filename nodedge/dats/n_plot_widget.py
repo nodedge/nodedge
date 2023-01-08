@@ -5,14 +5,11 @@ from typing import Dict, List, Optional
 import numpy as np
 import pyqtgraph as pg
 from pyqtgraph import (
-    ArrowItem,
     AxisItem,
-    CurvePoint,
     GraphicsLayoutWidget,
     InfiniteLine,
     LegendItem,
     SignalProxy,
-    TextItem,
     ViewBox,
 )
 from pyqtgraph.graphicsItems.ViewBox.ViewBoxMenu import ViewBoxMenu
@@ -42,9 +39,6 @@ class NPlotWidget(GraphicsLayoutWidget):
         vb: NViewBox = self.plotItem.vb
         vb.setBackgroundColor(QApplication.palette().base().color())
         self.setBackground(QApplication.palette().base().color())
-
-        self.textItem: TextItem = TextItem(text="")
-        self.arrow: ArrowItem = ArrowItem(angle=90)
 
         self.plotItem.showGrid(x=True, y=True, alpha=1.0)
         self.legend: LegendItem = LegendItem((80, 60), offset=(70, 20))
@@ -143,37 +137,16 @@ class NPlotWidget(GraphicsLayoutWidget):
             if curve.opts["symbol"] is None:
                 curve.setSymbol("x")
                 self.plotItem.vb.highlightedCurve = curve
-                if not hasattr(self, "curvePoint") or self.curvePoint is None:
-                    self.curvePoint: CurvePoint = CurvePoint(
-                        self.plotItem.vb.highlightedCurve
-                    )
-                    self.arrow = ArrowItem(angle=90)
-                    self.plotItem.addItem(self.curvePoint)
-                    self.textItem.setParentItem(self.curvePoint)
-                    self.arrow.setParentItem(self.curvePoint)
-                if self.textItem not in self.plotItem.items:
-                    self.plotItem.addItem(self.textItem)
             else:
-                logger.info("Supressing highlighted curve.")
+                logger.info("Suppressing highlighted curve.")
                 curve.setSymbol(None)
                 self.plotItem.vb.highlightedCurve = None
-                if self.textItem in self.plotItem.items:
-                    logger.info("Removing text item")
-                    self.plotItem.removeItem(self.textItem)
-                    self.plotItem.removeItem(self.arrow)
-                if hasattr(self, "curvePoint"):
-                    logger.info("Removing curve point")
-                    if self.curvePoint is not None:
-                        self.plotItem.removeItem(self.curvePoint)
-                        self.curvePoint = None
 
     def mouseMoved(self, evt: QMouseEvent):
         # using signal proxy turns original arguments into a tuple
         pos: QPointF = evt[0]  # type: ignore
         vb: ViewBox = self.plotItem.vb
         mousePoint = vb.mapSceneToView(pos)
-        if self.plotItem.sceneBoundingRect().contains(pos):
-            index = int(mousePoint.x())
 
         x = mousePoint.x()
 
@@ -186,21 +159,9 @@ class NPlotWidget(GraphicsLayoutWidget):
                 yData = item.yData
                 i = np.argmin(abs(xData - x))
                 plotItem.legend.items[index][1].setText(f"{name}: {yData[i]:.2f}")
-            # self.plotItem.update()
-            # self.plotItem.legend.update()
 
         if self.plotItem.vb.highlightedCurve is None:
             return
-
-        xData = self.plotItem.vb.highlightedCurve.xData
-        yData = self.plotItem.vb.highlightedCurve.yData
-        ind = np.argmin(abs(xData - x))
-
-        self.curvePoint.setPos(ind / (len(xData) - 1))
-        self.textItem.setText(f"x: {xData[ind]:.2f}, y: {yData[ind]:.2f}")
-
-    # def mousePressEvent(self, evt: QMouseEvent):
-    #     super().mousePressEvent(evt)
 
     def as_dict(self):
         rep = {}
@@ -214,12 +175,12 @@ class NPlotWidget(GraphicsLayoutWidget):
         for item in self.plotItems:
             item.vb.autoRange()
 
-    def updateXAxis(self, minValue: int, maxValue: int):
+    def updateXAxis(self, minValue: int, maxValue: int) -> None:
         """
         Update the x-axis
-        :param min:
-        :param max:
-        :return:
+        :param minValue: min x value to set
+        :param maxValue:max x value to set
+        :return: ``None``
         """
         minRange = (
             (100 - minValue) * self.xLimits[0] + minValue * self.xLimits[1]
@@ -318,7 +279,6 @@ class NViewBox(pg.ViewBox):
         self.hLine.hide()
 
     def mouseMoved(self, evt):
-        # using signal proxy turns original arguments into a tuple
         pos: QPointF = evt[0]
         vb: ViewBox = self
         mousePoint = vb.mapSceneToView(pos)
@@ -336,22 +296,9 @@ class NViewBox(pg.ViewBox):
                 yData = item.yData
                 i = np.argmin(abs(xData - x))
                 plotItem.legend.items[index][1].setText(f"{name}: {yData[i]:.2f}")
-            # self.plotItem.update()
-            # self.plotItem.legend.update()
 
         if self.highlightedCurve is None:
             return
-
-        xData = self.highlightedCurve.xData
-        yData = self.highlightedCurve.yData
-        index = np.argmin(abs(xData - x))
-
-        if self.nPlotWidget.curvePoint:
-            self.nPlotWidget.curvePoint.setPos(index / (len(xData) - 1))
-        if self.nPlotWidget.textItem:
-            self.nPlotWidget.textItem.setText(
-                f"x: {xData[index]:.2f}, y: {yData[index]:.2f}"
-            )
 
     def raiseContextMenu(self, ev):
         """
@@ -387,15 +334,6 @@ class NViewBox(pg.ViewBox):
         self.setMouseMode(self.PanMode)
 
     def customizeCurves(self):
-
-        # curveName, ok = QInputDialog.getItem(
-        #     self.nPlotWidget,
-        #     "Select curve to modify",
-        #     "Curves",
-        #     list(self.curves.keys()),
-        #     0,
-        # )
-        # curve = self.curves[curveName]
 
         if self.highlightedCurve is None:
             logger.warning("No curve selected")
