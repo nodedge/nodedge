@@ -1,0 +1,23 @@
+name: Package Application with Pyinstaller
+
+on:
+  push:
+    branches: [ main, feature/automate-deployement ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Package Application
+      uses: JackMcKew/pyinstaller-action-windows@main
+      with:
+        path: deploy
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Nodedge
+        path: dist/windows

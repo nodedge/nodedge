@@ -16,6 +16,22 @@ from nodedge.utils import loadStyleSheet
 
 logger = logging.getLogger(__name__)
 
+darkPaletteFilePath = os.path.join(
+    os.path.dirname(__file__), "../resources/palette/dark_palette.yml"
+).replace("\\", "/")
+
+lightPaletteFilePath = os.path.join(
+    os.path.dirname(__file__), "../resources/palette/light_palette.yml"
+).replace("\\", "/")
+
+blackIconsFilePath = os.path.join(
+    os.path.dirname(__file__), "../resources/black_icons/"
+).replace("\\", "/")
+
+whiteIconsFilePath = os.path.join(
+    os.path.dirname(__file__), "../resources/white_icons/"
+).replace("\\", "/")
+
 
 class ApplicationStyler:
     """:class:`~nodedge.application_styler.ApplicationStyler` class ."""
@@ -40,13 +56,13 @@ class ApplicationStyler:
     def setCustomPalette(self, palette="Dark"):
         app = QGuiApplication.instance()
         if palette == "Dark":
-            with open("resources/palette/dark_palette.yml", "r") as file:
+            with open(darkPaletteFilePath, "r") as file:
                 colors = yaml.safe_load(file)
-            iconPath = "resources/white_icons"
+            iconPath = whiteIconsFilePath
         else:
-            with open("resources/palette/light_palette.yml", "r") as file:
+            with open(lightPaletteFilePath, "r") as file:
                 colors = yaml.safe_load(file)
-            iconPath = "resources/black_icons"
+            iconPath = blackIconsFilePath
 
         p = QApplication.palette()
         dark = QColor(colors["dark"])
@@ -80,6 +96,7 @@ class ApplicationStyler:
         app.setPalette(p)
         QApplication.setStyle("Fusion")
 
+        print(iconPath)
         loadStyleSheet(
             # os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),
             self.styleSheetFilename,
