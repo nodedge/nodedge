@@ -81,17 +81,21 @@ code that can be understood by off-the-shelf microcontrollers and uploaded to th
 
 # Getting started
 
-For getting started [download](https://github.com/nodedge/nodedge/releases/download/v0.3.0/NodedgeSetup.exe) our software or clone our repository with:
-
-```
-git clone https://github.com/nodedge/nodedge.git
-```
-
-Alternatively, you can install Nodedge with pip:
-
+To get started, you can download the installer of Nodedge [latest release](https://github.com/nodedge/nodedge/releases/download/v0.3/NodedgeSetup.exe).
+If you wish to install the source code, you can install Nodedge form pip with:
 ```
 pip install nodedge
 ```
+Alternatively, you can clone our project from [Github](https://github.com/nodedge/nodedge) and install the dev requirements with:
+```
+git clone https://github.com/nodedge/nodedge nodedge
+cd nodedge
+pip install -r .\requirements\freeze\requirements_dev.txt
+```
+
+For starting contributing to Nodedge, check out the [guidelines for contributors](https://github.com/nodedge/nodedge/wiki). 
+In particular, we recommend using PyCharm IDE. 
+You can find some helping information on [Nodedge Wiki](https://github.com/nodedge/nodedge/wiki/Pycharm-setup) or [PyCharm website](https://www.jetbrains.com/pycharm/).
 
 # Roadmap
 
