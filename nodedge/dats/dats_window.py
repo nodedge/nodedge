@@ -30,6 +30,7 @@ from nodedge.dats.n_plot_data_item import NPlotDataItem
 from nodedge.dats.signals_widget import SignalsWidget
 from nodedge.dats.workbooks_tab_widget import WorkbooksTabWidget
 from nodedge.dats.worksheets_tab_widget import WorksheetsTabWidget
+from nodedge.home_menu import MenuBar
 from nodedge.logger import setupLogging
 from nodedge.range_slider import RangeSlider
 from nodedge.utils import dumpException
@@ -442,7 +443,9 @@ class DatsWindow(QMainWindow):
         return act
 
     def createMenus(self):
-        self.homeMenu: QMenu = self.menuBar().addMenu("&Home")
+        self.menubar = MenuBar(self)
+        self.setMenuBar(self.menubar)
+        self.homeMenu = self.menubar.homeMenu
         self.homeMenu.aboutToShow.connect(self.closeHomeMenu)
         self.createFileMenu()
         self.createViewMenu()
