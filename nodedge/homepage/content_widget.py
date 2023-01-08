@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QMessageBox,
     QSizePolicy,
+    QSpinBox,
     QToolButton,
     QVBoxLayout,
     QWidget,
@@ -223,8 +224,21 @@ class SettingsContentWidget(ContentWidget):
         button.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
         self.workspaceLayout.addWidget(self.workspaceLineEdit)
         self.workspaceLayout.addWidget(button)
-        self.layout.addRow("Workspace: ", self.workspaceWidget)
+        self.layout.addRow("Workspace path: ", self.workspaceWidget)
         button.clicked.connect(self.getPath)
+
+        self.fontSizeSpinBox = QSpinBox()
+        self.fontSizeSpinBox.setMinimum(10)
+        self.fontSizeSpinBox.setMaximum(30)
+        self.fontSizeSpinBox.setSingleStep(2)
+        self.fontSizeSpinBox.setValue(14)
+
+        self.layout.addRow("Font size: ", self.fontSizeSpinBox)
+        self.fontSizeSpinBox.valueChanged.connect(self.updateFontSize)
+
+    def updateFontSize(self, value):
+        logger.debug(f"Font size changed: {value}")
+        self.styler.setFontSize(str(value))
 
     def getPath(self):
         selectedFolder = QFileDialog.getExistingDirectory(self, "Select Folder")

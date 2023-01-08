@@ -1,3 +1,6 @@
+QWidget{
+    font-size: 14px;
+}
 QFrame,QDialog,QMainWindow{
 background:palette(window);
 }

@@ -50,11 +50,14 @@ class ApplicationStyler:
         self.timer.setInterval(500)
         self.timer.timeout.connect(self.checkStylesheet)
 
+        self.palette = "Dark"
+
         logger.debug("Application styler set up.")
         # self.timer.start()
 
-    def setCustomPalette(self, palette="Dark"):
+    def setCustomPalette(self, palette="Dark", font="14"):
         app = QGuiApplication.instance()
+        self.palette = palette
         if palette == "Dark":
             with open(darkPaletteFilePath, "r") as file:
                 colors = yaml.safe_load(file)
@@ -99,6 +102,7 @@ class ApplicationStyler:
             # os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),
             self.styleSheetFilename,
             iconPath=iconPath,
+            fontSize=font,
         )
 
         # self.consoleStyle = {
@@ -129,3 +133,6 @@ class ApplicationStyler:
             pass
         self.stylesheetLastModified = modTime
         loadStyleSheet(self.styleSheetFilename)
+
+    def setFontSize(self, size: str) -> None:
+        self.setCustomPalette(self.palette, size)
