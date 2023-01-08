@@ -418,7 +418,7 @@ class NViewBox(pg.ViewBox):
             row=self.nPlotWidget.nextRow(),
         )
 
-        self.nPlotWidget.plotItems[0].setXLink(plotItem)
+        self.nPlotWidget.plotItem.setXLink(plotItem)
         for index, plotItem in enumerate(self.nPlotWidget.plotItems):
             plotItem.vb.removeThisSubPlotAct.setEnabled(True)
             plotItem.vb.removeThisSubPlotAct.setVisible(True)
