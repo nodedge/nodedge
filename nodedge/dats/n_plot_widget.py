@@ -100,7 +100,10 @@ class NPlotWidget(GraphicsLayoutWidget):
         self.plotItem.addItem(dataItem)
         dataItem.sigClicked.connect(self.modifyCurve)
         self.plotItem.vb.curves.update({name: dataItem})
-        self.updateRange(dataItem, reset=True)
+        if len(self.plotItem.vb.curves.keys()) == 0:
+            self.updateRange(dataItem, reset=True)
+        else:
+            self.updateRange(dataItem, reset=False)
         self.plotItem.vb.autoRange()
 
     def updateRange(self, dataItem, reset=True):
@@ -111,7 +114,7 @@ class NPlotWidget(GraphicsLayoutWidget):
         self.xLimits[1] = max(np.max(dataItem.xData), self.xLimits[1])
         self.yLimits[0] = min(np.min(dataItem.yData), self.yLimits[0])
         self.yLimits[1] = max(np.max(dataItem.yData), self.yLimits[1])
-        yRange = max(self.yLimits[1] - self.yLimits[0], 1)
+        yRange = max(self.yLimits[1] - self.yLimits[0], 1e-9)
 
         self.plotItem.setLimits(
             xMin=self.xLimits[0],

@@ -495,10 +495,8 @@ MenuButton
     text-align: center;
     text-align: left;
     border: 0px;
-/*    border-left: 2px solid palette(text);*/
-/*    border-top-left-radius: 20px;
-    border-bottom-left-radius: 20px;*/
-    border-right: 1px solid palette(base)
+    border-radius: 0px;
+    border-right: 3px solid palette(base)
 }
 
 MenuButton:pressed:focus,
@@ -509,10 +507,10 @@ MenuButton:pressed
     border-color:palette(highlight);
 }
 
-/*MenuButton:hover
+MenuButton:hover
 {
-    border-color:palette(highlight);
-}*/
+    border-right: 3px solid palette(base)
+}
 
 MenuButton:checked
 {

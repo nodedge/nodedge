@@ -6,7 +6,7 @@ import logging
 from pathlib import Path
 from typing import List, Tuple
 
-from PySide6.QtCore import QObject, Signal
+from PySide6.QtCore import QObject, QSettings, QStandardPaths, Signal
 from PySide6.QtWidgets import QFileDialog
 
 from nodedge.blocks import OP_NODE_CUSTOM_OUTPUT
@@ -203,7 +203,14 @@ class SceneCoder(QObject):
         :return: starting directory for ``QFileDialog`` file open/save
         :rtype: ``str``
         """
-        return ""
+        settings = QSettings("Nodedge", "Nodedge")
+
+        defaultWorkspacePath = QStandardPaths.writableLocation(
+            QStandardPaths.DocumentsLocation
+        )
+        workspacePath = str(settings.value("workspacePath", defaultWorkspacePath))
+
+        return workspacePath
 
     @staticmethod
     def getFileDialogFilter() -> str:

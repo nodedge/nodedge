@@ -175,16 +175,18 @@ class GraphicsScene(QGraphicsScene):
         self.mouseMoved.emit(event.scenePos())
         super().mouseMoveEvent(event)
 
-    def fitInView(self):
+    def fitToView(self):
         """
 
         :return:
         """
-        if len(self.scene.nodes) <= 1:
+        if len(self.scene.nodes) + len(self.scene.elements) <= 1:
             return
 
         nodes = self.scene.nodes
         items = [node.graphicsNode for node in nodes]
+        elements = [element.graphicsElement for element in self.scene.elements]
+        items = items + elements
         group = QGraphicsItemGroup()
         for item in items:
             group.addToGroup(item)

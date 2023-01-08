@@ -194,9 +194,9 @@ class EditorWindow(QMainWindow):
             "&Delete", self.delete, "Delete selected items", QKeySequence("Del")
         )
 
-        self.fitInViewAct = self.createAction(
+        self.fitToViewAct = self.createAction(
             "Fit to view",
-            self.onFitInView,
+            self.onFitToView,
             "Fit content to view",
             QKeySequence(Qt.Key_Space),
         )
@@ -279,6 +279,7 @@ class EditorWindow(QMainWindow):
         """
 
         dialog = QDialog(self)
+        dialog.setMinimumWidth(600)
         dialog.setWindowTitle("Code")
         dialog.setLayout(QVBoxLayout())
         dialog.layout().addWidget(QLabel(f"{self.currentEditorWidget.shortName} code:"))
@@ -287,7 +288,7 @@ class EditorWindow(QMainWindow):
         codeEdit.setPlainText(self.currentEditorWidget.scene.coder.generatedCode)
         dialog.layout().addWidget(codeEdit)
 
-        dialog.exec()
+        dialog.showMaximized()
 
     def evaluateAllNodes(self):
         for n in self.editorWidget.scene.nodes:
@@ -380,7 +381,7 @@ class EditorWindow(QMainWindow):
         Create view menu.
         """
         self.viewMenu: QMenu = self.menuBar().addMenu("&View")
-        self.viewMenu.addAction(self.fitInViewAct)
+        self.viewMenu.addAction(self.fitToViewAct)
 
     def sizeHint(self) -> QSize:
         """
@@ -468,7 +469,7 @@ class EditorWindow(QMainWindow):
 
                 self.updateTitle()
 
-        self.fitInViewAct.trigger()
+        self.fitToViewAct.trigger()
 
     def saveFile(self):
         """
@@ -508,7 +509,7 @@ class EditorWindow(QMainWindow):
             os.makedirs(data_path)
 
         # self.onFitInView()
-        self.currentEditorWidget.graphicsView.graphicsScene.fitInView()
+        self.currentEditorWidget.graphicsView.graphicsScene.fitToView()
         self.takeScreenshot(filePath)
 
     def addToRecentFiles(self, filepath):
@@ -759,9 +760,9 @@ class EditorWindow(QMainWindow):
         """
         pass
 
-    def onFitInView(self):
+    def onFitToView(self):
         if self.currentEditorWidget is not None:
-            self.currentEditorWidget.graphicsView.graphicsScene.fitInView()
+            self.currentEditorWidget.graphicsView.graphicsScene.fitToView()
 
     def onGenerateCode(self):
         if self.currentEditorWidget is not None:
