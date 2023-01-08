@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (
 from nodedge.editor_widget import EditorWidget
 from nodedge.editor_window import EditorWindow
 from nodedge.history_list_widget import HistoryListWidget
+from nodedge.home_menu import HomeMenu, MenuBar
 from nodedge.mdi_area import MdiArea
 from nodedge.mdi_widget import MdiWidget
 from nodedge.node_tree_widget import NodeTreeWidget
@@ -261,7 +262,12 @@ class MdiWindow(EditorWindow):
         `Window` menu allows to navigate between the sub-windows.
         `Help` menu allows to display know more about Nodedge.
         """
-        self.createHomeMenu()
+        self.menubar = MenuBar(self)
+        self.setMenuBar(self.menubar)
+        self.homeMenu = self.menubar.homeMenu
+        self.homeMenu.aboutToShow.connect(self.closeHomeMenu)
+
+        # self.createHomeMenu()
 
         super().createMenus()
         self.createWindowMenu()
@@ -273,9 +279,10 @@ class MdiWindow(EditorWindow):
     # noinspection PyAttributeOutsideInit
     def createHomeMenu(self):
         # QIcon("../resources/white_icons/home_page.png")
-        self.homeMenu: QMenu = self.menuBar().addMenu("&Home")
+        self.homeMenu = HomeMenu(self)
+        self.menuBar().addMenu(self.homeMenu)
 
-        self.homeMenu.aboutToShow.connect(self.closeHomeMenu)
+        # self.homeMenu.aboutToShow.connect(self.closeHomeMenu)
 
     def closeHomeMenu(self):
         timer = QTimer(self)

@@ -44,7 +44,7 @@ class NodedgeAppWindow(QMainWindow):
         self.homepageWindow.mainWidget.headerFrame.nodedgeButton.clicked.connect(
             lambda: self.mainWidget.setCurrentWidget(self.mdiWindow)
         )
-        self.mdiWindow.homeMenu.aboutToShow.connect(
+        self.mdiWindow.homeMenu.pressed.connect(
             lambda: self.mainWidget.setCurrentWidget(self.homepageWindow)
         )
 
@@ -75,7 +75,7 @@ class NodedgeAppWindow(QMainWindow):
         self.homepageWindow.mainWidget.headerFrame.datsButton.clicked.connect(
             lambda: self.mainWidget.setCurrentWidget(self.datsWindow)
         )
-        self.mdiWindow.homeMenu.aboutToShow.connect(
+        self.mdiWindow.homeMenu.pressed.connect(
             lambda: self.mainWidget.setCurrentWidget(self.homepageWindow)
         )
 
