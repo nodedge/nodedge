@@ -109,8 +109,8 @@ class Block(Node):
             self.isDirty = False
             self.isInvalid = False
             self.graphicsNode.setToolTip("")
-            # self.markChildrenDirty()
-            # self.evalChildren()
+            self.markChildrenDirty()
+            self.evalChildren()
             return self.value
         except (ValueError, EvaluationError, NotImplementedError) as e:
             self.isInvalid = True

@@ -1,5 +1,7 @@
 # Set update schedule for GitHub Actions
 
+name: Check dependencies updates with Dependabot
+
 version: 2
 updates:
   - package-ecosystem: "github-actions"

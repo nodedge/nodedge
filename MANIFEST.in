@@ -10,7 +10,6 @@ include mypy.ini
 include .bumpversion.cfg
 include CODE_OF_CONDUCT.md
 include logging.yaml
-include deploy.py
 
 include .flake8
 include .isort.cfg
@@ -70,3 +69,4 @@ recursive-exclude data *
 recursive-include requirements *
 
 recursive-include docs_sphinx *.md
+recursive-include deploy *
