@@ -70,3 +70,4 @@ recursive-exclude data *
 recursive-include requirements *
 
 recursive-include docs_sphinx *.md
+recursive-include deploy
