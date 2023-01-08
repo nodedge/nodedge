@@ -303,18 +303,32 @@ class DatsWindow(QMainWindow):
             QKeySequence("Ctrl+R"),
         )
 
-        self.createWorksheetAct = self.createAction(
-            "&Create worksheet",
-            self.createWorksheet,
-            "Create worksheet",
+        self.addWorksheetAct = self.createAction(
+            "&Add worksheet",
+            self.addWorksheet,
+            "Add worksheet",
             QKeySequence("Ctrl+Alt+N"),
         )
 
-        self.createWorkbookAct = self.createAction(
-            "&Create workbook",
-            self.createWorkbook,
-            "Create workbook",
+        self.addWorkbookAct = self.createAction(
+            "&Add workbook",
+            self.addWorkbook,
+            "Add workbook",
             QKeySequence("Ctrl+Shift+N"),
+        )
+
+        self.addSubPlotAct = self.createAction(
+            "&Add subplot",
+            self.addSubPlot,
+            "Add subplot",
+            QKeySequence("Ctrl+Shift+P"),
+        )
+
+        self.closeSubPlotAct = self.createAction(
+            "&Close subplot",
+            self.closeSubPlot,
+            "Close subplot",
+            QKeySequence("Ctrl+Alt+P"),
         )
 
         self.delAct = self.createAction(
@@ -345,14 +359,32 @@ class DatsWindow(QMainWindow):
             QKeySequence("Ctrl+Shift+Space"),
         )
 
-        self.removeLogAct = self.createAction(
-            "Remove log",
-            self.removeLog,
-            "Remove log",
+        self.closeLogAct = self.createAction(
+            "Close log",
+            self.closeLog,
+            "Close log",
             QKeySequence("Ctrl+Shift+Delete"),
         )
 
-    def removeLog(self):
+    def addSubPlot(self):
+        worksheet = self.workbooksTabWidget.currentWidget()
+        if not worksheet:
+            return
+        nPlotWidget = worksheet.currentWidget()
+        if not nPlotWidget:
+            return
+        nPlotWidget.plotItem.vb.addSubPlot()
+
+    def closeSubPlot(self):
+        worksheet = self.workbooksTabWidget.currentWidget()
+        if not worksheet:
+            return
+        nPlotWidget = worksheet.currentWidget()
+        if not nPlotWidget:
+            return
+        nPlotWidget.plotItem.vb.closeCurrentSubPlot()
+
+    def closeLog(self):
         for item in self.logsWidget.logsListWidget.selectedItems():
             self.logsWidget.logsListWidget.logs.pop(item.text())
             self.logsWidget.logsListWidget.takeItem(
@@ -472,10 +504,13 @@ class DatsWindow(QMainWindow):
         self.fileMenu.addAction(self.openAct)
         self.recentFilesMenu = self.fileMenu.addMenu("Open recent")
         self.updateRecentFilesMenu()
-        self.fileMenu.addAction(self.removeLogAct)
+        self.fileMenu.addAction(self.closeLogAct)
         self.fileMenu.addSeparator()
-        self.fileMenu.addAction(self.createWorksheetAct)
-        self.fileMenu.addAction(self.createWorkbookAct)
+        self.fileMenu.addAction(self.addWorksheetAct)
+        self.fileMenu.addAction(self.addWorkbookAct)
+        self.fileMenu.addSeparator()
+        self.fileMenu.addAction(self.addSubPlotAct)
+        self.fileMenu.addAction(self.closeSubPlotAct)
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.saveConfigAct)
         self.fileMenu.addAction(self.restoreConfigAct)
@@ -626,11 +661,11 @@ class DatsWindow(QMainWindow):
         """
         return "All files (*);;MF4 (*.mf4);;CSV (*.csv);;HDF5 (*.hdf5)"
 
-    def createWorksheet(self):
+    def addWorksheet(self):
         self.workbooksTabWidget.currentWidget().addWorksheet(True)
         self.modifiedConfig = True
 
-    def createWorkbook(self):
+    def addWorkbook(self):
         self.workbooksTabWidget.addWorkbook(True)
         self.modifiedConfig = True
 
