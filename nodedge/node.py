@@ -18,6 +18,7 @@ from nodedge.graphics_node import GraphicsNode
 from nodedge.graphics_node_content import GraphicsNodeContent
 from nodedge.serializable import Serializable
 from nodedge.socket_type import SocketType
+
 # from nodedge.types import Pos
 from nodedge.utils import dumpException
 
