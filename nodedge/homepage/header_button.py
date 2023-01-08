@@ -26,6 +26,7 @@ class HeaderTextButton(QPushButton):
         super().__init__(parent)
         self.text = text
         self.setText(self.text)
+        self.setCheckable(True)
 
         if text is not None:
             text = text.lower()

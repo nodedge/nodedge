@@ -62,7 +62,6 @@ class GraphicsTextItem(QGraphicsTextItem):
             bezierAct = contextMenu.addAction("Change font")
             directAct = contextMenu.addAction("Change color")
             action = contextMenu.exec_(event.screenPos())
-            print(action)
 
             if action.text() == "Change font":
                 ok, font = QFontDialog.getFont()

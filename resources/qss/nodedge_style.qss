@@ -441,6 +441,20 @@ HeaderIconButton, HeaderTextButton {
     icon: url("resources/white_icons/login.png");
 }
 
+#signinButton {
+    font-weight: bold;
+    background-color: palette(bright-text);
+}
+
+#signinButton:hover {
+    background-color: palette(highlight);
+}
+
+#signinButton:checked {
+    background-color: palette(midLight);
+    font-weight: normal;
+}
+
 #searchButton {
     icon: url("resources/white_icons/search_property.png");
 }
