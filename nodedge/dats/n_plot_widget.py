@@ -15,10 +15,11 @@ from pyqtgraph import (
     TextItem,
     ViewBox,
 )
+from pyqtgraph.graphicsItems.ViewBox.ViewBoxMenu import ViewBoxMenu
 from pyqtgraph.GraphicsScene.mouseEvents import MouseClickEvent
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import QEvent, QPointF, Qt, Signal
-from PySide6.QtGui import QDragEnterEvent, QDropEvent, QMouseEvent
+from PySide6.QtGui import QAction, QDragEnterEvent, QDropEvent, QMouseEvent
 from PySide6.QtWidgets import QApplication, QColorDialog
 
 from nodedge.dats.n_plot_data_item import NPlotDataItem
@@ -51,7 +52,13 @@ class NPlotWidget(GraphicsLayoutWidget):
         self.items = OrderedDict()
 
         self.xLimits = np.array([0, 1])
-        self.yLimits = np.array([np.NaN, np.NaN])
+        self.yLimits = np.array([0, 1])
+        self.plotItem.setLimits(
+            xMin=self.xLimits[0],
+            xMax=self.xLimits[1],
+            yMin=self.yLimits[0],
+            yMax=self.yLimits[1],
+        )
 
         self.setAcceptDrops(True)
 
@@ -112,6 +119,9 @@ class NPlotWidget(GraphicsLayoutWidget):
         self.yLimits[0] = min(np.min(dataItem.yData), self.yLimits[0])
         self.yLimits[1] = max(np.max(dataItem.yData), self.yLimits[1])
         yRange = max(self.yLimits[1] - self.yLimits[0], 1)
+
+        logger.debug(f"X limits: {self.xLimits}")
+        logger.debug(f"Y limits: {self.yLimits}")
 
         self.plotItem.setLimits(
             xMin=self.xLimits[0],
@@ -270,10 +280,15 @@ class NViewBox(pg.ViewBox):
         self.menu.addAction(self.addSubPlotAct)
 
         self.removeThisSubPlotAct = QtGui.QAction("Remove this subplot", self.menu)
-        self.removeThisSubPlotAct.triggered.connect(self.removeThisSubPlot)  # type: ignore
+        self.removeThisSubPlotAct.triggered.connect(self.closeCurrentSubPlot)  # type: ignore
         self.menu.addAction(self.removeThisSubPlotAct)
         self.removeThisSubPlotAct.setEnabled(False)
         self.removeThisSubPlotAct.setVisible(False)
+
+        menu: ViewBoxMenu = self.menu
+
+        viewAll: QAction = menu.viewAll
+        viewAll.setText("Fix to view")
 
         self.curves: Dict[str, NPlotDataItem] = {}
         self.highlightedCurve: Optional[NPlotDataItem] = None
@@ -410,7 +425,7 @@ class NViewBox(pg.ViewBox):
 
         self.nPlotWidget.plotItem = plotItem
 
-    def removeThisSubPlot(self):
+    def closeCurrentSubPlot(self):
         for index, plotItem in enumerate(self.nPlotWidget.plotItems):
             if plotItem.vb == self:
                 self.nPlotWidget.plotItems.pop(index)
