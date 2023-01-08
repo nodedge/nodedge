@@ -11,8 +11,6 @@ We welcome your feedback and contributions to improve it.
 >    * clicking on `File` > `New` in the Menu bar, or
 >    * clicking on the `New` button in the Tool bar, or
 >    * using `CTRL+N` shortcut
- 
-![](media/) 
 
 ## Import a model
 
@@ -22,16 +20,12 @@ We welcome your feedback and contributions to improve it.
 >    * clicking on the `Open` button in the Tool bar, or
 >    * using `CTRL+O` shortcut
 > 3. In the file dialog, select the file to open
- 
-![](media/)
 
 ## Save a model
 
 > * Click on `File` > `Save` in the Menu bar, or
 > * Click on the `Save` button in the Tool bar, or
 > * Use `CTRL+S` shortcut
- 
-![](media/)
 
 ## Add a node
 
