@@ -13,15 +13,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+#    - uses: actions/setup-python@v4
+#      with:
+#        python-version: '3.10'
 
     - name: Package Application
       uses: JackMcKew/pyinstaller-action-windows@main
       with:
         path: deploy
         requirements: "../requirements/freeze/requirements_packaging.txt"
+        python-version: '3.10'
 
     - uses: actions/upload-artifact@v2
       with:
