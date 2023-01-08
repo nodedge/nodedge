@@ -12,18 +12,13 @@ Why should scientific knowledge be only for a few? By making Nodedge open source
 
 <p style="text-align: center;">
 <font size="5"> <b>Enrica Soria</b> </font> <br />
-Developer and operations
+Marketing, operations, and development
 </p>
 
 <p style="text-align: center;">
+<!--<img src="media/pongy.jpg" alt="pongy" width="180"/> <br />-->
 <font size="5"> <b>Anthony De Bortoli</b> </font> <br />
 Main developer
-</p>
-
-<p style="text-align: center;">
-<img src="media/pongy.jpg" alt="pongy" width="180"/> <br />
-<font size="5"> <b>Pongy</b> </font> <br />
-Our mascotte
 </p>
 
 # Our contacts

@@ -7,8 +7,8 @@ def gravitational_force():
     var_0 = 2.0
     var_1 = 384000.0
     var_2 = power(var_1, var_0)
-    var_3 = 7.34e+22
-    var_4 = 5.2
+    var_3 = 7.34e22
+    var_4 = 5.0
     var_5 = mul(var_4, var_3)
     var_6 = 6.67e-11
     var_7 = mul(var_6, var_5)
@@ -16,5 +16,5 @@ def gravitational_force():
     return [var_8]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     gravitational_force()
