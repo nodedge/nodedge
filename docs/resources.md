@@ -41,9 +41,10 @@ From the *Node libraries* widget on the right, drag-and-drop `Input` nodes to th
 Congratulations! You have just created your first Nodedge model!
 If you want to compute the gravitational force for different objects, simply edit the mass values in the input nodes.
 Nodedge will instantly re-evaluate the model and display the updated result.
- 
-<center><img src="media/gravitational_force_example.png" alt="gravitational_force_example" width="700" /></center>
+
 <br>
+ 
+<center><img src="media/gravitational_force_example.png" alt="gravitational_force_example" width="800" /></center>
 
 ## Open a dataset in Dats
 
@@ -62,5 +63,6 @@ and enter a file name like `csv_analyzer_config.json`. Click on `Save`
 
 Congratulations! You have successfully analyzed your first dataset in Dats!
 
-<center><img src="media/csv_analyzer_example.png" alt="csv_analyzer_example" width="700" /></center>
 <br>
+
+<center><img src="media/csv_analyzer_example.png" alt="csv_analyzer_example" width="800" /></center>
