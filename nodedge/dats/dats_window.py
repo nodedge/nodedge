@@ -338,10 +338,10 @@ class DatsWindow(QMainWindow):
             QKeySequence("Del"),
         )
 
-        self.createCurveAct = self.createAction(
-            "&Create curve",
-            self.createCurve,
-            "Create curve",
+        self.createSignalAct = self.createAction(
+            "&Create signal",
+            self.createSignal,
+            "Create signal",
             QKeySequence("Ctrl+M"),
         )
 
@@ -414,7 +414,7 @@ class DatsWindow(QMainWindow):
         w: WorksheetsTabWidget = self.workbooksTabWidget.currentWidget()
         w.viewAll()
 
-    def createCurve(self):
+    def createSignal(self):
         w: CurveDialog = CurveDialog(self)
         w.show()
         self.modifiedConfig = True
@@ -496,7 +496,7 @@ class DatsWindow(QMainWindow):
     def createToolsMenu(self):
         self.toolsMenu: QMenu = self.menuBar().addMenu("&Tools")
         self.toolsMenu.addAction(self.delAct)
-        self.toolsMenu.addAction(self.createCurveAct)
+        self.toolsMenu.addAction(self.createSignalAct)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit
     def createFileMenu(self):

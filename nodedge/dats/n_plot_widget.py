@@ -232,7 +232,7 @@ class NViewBox(pg.ViewBox):
         # self.setRectMode() # Set mouse mode to rect for convenient zooming
         # self.menu = None # Override pyqtgraph ViewBoxMenu
         # self.menu = self.getMenu() # Create the menu
-        self.customizeAct = QtGui.QAction("Customize curves", self.menu)
+        self.customizeAct = QtGui.QAction("Customize curve", self.menu)
         self.customizeAct.triggered.connect(self.customizeCurves)  # type: ignore
         self.menu.addAction(self.customizeAct)
 
