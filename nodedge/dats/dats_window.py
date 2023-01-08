@@ -307,7 +307,7 @@ class DatsWindow(QMainWindow):
             "&Create worksheet",
             self.createWorksheet,
             "Create worksheet",
-            QKeySequence("Ctrl+N"),
+            QKeySequence("Ctrl+Alt+N"),
         )
 
         self.createWorkbookAct = self.createAction(
