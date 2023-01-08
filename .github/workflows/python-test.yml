@@ -1,4 +1,4 @@
-name: Python test
+name: Run tests with Tox
 
 
 on:
