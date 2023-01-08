@@ -35,7 +35,7 @@ In this example, we demonstrate how to create a model in Nodedge to calculate th
 2. Add input nodes to your model to represent the constant variables of the gravitational force. 
 From the *Node libraries* widget on the right, drag-and-drop `Input` nodes to the scene and insert the constant values in their labels
 3. Rename the input nodes by editing their title in the *Node details* widget on the right
-4. From the `Operator` library, drag-and-drop `Multiplication`, `Division`, and `Sum` nodes to the scene and connect them to the input nodes
+4. From the `Operator` library, drag-and-drop `Multiplication`, `Division`, and `Power` nodes to the scene and connect them to the input nodes
 5. Connect an output node to display the result of the computation.
 
 Congratulations! You have just created your first Nodedge model!
