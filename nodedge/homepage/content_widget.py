@@ -23,6 +23,7 @@ from PySide6.QtWidgets import (
 from nodedge.application_styler import ApplicationStyler
 from nodedge.flow_layout import FlowLayout
 from nodedge.homepage.workspace_selection_button import WorkspaceSelectionButton
+from nodedge.utils import truncateString
 
 logger = logging.getLogger(__name__)
 
@@ -159,6 +160,8 @@ class HomeContentWidget(ContentWidget):
                 break
             shortpath = filepath.replace("\\", "/")
             shortpath = shortpath.split("/")[-1]
+            shortpath = truncateString(shortpath, 16, 8)
+
             fileButton = FileToolButton()
             fileButton.setFixedSize(BUTTON_SIZE, BUTTON_SIZE)
             fileButton.setText(shortpath)

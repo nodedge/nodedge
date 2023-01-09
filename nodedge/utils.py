@@ -163,3 +163,10 @@ def setNewTitle(newTitle, alreadyExistingTitles):
         else:
             newTitle += "1"
     return newTitle
+
+
+def truncateString(s, n, m):
+    if len(s) > n + m:
+        return s[:n] + "..." + s[-m:]
+    else:
+        return s
