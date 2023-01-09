@@ -71,7 +71,7 @@ We welcome your feedback and contributions to improve it.
 
 ## Navigate the scene
 
-> To navigate the scene, you can use the arrows keys.
+> To navigate the scene, you can use the arrow keys of your keyboard.
 
 ![](media/zoom_in_out.gif)
 
