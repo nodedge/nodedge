@@ -366,6 +366,13 @@ class DatsWindow(QMainWindow):
             QKeySequence("Ctrl+Shift+Delete"),
         )
 
+        self.helpAct = self.createAction(
+            "&Help", self.onHelp, "Help", QKeySequence("F1")
+        )
+
+    def onHelp(self):
+        pass
+
     def addSubPlot(self):
         worksheet = self.workbooksTabWidget.currentWidget()
         if not worksheet:
@@ -521,6 +528,8 @@ class DatsWindow(QMainWindow):
     def createHelpMenu(self):
         self.helpMenu: QMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.aboutAct)
+        self.helpMenu.addSeparator()
+        self.helpMenu.addAction(self.helpAct)
 
     def about(self) -> None:
         """

@@ -23,6 +23,9 @@ class HomePageWindow(QMainWindow):
             "Home"
         ].contentWidget
 
+    def showHelp(self):
+        self.mainWidget.mainBodyFrame.leftMenuWidget.buttons["Help"].animateClick()
+
 
 if __name__ == "__main__":
 

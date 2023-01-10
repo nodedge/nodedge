@@ -2,8 +2,9 @@ import logging
 import os
 from pathlib import Path
 
-from PySide6.QtCore import QSettings, QSize, QStandardPaths, Qt, Signal
+from PySide6.QtCore import QSettings, QSize, QStandardPaths, Qt, QUrl, Signal
 from PySide6.QtGui import QIcon
+from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import (
     QComboBox,
     QFileDialog,
@@ -46,32 +47,38 @@ class HelpContentWidget(ContentWidget):
         self.layout.setAlignment(Qt.AlignCenter)
         self.setLayout(self.layout)
 
-        urlLink = '<a href="http://www.nodedge.io">Nodedge website</a>'
-        text: str = (
-            "For more information on Nodedge features and the latest news, please visit "
-            + urlLink
-            + "."
-        )
-        label = QLabel(text)
-        label.setMinimumHeight(MIN_HEIGHT)
-        self.layout.addWidget(label)
-        label.setOpenExternalLinks(True)
+        # urlLink = '<a href="http://www.nodedge.io">Nodedge website</a>'
+        # text: str = (
+        #     "For more information on Nodedge features and the latest news, please visit "
+        #     + urlLink
+        #     + "."
+        # )
+        # label = QLabel(text)
+        # label.setMinimumHeight(MIN_HEIGHT)
+        # self.layout.addWidget(label)
+        # label.setOpenExternalLinks(True)
+        #
+        # urlLink = '<a href="https://nodedge.readthedocs.io/en/latest/">Nodedge API documentation</a>'
+        # text: str = "For more information on the API, please visit " + urlLink + "."
+        # label = QLabel(text)
+        # label.setMinimumHeight(MIN_HEIGHT)
+        # self.layout.addWidget(label)
+        # label.setOpenExternalLinks(True)
+        #
+        # urlLink = (
+        #     '<a href="https://github.com/nodedge/nodedge">Nodedge Github repository</a>'
+        # )
+        # text: str = "To checkout out the code, please visit " + urlLink + "."
+        # label = QLabel(text)
+        # label.setMinimumHeight(MIN_HEIGHT)
+        # self.layout.addWidget(label)
+        # label.setOpenExternalLinks(True)
 
-        urlLink = '<a href="https://nodedge.readthedocs.io/en/latest/">Nodedge API documentation</a>'
-        text: str = "For more information on the API, please visit " + urlLink + "."
-        label = QLabel(text)
-        label.setMinimumHeight(MIN_HEIGHT)
-        self.layout.addWidget(label)
-        label.setOpenExternalLinks(True)
-
-        urlLink = (
-            '<a href="https://github.com/nodedge/nodedge">Nodedge Github repository</a>'
-        )
-        text: str = "To checkout out the code, please visit " + urlLink + "."
-        label = QLabel(text)
-        label.setMinimumHeight(MIN_HEIGHT)
-        self.layout.addWidget(label)
-        label.setOpenExternalLinks(True)
+        view = QWebEngineView(self)
+        view.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        view.load(QUrl("https://nodedge.io/#/tutorials"))
+        self.layout.addWidget(view)
+        view.show()
 
 
 class FileToolButton(QToolButton):

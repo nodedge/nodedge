@@ -260,6 +260,13 @@ class EditorWindow(QMainWindow):
             QKeySequence("Ctrl+Shift+Space"),
         )
 
+        self.helpAct = self.createAction(
+            "&Help", self.onHelp, "Help", QKeySequence("F1")
+        )
+
+    def onHelp(self):
+        pass
+
     def onStopSim(self) -> None:
         QMessageBox.warning(self, "Not yet implemented", "Not yet implemented")
         # TODO: Implement stop simulation

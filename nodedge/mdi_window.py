@@ -297,6 +297,8 @@ class MdiWindow(EditorWindow):
         self.helpMenu.addAction(self.aboutAct)
         self.helpMenu.addAction(self.debugAct)
         self.helpMenu.addAction(self.showDialogActionsAct)
+        self.helpMenu.addSeparator()
+        self.helpMenu.addAction(self.helpAct)
 
     # noinspection PyAttributeOutsideInit
     def createWindowMenu(self) -> None:
