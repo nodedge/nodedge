@@ -13,8 +13,6 @@ HEADER_ITEMS = {
     "Login": "icon",
 }
 
-ICON_PATH = "resources/white_icons/"
-
 
 class HeaderFrame(QFrame):
     def __init__(self, parent=None):
