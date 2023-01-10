@@ -1,7 +1,7 @@
 import datetime
 import logging
-from typing import Optional
 import os
+from typing import Optional
 
 import nptdms
 import numpy as np
@@ -190,7 +190,7 @@ def split_filename(input_string):
         extension = ""
     else:
         filename = input_string[:dot_index]
-        extension = input_string[dot_index+1:]
+        extension = input_string[dot_index + 1 :]
     return filename, extension
 
 
@@ -198,7 +198,7 @@ def get_creation_date(file_path):
     """
     Returns the date of creation of the file in the datetime format.
     """
-    if os.name == 'nt':
+    if os.name == "nt":
         return datetime.datetime.fromtimestamp(os.path.getctime(file_path))
     else:
         stat = os.stat(file_path)

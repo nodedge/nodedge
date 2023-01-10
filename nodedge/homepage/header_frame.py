@@ -45,7 +45,7 @@ class HeaderFrame(QFrame):
             toggleIconFile="resources/white_icons/chevron_left.png",
         )
 
-        self.nodedgeButton = HeaderIconButton(self, iconFile="resources/white_icons/flow_chart.png", text="Editor")
+        self.nodedgeButton = HeaderIconButton(self, text="Nodedge")
         self.datsButton = HeaderIconButton(
             self, iconFile="resources/white_icons/line_chart.png", text="Dats"
         )

@@ -10,6 +10,7 @@ from PySide6.QtCore import QPointF
 from nodedge.elements.graphics_element import GraphicsElement
 from nodedge.logger import logger
 from nodedge.serializable import Serializable
+
 # from nodedge.types import Pos
 from nodedge.utils import dumpException
 
