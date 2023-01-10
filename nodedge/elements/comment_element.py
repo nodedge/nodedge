@@ -23,3 +23,4 @@ class CommentElement(Element):
 
     def onTextChanged(self, text: str):
         self.content = text
+        self.scene.history.store(f"Element text changed: {text}")

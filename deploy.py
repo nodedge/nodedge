@@ -3,11 +3,11 @@ import os
 os.environ["NUMEXPR_MAX_THREADS"] = "16"
 
 app_name = "nodedge"
-path = r"../nodedge/__main__.py"
-resources_src = r"../resources"
-examples_src = r"../examples"
+path = r"nodedge/__main__.py"
+resources_src = r"resources"
+examples_src = r"examples"
 version_file_path = r"file_version_info.txt"
-nodedge_logo = r"../resources/Icon.ico"
+nodedge_logo = r"resources/Icon.ico"
 
 command = (
     f"pyinstaller "

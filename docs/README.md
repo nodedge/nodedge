@@ -31,9 +31,7 @@ These simulations can suit a variety of purposes, such as testing and analyzing 
 predicting the outcomes of a chemical reaction, or studying the movements and actions of a robotic system.
 To learn more about it, check out the [examples](resources.md#quick-start-examples) provided.
 
-<center>
-<img src="media/simulator_icon.png" alt="nodedge_interface" height=150px/>
-</center>
+<center><img src="media/simulator_icon.png" alt="nodedge_interface" width="150" /></center>
 
 ## Data plotting and analysis
 
@@ -42,9 +40,7 @@ your simulation, plot, edit, and export it.
 You can create new variables, also called signals, by modifying the existing ones, filtering, and combining them.
 To learn more about it, check out the [examples](resources.md#quick-start-examples) provided.
 
-<center>
-<img src="media/plotter_icon.png" alt="nodedge_interface" height=150px/>
-</center>
+<center><img src="media/plotter_icon.png" alt="nodedge_interface" width="150" /></center>
 
 ## Code generation
 
@@ -53,9 +49,7 @@ In the near future, Nodedge has the goal to support code generation for various 
 This means that users will be able to create their models graphically and then use Nodedge to convert those models into 
 code that can be understood by off-the-shelf microcontrollers and uploaded to the hardware. 
 
-<center>
-<img src="media/code_generation_icon.png" alt="nodedge_interface" height=150px/>
-</center>
+<center><img src="media/code_generation_icon.png" alt="nodedge_interface" width="150" /></center>
 
 # Roadmap
 

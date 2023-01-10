@@ -151,7 +151,7 @@ class EditorWindow(QMainWindow):
         """
 
         self.newAct = self.createAction(
-            "&New", self.newFile, "Create new Nodedge graph", QKeySequence("Ctrl+N")
+            "&New", self.newFile, "Create new Nodedge model", QKeySequence("Ctrl+N")
         )
 
         self.openAct = self.createAction(
@@ -232,14 +232,25 @@ class EditorWindow(QMainWindow):
         self.showGraphAct.setEnabled(False)
 
         self.evalAct = self.createAction(
-            "Eval all nodes", self.evaluateAllNodes, "", QKeySequence("Ctrl+Space")
+            "Evaluate all nodes", self.evaluateAllNodes, "", QKeySequence("Ctrl+Space")
         )
 
-        self.simulateAct = self.createAction(
-            "Simulate",
-            self.onSimulate,
-            "Simulate",
+        self.startSimulationAct = self.createAction(
+            "Start simulation",
+            self.onStartSimulation,
+            "Start the current model as a simulation",
             QKeySequence("Ctrl+Shift+S"),
+        )
+
+        self.stopSimulationAct = self.createAction(
+            "Stop simulation",
+            self.onStopSim,
+            "Stop the current model as a simulation",
+        )
+
+        self.pauseSimulationAct = self.createAction(
+            "Pause simulation",
+            self.onPauseSim,
         )
 
         self.takeScreenShotAct = self.createAction(
@@ -248,6 +259,21 @@ class EditorWindow(QMainWindow):
             "Take screenShot",
             QKeySequence("Ctrl+Shift+Space"),
         )
+
+        self.helpAct = self.createAction(
+            "&Help", self.onHelp, "Help", QKeySequence("F1")
+        )
+
+    def onHelp(self):
+        pass
+
+    def onStopSim(self) -> None:
+        QMessageBox.warning(self, "Not yet implemented", "Not yet implemented")
+        # TODO: Implement stop simulation
+
+    def onPauseSim(self) -> None:
+        QMessageBox.warning(self, "Not yet implemented", "Not yet implemented")
+        # TODO: Implement pause simulation
 
     def takeScreenshot(self, filename=None):
         """
@@ -267,7 +293,7 @@ class EditorWindow(QMainWindow):
 
         self.currentEditorWidget.scene.graphicsView.grab().save(filename)
 
-    def onSimulate(self):
+    def onStartSimulation(self):
         self.currentEditorWidget.scene.simulator.run()
 
     def onShowGraph(self):
@@ -311,8 +337,13 @@ class EditorWindow(QMainWindow):
         """
         self.simMenu: QMenu = self.menuBar().addMenu("&Simulation")
         self.simMenu.addAction(self.configureSolverAct)
+        self.simMenu.addSeparator()
         self.simMenu.addAction(self.showGraphAct)
-        self.simMenu.addAction(self.simulateAct)
+        self.simMenu.addSeparator()
+        self.simMenu.addAction(self.startSimulationAct)
+        self.simMenu.addAction(self.pauseSimulationAct)
+        self.simMenu.addAction(self.stopSimulationAct)
+        self.simMenu.addSeparator()
         self.simMenu.addAction(self.evalAct)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode

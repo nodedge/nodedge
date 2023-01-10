@@ -22,7 +22,7 @@ class MainWidget(QWidget):
 
         self.headerFrame.menuButton.clicked.connect(self.updateLeftMenu)
 
-        for button in self.mainBodyFrame.leftMenuWidget.buttons:
+        for text, button in self.mainBodyFrame.leftMenuWidget.buttons.items():
             button.clicked.connect(self.updateCentralWidget)
 
     def updateLeftMenu(self):
@@ -31,8 +31,8 @@ class MainWidget(QWidget):
     def updateCentralWidget(self):
         senderText = self.sender().text()
         try:
-            for button in self.mainBodyFrame.leftMenuWidget.buttons:
-                if button.text() == senderText:
+            for text, button in self.mainBodyFrame.leftMenuWidget.buttons.items():
+                if text == senderText:
                     button.setChecked(True)
                 else:
                     button.setChecked(False)

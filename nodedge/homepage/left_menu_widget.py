@@ -28,7 +28,7 @@ class LeftMenuWidget(QWidget):
         self.layout.setAlignment(Qt.AlignTop)
         self.setLayout(self.layout)
 
-        self.buttons = []
+        self.buttons = {}
         for text, iconFile in MENU_ITEMS.items():
             if text == "Spacer":
                 spacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
@@ -41,7 +41,7 @@ class LeftMenuWidget(QWidget):
             if text == "Home":
                 button.setChecked(True)
             self.layout.addWidget(button)
-            self.buttons.append(button)
+            self.buttons.update({text: button})
 
         self.anim = QPropertyAnimation(self, b"minimumWidth")
         self.anim.setDuration(500)

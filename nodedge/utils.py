@@ -36,7 +36,7 @@ def dumpException(e=None, file=None):
         traceback.print_exc()
 
 
-def loadStyleSheet(fileName, iconPath=None):
+def loadStyleSheet(fileName, iconPath=None, fontSize=None):
     """
     Load an qss stylesheet to current QApplication instance.
 
@@ -49,6 +49,11 @@ def loadStyleSheet(fileName, iconPath=None):
     styleSheet = str(file.readAll(), encoding="utf-8")
     if iconPath is not None:
         styleSheet = re.sub(r"(?<=url\(\")(.*)(?=\/)", iconPath, styleSheet, count=0)
+    if fontSize is not None:
+        styleSheet = re.sub(
+            r"(?<=font-size: )(.*)(?=px;)", fontSize, styleSheet, count=1
+        )
+
         # file2 = QFile(fileName + "2")
         # file2.open(QFile.WriteOnly or QFile.Text)
         # file2.write(styleSheet.encode("utf-8"))
@@ -158,3 +163,10 @@ def setNewTitle(newTitle, alreadyExistingTitles):
         else:
             newTitle += "1"
     return newTitle
+
+
+def truncateString(s, n, m):
+    if len(s) > n + m:
+        return s[:n] + "..." + s[-m:]
+    else:
+        return s

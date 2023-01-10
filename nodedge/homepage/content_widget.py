@@ -2,8 +2,9 @@ import logging
 import os
 from pathlib import Path
 
-from PySide6.QtCore import QSettings, QSize, QStandardPaths, Qt, Signal
+from PySide6.QtCore import QSettings, QSize, QStandardPaths, Qt, QUrl, Signal
 from PySide6.QtGui import QIcon
+from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import (
     QComboBox,
     QFileDialog,
@@ -14,6 +15,7 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QMessageBox,
     QSizePolicy,
+    QSpinBox,
     QToolButton,
     QVBoxLayout,
     QWidget,
@@ -22,6 +24,7 @@ from PySide6.QtWidgets import (
 from nodedge.application_styler import ApplicationStyler
 from nodedge.flow_layout import FlowLayout
 from nodedge.homepage.workspace_selection_button import WorkspaceSelectionButton
+from nodedge.utils import truncateString
 
 logger = logging.getLogger(__name__)
 
@@ -44,32 +47,38 @@ class HelpContentWidget(ContentWidget):
         self.layout.setAlignment(Qt.AlignCenter)
         self.setLayout(self.layout)
 
-        urlLink = '<a href="http://www.nodedge.io">Nodedge website</a>'
-        text: str = (
-            "For more information on Nodedge features and the latest news, please visit "
-            + urlLink
-            + "."
-        )
-        label = QLabel(text)
-        label.setMinimumHeight(MIN_HEIGHT)
-        self.layout.addWidget(label)
-        label.setOpenExternalLinks(True)
+        # urlLink = '<a href="http://www.nodedge.io">Nodedge website</a>'
+        # text: str = (
+        #     "For more information on Nodedge features and the latest news, please visit "
+        #     + urlLink
+        #     + "."
+        # )
+        # label = QLabel(text)
+        # label.setMinimumHeight(MIN_HEIGHT)
+        # self.layout.addWidget(label)
+        # label.setOpenExternalLinks(True)
+        #
+        # urlLink = '<a href="https://nodedge.readthedocs.io/en/latest/">Nodedge API documentation</a>'
+        # text: str = "For more information on the API, please visit " + urlLink + "."
+        # label = QLabel(text)
+        # label.setMinimumHeight(MIN_HEIGHT)
+        # self.layout.addWidget(label)
+        # label.setOpenExternalLinks(True)
+        #
+        # urlLink = (
+        #     '<a href="https://github.com/nodedge/nodedge">Nodedge Github repository</a>'
+        # )
+        # text: str = "To checkout out the code, please visit " + urlLink + "."
+        # label = QLabel(text)
+        # label.setMinimumHeight(MIN_HEIGHT)
+        # self.layout.addWidget(label)
+        # label.setOpenExternalLinks(True)
 
-        urlLink = '<a href="https://nodedge.readthedocs.io/en/latest/">Nodedge API documentation</a>'
-        text: str = "For more information on the API, please visit " + urlLink + "."
-        label = QLabel(text)
-        label.setMinimumHeight(MIN_HEIGHT)
-        self.layout.addWidget(label)
-        label.setOpenExternalLinks(True)
-
-        urlLink = (
-            '<a href="https://github.com/nodedge/nodedge">Nodedge Github repository</a>'
-        )
-        text: str = "To checkout out the code, please visit " + urlLink + "."
-        label = QLabel(text)
-        label.setMinimumHeight(MIN_HEIGHT)
-        self.layout.addWidget(label)
-        label.setOpenExternalLinks(True)
+        view = QWebEngineView(self)
+        view.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        view.load(QUrl("https://nodedge.io/#/tutorials"))
+        self.layout.addWidget(view)
+        view.show()
 
 
 class FileToolButton(QToolButton):
@@ -154,10 +163,12 @@ class HomeContentWidget(ContentWidget):
     def updateDatsRecentFilesWidget(self, filePaths):
         self.datsRecentFilesLayout.clear()
         for index, filepath in enumerate(filePaths):
-            if index > 4:
+            if index > 3:
                 break
             shortpath = filepath.replace("\\", "/")
             shortpath = shortpath.split("/")[-1]
+            shortpath = truncateString(shortpath, 16, 8)
+
             fileButton = FileToolButton()
             fileButton.setFixedSize(BUTTON_SIZE, BUTTON_SIZE)
             fileButton.setText(shortpath)
@@ -178,6 +189,13 @@ class HomeContentWidget(ContentWidget):
                 fileButton.setIconSize(QSize(BUTTON_SIZE, BUTTON_SIZE))
             self.datsRecentFilesLayout.addWidget(fileButton)
             fileButton.clicked.connect(self.onDatsRecentFileClicked)
+        newFileButton = FileToolButton()
+        newFileButton.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        newFileButton.setFixedSize(BUTTON_SIZE, BUTTON_SIZE)
+        newFileButton.setToolTip("")
+        newFileButton.setObjectName("newDatsFileButton")
+        newFileButton.clicked.connect(self.onDatsRecentFileClicked)
+        self.datsRecentFilesLayout.addWidget(newFileButton)
 
     def onDatsRecentFileClicked(self):
         self.datsFileClicked.emit(self.sender().toolTip())
@@ -223,8 +241,21 @@ class SettingsContentWidget(ContentWidget):
         button.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
         self.workspaceLayout.addWidget(self.workspaceLineEdit)
         self.workspaceLayout.addWidget(button)
-        self.layout.addRow("Workspace: ", self.workspaceWidget)
+        self.layout.addRow("Workspace path: ", self.workspaceWidget)
         button.clicked.connect(self.getPath)
+
+        self.fontSizeSpinBox = QSpinBox()
+        self.fontSizeSpinBox.setMinimum(10)
+        self.fontSizeSpinBox.setMaximum(30)
+        self.fontSizeSpinBox.setSingleStep(2)
+        self.fontSizeSpinBox.setValue(14)
+
+        self.layout.addRow("Font size: ", self.fontSizeSpinBox)
+        self.fontSizeSpinBox.valueChanged.connect(self.updateFontSize)
+
+    def updateFontSize(self, value):
+        logger.debug(f"Font size changed: {value}")
+        self.styler.setFontSize(str(value))
 
     def getPath(self):
         selectedFolder = QFileDialog.getExistingDirectory(self, "Select Folder")

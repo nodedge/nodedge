@@ -33,12 +33,20 @@ class GraphicsTextItem(QGraphicsTextItem):
         self.setFlag(QGraphicsItem.ItemIsFocusable)
 
     def mouseDoubleClickEvent(self, event: QGraphicsSceneMouseEvent) -> None:
+        # Activate/deactivate/reactivate cursor to ensure it blinks properly.
         self.setTextInteractionFlags(Qt.TextEditorInteraction)
+        self.setTextInteractionFlags(Qt.NoTextInteraction)
+        self.setTextInteractionFlags(Qt.TextEditorInteraction)
+
         self.setFocus(Qt.FocusReason.MouseFocusReason)
         self.setCursor(Qt.IBeamCursor)
-        # self.setTextCursor()
+        cursor = self.textCursor()
+        cursor.clearSelection()
+        self.setTextCursor(cursor)
 
     def focusOutEvent(self, event: QFocusEvent) -> None:
+        self.focused = False
+
         self.setTextInteractionFlags(Qt.NoTextInteraction)
         cursor = self.textCursor()
         cursor.clearSelection()
@@ -62,7 +70,6 @@ class GraphicsTextItem(QGraphicsTextItem):
             bezierAct = contextMenu.addAction("Change font")
             directAct = contextMenu.addAction("Change color")
             action = contextMenu.exec_(event.screenPos())
-            print(action)
 
             if action.text() == "Change font":
                 ok, font = QFontDialog.getFont()

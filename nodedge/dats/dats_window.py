@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import sys
 from typing import Callable, List, Optional, Union
 
@@ -345,17 +346,17 @@ class DatsWindow(QMainWindow):
             QKeySequence("Ctrl+M"),
         )
 
-        self.viewAllAct = self.createAction(
-            "&View all",
+        self.FitToViewAct = self.createAction(
+            "&Fit to view",
             self.viewAll,
-            "View all",
+            "Fit to view",
             QKeySequence("Space"),
         )
 
         self.takeScreenShotAct = self.createAction(
-            "Take screenShot",
+            "Take screenshot",
             self.onScreenShot,
-            "Take screenShot",
+            "Take screenshot",
             QKeySequence("Ctrl+Shift+Space"),
         )
 
@@ -365,6 +366,13 @@ class DatsWindow(QMainWindow):
             "Close log",
             QKeySequence("Ctrl+Shift+Delete"),
         )
+
+        self.helpAct = self.createAction(
+            "&Help", self.onHelp, "Help", QKeySequence("F1")
+        )
+
+    def onHelp(self):
+        pass
 
     def addSubPlot(self):
         worksheet = self.workbooksTabWidget.currentWidget()
@@ -481,12 +489,12 @@ class DatsWindow(QMainWindow):
         self.homeMenu.aboutToShow.connect(self.closeHomeMenu)
         self.createFileMenu()
         self.createViewMenu()
-        self.createHelpMenu()
         self.createToolsMenu()
+        self.createHelpMenu()
 
     def createViewMenu(self):
         self.viewMenu: QMenu = self.menuBar().addMenu("&View")
-        self.viewMenu.addAction(self.viewAllAct)
+        self.viewMenu.addAction(self.FitToViewAct)
         self.viewMenu.addSeparator()
 
     def closeHomeMenu(self):
@@ -521,6 +529,8 @@ class DatsWindow(QMainWindow):
     def createHelpMenu(self):
         self.helpMenu: QMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.aboutAct)
+        self.helpMenu.addSeparator()
+        self.helpMenu.addAction(self.helpAct)
 
     def about(self) -> None:
         """
@@ -547,6 +557,19 @@ class DatsWindow(QMainWindow):
                 filter=DatsWindow.getFileDialogFilter(),
             )
             if not ok:
+                return
+        if not os.path.exists(filename):
+            ok = QMessageBox.warning(
+                self,
+                "File not found",
+                f"File {filename} does not exist. \n" "Do you want to open a new file?",
+                QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel,
+            )
+            self.removeFromRecentFiles(filename)
+            if ok == QMessageBox.StandardButton.Ok:
+                self.openLog()
+            else:
+                logger.warning(f"File {filename} not found.")
                 return
 
         log = self.logsWidget.logsListWidget.openLog(filename)

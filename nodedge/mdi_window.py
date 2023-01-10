@@ -172,9 +172,9 @@ class MdiWindow(EditorWindow):
         )
 
         self.nodeToolbarAct = self.createAction(
-            "&Node toolbar",
+            "&Node libraries",
             self.onNodesToolbarTriggered,
-            "Enable/Disable the node toolbar",
+            "Enable/Disable the node libraries",
             QKeySequence("ctrl+alt+n"),
         )
 
@@ -206,7 +206,7 @@ class MdiWindow(EditorWindow):
         self.addCommentElementAct = self.createAction(
             "Add comment",
             self.addCommentElement,
-            "Add comment element in current scene",
+            "Add comment element in current model",
             QKeySequence("Ctrl+Alt+C"),
         )
 
@@ -297,6 +297,8 @@ class MdiWindow(EditorWindow):
         self.helpMenu.addAction(self.aboutAct)
         self.helpMenu.addAction(self.debugAct)
         self.helpMenu.addAction(self.showDialogActionsAct)
+        self.helpMenu.addSeparator()
+        self.helpMenu.addAction(self.helpAct)
 
     # noinspection PyAttributeOutsideInit
     def createWindowMenu(self) -> None:

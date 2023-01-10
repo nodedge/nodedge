@@ -283,8 +283,10 @@ class Scene(Serializable):
 
     def addElement(self):
         element = CommentElement(self)
+        self.elements.append(element)
         logger.info(f"Number of elements: {len(self.elements)}")
         logger.info([e.graphicsElement.pos() for e in self.elements])
+        self.history.store("Add element")
 
     def addEdge(self, edge: Edge):
         """Add :class:`~nodedge.edge.Edge` to this `Scene`

@@ -84,6 +84,13 @@ class NodedgeAppWindow(QMainWindow):
         )
         self.mainWidget.setCurrentIndex(0)
 
+        def showHelp():
+            self.mainWidget.setCurrentWidget(self.homepageWindow)
+            self.homepageWindow.showHelp()
+
+        self.mdiWindow.helpAct.triggered.connect(showHelp)
+        self.datsWindow.helpAct.triggered.connect(showHelp)
+
     def closeEvent(self, event: QCloseEvent) -> None:
         ok = self.mdiWindow.close()
         if not ok:

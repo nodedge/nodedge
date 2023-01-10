@@ -5,10 +5,10 @@ block_cipher = None
 
 
 a = Analysis(
-    ['..\\nodedge\\__main__.py'],
+    ['nodedge\\__main__.py'],
     pathex=[],
     binaries=[],
-    datas=[('../resources', '../resources'), ('../examples', '../examples')],
+    datas=[('resources', 'resources'), ('examples', 'examples')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -42,5 +42,5 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
     version='file_version_info.txt',
-    icon=['..\\resources\\Icon.ico'],
+    icon=['resources\\Icon.ico'],
 )

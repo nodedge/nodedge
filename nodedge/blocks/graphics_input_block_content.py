@@ -23,6 +23,11 @@ class GraphicsInputBlockContent(GraphicsNodeContent):
         self.edit.setObjectName(self.node.contentLabelObjectName)
 
         self.edit.editingFinished.connect(self.onEditingFinished)
+        self.edit.returnPressed.connect(self.setFocus)
+
+    def mousePressEvent(self, event):
+        self.setFocus()
+        super().mousePressEvent(event)
 
     def updateIO(self):
         pass
@@ -59,3 +64,4 @@ class GraphicsInputBlockContent(GraphicsNodeContent):
             and self.node.scene.history is not None
         ):
             self.node.scene.history.store("Change input content")
+            self.setFocus()

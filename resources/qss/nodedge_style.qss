@@ -1,5 +1,21 @@
+QWidget{
+    font-size: 14px;
+}
 QFrame,QDialog,QMainWindow{
-background:palette(window);
+    background:palette(window);
+}
+
+/* RESET EVERYTHING */
+/*QAbstractScrollArea,QCheckBox,QColumnView,QComboBox,QDateEdit,QDateTimeEdit,QDialog,QDialogButtonBox,QDockWidget,QDoubleSpinBox,QFrame,QGroupBox,QHeaderView,QLabel,QLineEdit,QListView,QListWidget,QMainWindow,QMenu,QMenuBar,QMessageBox,QProgressBar,QPushButton,QRadioButton,QScrollBar,QSizeGrip,QSlider,QSpinBox,QSplitter,QStatusBar,QTabBar,QTabWidget,QTableView,QTableWidget,QTextEdit,QTimeEdit,QToolBar,QToolButton,QToolBox,QToolTip,QTreeView,QTreeWidget,QWidget {*/
+/*    padding: 0px;*/
+/*    margin: 0px;*/
+/*    border: 0px;*/
+/*    border-style: none;*/
+/*    background-color: #e6e6e6; !* set with default background color *!*/
+/*}*/
+
+QMessageBox QPushButton {
+    background:palette(base);
 }
 
 QSplitter,QMainWindow::separator{
@@ -234,8 +250,12 @@ QPushButton:pressed:focus{
 
 QPushButton:default{
 color:palette(button-text);
-background:palette(dark);
+background:palette(highlight);
 border-color:palette(dark);
+}
+
+QPushButton:selected{
+    background:palette(highlight);
 }
 
 QLabel{
@@ -438,6 +458,20 @@ HeaderIconButton, HeaderTextButton {
     icon: url("resources/white_icons/login.png");
 }
 
+#signinButton {
+    font-weight: bold;
+    background-color: palette(bright-text);
+}
+
+#signinButton:hover {
+    background-color: palette(highlight);
+}
+
+#signinButton:checked {
+    background-color: palette(midLight);
+    font-weight: normal;
+}
+
 #searchButton {
     icon: url("resources/white_icons/search_property.png");
 }
@@ -583,7 +617,7 @@ QTreeWidget {
     /*font-size: 16px;*/
 }
 
-#newNodedgeFileButton {
+#newNodedgeFileButton, #newDatsFileButton {
     image: url("resources/white_icons/create.png");
     icon-size: 300px;
 }
