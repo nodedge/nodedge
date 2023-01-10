@@ -45,9 +45,9 @@ class HeaderFrame(QFrame):
             toggleIconFile="resources/white_icons/chevron_left.png",
         )
 
-        self.nodedgeButton = HeaderIconButton(self, iconFile="resources/Icon.ico")
+        self.nodedgeButton = HeaderIconButton(self, iconFile="resources/white_icons/flow_chart.png", text="Editor")
         self.datsButton = HeaderIconButton(
-            self, iconFile="resources/Icon.ico", text="Dats"
+            self, iconFile="resources/white_icons/line_chart.png", text="Dats"
         )
 
         self.leftLayout.addWidget(self.menuButton)
