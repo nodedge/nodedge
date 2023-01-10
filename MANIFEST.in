@@ -50,6 +50,7 @@ recursive-include docs *.md
 recursive-include docs *.nojekyll
 recursive-include docs *.png
 recursive-include docs *.txt
+resursive-include docs *.css
 include SECURITY.md
 include docs/CNAME
 
