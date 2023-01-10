@@ -25,7 +25,6 @@ class Element(Serializable):
 
         self.initInnerClasses()
 
-        self.scene.elements.append(self)
         self.scene.graphicsScene.addItem(self.graphicsElement)
 
     def initInnerClasses(self):
