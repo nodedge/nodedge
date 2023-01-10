@@ -617,7 +617,7 @@ QTreeWidget {
     /*font-size: 16px;*/
 }
 
-#newNodedgeFileButton {
+#newNodedgeFileButton, #newDatsFileButton {
     image: url("resources/white_icons/create.png");
     icon-size: 300px;
 }

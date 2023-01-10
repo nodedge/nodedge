@@ -163,7 +163,7 @@ class HomeContentWidget(ContentWidget):
     def updateDatsRecentFilesWidget(self, filePaths):
         self.datsRecentFilesLayout.clear()
         for index, filepath in enumerate(filePaths):
-            if index > 4:
+            if index > 3:
                 break
             shortpath = filepath.replace("\\", "/")
             shortpath = shortpath.split("/")[-1]
@@ -189,6 +189,13 @@ class HomeContentWidget(ContentWidget):
                 fileButton.setIconSize(QSize(BUTTON_SIZE, BUTTON_SIZE))
             self.datsRecentFilesLayout.addWidget(fileButton)
             fileButton.clicked.connect(self.onDatsRecentFileClicked)
+        newFileButton = FileToolButton()
+        newFileButton.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        newFileButton.setFixedSize(BUTTON_SIZE, BUTTON_SIZE)
+        newFileButton.setToolTip("")
+        newFileButton.setObjectName("newDatsFileButton")
+        newFileButton.clicked.connect(self.onDatsRecentFileClicked)
+        self.datsRecentFilesLayout.addWidget(newFileButton)
 
     def onDatsRecentFileClicked(self):
         self.datsFileClicked.emit(self.sender().toolTip())
