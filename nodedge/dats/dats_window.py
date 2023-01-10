@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import sys
 from typing import Callable, List, Optional, Union
 
@@ -556,6 +557,19 @@ class DatsWindow(QMainWindow):
                 filter=DatsWindow.getFileDialogFilter(),
             )
             if not ok:
+                return
+        if not os.path.exists(filename):
+            ok = QMessageBox.warning(
+                self,
+                "File not found",
+                f"File {filename} does not exist. \n" "Do you want to open a new file?",
+                QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel,
+            )
+            self.removeFromRecentFiles(filename)
+            if ok == QMessageBox.StandardButton.Ok:
+                self.openLog()
+            else:
+                logger.warning(f"File {filename} not found.")
                 return
 
         log = self.logsWidget.logsListWidget.openLog(filename)
