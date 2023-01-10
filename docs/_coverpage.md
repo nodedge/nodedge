@@ -5,14 +5,16 @@
 
 # Nodedge <small>0.4</small>
 
-> An open-source graphic environment for next-generation engineering.
+> Python integrated environment for next-generation engineering.
 
-- Design. Simulate. Inspect.
+- Design. Simulate. Inspect. Deploy. Collaborate.
 
 [Download](https://github.com/nodedge/nodedge/releases/download/v0.4.0/NodedgeSetup.exe)
 [GitHub](https://github.com/nodedge/nodedge)
 [Donate]()
 
-<!-- background color -->
+<!-- background image 
+![](media/cover.png) -->
 
+<!-- background color -->
 ![color](#f0f0f0)
