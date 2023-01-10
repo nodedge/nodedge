@@ -345,17 +345,17 @@ class DatsWindow(QMainWindow):
             QKeySequence("Ctrl+M"),
         )
 
-        self.viewAllAct = self.createAction(
-            "&View all",
+        self.FitToViewAct = self.createAction(
+            "&Fit to view",
             self.viewAll,
-            "View all",
+            "Fit to view",
             QKeySequence("Space"),
         )
 
         self.takeScreenShotAct = self.createAction(
-            "Take screenShot",
+            "Take screenshot",
             self.onScreenShot,
-            "Take screenShot",
+            "Take screenshot",
             QKeySequence("Ctrl+Shift+Space"),
         )
 
@@ -481,12 +481,12 @@ class DatsWindow(QMainWindow):
         self.homeMenu.aboutToShow.connect(self.closeHomeMenu)
         self.createFileMenu()
         self.createViewMenu()
-        self.createHelpMenu()
         self.createToolsMenu()
+        self.createHelpMenu()
 
     def createViewMenu(self):
         self.viewMenu: QMenu = self.menuBar().addMenu("&View")
-        self.viewMenu.addAction(self.viewAllAct)
+        self.viewMenu.addAction(self.FitToViewAct)
         self.viewMenu.addSeparator()
 
     def closeHomeMenu(self):

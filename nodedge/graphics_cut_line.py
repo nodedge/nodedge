@@ -118,7 +118,7 @@ class CutLine:
                             f"{edge.graphicsEdge.path()}"
                         )
 
-            scene.history.store("Delete cut edges.")
+            scene.history.store("Delete edges.")
             self.__logger.debug("Cutting has been done.")
 
         except Exception as e:

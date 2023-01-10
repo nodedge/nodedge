@@ -132,7 +132,7 @@ class MainWindow(QMainWindow):
         """
 
         self.newAct = self.createAction(
-            "&New", self.newFile, "Create new Nodedge graph", QKeySequence("Ctrl+N")
+            "&New", self.newFile, "Create new Nodedge model", QKeySequence("Ctrl+N")
         )
 
         self.openAct = self.createAction(
