@@ -23,6 +23,8 @@ from nodedge.dats.n_plot_data_item import NPlotDataItem
 
 logger = logging.getLogger(__name__)
 
+GRID_ALPHA = 0.1
+
 
 class NPlotWidget(GraphicsLayoutWidget):
     xRangeUpdated = Signal(int, int)
@@ -31,6 +33,8 @@ class NPlotWidget(GraphicsLayoutWidget):
         super().__init__(parent)
         self.name = name
         self.worksheetsTabWidget = parent
+        app: QApplication = QApplication.instance()
+        app.paletteChanged.connect(self.updateColors)
 
         # crosshair
         self.plotItems = []
@@ -40,7 +44,7 @@ class NPlotWidget(GraphicsLayoutWidget):
         vb.setBackgroundColor(QApplication.palette().base().color())
         self.setBackground(QApplication.palette().base().color())
 
-        self.plotItem.showGrid(x=True, y=True, alpha=1.0)
+        self.plotItem.showGrid(x=True, y=True, alpha=GRID_ALPHA)
         self.legend: LegendItem = LegendItem((80, 60), offset=(70, 20))
         self.legend.setParentItem(self.plotItem)
         self.items = OrderedDict()
@@ -57,6 +61,17 @@ class NPlotWidget(GraphicsLayoutWidget):
         self.setAcceptDrops(True)
 
         self.plotItem.vb.sigXRangeChanged.connect(self.onXRangeChanged)
+
+    def updateColors(self):
+        p = QApplication.palette()
+        for plotItem in self.plotItems:
+            plotItem.vb.setBackgroundColor(p.base().color())
+            axis: AxisItem = plotItem.axes["left"]["item"]
+            axis.setPen(pg.mkPen(p.text().color()))
+            axis: AxisItem = plotItem.axes["bottom"]["item"]
+            axis.setPen(pg.mkPen(p.text().color()))
+            plotItem.vb.setBorder({"color": p.text().color(), "width": 1})
+        self.setBackground(p.base().color())
 
     def onXRangeChanged(self, plotitem, range):
         minValue = (
@@ -84,7 +99,7 @@ class NPlotWidget(GraphicsLayoutWidget):
             item.axes["left"]["item"].setWidth(maxWidth)
 
         self.plotItems[-1].addLegend()
-        self.plotItems[-1].showGrid(x=True, y=True, alpha=1.0)
+        self.plotItems[-1].showGrid(x=True, y=True, alpha=GRID_ALPHA)
 
         proxy = SignalProxy(
             plotItem.scene().sigMouseMoved,
