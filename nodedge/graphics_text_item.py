@@ -32,13 +32,38 @@ class GraphicsTextItem(QGraphicsTextItem):
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
         self.setFlag(QGraphicsItem.ItemIsFocusable)
 
+        # self.focused = False
+        # self.shown = False
+        # self.timer = QTimer()
+        # self.timer.setTimerType(Qt.PreciseTimer)
+        # self.timer.setInterval(10)
+        # self.timer.timeout.connect(self.updateCursor)
+
     def mouseDoubleClickEvent(self, event: QGraphicsSceneMouseEvent) -> None:
+        # Activate/deactivate/reactivate cursor to ensure it blinks properly.
         self.setTextInteractionFlags(Qt.TextEditorInteraction)
+        self.setTextInteractionFlags(Qt.NoTextInteraction)
+        self.setTextInteractionFlags(Qt.TextEditorInteraction)
+
         self.setFocus(Qt.FocusReason.MouseFocusReason)
         self.setCursor(Qt.IBeamCursor)
-        # self.setTextCursor()
+        cursor = self.textCursor()
+        cursor.clearSelection()
+        self.setTextCursor(cursor)
+        # self.focused = True
+
+    # def updateCursor(self):
+    #     if self.focused:
+    #         if not self.shown:
+    #             self.setTextCursor(Qt.IBeamCursor)
+    #             self.shown = True
+    #         else:
+    #             self.setTextCursor(Qt.BlankCursor)
+    #             self.shown = False
 
     def focusOutEvent(self, event: QFocusEvent) -> None:
+        self.focused = False
+
         self.setTextInteractionFlags(Qt.NoTextInteraction)
         cursor = self.textCursor()
         cursor.clearSelection()
