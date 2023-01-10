@@ -70,3 +70,6 @@ recursive-include requirements *
 
 recursive-include docs_sphinx *.md
 recursive-include deploy *
+
+include deploy.py
+include nodedge.spec
