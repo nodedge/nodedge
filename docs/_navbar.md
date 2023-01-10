@@ -2,8 +2,8 @@
 
 * [Home](/)
 * [Features](features.md)
-* [Support](resources.md)
-* [Tutorials](tutorials.md)
+* [Get started](resources.md)
+* [Documentation](tutorials.md)
 * [About](about.md)
 
 <!--

@@ -1,6 +1,14 @@
-# Nodedge tutorials
+# Documentation
 
-In the following tutorials, we describe how to perform basic Nodedge actions step-by-step.
+Nodedge’s developer guide is available online and is automatically updated every time the API is updated.
+
+* [Nodedge developer guide](https://nodedge.readthedocs.io/en/latest/)
+* [Github wiki](https://github.com/nodedge/nodedge/wiki)
+* [Nodedge source code](https://github.com/nodedge/nodedge)
+
+# Nodedge actions
+
+In the following tutorials, we describe how to perform basic actions in Nodedge.
 Please be aware that Nodedge is still under active development, so this list may not be comprehensive or up-to-date. 
 We welcome your feedback and contributions to improve it.
 
@@ -102,7 +110,7 @@ We welcome your feedback and contributions to improve it.
 > 2. Select the folder where to save the script and type the name of the file to be saved
 > 3. Click on the `Save` button
 
-# Dats tutorials
+# Dats actions
 
 ## Open a dataset
 

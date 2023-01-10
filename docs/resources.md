@@ -1,32 +1,35 @@
-# Documentation
+# Installation
 
-Nodedge’s user manual is available online and is automatically updated every time the API is updated.
+You can install Nodedge in different ways.
 
-* [Nodedge User Manual](https://nodedge.readthedocs.io/en/latest/)
-* [Github Wiki](https://github.com/nodedge/nodedge/wiki)
+**Download the installer**
 
-# Getting started
+* Windows: [download latest release](https://github.com/nodedge/nodedge/releases/download/v0.3/NodedgeSetup.exe)
+* macOS: please bear with us, we are currently in the process of developing it!
+* Linux: please bear with us, we are currently in the process of developing it!
 
-To get started, you can download the installer of Nodedge [latest release](https://github.com/nodedge/nodedge/releases/download/v0.3/NodedgeSetup.exe).
-If you wish to install the source code, you can install Nodedge form pip with:
+
+**Install from pip**
+
+Alternatively, you can install Nodedge form pip with:
 ```
 pip install nodedge
 ```
-Alternatively, you can clone our project from [Github](https://github.com/nodedge/nodedge) and install the dev requirements with:
+
+**Clone from GitHub**
+
+Alternatively, you can clone our project from [Github](https://github.com/nodedge/nodedge) and install the requirements with:
 ```
 git clone https://github.com/nodedge/nodedge nodedge
 cd nodedge
 pip install -r .\requirements\freeze\requirements_dev.txt
 ```
 
-For starting contributing to Nodedge, check out the [guidelines for contributors](https://github.com/nodedge/nodedge/wiki). 
-In particular, we recommend using PyCharm IDE. 
-You can find some helping information on [Nodedge Wiki](https://github.com/nodedge/nodedge/wiki/Pycharm-setup) or [PyCharm website](https://www.jetbrains.com/pycharm/).
-
-# Examples
+# Quick start examples
 
 The list of examples is constantly expanding. You can find an up-to-date list in the [*examples* folder](https://github.com/nodedge/nodedge/tree/main/examples) 
-on GitHub. The examples provided below will allow you to get started with Nodedge and explore its advanced functionalities.
+on GitHub.
+The examples provided below will allow you to get started with Nodedge.
 
 ## Create a model in Nodedge
 
@@ -66,3 +69,16 @@ Congratulations! You have successfully analyzed your first dataset in Dats!
 <br>
 
 <center><img src="media/csv_analyzer_example.png" alt="csv_analyzer_example" width="800" /></center>
+
+
+# Contributing
+
+You can contribute to Nodedge in several ways: 
+* [Donate]() to let us cover basic expenses (e.g. domain name, tooling, etc.), as well as the creation of free and open-source Nodedge features
+* [Submit your feedback](mailto:admin@nodedge.io). Share your goals and tell us how Nodedge can help
+* [Share example files](mailto:admin@nodedge.io)
+* Report bugs on [Nodedge issue tracker](https://github.com/nodedge/nodedge/issues)
+* Fix bugs and write documentation. To start contributing to Nodedge, you can check out the [guidelines for contributors](https://github.com/nodedge/nodedge/wiki)
+
+For developing Nodedge, we recommend using PyCharm IDE. 
+You can find helpful information on how to install and set it up on [Nodedge Wiki](https://github.com/nodedge/nodedge/wiki/Pycharm-setup) and [PyCharm website](https://www.jetbrains.com/pycharm/).
