@@ -10,7 +10,8 @@ from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QInputDialog, QListWidget, QListWidgetItem, QMessageBox
 from scipy.io import loadmat
 
-DUMMY_CHAR = ["'", "\\", " ", "-", "+", "*"]
+DUMMY_CHAR = ["'", "\\"]
+SEPARATORS = ["-", "+", "*", ".", "/"]
 
 
 class LogsListWidget(QListWidget):
@@ -26,8 +27,7 @@ class LogsListWidget(QListWidget):
 
     def openLog(self, filename) -> Optional[MDF]:
         shortname = filename.split("/")[-1]
-        extension = shortname.split(".")[-1]
-        shortname = shortname.split(".")[0]
+        shortname, extension = split_filename(shortname)
 
         log: MDF
         if extension.lower() == "mf4":
@@ -97,7 +97,7 @@ class LogsListWidget(QListWidget):
 
             # Convert file to dataframe and rename columns
             df = tdmsFile.as_dataframe()
-            refactor_string = lambda text: remove_slash_from_string(
+            refactor_string = lambda text: replace_separators_in_string(
                 remove_dummy_char_from_string(text)
             )
             columns_dict = {column: refactor_string(column) for column in df.keys()}
@@ -131,7 +131,7 @@ class LogsListWidget(QListWidget):
     def addLog(self, log, shortname, prependDate=True):
         startTimeStr = ""
         if prependDate:
-            startTimeStr = log.start_time.strftime("%Y/%m/%D, %H:%M:%S")
+            startTimeStr = log.start_time.strftime("%Y/%m/%d, %H:%M:%S")
             shortname = f"[{startTimeStr}] {shortname}"
 
         if shortname in list(self.logs.keys()):
@@ -165,6 +165,20 @@ def remove_dummy_char_from_string(string, dummy_char=DUMMY_CHAR):
     return string
 
 
-def remove_slash_from_string(string):
-    string = string.replace("/", "_")
+def replace_separators_in_string(string, sep=SEPARATORS):
+    for s in sep:
+        string = string.replace(s, "_")
+        if len(string) > 0 and string[0] == "_":
+            string = string[1:]
     return string
+
+
+def split_filename(input_string):
+    dot_index = input_string.rfind(".")
+    if dot_index == -1:
+        filename = input_string
+        extension = ""
+    else:
+        filename = input_string[:dot_index]
+        extension = input_string[dot_index+1:]
+    return filename, extension
