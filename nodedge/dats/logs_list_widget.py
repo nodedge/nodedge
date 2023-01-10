@@ -1,5 +1,7 @@
+import datetime
 import logging
 from typing import Optional
+import os
 
 import nptdms
 import numpy as np
@@ -52,7 +54,7 @@ class LogsListWidget(QListWidget):
             df = df.drop(columns=df.columns.difference(df_filtered.columns))
 
             log = MDF()
-
+            log.start_time = get_creation_date(filename)
             log.append(df)
 
         elif extension.lower() == "hdf5":
@@ -90,6 +92,7 @@ class LogsListWidget(QListWidget):
                 )
                 signals.append(newSignal)
             log = MDF()
+            log.start_time = get_creation_date(filename)
             log.append(signals)
 
         elif extension.lower() == "tdms":
@@ -118,6 +121,7 @@ class LogsListWidget(QListWidget):
                 )
                 signals.append(newSignal)
             log = MDF()
+            log.start_time = get_creation_date(filename)
             log.append(signals)
 
         else:
@@ -159,6 +163,9 @@ class LogsListWidget(QListWidget):
 
 
 def remove_dummy_char_from_string(string, dummy_char=DUMMY_CHAR):
+    """
+    Removes all dummy characters from a string.
+    """
     for c in dummy_char:
         string = string.replace(c, "")
 
@@ -174,6 +181,9 @@ def replace_separators_in_string(string, sep=SEPARATORS):
 
 
 def split_filename(input_string):
+    """
+    Splits a filename in name and extension.
+    """
     dot_index = input_string.rfind(".")
     if dot_index == -1:
         filename = input_string
@@ -182,3 +192,19 @@ def split_filename(input_string):
         filename = input_string[:dot_index]
         extension = input_string[dot_index+1:]
     return filename, extension
+
+
+def get_creation_date(file_path):
+    """
+    Returns the date of creation of the file in the datetime format.
+    """
+    if os.name == 'nt':
+        return datetime.datetime.fromtimestamp(os.path.getctime(file_path))
+    else:
+        stat = os.stat(file_path)
+        try:
+            return datetime.datetime.fromtimestamp(stat.st_birthtime)
+        except AttributeError:
+            # We're probably on Linux. No easy way to get creation dates here,
+            # so we'll settle for when its content was last modified.
+            return datetime.datetime.fromtimestamp(stat.st_mtime)
