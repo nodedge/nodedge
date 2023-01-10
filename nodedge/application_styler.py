@@ -74,7 +74,6 @@ class ApplicationStyler:
         highlight = QColor(colors["highlight"])
         link = QColor(colors["link"])
         visitedLink = QColor(colors["visitedLink"])
-        extraLight = QColor(colors["extraLight"])
         p.setColor(QPalette.AlternateBase, highlight)
         p.setColor(QPalette.Base, base)
         p.setColor(QPalette.BrightText, highlight)
@@ -96,7 +95,6 @@ class ApplicationStyler:
         app.setPalette(p)
         QApplication.setStyle("Fusion")
 
-        print(iconPath)
         loadStyleSheet(
             # os.path.join(os.path.dirname(__file__), "qss/calculator-dark.qss"),
             self.styleSheetFilename,

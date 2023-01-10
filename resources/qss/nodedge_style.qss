@@ -470,6 +470,10 @@ HeaderIconButton, HeaderTextButton {
     icon: url("resources/white_icons/home_page.png");
 }
 
+#nodedgeButton {
+    icon: url("resources/white_icons/flow_chart.png");
+}
+
 #datsButton {
     icon: url("resources/white_icons/line_chart.png");
 }

@@ -13,8 +13,6 @@ HEADER_ITEMS = {
     "Login": "icon",
 }
 
-ICON_PATH = "resources/white_icons/"
-
 
 class HeaderFrame(QFrame):
     def __init__(self, parent=None):
@@ -47,9 +45,9 @@ class HeaderFrame(QFrame):
             toggleIconFile="resources/white_icons/chevron_left.png",
         )
 
-        self.nodedgeButton = HeaderIconButton(self, iconFile="resources/Icon.ico")
+        self.nodedgeButton = HeaderIconButton(self, text="Nodedge")
         self.datsButton = HeaderIconButton(
-            self, iconFile="resources/Icon.ico", text="Dats"
+            self, iconFile="resources/white_icons/line_chart.png", text="Dats"
         )
 
         self.leftLayout.addWidget(self.menuButton)

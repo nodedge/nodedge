@@ -28,7 +28,7 @@
   "Magnetic Moment": ["A*m2"],
   "Magnetic Vector Potential": ["Wb/m2"],
   "Magnetic Vector Potential Flux": ["Wb/m3"],
-  "Limunance": ["cd/m2"],
+  "Luminance": ["cd/m2"],
   "Angular Velocity": ["rad/s", "deg/s"],
   "Angular Acceleration": ["rad/s2", "deg/s2"],
   "Force rate": ["N/s"],
