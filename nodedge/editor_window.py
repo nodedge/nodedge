@@ -467,7 +467,7 @@ class EditorWindow(QMainWindow):
         Confirmation is asked to the user if there are unsaved changes.
         """
         if self.maybeSave():
-            self.__logger.info("Creating new graph")
+            self.__logger.info("Creating new model")
             self.currentEditorWidget.newFile()
         self.updateTitle()
 

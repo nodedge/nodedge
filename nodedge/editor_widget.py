@@ -106,7 +106,7 @@ class EditorWidget(QWidget):
 
         :rtype: ``str``
         """
-        name = os.path.basename(self.filename) if self.hasName else "New graph"
+        name = os.path.basename(self.filename) if self.hasName else "New model"
 
         return name + ("*" if self.isModified else "")
 
