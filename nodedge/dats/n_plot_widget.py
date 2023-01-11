@@ -49,8 +49,8 @@ class NPlotWidget(GraphicsLayoutWidget):
         self.legend.setParentItem(self.plotItem)
         self.items = OrderedDict()
 
-        self.xLimits = np.array([0, 1])
-        self.yLimits = np.array([0, 1])
+        self.xLimits = np.array([0.0, 1.0])
+        self.yLimits = np.array([0.0, 1.0])
         self.plotItem.setLimits(
             xMin=self.xLimits[0],
             xMax=self.xLimits[1],
@@ -141,7 +141,8 @@ class NPlotWidget(GraphicsLayoutWidget):
             yMin=self.yLimits[0] - yRange * 0.1,
             yMax=self.yLimits[1] + yRange * 0.1,
         )
-        self.plotItem.setRange(yRange=(self.yLimits[0], self.yLimits[1] * 0.5))
+
+        # self.plotItem.setRange(yRange=(self.yLimits[0], self.yLimits[1] * 0.5))
 
     def modifyCurve(self, curve, ev: MouseClickEvent):
         logger.info("modifyCurve")
