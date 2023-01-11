@@ -54,9 +54,9 @@ class WorkbooksTabWidget(QTabWidget):
     # noinspection PyAttributeOutsideInit
     def createActions(self):
         self.createAct = self.createAction(
-            "&Create",
+            "&Add workbook",
             self.addWorkbook,
-            "Create worksheet",
+            "Add workbook",
             QKeySequence("Ctrl+Shift+N"),
         )
 
