@@ -80,6 +80,7 @@ class NPlotWidget(GraphicsLayoutWidget):
         maxValue = (
             (range[1] - self.xLimits[0]) / (self.xLimits[1] - self.xLimits[0]) * 100
         )
+        logger.debug(f"Updapte x range: [{minValue}, {maxValue}]")
         self.xRangeUpdated.emit(minValue, maxValue)
 
     def addPlotItem(self, *args, **kargs):
@@ -90,7 +91,19 @@ class NPlotWidget(GraphicsLayoutWidget):
         axis.setPen(pg.mkPen(QApplication.palette().text().color()))
 
         maxWidth = 0
+
+        if len(self.plotItems) > 0:
+            self.plotItem.setXLink(plotItem)
+            plotItem.setLimits(
+                xMin=self.xLimits[0],
+                xMax=self.xLimits[1],
+                yMin=self.yLimits[0],
+                yMax=self.yLimits[1],
+            )
+            plotItem.setRange(xRange=self.plotItem.viewRange()[0])
+
         self.plotItems.append(plotItem)
+
         for item in self.plotItems:
             axis = item.axes["left"]["item"]
             maxWidth = max(maxWidth, axis.width())
@@ -142,6 +155,20 @@ class NPlotWidget(GraphicsLayoutWidget):
             yMax=self.yLimits[1] + yRange * 0.1,
         )
         self.plotItem.setRange(yRange=(self.yLimits[0], self.yLimits[1] * 0.5))
+
+    def updateLimits(self, xLimits=None, yLimits=None):
+        if xLimits is not None:
+            self.xLimits = xLimits
+        if yLimits is not None:
+            self.yLimits = yLimits
+        yRange = max(self.yLimits[1] - self.yLimits[0], 1e-9)
+
+        self.plotItem.setLimits(
+            xMin=self.xLimits[0],
+            xMax=self.xLimits[1],
+            yMin=self.yLimits[0] - yRange * 0.1,
+            yMax=self.yLimits[1] + yRange * 0.1,
+        )
 
     def modifyCurve(self, curve, ev: MouseClickEvent):
         logger.info("modifyCurve")

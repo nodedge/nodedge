@@ -112,9 +112,16 @@ class DatsWindow(QMainWindow):
         self.statusBar().addPermanentWidget(self.configPathLabel)
 
     def updatePlotAxes(self, low, high):
-        self.workbooksTabWidget.workbooks[0].worksheets[0].xRangeUpdated.disconnect(
-            self.updateSlider
-        )
+        if len(self.workbooksTabWidget.workbooks) == 0:
+            return
+        if len(self.workbooksTabWidget.workbooks[0].worksheets) == 0:
+            return
+        try:
+            self.workbooksTabWidget.workbooks[0].worksheets[0].xRangeUpdated.disconnect(
+                self.updateSlider
+            )
+        except RuntimeError as e:
+            logger.warning(e)
         self.workbooksTabWidget.updateXAxis(low, high)
         self.workbooksTabWidget.workbooks[0].worksheets[0].xRangeUpdated.connect(
             self.updateSlider
@@ -203,6 +210,7 @@ class DatsWindow(QMainWindow):
             for worksheetname, worksheetConfig in workbookConfig.items():
                 worksheetsTabWidget.addWorksheet(worksheetname)
                 worksheetsTabWidget.setCurrentIndex(item)
+                logger.debug(f"Selecting worksheet: {item}")
                 worksheet = worksheetsTabWidget.worksheets[item]
                 for index, vbConfig in enumerate(worksheetConfig):
                     if index >= 1:
@@ -229,7 +237,7 @@ class DatsWindow(QMainWindow):
                                 name=signalName,
                             )
                             worksheet.addDataItem(dataItem, signalName)
-                    item = item + 1
+                item = item + 1
 
         self.curveConfig = config["curves"]
 

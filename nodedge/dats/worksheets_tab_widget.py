@@ -65,9 +65,15 @@ class WorksheetsTabWidget(QTabWidget):
             if not ok:
                 return
 
+        if len(self.worksheets) > 0:
+            viewRange = self.worksheets[0].plotItem.viewRange()
         plotWidget = NPlotWidget(parent=self, name=worksheetName)
 
-        for worksheet in self.worksheets:
+        for index, worksheet in enumerate(self.worksheets):
+            if index == 0:
+                plotWidget.updateLimits(worksheet.xLimits, worksheet.yLimits)
+                if len(self.worksheets) > 0:
+                    plotWidget.plotItem.setRange(xRange=viewRange[0])
             worksheet.plotItem.setXLink(plotWidget.plotItem)
         self.addTab(plotWidget, worksheetName)
         self.worksheets.append(plotWidget)
