@@ -549,7 +549,7 @@ class DatsWindow(QMainWindow):
         )
 
     def openLog(self, filename=None):
-        if filename is None or filename is False:
+        if filename is None or not filename:
             filename, ok = QFileDialog.getOpenFileName(
                 parent=self,
                 caption="Open file",
