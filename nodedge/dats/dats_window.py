@@ -90,9 +90,31 @@ class DatsWindow(QMainWindow):
         self._configPath = ""
         self.createStatusBar()
 
-        self.modifiedConfig = False
+        self._modifiedConfig = False
 
         self.readSettings()
+
+    @property
+    def modifiedConfig(self):
+        return self._modifiedConfig
+
+    @modifiedConfig.setter
+    def modifiedConfig(self, value):
+        if value != self._modifiedConfig:
+            self._modifiedConfig = value
+            self.setConfigPathLabelText()
+
+    def setConfigPathLabelText(self):
+        text = "Configuration: "
+        if self.modifiedConfig:
+            text += "*"
+
+        if not self.configPath:
+            text += "untitled"
+        else:
+            text += self.configPath
+
+        self.configPathLabel.setText(text)
 
     @property
     def configPath(self):
@@ -101,7 +123,7 @@ class DatsWindow(QMainWindow):
     @configPath.setter
     def configPath(self, path):
         self._configPath = path
-        self.configPathLabel.setText(self._configPath)
+        self.setConfigPathLabelText()
 
     def createStatusBar(self) -> None:
         """
@@ -109,7 +131,7 @@ class DatsWindow(QMainWindow):
         :class:`~nodedge.graphics_view.GraphicsView`'s scenePosChanged event.
         """
         self.statusBar().showMessage("")
-        self.configPathLabel = QLabel(self.configPath)
+        self.configPathLabel = QLabel("Configuration: " + self.configPath)
         self.statusBar().addPermanentWidget(self.configPathLabel)
 
     def updatePlotAxes(self, low, high):
@@ -264,6 +286,15 @@ class DatsWindow(QMainWindow):
                 log.append(newSignal)
             self.signalsWidget.signalsTableWidget.updateItems(log)
 
+    def closeConfiguration(self):
+        self.maybeSave()
+        self.modifiedConfig = False
+        self.configPath = ""
+        for index, workbook in enumerate(self.workbooksTabWidget.workbooks):
+            self.workbooksTabWidget.removeWorkbook(index)
+
+        self.workbooksTabWidget.addWorkbook()
+
     def onPlotSelectedItems(self, items):
         channelNames = []
         for item in items:
@@ -321,6 +352,13 @@ class DatsWindow(QMainWindow):
             self.restoreConfiguration,
             "Restore plots configuration",
             QKeySequence("Ctrl+R"),
+        )
+
+        self.closeConfigAct = self.createAction(
+            "&Close configuration",
+            self.closeConfiguration,
+            "Close plots configuration",
+            QKeySequence("Ctrl+Shift+R"),
         )
 
         self.addWorksheetAct = self.createAction(
@@ -541,6 +579,7 @@ class DatsWindow(QMainWindow):
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.saveConfigAct)
         self.fileMenu.addAction(self.restoreConfigAct)
+        self.fileMenu.addAction(self.closeConfigAct)
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.takeScreenShotAct)
 
