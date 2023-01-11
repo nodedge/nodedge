@@ -3,7 +3,6 @@ import sys
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QApplication,
-    QCheckBox,
     QCompleter,
     QHBoxLayout,
     QLabel,
@@ -16,9 +15,11 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from nodedge.application_styler import ApplicationStyler
+
 
 class SimpleWidget(QWidget):
-    def __init__(self, parent=None, name="", value=""):
+    def __init__(self, parent=None, name="", category="", shortcut=""):
         super().__init__()
 
         self.layout = QHBoxLayout()
@@ -26,11 +27,14 @@ class SimpleWidget(QWidget):
         self.label = QLabel(name)
         self.label.setMinimumWidth(100)
         self.layout.addWidget(self.label)
-        self.valueLabel = QLabel(value)
-        self.layout.addWidget(self.valueLabel)
-        self.check = QCheckBox()
-        self.check.setChecked(False)
-        self.layout.addWidget(self.check)
+        self.categoryLabel = QLabel(category)
+        self.layout.addWidget(self.categoryLabel)
+        self.shortcutLabel = QLabel(shortcut)
+        self.layout.addWidget(self.shortcutLabel)
+        # self.shortcut = QLineEdit()
+        # self.check = QCheckBox()
+        # self.check.setChecked(False)
+        # self.layout.addWidget(self.check)
 
     @property
     def name(self):
@@ -44,18 +48,20 @@ class SearchableWidget(QWidget):
         self.controls = QWidget()
         self.controlsLayout = QVBoxLayout()
 
+        self.setFixedWidth(600)
+
         widget_names = {
-            "An action": "A shortcut",
-            "An action1": "A shortcut",
-            "An action2": "A shortcut",
-            "An action3": "A shortcut",
-            "An action4": "A shortcut",
-            "An action5": "A shortcut",
-            "An action6": "A shortcut",
-            "An action7": "A shortcut",
-            "An action8": "A shortcut",
-            "An action9": "A shortcut",
-            "An action10": "A shortcut",
+            "An action": {"category": "A shortcut", "shortcut": "Ctrl+A"},
+            "An action1": {"category": "A shortcut", "shortcut": "Ctrl+A"},
+            "An action2": {"category": "A shortcut", "shortcut": "Ctrl+A"},
+            "An action3": {"category": "A shortcut", "shortcut": "Ctrl+A"},
+            "An action4": {"category": "A shortcut", "shortcut": "Ctrl+A"},
+            "An action5": {"category": "A shortcut", "shortcut": "Ctrl+A"},
+            "An action6": {"category": "A shortcut", "shortcut": "Ctrl+A"},
+            "An action7": {"category": "A shortcut", "shortcut": "Ctrl+A"},
+            "An action8": {"category": "A shortcut", "shortcut": "Ctrl+A"},
+            "An action9": {"category": "A shortcut", "shortcut": "Ctrl+A"},
+            "An action10": {"category": "A shortcut", "shortcut": "Ctrl+A"},
         }
         self.widgets = {}
 
@@ -76,6 +82,7 @@ class SearchableWidget(QWidget):
 
         self.completer = QCompleter(widget_names)
         self.completer.setCaseSensitivity(Qt.CaseInsensitive)
+        self.completer.setCompletionMode(QCompleter.InlineCompletion)
         self.searchbar.setCompleter(self.completer)
 
         containerLayout = QVBoxLayout()
@@ -97,7 +104,9 @@ class SearchableWidget(QWidget):
                 item.valueLabel.setText(v)
 
             else:
-                item = SimpleWidget(name=k, value=v)
+                item = SimpleWidget(
+                    name=k, category=v["category"], shortcut=v["shortcut"]
+                )
 
             self.widgets.update({k: item})
             self.controlsLayout.addWidget(item)
@@ -105,10 +114,11 @@ class SearchableWidget(QWidget):
     def update_display(self, text):
 
         for widget in list(self.widgets.values()):
-            if text.lower() in widget.name.lower() or widget.check.isChecked():
+            if text.lower() in widget.name.lower():
                 widget.show()
             else:
                 widget.hide()
+        self.updateGeometry()
 
 
 class MainWindow(QMainWindow):
@@ -130,7 +140,13 @@ class MainWindow(QMainWindow):
 if __name__ == "__main__":
 
     app = QApplication(sys.argv)
+    styler = ApplicationStyler()
     w = SearchableWidget()
+    w.setWindowFlag(
+        Qt.WindowType.FramelessWindowHint
+        ^ Qt.WindowType.WindowStaysOnTopHint
+        # ^ Qt.WindowType.SplashScreen
+    )
     # w = QComboBox()
     w.show()
     sys.exit(app.exec())
