@@ -1,3 +1,4 @@
+import logging
 import os
 
 from PySide6.QtCore import QEasingCurve
@@ -8,6 +9,8 @@ from nodedge.animated_stack_widget import AnimatedStackWidget
 from nodedge.dats.dats_window import DatsWindow
 from nodedge.homepage.homepage_window import HomePageWindow
 from nodedge.mdi_window import MdiWindow
+
+logger = logging.getLogger(__name__)
 
 
 class NodedgeAppWindow(QMainWindow):
@@ -92,13 +95,31 @@ class NodedgeAppWindow(QMainWindow):
         self.datsWindow.helpAct.triggered.connect(showHelp)
 
     def closeEvent(self, event: QCloseEvent) -> None:
+        ret = self.mdiWindow.maybeSave()
+        if not ret:
+            event.ignore()
+            return
+        logger.debug("Mdi window ready to close.")
+
+        ret = self.datsWindow.maybeSave()
+        if not ret:
+            event.ignore()
+            return
+        logger.debug("Dats window ready to close.")
+
         ok = self.mdiWindow.close()
         if not ok:
             event.ignore()
             return
+        logger.debug("MDI window closed.")
+
         ok = self.datsWindow.close()
         if not ok:
             event.ignore()
             return
+        logger.debug("Dats window closed.")
+
         self.homepageWindow.close()
+        logger.debug("Homepage window closed.")
+
         event.accept()

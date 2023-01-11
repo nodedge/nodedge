@@ -737,6 +737,9 @@ class EditorWindow(QMainWindow):
             return self.saveFile()
         elif res == QMessageBox.StandardButton.Cancel:
             return False
+        elif res == QMessageBox.StandardButton.Discard:
+            self.currentEditorWidget.scene.isModified = False
+            return True
 
         return True
 

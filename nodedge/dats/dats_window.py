@@ -85,6 +85,7 @@ class DatsWindow(QMainWindow):
         self.createMenus()
 
         self.statusBar().showMessage("Welcome in Dats", timeout=5000)
+        self.statusBar().show()
 
         self._configPath = ""
         self.createStatusBar()
@@ -132,9 +133,7 @@ class DatsWindow(QMainWindow):
         self.slider.setRange(low, high)
         self.slider.sliderMoved.connect(self.updatePlotAxes)
 
-    def closeEvent(self, event: QCloseEvent) -> None:
-        self.writeSettings()
-
+    def maybeSave(self) -> bool:
         if self.modifiedConfig:
             res = QMessageBox.warning(
                 self,
@@ -148,13 +147,25 @@ class DatsWindow(QMainWindow):
 
             if res == QMessageBox.StandardButton.Save:
                 self.saveConfiguration()
-                event.accept()
+                return True
+            elif res == QMessageBox.StandardButton.Discard:
+                self.modifiedConfig = False
+                return True
             elif res == QMessageBox.StandardButton.Cancel:
-                event.ignore()
+                return False
             else:
-                event.accept()
-        else:
+                return True
+        return True
+
+    def closeEvent(self, event: QCloseEvent) -> None:
+        self.writeSettings()
+
+        ret = self.maybeSave()
+
+        if ret:
             event.accept()
+        else:
+            event.ignore()
 
     def saveConfiguration(self):
         layoutConfig = {}
@@ -695,7 +706,10 @@ class DatsWindow(QMainWindow):
         return "All files (*);;MF4 (*.mf4);;CSV (*.csv);;HDF5 (*.hdf5)"
 
     def addWorksheet(self):
-        self.workbooksTabWidget.currentWidget().addWorksheet(True)
+        if len(self.workbooksTabWidget.workbooks) == 0:
+            self.workbooksTabWidget.addWorkbook()
+        else:
+            self.workbooksTabWidget.currentWidget().addWorksheet(True)
         self.modifiedConfig = True
 
     def addWorkbook(self):
