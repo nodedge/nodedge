@@ -76,9 +76,14 @@ class WorkbooksTabWidget(QTabWidget):
 
     def addWorkbook(self, workbookName="Workbook1") -> WorksheetsTabWidget | None:
         if isinstance(workbookName, bool):
-            workbookName, ok = QInputDialog.getText(
-                self, "Enter workbook name", "Workbook name"
-            )
+            dlg = QInputDialog(self)
+            dlg.setWindowTitle("Enter new workbook name")
+            dlg.setLabelText("Name:")
+            dlg.setInputMode(QInputDialog.TextInput)
+            dlg.setLabelText("Workbook name:")
+            dlg.resize(500, 100)
+            ok = dlg.exec_()
+            workbookName = dlg.textValue()
 
             if not ok:
                 return None
