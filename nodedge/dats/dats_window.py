@@ -577,6 +577,8 @@ class DatsWindow(QMainWindow):
         self.modifiedConfig = True
 
         self.addToRecentFiles(filename)
+        if len(self.workbooksTabWidget.workbooks) == 0:
+            self.addWorkbook()
 
     def addToRecentFiles(self, filepath):
         """
