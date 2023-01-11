@@ -58,16 +58,27 @@ class WorksheetsTabWidget(QTabWidget):
 
     def addWorksheet(self, worksheetName="Worksheet1"):
         if isinstance(worksheetName, bool):
-            worksheetName, ok = QInputDialog.getText(
-                self, "Enter worksheet name", "Worksheet name"
-            )
+            dlg = QInputDialog(self)
+            dlg.setWindowTitle("Enter new worksheet name")
+            dlg.setLabelText("Name:")
+            dlg.setInputMode(QInputDialog.TextInput)
+            dlg.setLabelText("Worksheet name:")
+            dlg.resize(500, 100)
+            ok = dlg.exec_()
+            worksheetName = dlg.textValue()
 
             if not ok:
                 return
 
+        if len(self.worksheets) > 0:
+            viewRange = self.worksheets[0].plotItem.viewRange()
         plotWidget = NPlotWidget(parent=self, name=worksheetName)
 
-        for worksheet in self.worksheets:
+        for index, worksheet in enumerate(self.worksheets):
+            if index == 0:
+                plotWidget.updateLimits(worksheet.xLimits, worksheet.yLimits)
+                if len(self.worksheets) > 0:
+                    plotWidget.plotItem.setRange(xRange=viewRange[0])
             worksheet.plotItem.setXLink(plotWidget.plotItem)
         self.addTab(plotWidget, worksheetName)
         self.worksheets.append(plotWidget)
@@ -94,9 +105,9 @@ class WorksheetsTabWidget(QTabWidget):
     # noinspection PyAttributeOutsideInit
     def createActions(self):
         self.createAct = self.createAction(
-            "&Create",
+            "&Add worksheet",
             self.addWorksheet,
-            "Create worksheet",
+            "Add worksheet",
             QKeySequence("Ctrl+N"),
         )
 

@@ -85,13 +85,36 @@ class DatsWindow(QMainWindow):
         self.createMenus()
 
         self.statusBar().showMessage("Welcome in Dats", timeout=5000)
+        self.statusBar().show()
 
         self._configPath = ""
         self.createStatusBar()
 
-        self.modifiedConfig = False
+        self._modifiedConfig = False
 
         self.readSettings()
+
+    @property
+    def modifiedConfig(self):
+        return self._modifiedConfig
+
+    @modifiedConfig.setter
+    def modifiedConfig(self, value):
+        if value != self._modifiedConfig:
+            self._modifiedConfig = value
+            self.setConfigPathLabelText()
+
+    def setConfigPathLabelText(self):
+        text = "Configuration: "
+        if self.modifiedConfig:
+            text += "*"
+
+        if not self.configPath:
+            text += "untitled"
+        else:
+            text += self.configPath
+
+        self.configPathLabel.setText(text)
 
     @property
     def configPath(self):
@@ -100,7 +123,7 @@ class DatsWindow(QMainWindow):
     @configPath.setter
     def configPath(self, path):
         self._configPath = path
-        self.configPathLabel.setText(self._configPath)
+        self.setConfigPathLabelText()
 
     def createStatusBar(self) -> None:
         """
@@ -108,13 +131,20 @@ class DatsWindow(QMainWindow):
         :class:`~nodedge.graphics_view.GraphicsView`'s scenePosChanged event.
         """
         self.statusBar().showMessage("")
-        self.configPathLabel = QLabel(self.configPath)
+        self.configPathLabel = QLabel("Configuration: " + self.configPath)
         self.statusBar().addPermanentWidget(self.configPathLabel)
 
     def updatePlotAxes(self, low, high):
-        self.workbooksTabWidget.workbooks[0].worksheets[0].xRangeUpdated.disconnect(
-            self.updateSlider
-        )
+        if len(self.workbooksTabWidget.workbooks) == 0:
+            return
+        if len(self.workbooksTabWidget.workbooks[0].worksheets) == 0:
+            return
+        try:
+            self.workbooksTabWidget.workbooks[0].worksheets[0].xRangeUpdated.disconnect(
+                self.updateSlider
+            )
+        except RuntimeError as e:
+            logger.warning(e)
         self.workbooksTabWidget.updateXAxis(low, high)
         self.workbooksTabWidget.workbooks[0].worksheets[0].xRangeUpdated.connect(
             self.updateSlider
@@ -125,9 +155,7 @@ class DatsWindow(QMainWindow):
         self.slider.setRange(low, high)
         self.slider.sliderMoved.connect(self.updatePlotAxes)
 
-    def closeEvent(self, event: QCloseEvent) -> None:
-        self.writeSettings()
-
+    def maybeSave(self) -> bool:
         if self.modifiedConfig:
             res = QMessageBox.warning(
                 self,
@@ -141,13 +169,25 @@ class DatsWindow(QMainWindow):
 
             if res == QMessageBox.StandardButton.Save:
                 self.saveConfiguration()
-                event.accept()
+                return True
+            elif res == QMessageBox.StandardButton.Discard:
+                self.modifiedConfig = False
+                return True
             elif res == QMessageBox.StandardButton.Cancel:
-                event.ignore()
+                return False
             else:
-                event.accept()
-        else:
+                return True
+        return True
+
+    def closeEvent(self, event: QCloseEvent) -> None:
+        self.writeSettings()
+
+        ret = self.maybeSave()
+
+        if ret:
             event.accept()
+        else:
+            event.ignore()
 
     def saveConfiguration(self):
         layoutConfig = {}
@@ -203,6 +243,7 @@ class DatsWindow(QMainWindow):
             for worksheetname, worksheetConfig in workbookConfig.items():
                 worksheetsTabWidget.addWorksheet(worksheetname)
                 worksheetsTabWidget.setCurrentIndex(item)
+                logger.debug(f"Selecting worksheet: {item}")
                 worksheet = worksheetsTabWidget.worksheets[item]
                 for index, vbConfig in enumerate(worksheetConfig):
                     if index >= 1:
@@ -229,7 +270,7 @@ class DatsWindow(QMainWindow):
                                 name=signalName,
                             )
                             worksheet.addDataItem(dataItem, signalName)
-                    item = item + 1
+                item = item + 1
 
         self.curveConfig = config["curves"]
 
@@ -244,6 +285,15 @@ class DatsWindow(QMainWindow):
 
                 log.append(newSignal)
             self.signalsWidget.signalsTableWidget.updateItems(log)
+
+    def closeConfiguration(self):
+        self.maybeSave()
+        self.modifiedConfig = False
+        self.configPath = ""
+        for index, workbook in enumerate(self.workbooksTabWidget.workbooks):
+            self.workbooksTabWidget.removeWorkbook(index)
+
+        self.workbooksTabWidget.addWorkbook()
 
     def onPlotSelectedItems(self, items):
         channelNames = []
@@ -302,6 +352,13 @@ class DatsWindow(QMainWindow):
             self.restoreConfiguration,
             "Restore plots configuration",
             QKeySequence("Ctrl+R"),
+        )
+
+        self.closeConfigAct = self.createAction(
+            "&Close configuration",
+            self.closeConfiguration,
+            "Close plots configuration",
+            QKeySequence("Ctrl+Shift+R"),
         )
 
         self.addWorksheetAct = self.createAction(
@@ -522,6 +579,7 @@ class DatsWindow(QMainWindow):
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.saveConfigAct)
         self.fileMenu.addAction(self.restoreConfigAct)
+        self.fileMenu.addAction(self.closeConfigAct)
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.takeScreenShotAct)
 
@@ -549,7 +607,7 @@ class DatsWindow(QMainWindow):
         )
 
     def openLog(self, filename=None):
-        if filename is None or filename is False:
+        if filename is None or not filename:
             filename, ok = QFileDialog.getOpenFileName(
                 parent=self,
                 caption="Open file",
@@ -577,6 +635,8 @@ class DatsWindow(QMainWindow):
         self.modifiedConfig = True
 
         self.addToRecentFiles(filename)
+        if len(self.workbooksTabWidget.workbooks) == 0:
+            self.addWorkbook()
 
     def addToRecentFiles(self, filepath):
         """
@@ -685,7 +745,10 @@ class DatsWindow(QMainWindow):
         return "All files (*);;MF4 (*.mf4);;CSV (*.csv);;HDF5 (*.hdf5)"
 
     def addWorksheet(self):
-        self.workbooksTabWidget.currentWidget().addWorksheet(True)
+        if len(self.workbooksTabWidget.workbooks) == 0:
+            self.workbooksTabWidget.addWorkbook()
+        else:
+            self.workbooksTabWidget.currentWidget().addWorksheet(True)
         self.modifiedConfig = True
 
     def addWorkbook(self):
