@@ -9,7 +9,7 @@ Graphics edge module containing :class:`~nodedge.graphics_edge.GraphicsEdge`,
 
 import logging
 import math
-from typing import List, Optional, Union, cast
+from typing import List, Optional, Union
 
 from PySide6.QtCore import QPointF, Qt
 from PySide6.QtGui import QColor, QPainterPath, QPen
@@ -140,7 +140,7 @@ class GraphicsEdge(QGraphicsPathItem):
 
         self._penDragging: QPen = QPen(self._color)
         self._penDragging.setWidthF(2.0)
-        self._penDragging.setStyle(Qt.DashLine)
+        # self._penDragging.setStyle(Qt.DashLine)
 
         self.setZValue(-1)
 
