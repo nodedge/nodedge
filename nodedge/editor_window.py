@@ -5,7 +5,7 @@ Editor window module containing :class:`~nodedge.editor_window.EditorWindow` cla
 import json
 import logging
 import os
-from typing import Callable, List, Optional, Union, cast
+from typing import Callable, Dict, List, Optional, Union, cast
 
 from PySide6.QtCore import QSettings, QSize, QStandardPaths, Qt, Signal
 from PySide6.QtGui import (
@@ -80,7 +80,7 @@ class EditorWindow(QMainWindow):
         self.debugMode: bool = False
         self.recentFiles: List[str] = []
 
-        self.actionsDict = {}
+        self.actionsDict: Dict[str, dict] = {}
         self.initUI()
 
     @property
@@ -902,7 +902,7 @@ class EditorWindow(QMainWindow):
         if isinstance(shortcut, QKeySequence):
             shortcut = str(shortcut.toString(QKeySequence.NativeText))
         elif isinstance(shortcut, QKeySequence.StandardKey):
-            shortcut = QKeySequence.keyBindings(shortcut)[0]
+            shortcut = QKeySequence.keyBindings(shortcut)[0]  # type: ignore
             shortcut = shortcut.toString()
 
         self.actionsDict.update(

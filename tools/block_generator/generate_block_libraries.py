@@ -87,7 +87,9 @@ def _create_blocks(configFile, savePath, lib):
                     opBlockNames[row["library"]].append(row["op_block_string"])
 
                 # Add socket type object
-                row["input_socket_types"] = _prepend_socket_type(row["input_socket_types"])
+                row["input_socket_types"] = _prepend_socket_type(
+                    row["input_socket_types"]
+                )
                 row["output_socket_types"] = _prepend_socket_type(
                     row["output_socket_types"]
                 )
@@ -116,7 +118,7 @@ def _create_blocks(configFile, savePath, lib):
     return libraries, opBlockNames
 
 
-def _generate_config_file(opBlockNames, configFilename, code: int=1):
+def _generate_config_file(opBlockNames, configFilename, code: int = 1):
     # Create init file
     fileString = ""
     for lib in sorted(opBlockNames.keys()):
