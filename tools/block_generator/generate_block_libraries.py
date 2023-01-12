@@ -1,4 +1,5 @@
 import csv
+import json
 import os.path
 import shutil
 from string import Template
@@ -8,7 +9,7 @@ from black import FileMode, format_str
 
 # Parameters to set before running the block generation
 lib = "numpy"  # string of library to generate
-configFile = "numpy_block_config.csv"  # config file
+configFile = "numpy_block_config.json"  # config file
 savePath = "../../nodedge/blocks/autogen"  # path where to save the generated blocks
 overwrite = True  # True to overwrite, False otherwise
 initFilename = "__init__.py"
@@ -68,7 +69,12 @@ def _init_lib_path(savePath, lib):
 
 def _create_blocks(configFile, savePath, lib):
     with open(configFile) as infile:
-        reader = csv.DictReader(infile, delimiter=";")
+        if "csv" in configFile:
+            reader = csv.DictReader(infile, delimiter=";")
+        elif "json" in configFile:
+            reader = json.load(infile)
+        else:
+            raise ValueError(f"Invalid config file format: {configFileFormat}")
         libraries: Dict[str, List[str]] = {}
         opBlockNames: Dict[str, List[str]] = {}
 
