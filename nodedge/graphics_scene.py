@@ -142,10 +142,11 @@ class GraphicsScene(QGraphicsScene):
         logger.debug(f"item: {item}")
 
         if not event.modifiers() & Qt.ShiftModifier:
-            for item in self.selectedItems():
-                if item is not None:
-                    item.setSelected(False)
-            self.itemsDeselected.emit()
+            self.scene.doDeselectItems(silent=True)
+            # for item in self.selectedItems():
+            #     if item is not None:
+            #         item.setSelected(False)
+            # self.itemsDeselected.emit()
 
         if (
             item is not None
@@ -158,10 +159,11 @@ class GraphicsScene(QGraphicsScene):
 
         if item is not None:
             item.setSelected(True)
-        logger.debug(f"Selected items in graphics scene: {self.selectedItems()}")
 
         super().mousePressEvent(event)
         self.itemSelected.emit()
+        logger.debug(f"Selected items in graphics scene: {self.selectedItems()}")
+        logger.debug(f"Last selected item: {self.scene.lastSelectedItems}")
 
     def mouseReleaseEvent(self, event: QGraphicsSceneMouseEvent) -> None:
         """
@@ -177,6 +179,8 @@ class GraphicsScene(QGraphicsScene):
             # item.setSelected(True)
 
         super().mouseReleaseEvent(event)
+
+        logger.debug(f"Last selected item: {self.scene.lastSelectedItems}")
 
     def mouseMoveEvent(self, event: QGraphicsSceneMouseEvent) -> None:
         self.mouseMoved.emit(event.scenePos())

@@ -201,7 +201,7 @@ def test_onSelectedItems(qtbot: QtBot):
     window.setActiveSubWindow(subWindow)
 
     pos2 = editorWidget.scene.graphicsView.mapToScene(QPoint(-10, -10))
-    pos3 = editorWidget.scene.graphicsView.mapToScene(QPoint(10, 10))
+    pos3 = editorWidget.scene.graphicsView.mapToScene(QPoint(-5, -5))
     editorWidget.scene.graphicsView.show()
 
     # editorWidget.scene.graphicsScene.setFocus(Qt.ActiveWindowFocusReason)
@@ -216,10 +216,10 @@ def test_onSelectedItems(qtbot: QtBot):
     assert scene.lastSelectedItems == [node.graphicsNode]
 
     qtbot.mousePress(
-        editorWidget, Qt.LeftButton, pos=QPoint(int(-pos3.x()), int(-pos3.y()))
+        editorWidget, Qt.LeftButton, pos=QPoint(int(pos3.x()), int(pos3.y()))
     )
     qtbot.mouseRelease(
-        editorWidget, Qt.LeftButton, pos=QPoint(int(-pos3.x()), int(-pos3.y()))
+        editorWidget, Qt.LeftButton, pos=QPoint(int(pos3.x()), int(pos3.y()))
     )
     assert scene.selectedItems == []
     assert scene.lastSelectedItems == [node.graphicsNode]

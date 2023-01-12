@@ -70,7 +70,7 @@ root:
 
 loggers:
     nodedge.node:
-        handlers: [stdout, debug_file_handler]
+        handlers: [debug_file_handler]
 #        handlers: [stdout, info]
 
     nodedge.logger:
@@ -109,6 +109,6 @@ loggers:
         propagate: false
 
     nodedge.graphics_scene:
-        handlers: [stdout, debug_file_handler]
+        handlers: [debug_file_handler]
         level: DEBUG
         propagate: false
