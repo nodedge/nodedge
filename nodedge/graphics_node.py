@@ -71,7 +71,7 @@ class GraphicsNode(QGraphicsItem):
     @title.setter
     def title(self, value):
         self._title = value
-        self.titleLabel.setText(self._title)
+        self.titleLabel.setText(self._title.lower())
 
     @property
     def type(self):
@@ -171,7 +171,7 @@ class GraphicsNode(QGraphicsItem):
             titleLayout = QHBoxLayout()
             titleLayout.setContentsMargins(0, 0, 0, 0)
             titleFrame.setLayout(titleLayout)
-            self.titleLabel = GraphicsNodeTitleLabel(self.title, widget)
+            self.titleLabel = GraphicsNodeTitleLabel(self.title.lower(), widget)
             self.titleLabel.setSizePolicy(
                 QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             )

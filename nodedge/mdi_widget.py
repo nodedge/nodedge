@@ -94,11 +94,17 @@ class MdiWidget(EditorWidget):
         keys = list(BLOCKS.keys())
         keys.sort()
         menus = {}
+        libraries = []
+        for key in keys:
+            node = getClassFromOperationCode(key)
+            libraries.append(node.library)
+        for library in sorted(libraries):
+            contextMenu.addMenu(self.libraryMenus[library])
+
         for key in keys:
             node = getClassFromOperationCode(key)
             library = node.library
             if library not in menus.keys():
-                contextMenu.addMenu(self.libraryMenus[library])
                 menus[library] = self.libraryMenus[library]
             else:
                 menu = menus[library]

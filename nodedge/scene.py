@@ -178,9 +178,12 @@ class Scene(Serializable):
             return
 
         selectedItems = self.selectedItems
-        if selectedItems != self._lastSelectedItems:
-            self.lastSelectedItems = selectedItems
+        logger.debug(f"Selected items in scene: {selectedItems}")
+        logger.debug(f"Last selected items in scene: {self._lastSelectedItems}")
 
+        if self.selectedItems != self._lastSelectedItems:
+            if selectedItems:
+                self.lastSelectedItems = self.selectedItems
             if not silent:
                 # we could create some kind of UI which could be serialized,
                 # therefore first run all callbacks...

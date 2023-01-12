@@ -82,7 +82,7 @@ class NodedgeAppWindow(QMainWindow):
             lambda: self.mainWidget.setCurrentWidget(self.homepageWindow)
         )
 
-        self.datsWindow.homeMenu.aboutToShow.connect(
+        self.datsWindow.homeMenu.pressed.connect(
             lambda: self.mainWidget.setCurrentWidget(self.homepageWindow)
         )
         self.mainWidget.setCurrentIndex(0)

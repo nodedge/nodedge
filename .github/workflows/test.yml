@@ -11,7 +11,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  build:
+  test:
     runs-on: ${{ matrix.platform }}
     strategy:
       matrix:
