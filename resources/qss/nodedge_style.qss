@@ -621,3 +621,11 @@ QTreeWidget {
     image: url("resources/white_icons/create.png");
     icon-size: 300px;
 }
+
+ActionButton {
+    background-color: palette(dark);
+}
+
+ActionButton QLabel{
+    background-color: transparent;
+}
