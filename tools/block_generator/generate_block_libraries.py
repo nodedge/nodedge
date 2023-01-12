@@ -1,4 +1,5 @@
 import csv
+import json
 import os.path
 import shutil
 from string import Template
@@ -8,7 +9,7 @@ from black import FileMode, format_str
 
 # Parameters to set before running the block generation
 lib = "numpy"  # string of library to generate
-configFile = "numpy_block_config.csv"  # config file
+configFile = "numpy_block_config.json"  # config file
 savePath = "../../nodedge/blocks/autogen"  # path where to save the generated blocks
 overwrite = True  # True to overwrite, False otherwise
 initFilename = "__init__.py"
@@ -68,7 +69,12 @@ def _init_lib_path(savePath, lib):
 
 def _create_blocks(configFile, savePath, lib):
     with open(configFile) as infile:
-        reader = csv.DictReader(infile, delimiter=";")
+        if "csv" in configFile:
+            reader = csv.DictReader(infile, delimiter=";")
+        elif "json" in configFile:
+            reader = json.load(infile)
+        else:
+            raise ValueError(f"Invalid config file format: {configFileFormat}")
         libraries: Dict[str, List[str]] = {}
         opBlockNames: Dict[str, List[str]] = {}
 
@@ -87,7 +93,9 @@ def _create_blocks(configFile, savePath, lib):
                     opBlockNames[row["library"]].append(row["op_block_string"])
 
                 # Add socket type object
-                row["input_socket_types"] = _prepend_socket_type(row["input_socket_types"])
+                row["input_socket_types"] = _prepend_socket_type(
+                    row["input_socket_types"]
+                )
                 row["output_socket_types"] = _prepend_socket_type(
                     row["output_socket_types"]
                 )
@@ -116,7 +124,7 @@ def _create_blocks(configFile, savePath, lib):
     return libraries, opBlockNames
 
 
-def _generate_config_file(opBlockNames, configFilename, code: int=1):
+def _generate_config_file(opBlockNames, configFilename, code: int = 1):
     # Create init file
     fileString = ""
     for lib in sorted(opBlockNames.keys()):

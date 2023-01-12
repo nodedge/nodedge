@@ -1,0 +1,145 @@
+[
+    {
+        "library": "operator",
+        "function": "add",
+        "block_name": "Add",
+        "op_block_string": "OP_NODE_OPERATOR_ADD",
+        "operation_title": "Addition",
+        "operation_symbol": "+",
+        "icon_filename": "plus_math_100",
+        "input_socket_types": "(Number,Number)",
+        "output_socket_types": "(Number)"
+    },
+    {
+        "library": "operator",
+        "function": "sub",
+        "block_name": "Sub",
+        "op_block_string": "OP_NODE_OPERATOR_SUBTRACT",
+        "operation_title": "Subtraction",
+        "operation_symbol": "-",
+        "icon_filename": "subtract_100",
+        "input_socket_types": "(Number,Number)",
+        "output_socket_types": "(Number)"
+    },
+    {
+        "library": "operator",
+        "function": "mul",
+        "block_name": "Mul",
+        "op_block_string": "OP_NODE_OPERATOR_MULTIPLY",
+        "operation_title": "Multiplication",
+        "operation_symbol": "*",
+        "icon_filename": "multiply_100",
+        "input_socket_types": "(Number,Number)",
+        "output_socket_types": "(Number)"
+    },
+    {
+        "library": "operator",
+        "function": "truediv",
+        "block_name": "TrueDiv",
+        "op_block_string": "OP_NODE_OPERATOR_DIVIDE",
+        "operation_title": "Division",
+        "operation_symbol": "/",
+        "icon_filename": "divide_100",
+        "input_socket_types": "(Number,Number)",
+        "output_socket_types": "(Number)"
+    },
+    {
+        "library": "operator",
+        "function": "mod",
+        "block_name": "Mod",
+        "op_block_string": "OP_NODE_OPERATOR_MODULO",
+        "operation_title": "Modulo",
+        "operation_symbol": "%",
+        "icon_filename": "percentage_100",
+        "input_socket_types": "(Number,Number)",
+        "output_socket_types": "(Number)"
+    },
+    {
+        "library": "operator",
+        "function": "pow",
+        "block_name": "Pow",
+        "op_block_string": "OP_NODE_OPERATOR_POWER",
+        "operation_title": "Power",
+        "operation_symbol": "**",
+        "icon_filename": "square_number_100",
+        "input_socket_types": "(Number,Number)",
+        "output_socket_types": "(Number)"
+    },
+    {
+        "library": "operator",
+        "function": "lt",
+        "block_name": "Lt",
+        "op_block_string": "OP_NODE_OPERATOR_LESS",
+        "operation_title": "Less",
+        "operation_symbol": "<",
+        "icon_filename": "less_than_100",
+        "input_socket_types": "(Number,Number)",
+        "output_socket_types": "(Number)"
+    },
+    {
+        "library": "operator",
+        "function": "le",
+        "block_name": "Le",
+        "op_block_string": "OP_NODE_OPERATOR_LESS_EQUAL",
+        "operation_title": "Less or Equal",
+        "operation_symbol": "<=",
+        "icon_filename": "less_or_equal_100",
+        "input_socket_types": "(Number,Number)",
+        "output_socket_types": "(Number)"
+    },
+    {
+        "library": "operator",
+        "function": "eq",
+        "block_name": "Eq",
+        "op_block_string": "OP_NODE_OPERATOR_EQUAL",
+        "operation_title": "Equal",
+        "operation_symbol": "==",
+        "icon_filename": "equal_sign_100",
+        "input_socket_types": "(Number,Number)",
+        "output_socket_types": "(Number)"
+    },
+    {
+        "library": "operator",
+        "function": "gt",
+        "block_name": "Gt",
+        "op_block_string": "OP_NODE_OPERATOR_GREATER",
+        "operation_title": "Greater",
+        "operation_symbol": ">",
+        "icon_filename": "more_than_100",
+        "input_socket_types": "(Number,Number)",
+        "output_socket_types": "(Number)"
+    },
+    {
+        "library": "operator",
+        "function": "ge",
+        "block_name": "Ge",
+        "op_block_string": "OP_NODE_OPERATOR_GREATER_EQUAL",
+        "operation_title": "Greater or Equal",
+        "operation_symbol": ">=",
+        "icon_filename": "more_or_equal_100",
+        "input_socket_types": "(Number,Number)",
+        "output_socket_types": "(Number)"
+    },
+    {
+        "library": "operator",
+        "function": "floordiv",
+        "block_name": "FloorDiv",
+        "op_block_string": "OP_NODE_OPERATOR_FLOOR_DIVIDE",
+        "operation_title": "Floor division",
+        "operation_symbol": "//",
+        "icon_filename": "floor_100",
+        "input_socket_types": "(Number,Number)",
+        "output_socket_types": "(Number)"
+    },
+    {
+        "library": "operator",
+        "function": "abs",
+        "block_name": "Abs",
+        "op_block_string": "OP_NODE_OPERATOR_ABSOLUTE",
+        "operation_title": "Abs. value",
+        "operation_symbol": "",
+        "icon_filename": "absolute_100",
+        "input_socket_types": "(Number)",
+        "output_socket_types": "(Number)"
+    }
+]
