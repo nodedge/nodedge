@@ -148,7 +148,11 @@ We welcome your feedback and contributions to improve it.
 > To create a worksheet: 
 > 
 > * Click on `File` > `Create worksheet` in the Menu bar, or
-> * Use `CTRL+SHIFT+N` shortcut
+> * Use `CTRL+T` shortcut
+
+## Remove a worksheet
+> * Click on `File` > `Remove worksheet` in the Menu bar, or
+> * User `CTRL+W` shortcut
 
 ## Create a workbook
 
@@ -157,7 +161,11 @@ We welcome your feedback and contributions to improve it.
 > To create a workbook:
 > 
 > * Click on `File` > `Create workbook` in the Menu bar, or
-> * Use `CTRL+SHIFT+N` shortcut
+> * Use `CTRL+SHIFT+T` shortcut
+
+## Remove a workbook
+> * Click on `File` > `Remove workworkbook` in the Menu bar, or
+> * User `CTRL+SHIFT+W` shortcut
 
 ## Save Dats configuration
 
