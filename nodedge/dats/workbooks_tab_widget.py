@@ -57,14 +57,12 @@ class WorkbooksTabWidget(QTabWidget):
             "&Add workbook",
             self.addWorkbook,
             "Add workbook",
-            QKeySequence("Ctrl+Shift+N"),
         )
 
         self.closeAct = self.createAction(
             "&Close",
             self.removeWorkbook,
             "Close worksheet",
-            QKeySequence("Ctrl+Shift+W"),
         )
 
         self.renameAct = self.createAction(
@@ -99,7 +97,10 @@ class WorkbooksTabWidget(QTabWidget):
 
     def removeWorkbook(self, index=None):
         if index is None:
-            index = self.clickedIndex
+            if self.clickedIndex is not None:
+                index = self.clickedIndex
+            else:
+                index = self.currentIndex()
         self.removeTab(index)
         self.workbooks.pop(index)
 
