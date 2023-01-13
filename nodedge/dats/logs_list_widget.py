@@ -12,8 +12,8 @@ from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QInputDialog, QListWidget, QListWidgetItem, QMessageBox
 from scipy.io import loadmat
 
-DUMMY_CHAR = ["'", "\\"]
-SEPARATORS = ["-", "+", "*", ".", "/"]
+DUMMY_CHAR = ["'", "\\", "[", "]", "(", ")"]
+SEPARATORS = ["-", "+", "*", ".", "/", " "]
 
 
 class LogsListWidget(QListWidget):
