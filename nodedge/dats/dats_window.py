@@ -365,14 +365,28 @@ class DatsWindow(QMainWindow):
             "&Add worksheet",
             self.addWorksheet,
             "Add worksheet",
-            QKeySequence("Ctrl+Alt+N"),
+            QKeySequence("Ctrl+T"),
         )
 
         self.addWorkbookAct = self.createAction(
             "&Add workbook",
             self.addWorkbook,
             "Add workbook",
-            QKeySequence("Ctrl+Shift+N"),
+            QKeySequence("Ctrl+Shift+T"),
+        )
+
+        self.removeWorksheetAct = self.createAction(
+            "&Remove worksheet",
+            self.removeWorksheet,
+            "Remove worksheet",
+            QKeySequence("Ctrl+W"),
+        )
+
+        self.removeWorkbookAct = self.createAction(
+            "&Remove workbook",
+            self.removeWorkbook,
+            "Remove workbook",
+            QKeySequence("Ctrl+Shift+W"),
         )
 
         self.addSubPlotAct = self.createAction(
@@ -571,8 +585,10 @@ class DatsWindow(QMainWindow):
         self.updateRecentFilesMenu()
         self.fileMenu.addAction(self.closeLogAct)
         self.fileMenu.addSeparator()
-        self.fileMenu.addAction(self.addWorksheetAct)
         self.fileMenu.addAction(self.addWorkbookAct)
+        self.fileMenu.addAction(self.removeWorkbookAct)
+        self.fileMenu.addAction(self.addWorksheetAct)
+        self.fileMenu.addAction(self.removeWorksheetAct)
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.addSubPlotAct)
         self.fileMenu.addAction(self.closeSubPlotAct)
@@ -754,6 +770,16 @@ class DatsWindow(QMainWindow):
     def addWorkbook(self):
         self.workbooksTabWidget.addWorkbook(True)
         self.modifiedConfig = True
+
+    def removeWorkbook(self):
+        if len(self.workbooksTabWidget.workbooks) > 0:
+            self.workbooksTabWidget.removeWorkbook()
+            self.modifiedConfig = True
+
+    def removeWorksheet(self):
+        if len(self.workbooksTabWidget.workbooks) > 0:
+            self.workbooksTabWidget.currentWidget().removeWorksheet()
+            self.modifiedConfig = True
 
     # def convertLogAndOpen(self):
     #     d = QFileDialog()
