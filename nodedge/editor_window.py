@@ -5,7 +5,7 @@ Editor window module containing :class:`~nodedge.editor_window.EditorWindow` cla
 import json
 import logging
 import os
-from typing import Callable, List, Optional, Union, cast
+from typing import Callable, Dict, List, Optional, Union, cast
 
 from PySide6.QtCore import QSettings, QSize, QStandardPaths, Qt, Signal
 from PySide6.QtGui import (
@@ -80,6 +80,7 @@ class EditorWindow(QMainWindow):
         self.debugMode: bool = False
         self.recentFiles: List[str] = []
 
+        self.actionsDict: Dict[str, dict] = {}
         self.initUI()
 
     @property
@@ -151,47 +152,83 @@ class EditorWindow(QMainWindow):
         """
 
         self.newAct = self.createAction(
-            "&New", self.newFile, "Create new Nodedge model", QKeySequence("Ctrl+N")
+            "&New",
+            self.newFile,
+            "Create new Nodedge model",
+            QKeySequence("Ctrl+N"),
+            category="File",
         )
 
         self.openAct = self.createAction(
-            "&Open", self.openFile, "Open file", QKeySequence("Ctrl+O")
+            "&Open",
+            self.openFile,
+            "Open file",
+            QKeySequence("Ctrl+O"),
+            category="File",
         )
 
         self.saveAct = self.createAction(
-            "&Save", self.saveFile, "Save file", QKeySequence("Ctrl+S")
+            "&Save",
+            self.saveFile,
+            "Save file",
+            QKeySequence("Ctrl+S"),
+            category="File",
         )
 
         self.saveAsAct = self.createAction(
-            "Save &As", self.saveFileAs, "Save file as...", QKeySequence("Ctrl+Shift+S")
-        )
-
-        self.quitAct = self.createAction(
-            "&Quit", self.quit, "Exit application", QKeySequence("Ctrl+Q")
+            "Save &As",
+            self.saveFileAs,
+            "Save file as...",
+            QKeySequence("Ctrl+Shift+S"),
+            category="File",
         )
 
         self.undoAct = self.createAction(
-            "&Undo", self.undo, "Undo last operation", QKeySequence("Ctrl+Z")
+            "&Undo",
+            self.undo,
+            "Undo last operation",
+            QKeySequence("Ctrl+Z"),
+            category="Edit",
         )
 
         self.redoAct = self.createAction(
-            "&Redo", self.redo, "Redo last operation", QKeySequence("Ctrl+Shift+Z")
+            "&Redo",
+            self.redo,
+            "Redo last operation",
+            QKeySequence("Ctrl+Shift+Z"),
+            category="Edit",
         )
 
         self.cutAct = self.createAction(
-            "C&ut", self.cut, "Cut selected items", QKeySequence("Ctrl+X")
+            "C&ut",
+            self.cut,
+            "Cut selected items",
+            QKeySequence("Ctrl+X"),
+            category="Edit",
         )
 
         self.copyAct = self.createAction(
-            "&Copy", self.copy, "Copy selected items", QKeySequence("Ctrl+C")
+            "&Copy",
+            self.copy,
+            "Copy selected items",
+            QKeySequence("Ctrl+C"),
+            category="Edit",
         )
 
         self.pasteAct = self.createAction(
-            "&Paste", self.paste, "Paste selected items", QKeySequence.Paste
+            "&Paste",
+            self.paste,
+            "Paste selected items",
+            QKeySequence.Paste,
+            category="Edit",
         )
 
         self.deleteAct = self.createAction(
-            "&Delete", self.delete, "Delete selected items", QKeySequence("Del")
+            "&Delete",
+            self.delete,
+            "Delete selected items",
+            QKeySequence("Del"),
+            category="Edit",
         )
 
         self.fitToViewAct = self.createAction(
@@ -199,6 +236,7 @@ class EditorWindow(QMainWindow):
             self.onFitToView,
             "Fit content to view",
             QKeySequence(Qt.Key_Space),
+            category="View",
         )
 
         self.generateCodeAct = self.createAction(
@@ -206,6 +244,7 @@ class EditorWindow(QMainWindow):
             self.onGenerateCode,
             "Generate python code",
             QKeySequence("Ctrl+G"),
+            category="Coder",
         )
 
         self.configureSolverAct = self.createAction(
@@ -213,6 +252,7 @@ class EditorWindow(QMainWindow):
             self.configureSolver,
             "Configure solver",
             QKeySequence("Ctrl+K"),
+            category="Simulation",
         )
 
         self.showCodeAct = self.createAction(
@@ -220,6 +260,7 @@ class EditorWindow(QMainWindow):
             self.onShowCode,
             "Show python code",
             QKeySequence("Ctrl+Shift+C"),
+            category="Coder",
         )
         self.showCodeAct.setEnabled(False)
 
@@ -228,11 +269,16 @@ class EditorWindow(QMainWindow):
             self.onShowGraph,
             "Show graph",
             QKeySequence("Ctrl+Shift+G"),
+            category="Dats",
         )
         self.showGraphAct.setEnabled(False)
 
         self.evalAct = self.createAction(
-            "Evaluate all nodes", self.evaluateAllNodes, "", QKeySequence("Ctrl+Space")
+            "Evaluate all nodes",
+            self.evaluateAllNodes,
+            "",
+            QKeySequence("Ctrl+Space"),
+            category="Coder",
         )
 
         self.startSimulationAct = self.createAction(
@@ -240,17 +286,20 @@ class EditorWindow(QMainWindow):
             self.onStartSimulation,
             "Start the current model as a simulation",
             QKeySequence("Ctrl+Shift+S"),
+            category="Simulation",
         )
 
         self.stopSimulationAct = self.createAction(
             "Stop simulation",
             self.onStopSim,
             "Stop the current model as a simulation",
+            category="Simulation",
         )
 
         self.pauseSimulationAct = self.createAction(
             "Pause simulation",
             self.onPauseSim,
+            category="Simulation",
         )
 
         self.takeScreenShotAct = self.createAction(
@@ -258,10 +307,15 @@ class EditorWindow(QMainWindow):
             self.takeScreenshot,
             "Take screenShot",
             QKeySequence("Ctrl+Shift+Space"),
+            category="File",
         )
 
         self.helpAct = self.createAction(
-            "&Help", self.onHelp, "Help", QKeySequence("F1")
+            "&Help",
+            self.onHelp,
+            "Help",
+            QKeySequence("F1"),
+            category="Help",
         )
 
     def onHelp(self):
@@ -375,8 +429,6 @@ class EditorWindow(QMainWindow):
         self.fileMenu.addAction(self.saveAsAct)
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.takeScreenShotAct)
-        self.fileMenu.addSeparator()
-        self.fileMenu.addAction(self.quitAct)
 
     def updateRecentFilesMenu(self):
         self.recentFilesMenu.clear()
@@ -467,7 +519,7 @@ class EditorWindow(QMainWindow):
         Confirmation is asked to the user if there are unsaved changes.
         """
         if self.maybeSave():
-            self.__logger.info("Creating new graph")
+            self.__logger.info("Creating new model")
             self.currentEditorWidget.newFile()
         self.updateTitle()
 
@@ -815,6 +867,7 @@ class EditorWindow(QMainWindow):
         statusTip: Optional[str] = None,
         shortcut: Union[None, str, QKeySequence] = None,
         checkable: bool = False,
+        category: str = "",
     ) -> QAction:
         """
         Create an action for this window and add it to actions list.
@@ -843,5 +896,24 @@ class EditorWindow(QMainWindow):
             act.setShortcut(QKeySequence(shortcut))
 
         self.addAction(act)
+
+        name = name.replace("&", "")
+
+        if isinstance(shortcut, QKeySequence):
+            shortcut = str(shortcut.toString(QKeySequence.NativeText))
+        elif isinstance(shortcut, QKeySequence.StandardKey):
+            shortcut = QKeySequence.keyBindings(shortcut)[0]  # type: ignore
+            shortcut = shortcut.toString()
+
+        self.actionsDict.update(
+            {
+                name: {
+                    "category": category,
+                    "statusTip": statusTip,
+                    "shortcut": shortcut,
+                    "action": act,
+                }
+            }
+        )
 
         return act  # type: ignore

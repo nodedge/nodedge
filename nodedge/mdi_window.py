@@ -8,7 +8,6 @@ from typing import Any, Callable, List, Optional, cast
 from PySide6.QtCore import QPointF, QSignalMapper, QSize, Qt, QTimer, Slot
 from PySide6.QtGui import QAction, QCloseEvent, QIcon, QKeySequence, QMouseEvent
 from PySide6.QtWidgets import (
-    QDialog,
     QDockWidget,
     QFileDialog,
     QMdiSubWindow,
@@ -18,6 +17,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from nodedge.action_palette import ActionPalette
 from nodedge.editor_widget import EditorWidget
 from nodedge.editor_window import EditorWindow
 from nodedge.history_list_widget import HistoryListWidget
@@ -42,7 +42,6 @@ class MdiWindow(EditorWindow):
         self.__logger = logging.getLogger(__file__)
         self.__logger.setLevel(logging.INFO)
         self.currentEditorWidgetChangedListeners: List[Callable] = []
-
         super(MdiWindow, self).__init__()
 
     @property
@@ -134,19 +133,28 @@ class MdiWindow(EditorWindow):
         super().createActions()
 
         self.closeAct = self.createAction(
-            "Cl&ose", self.mdiArea.closeActiveSubWindow, "Close the active window"
+            "Cl&ose",
+            self.mdiArea.closeActiveSubWindow,
+            "Close the active window",
+            category="File",
         )
 
         self.closeAllAct = self.createAction(
-            "Close &All", self.mdiArea.closeAllSubWindows, "Close all the windows"
+            "Close &All",
+            self.mdiArea.closeAllSubWindows,
+            "Close all the windows",
+            category="File",
         )
 
         self.tileAct = self.createAction(
-            "&Tile", self.mdiArea.tileSubWindows, "Tile the windows"
+            "&Tile", self.mdiArea.tileSubWindows, "Tile the windows", category="View"
         )
 
         self.cascadeAct = self.createAction(
-            "&Cascade", self.mdiArea.cascadeSubWindows, "Cascade the windows"
+            "&Cascade",
+            self.mdiArea.cascadeSubWindows,
+            "Cascade the windows",
+            category="View",
         )
 
         self.hideToolbarAct = self.createAction(
@@ -154,6 +162,7 @@ class MdiWindow(EditorWindow):
             self.hideToolBars,
             "Hide toolbars",
             QKeySequence("Ctrl+T"),
+            category="View",
         )
 
         self.nextAct = self.createAction(
@@ -161,6 +170,7 @@ class MdiWindow(EditorWindow):
             self.mdiArea.activateNextSubWindow,
             "Move the focus to the next window",
             QKeySequence.NextChild,
+            category="View",
         )
 
         # noinspection SpellCheckingInspection
@@ -169,13 +179,18 @@ class MdiWindow(EditorWindow):
             self.mdiArea.activatePreviousSubWindow,
             "Move the focus to the previous window",
             QKeySequence.PreviousChild,
+            category="View",
         )
+
+        # TODO: Implement zoomInAct
+        # self.zoomInAct = self.createAction()
 
         self.nodeToolbarAct = self.createAction(
             "&Node libraries",
             self.onNodesToolbarTriggered,
             "Enable/Disable the node libraries",
             QKeySequence("ctrl+alt+n"),
+            category="Help",
         )
 
         self.nodeToolbarAct.setCheckable(True)
@@ -185,7 +200,10 @@ class MdiWindow(EditorWindow):
         self.separatorAct.setSeparator(True)
 
         self.aboutAct = self.createAction(
-            "&About", self.about, "Show the application's About box"
+            "&About",
+            self.about,
+            "Show the application's About box",
+            category="Help",
         )
 
         self.debugAct = self.createAction(
@@ -194,6 +212,7 @@ class MdiWindow(EditorWindow):
             "Enable/Disable the debug mode",
             QKeySequence("ctrl+shift+d"),
             checkable=True,
+            category="Help",
         )
 
         self.showDialogActionsAct = self.createAction(
@@ -201,6 +220,7 @@ class MdiWindow(EditorWindow):
             self.onShowDialogActions,
             "Show available actions",
             QKeySequence("ctrl+shift+a"),
+            category="Help",
         )
 
         self.addCommentElementAct = self.createAction(
@@ -208,6 +228,7 @@ class MdiWindow(EditorWindow):
             self.addCommentElement,
             "Add comment element in current model",
             QKeySequence("Ctrl+Alt+C"),
+            category="Edit",
         )
 
     def evaluateAllNodes(self):
@@ -738,9 +759,16 @@ class MdiWindow(EditorWindow):
 
     @Slot()
     def onShowDialogActions(self):
-        self.__logger.info("")
-        dialog = QDialog()
-        dialog.show()
+        self.__logger.info(self.actionsDict)
+        dialog = ActionPalette(widgetNames=self.actionsDict)
+        dialog.exec()
+
+        actionName = dialog.selectedAction
+
+        if actionName is None:
+            return
+
+        self.actionsDict[actionName]["action"].trigger()
 
     def mouseMoveEvent(self, event: QMouseEvent):
         pos = event.pos()
