@@ -1,6 +1,6 @@
 from PySide6.QtCore import QEasingCurve, QPropertyAnimation
 from PySide6.QtGui import Qt
-from PySide6.QtWidgets import QSizePolicy, QSpacerItem, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QFrame, QSizePolicy, QSpacerItem, QVBoxLayout
 
 from nodedge.homepage.menu_button import MenuButton
 
@@ -15,8 +15,10 @@ MENU_ITEMS = {
 
 ICON_PATH = "resources/white_icons/"
 
+OPEN_WIDTH = 250
 
-class LeftMenuWidget(QWidget):
+
+class LeftMenuWidget(QFrame):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
@@ -48,12 +50,14 @@ class LeftMenuWidget(QWidget):
         self.anim.setEasingCurve(QEasingCurve.InOutCubic)
         # self.anim.setEasingCurve(QEasingCurve.OutBounce)
         self.closedWidth = 0
-        self.openWidth = 200
+        self.openWidth = OPEN_WIDTH
         self.anim.setStartValue(self.closedWidth)
         self.anim.setEndValue(self.openWidth)
         self.setFixedWidth(0)
 
         self.open = False
+
+        self.setObjectName("leftMenuWidget")
 
     def toggle(self):
         if self.open:

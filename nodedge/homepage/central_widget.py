@@ -26,7 +26,7 @@ class CentralWidget(QWidget):
                 )
             elif text == "Home":
                 stackedWidget = StackedWidget(
-                    self, text, contentWidget=HomeContentWidget()
+                    self, "", contentWidget=HomeContentWidget()
                 )
             elif text == "Help":
                 stackedWidget = StackedWidget(
