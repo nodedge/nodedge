@@ -1,4 +1,5 @@
 from colorsys import hls_to_rgb, rgb_to_hls
+
 import numpy as np
 
 
@@ -19,8 +20,8 @@ def interpolateHexColors(start_hex, end_hex, n, power=1):
         return [start_hex, end_hex]
 
     # convert hex color codes to RGB values
-    start_rgb = tuple(int(start_hex[i:i+2], 16) for i in (1, 3, 5))
-    end_rgb = tuple(int(end_hex[i:i+2], 16) for i in (1, 3, 5))
+    start_rgb = tuple(int(start_hex[i : i + 2], 16) for i in (1, 3, 5))
+    end_rgb = tuple(int(end_hex[i : i + 2], 16) for i in (1, 3, 5))
 
     # convert RGB values to HLS values
     start_hls = rgb_to_hls(*start_rgb)
@@ -32,9 +33,10 @@ def interpolateHexColors(start_hex, end_hex, n, power=1):
     saturation_interval = powspace(start_hls[2], end_hls[2], power=power, num=n)
 
     # generate the interpolated HLS color codes
-    interpolated_hls = [(hue_interval[i],
-                        lightness_interval[i],
-                        saturation_interval[i]) for i in range(0, n)]
+    interpolated_hls = [
+        (hue_interval[i], lightness_interval[i], saturation_interval[i])
+        for i in range(0, n)
+    ]
 
     # convert the interpolated HLS color codes back to RGB values
     interpolated_rgb = [hls_to_rgb(*hls) for hls in interpolated_hls]
@@ -43,14 +45,16 @@ def interpolateHexColors(start_hex, end_hex, n, power=1):
     int_interpolated_rgb = []
     for rgb in interpolated_rgb:
         int_interpolated_rgb.append([int(c) for c in rgb])
-    interpolated_hex = ["#{:02x}{:02x}{:02x}".format(*rgb) for rgb in int_interpolated_rgb]
+    interpolated_hex = [
+        "#{:02x}{:02x}{:02x}".format(*rgb) for rgb in int_interpolated_rgb
+    ]
     return interpolated_hex
 
 
 def powspace(start, stop, power, num):
     if start < 0 and stop < 0:
-        start = np.power(-start, 1/float(power))
-        stop = np.power(-stop, 1/float(power))
+        start = np.power(-start, 1 / float(power))
+        stop = np.power(-stop, 1 / float(power))
         return -np.power(np.linspace(start, stop, num=num), power)
     else:
         start = np.power(start, 1 / float(power))

@@ -18,6 +18,7 @@ from PySide6.QtWidgets import (
 )
 
 from nodedge.action_palette import ActionPalette
+from nodedge.console_widget import ConsoleWidget
 from nodedge.editor_widget import EditorWidget
 from nodedge.editor_window import EditorWindow
 from nodedge.history_list_widget import HistoryListWidget
@@ -106,7 +107,7 @@ class MdiWindow(EditorWindow):
         self.createNodesDock()
         self.createHistoryDock()
         self.createSceneItemsDock()
-        # self.createPythonConsole()
+        self.createPythonConsole()
 
         self.createActions()
         self.createMenus()
@@ -561,16 +562,14 @@ class MdiWindow(EditorWindow):
         Create a python console embedded in a dock.
         :return: ``None``
         """
-        # self.pythonConsoleWidget = PythonConsole(formats=self.styler.consoleStyle)
+        self.pythonConsoleWidget = ConsoleWidget()
         # self.pythonConsoleWidget.eval_in_thread()
 
-        # self.pythonConsoleDock = QDockWidget("Python console")
-        # self.pythonConsoleDock.setWidget(self.pythonConsoleWidget)
-        # self.pythonConsoleDock.setFloating(False)
+        self.pythonConsoleDock = QDockWidget("Python console")
+        self.pythonConsoleDock.setWidget(self.pythonConsoleWidget)
+        self.pythonConsoleDock.setFloating(False)
 
-        # self.addDockWidget(Qt.LeftDockWidgetArea, self.pythonConsoleDock)
-
-        pass
+        self.addDockWidget(Qt.BottomDockWidgetArea, self.pythonConsoleDock)
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """

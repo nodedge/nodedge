@@ -629,3 +629,7 @@ ActionButton {
 ActionButton QLabel{
     background-color: transparent;
 }
+
+ConsoleWidget {
+    background-color: palette(dark);
+}
