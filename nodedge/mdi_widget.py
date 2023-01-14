@@ -79,6 +79,7 @@ class MdiWidget(EditorWidget):
                 node.operationTitle
             )
             if node.library not in self.libraryMenus.keys():
+                print(node.library)
                 menu = QMenu(node.library.capitalize())
                 self.libraryMenus[node.library] = menu
 
@@ -93,6 +94,11 @@ class MdiWidget(EditorWidget):
         contextMenu = QMenu(self)
         keys = list(BLOCKS.keys())
         keys.sort()
+        blocks = {}
+        for key in keys:
+            node = getClassFromOperationCode(key)
+            blocks.update({node.operationTitle: node})
+
         menus = {}
         libraries = []
         for key in keys:
@@ -101,8 +107,9 @@ class MdiWidget(EditorWidget):
         for library in sorted(libraries):
             contextMenu.addMenu(self.libraryMenus[library])
 
-        for key in keys:
-            node = getClassFromOperationCode(key)
+        for blockTitle in sorted(list(blocks.keys())):
+            node = blocks[blockTitle]
+            # node = getClassFromOperationCode(key)
             library = node.library
             if library not in menus.keys():
                 menus[library] = self.libraryMenus[library]

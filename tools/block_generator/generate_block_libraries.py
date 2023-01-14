@@ -1,5 +1,6 @@
 import csv
 import json
+import logging
 import os.path
 import shutil
 from string import Template
@@ -7,8 +8,10 @@ from typing import Dict, List
 
 from black import FileMode, format_str
 
+logger = logging.getLogger(__name__)
+
 # Parameters to set before running the block generation
-lib = "numpy"  # string of library to generate
+libraryTitle = "maths"  # string of library to generate
 configFile = "numpy_block_config.json"  # config file
 savePath = "../../nodedge/blocks/autogen"  # path where to save the generated blocks
 overwrite = True  # True to overwrite, False otherwise
@@ -64,7 +67,8 @@ def _init_lib_path(savePath, lib):
             try:
                 shutil.rmtree(libPath)
             except OSError:
-                os.remove(libPath)
+                logger.warning(f"Lib path does not exist: {libPath}")
+                # os.remove(libPath)
 
 
 def _create_blocks(configFile, savePath, lib):
@@ -82,7 +86,7 @@ def _create_blocks(configFile, savePath, lib):
         for row in reader:
 
             # Give a warning if
-            if row["library"] == lib:
+            if row["library_title"] == lib:
 
                 # Save block in dictionary
                 if row["library"] not in libraries.keys():
@@ -109,7 +113,7 @@ def _create_blocks(configFile, savePath, lib):
                 outputData = template.substitute(**row)
                 outputData = format_str(outputData, mode=FileMode())
                 folder = f"{(row['function'])}_block.py"
-                libraryPath = os.path.join(savePath, row["library"])
+                libraryPath = os.path.join(savePath, row["library_title"])
                 if not os.path.exists(libraryPath):
                     os.makedirs(libraryPath)
                 filePath = os.path.join(libraryPath, folder)
@@ -141,8 +145,8 @@ def _generate_config_file(opBlockNames, configFilename, code: int = 1):
 
 
 if __name__ == "__main__":
-    _init_lib_path(savePath, lib)
-    libraries, opBlockNames = _create_blocks(configFile, savePath, lib)
+    _init_lib_path(savePath, libraryTitle)
+    libraries, opBlockNames = _create_blocks(configFile, savePath, libraryTitle)
     # _generate_common_init_file(libraries, savePath, initFilename)
     _generate_init_files(libraries, savePath, initFilename)
     _generate_config_file(opBlockNames, opNodeFilename, firstCode)

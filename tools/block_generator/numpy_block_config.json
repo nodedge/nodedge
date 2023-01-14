@@ -1,6 +1,7 @@
 [
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "add",
         "block_name": "NumpyAdd",
         "op_block_string": "OP_NODE_NUMPY_ADD",
@@ -12,6 +13,8 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
+
         "function": "subtract",
         "block_name": "NumpySubtract",
         "op_block_string": "OP_NODE_NUMPY_SUBTRACT",
@@ -23,6 +26,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "multiply",
         "block_name": "NumpyMultiply",
         "op_block_string": "OP_NODE_NUMPY_MULTIPLY",
@@ -34,6 +38,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "true_divide",
         "block_name": "NumpyTrueDivide",
         "op_block_string": "OP_NODE_NUMPY_DIVIDE",
@@ -45,6 +50,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "mod",
         "block_name": "NumpyNumpyMod",
         "op_block_string": "OP_NODE_NUMPY_MODULO",
@@ -56,6 +62,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "power",
         "block_name": "NumpyPower",
         "op_block_string": "OP_NODE_NUMPY_POWER",
@@ -67,6 +74,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "less",
         "block_name": "NumpyLessThan",
         "op_block_string": "OP_NODE_NUMPY_LESS",
@@ -78,6 +86,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "less_equal",
         "block_name": "NumpyLessEqual",
         "op_block_string": "OP_NODE_LESS_NUMPY_EQUAL",
@@ -89,6 +98,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "equal",
         "block_name": "NumpyEqual",
         "op_block_string": "OP_NODE_NUMPY_EQUAL",
@@ -100,6 +110,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "not_equal",
         "block_name": "NumpyNotEqual",
         "op_block_string": "OP_NODE_NUMPY_NOT_EQUAL",
@@ -111,6 +122,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "greater",
         "block_name": "NumpyGreater",
         "op_block_string": "OP_NODE_NUMPY_GREATER",
@@ -122,6 +134,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "greater_equal",
         "block_name": "NumpyGreaterEqual",
         "op_block_string": "OP_NODE_NUMPY_GREATER_EQUAL",
@@ -133,6 +146,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "isclose",
         "block_name": "NumpyIsClose",
         "op_block_string": "OP_NODE_NUMPY_IS_CLOSE",
@@ -144,6 +158,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "floor_divide",
         "block_name": "NumpyFloorDivide",
         "op_block_string": "OP_NODE_NUMPY_FLOOR_DIVIDE",
@@ -155,6 +170,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "absolute",
         "block_name": "NumpyAbsolute",
         "op_block_string": "OP_NODE_NUMPY_ABSOLUTE",
@@ -166,6 +182,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "reciprocal",
         "block_name": "NumpyReciprocal",
         "op_block_string": "OP_NODE_NUMPY_RECIPROCAL",
@@ -177,6 +194,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "positive",
         "block_name": "NumpyPositive",
         "op_block_string": "OP_NODE_NUMPY_POSITIVE",
@@ -188,6 +206,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "negative",
         "block_name": "NumpyNegative",
         "op_block_string": "OP_NODE_NUMPY_NEGATIVE",
@@ -199,6 +218,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "sqrt",
         "block_name": "NumpySqrt",
         "op_block_string": "OP_NODE_NUMPY_SQRT",
@@ -210,6 +230,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "square",
         "block_name": "NumpySquare",
         "op_block_string": "OP_NODE_NUMPY_SQUARE",
@@ -221,6 +242,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "sign",
         "block_name": "NumpySign",
         "op_block_string": "OP_NODE_NUMPY_SIGN",
@@ -232,6 +254,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "maximum",
         "block_name": "NumpyMaximum",
         "op_block_string": "OP_NODE_NUMPY_MAX",
@@ -243,7 +266,8 @@
     },
     {
         "library": "numpy",
-        "function": "minimum",
+        "library_title": "maths",
+"function": "minimum",
         "block_name": "NumpyMinimum",
         "op_block_string": "OP_NODE_NUMPY_MIN",
         "operation_title": "Minimum",
@@ -254,6 +278,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "exp",
         "block_name": "NumpyExp",
         "op_block_string": "OP_NODE_NUMPY_EXP",
@@ -265,6 +290,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "log",
         "block_name": "NumpyLog",
         "op_block_string": "OP_NODE_NUMPY_LOG",
@@ -276,6 +302,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "log2",
         "block_name": "NumpyLog2",
         "op_block_string": "OP_NODE_NUMPY_LOG2",
@@ -287,6 +314,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "log10",
         "block_name": "NumpyLog10",
         "op_block_string": "OP_NODE_NUMPY_LOG10",
@@ -298,6 +326,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "sin",
         "block_name": "NumpySin",
         "op_block_string": "OP_NODE_NUMPY_SIN",
@@ -309,6 +338,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "cos",
         "block_name": "NumpyCos",
         "op_block_string": "OP_NODE_NUMPY_COS",
@@ -320,6 +350,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "tan",
         "block_name": "NumpyTan",
         "op_block_string": "OP_NODE_NUMPY_TAN",
@@ -331,6 +362,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "arcsin",
         "block_name": "NumpyArcsin",
         "op_block_string": "OP_NODE_ARCSIN",
@@ -342,6 +374,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "arccos",
         "block_name": "NumpyArccos",
         "op_block_string": "OP_NODE_NUMPY_ARCCOS",
@@ -353,6 +386,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "arctan",
         "block_name": "NumpyArctan",
         "op_block_string": "OP_NODE_NUMPY_ARCTAN",
@@ -364,6 +398,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "arctan2",
         "block_name": "NumpyArctan2",
         "op_block_string": "OP_NODE_NUMPY_ARCTAN2",
@@ -375,6 +410,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "hypot",
         "block_name": "NumpyHypot",
         "op_block_string": "OP_NODE_NUMPY_HYPOT",
@@ -386,6 +422,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "deg2rad",
         "block_name": "NumpyDeg2Rad",
         "op_block_string": "OP_NODE_NUMPY_DEG2RAD",
@@ -397,6 +434,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "rad2deg",
         "block_name": "NumpyRad2Deg",
         "op_block_string": "OP_NODE_NUMPY_RAD2DEG",
@@ -408,6 +446,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "sinh",
         "block_name": "NumpySinh",
         "op_block_string": "OP_NODE_NUMPY_SINH",
@@ -419,6 +458,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "cosh",
         "block_name": "NumpyCosh",
         "op_block_string": "OP_NODE_NUMPY_COSH",
@@ -430,6 +470,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "tanh",
         "block_name": "NumpyTanh",
         "op_block_string": "OP_NODE_NUMPY_TANH",
@@ -441,6 +482,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "arcsinh",
         "block_name": "NumpyArcsinh",
         "op_block_string": "OP_NODE_NUMPY_ARCSINH",
@@ -452,6 +494,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "arccosh",
         "block_name": "NumpyArccosh",
         "op_block_string": "OP_NODE_NUMPY_ARCCOSH",
@@ -463,6 +506,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "arctanh",
         "block_name": "NumpyArctanh",
         "op_block_string": "OP_NODE_NUMPY_ARCTANH",
@@ -474,6 +518,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "around",
         "block_name": "NumpyAround",
         "op_block_string": "OP_NODE_NUMPY_AROUND",
@@ -485,6 +530,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "rint",
         "block_name": "NumpyRint",
         "op_block_string": "OP_NODE_NUMPY_RINT",
@@ -496,6 +542,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "ceil",
         "block_name": "NumpyCeil",
         "op_block_string": "OP_NODE_NUMPY_CEIL",
@@ -507,6 +554,7 @@
     },
     {
         "library": "numpy",
+        "library_title": "maths",
         "function": "trunc",
         "block_name": "NumpyTrunc",
         "op_block_string": "OP_NODE_NUMPY_TRUNC",
