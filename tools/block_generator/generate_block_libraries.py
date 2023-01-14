@@ -89,12 +89,12 @@ def _create_blocks(configFile, savePath, lib):
             if row["library_title"] == lib:
 
                 # Save block in dictionary
-                if row["library"] not in libraries.keys():
-                    libraries[row["library"]] = [row["function"]]
-                    opBlockNames[row["library"]] = [row["op_block_string"]]
+                if row["library_title"] not in libraries.keys():
+                    libraries[row["library_title"]] = [row["function"]]
+                    opBlockNames[row["library_title"]] = [row["op_block_string"]]
                 else:
-                    libraries[row["library"]].append(row["function"])
-                    opBlockNames[row["library"]].append(row["op_block_string"])
+                    libraries[row["library_title"]].append(row["function"])
+                    opBlockNames[row["library_title"]].append(row["op_block_string"])
 
                 # Add socket type object
                 row["input_socket_types"] = _prepend_socket_type(
@@ -147,7 +147,8 @@ def _generate_config_file(opBlockNames, configFilename, code: int = 1):
 if __name__ == "__main__":
     _init_lib_path(savePath, libraryTitle)
     libraries, opBlockNames = _create_blocks(configFile, savePath, libraryTitle)
-    # _generate_common_init_file(libraries, savePath, initFilename)
+    print(f"{opBlockNames}")
+    _generate_common_init_file(opBlockNames, savePath, initFilename)
     _generate_init_files(libraries, savePath, initFilename)
     _generate_config_file(opBlockNames, opNodeFilename, firstCode)
 

@@ -74,7 +74,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "logics",
         "function": "less",
         "block_name": "NumpyLessThan",
         "op_block_string": "OP_NODE_NUMPY_LESS",
@@ -86,7 +86,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "logics",
         "function": "less_equal",
         "block_name": "NumpyLessEqual",
         "op_block_string": "OP_NODE_LESS_NUMPY_EQUAL",
@@ -98,7 +98,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "logics",
         "function": "equal",
         "block_name": "NumpyEqual",
         "op_block_string": "OP_NODE_NUMPY_EQUAL",
@@ -110,7 +110,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "logics",
         "function": "not_equal",
         "block_name": "NumpyNotEqual",
         "op_block_string": "OP_NODE_NUMPY_NOT_EQUAL",
@@ -122,7 +122,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "logics",
         "function": "greater",
         "block_name": "NumpyGreater",
         "op_block_string": "OP_NODE_NUMPY_GREATER",
@@ -134,7 +134,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "logics",
         "function": "greater_equal",
         "block_name": "NumpyGreaterEqual",
         "op_block_string": "OP_NODE_NUMPY_GREATER_EQUAL",
@@ -146,7 +146,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "logics",
         "function": "isclose",
         "block_name": "NumpyIsClose",
         "op_block_string": "OP_NODE_NUMPY_IS_CLOSE",
@@ -254,7 +254,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "logics",
         "function": "maximum",
         "block_name": "NumpyMaximum",
         "op_block_string": "OP_NODE_NUMPY_MAX",
@@ -266,7 +266,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "logics",
 "function": "minimum",
         "block_name": "NumpyMinimum",
         "op_block_string": "OP_NODE_NUMPY_MIN",
@@ -278,7 +278,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "exp",
         "block_name": "NumpyExp",
         "op_block_string": "OP_NODE_NUMPY_EXP",
@@ -290,7 +290,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "log",
         "block_name": "NumpyLog",
         "op_block_string": "OP_NODE_NUMPY_LOG",
@@ -302,7 +302,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "log2",
         "block_name": "NumpyLog2",
         "op_block_string": "OP_NODE_NUMPY_LOG2",
@@ -314,7 +314,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "log10",
         "block_name": "NumpyLog10",
         "op_block_string": "OP_NODE_NUMPY_LOG10",
@@ -326,7 +326,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "sin",
         "block_name": "NumpySin",
         "op_block_string": "OP_NODE_NUMPY_SIN",
@@ -338,7 +338,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "cos",
         "block_name": "NumpyCos",
         "op_block_string": "OP_NODE_NUMPY_COS",
@@ -350,7 +350,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "tan",
         "block_name": "NumpyTan",
         "op_block_string": "OP_NODE_NUMPY_TAN",
@@ -362,7 +362,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "arcsin",
         "block_name": "NumpyArcsin",
         "op_block_string": "OP_NODE_ARCSIN",
@@ -374,7 +374,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "arccos",
         "block_name": "NumpyArccos",
         "op_block_string": "OP_NODE_NUMPY_ARCCOS",
@@ -386,7 +386,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "arctan",
         "block_name": "NumpyArctan",
         "op_block_string": "OP_NODE_NUMPY_ARCTAN",
@@ -398,7 +398,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "arctan2",
         "block_name": "NumpyArctan2",
         "op_block_string": "OP_NODE_NUMPY_ARCTAN2",
@@ -410,7 +410,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "hypot",
         "block_name": "NumpyHypot",
         "op_block_string": "OP_NODE_NUMPY_HYPOT",
@@ -422,7 +422,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "units",
         "function": "deg2rad",
         "block_name": "NumpyDeg2Rad",
         "op_block_string": "OP_NODE_NUMPY_DEG2RAD",
@@ -434,7 +434,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "units",
         "function": "rad2deg",
         "block_name": "NumpyRad2Deg",
         "op_block_string": "OP_NODE_NUMPY_RAD2DEG",
@@ -446,7 +446,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "sinh",
         "block_name": "NumpySinh",
         "op_block_string": "OP_NODE_NUMPY_SINH",
@@ -458,7 +458,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "cosh",
         "block_name": "NumpyCosh",
         "op_block_string": "OP_NODE_NUMPY_COSH",
@@ -470,7 +470,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "tanh",
         "block_name": "NumpyTanh",
         "op_block_string": "OP_NODE_NUMPY_TANH",
@@ -482,7 +482,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "arcsinh",
         "block_name": "NumpyArcsinh",
         "op_block_string": "OP_NODE_NUMPY_ARCSINH",
@@ -494,7 +494,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "arccosh",
         "block_name": "NumpyArccosh",
         "op_block_string": "OP_NODE_NUMPY_ARCCOSH",
@@ -506,7 +506,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "arctanh",
         "block_name": "NumpyArctanh",
         "op_block_string": "OP_NODE_NUMPY_ARCTANH",
@@ -530,7 +530,7 @@
     },
     {
         "library": "numpy",
-        "library_title": "maths",
+        "library_title": "advanced_maths",
         "function": "rint",
         "block_name": "NumpyRint",
         "op_block_string": "OP_NODE_NUMPY_RINT",
