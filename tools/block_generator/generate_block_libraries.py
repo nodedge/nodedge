@@ -74,7 +74,7 @@ def _create_blocks(configFile, savePath, lib):
         elif "json" in configFile:
             reader = json.load(infile)
         else:
-            raise ValueError(f"Invalid config file format: {configFileFormat}")
+            raise ValueError(f"Invalid config file format: {configFile}")
         libraries: Dict[str, List[str]] = {}
         opBlockNames: Dict[str, List[str]] = {}
 

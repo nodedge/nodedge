@@ -11,5 +11,11 @@ class MyClass:
 
 class SocketType(Enum):
     Any = 0
-    Number = 1
+    Number = 1  # Int + Float + Double
     String = 2
+    Integer = 3
+    Float = 4
+    Double = 5
+    Boolean = 6
+    Array = 7
+    Object = 8
