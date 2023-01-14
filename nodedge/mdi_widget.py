@@ -80,7 +80,7 @@ class MdiWidget(EditorWidget):
             )
             if node.library not in self.libraryMenus.keys():
                 print(node.library)
-                menu = QMenu(node.library.capitalize())
+                menu = QMenu(node.library.capitalize().replace("_", " "))
                 self.libraryMenus[node.library] = menu
 
             self.nodeActions[node.operationCode].setData(node.operationCode)
