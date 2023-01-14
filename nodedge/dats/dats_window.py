@@ -106,13 +106,14 @@ class DatsWindow(QMainWindow):
 
     def setConfigPathLabelText(self):
         text = "Configuration: "
-        if self.modifiedConfig:
-            text += "*"
 
         if not self.configPath:
             text += "untitled"
         else:
             text += self.configPath
+
+        if self.modifiedConfig:
+            text += "*"
 
         self.configPathLabel.setText(text)
 

@@ -460,11 +460,11 @@ HeaderIconButton, HeaderTextButton {
 
 #signinButton {
     font-weight: bold;
-    background-color: palette(bright-text);
+    background-color: palette(highlight);
 }
 
 #signinButton:hover {
-    background-color: palette(highlight);
+    background-color: palette(bright-text);
 }
 
 #signinButton:checked {
