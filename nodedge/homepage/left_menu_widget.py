@@ -23,7 +23,7 @@ class LeftMenuWidget(QWidget):
         self.setMinimumWidth(200)
         self.setMaximumWidth(200)
         self.layout = QVBoxLayout()
-        self.layout.setContentsMargins(10, 0, 0, 0)
+        self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(0)
         self.layout.setAlignment(Qt.AlignTop)
         self.setLayout(self.layout)

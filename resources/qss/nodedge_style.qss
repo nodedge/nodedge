@@ -534,7 +534,7 @@ MenuButton
     text-align: left;
     border: 0px;
     border-radius: 0px;
-    border-right: 3px solid palette(base)
+    /*border-right: 3px solid palette(base)*/
 }
 
 MenuButton:pressed:focus,
@@ -547,7 +547,7 @@ MenuButton:pressed
 
 MenuButton:hover
 {
-    border-right: 3px solid palette(base)
+    border-right: 3px solid palette(base);
 }
 
 MenuButton:checked

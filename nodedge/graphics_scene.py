@@ -47,8 +47,15 @@ class GraphicsScene(QGraphicsScene):
 
         super().__init__(parent)
 
+        app: QApplication = QApplication.instance()
+        app.paletteChanged.connect(self.updateColors)
+
         self.scene = scene
         self.initUI()
+
+    def updateColors(self):
+        self.initUI()
+        self.drawBackground()
 
     def initUI(self) -> None:
         """Set up this ``QGraphicsScene``"""
