@@ -22,7 +22,7 @@ class GraphicsNodeContent(QWidget, Serializable):
     :class:`~nodedge.graphics_node_content.GraphicsNodeContent` class.
 
     Base class for representation of the Node's graphics content. This class also
-    provides layout for other widgets inside of a :py:class:`~nodedge.node.Node`.
+    provides layout for other widgets inside a :py:class:`~nodedge.node.Node`.
     """
 
     def __init__(
