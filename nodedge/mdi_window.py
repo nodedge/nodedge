@@ -614,7 +614,7 @@ class MdiWindow(EditorWindow):
         if isinstance(filenames, bool) or filenames is None:
             filenames, ok = QFileDialog.getOpenFileNames(
                 parent=self,
-                caption="Open graph from file",
+                caption="Open model from file",
                 dir=EditorWindow.getFileDialogDirectory(),
                 filter=EditorWindow.getFileDialogFilter(),
             )
@@ -644,6 +644,14 @@ class MdiWindow(EditorWindow):
                     else:
                         logger.warning(f"File {filename} not found.")
                         continue
+
+                if os.path.isdir(filename):
+                    filename, ok = QFileDialog.getOpenFileName(
+                        parent=self,
+                        caption="Open model from file",
+                        dir=filename,
+                        filter=EditorWindow.getFileDialogFilter(),
+                    )
 
                 existingSubWindow = self.findMdiSubWindow(filename)
                 if existingSubWindow:

@@ -522,7 +522,6 @@ MenuButton
     icon-background-color: palette(dark);
     color: palette(text);
     icon-size: 30px;
-    text-align: center;
     text-align: left;
     border: 0px;
     border-radius: 0px;
@@ -647,6 +646,12 @@ LinkButton {
 }
 
 LinkButton:hover {
+    background-color: palette(base);
+    text-decoration: underline;
+    color: palette(highlight);
+}
+
+LinkButton:pressed:focus {
     background-color: palette(base);
     text-decoration: underline;
     color: palette(highlight);

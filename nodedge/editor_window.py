@@ -135,8 +135,27 @@ class EditorWindow(QMainWindow):
         :class:`~nodedge.graphics_view.GraphicsView`'s scenePosChanged event.
         """
         self.statusBar().showMessage("")
+        # self.playFrame = QFrame()
+        # self.playLayout = QHBoxLayout()
+        # self.statusBar().addPermanentWidget(self.playFrame)
+
+        # self.playLayout.setContentsMargins(0, 0, 0, 0)
+        # self.playFrame.setLayout(self.playLayout)
+        # self.playButton = QPushButton("Play")
+        # # self.playButton.setFixedWidth(50)
+        # self.playLayout.addWidget(self.playButton)
+        # self.pauseButton = QPushButton("Pause")
+        # # self.pauseButton.setFixedWidth(50)
+        # self.playLayout.addWidget(self.pauseButton)
+        # self.stopButton = QPushButton("Stop")
+        # # self.stopButton.setFixedWidth(50)
+        # self.playLayout.addWidget(self.stopButton)
         self.statusMousePos = QLabel("")
         self.statusBar().addPermanentWidget(self.statusMousePos)
+        # self.currentViewLabel = QLabel(f"Current view: blablajson")
+        # self.currentViewLabel.setFixedWidth(300)
+        # self.currentViewLabel.setAlignment(Qt.AlignRight)
+        # self.statusBar().addPermanentWidget(self.currentViewLabel)
 
         if self.currentEditorWidget is None:
             return

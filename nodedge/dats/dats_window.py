@@ -627,7 +627,7 @@ class DatsWindow(QMainWindow):
         if filename is None or not filename:
             filename, ok = QFileDialog.getOpenFileName(
                 parent=self,
-                caption="Open file",
+                caption="Open log file",
                 dir=DatsWindow.getFileDialogDirectory(),
                 filter=DatsWindow.getFileDialogFilter(),
             )
@@ -646,6 +646,14 @@ class DatsWindow(QMainWindow):
             else:
                 logger.warning(f"File {filename} not found.")
                 return
+
+        if os.path.isdir(filename):
+            filename, ok = QFileDialog.getOpenFileName(
+                parent=self,
+                caption="Open log example from file",
+                dir=filename,
+                filter=DatsWindow.getFileDialogFilter(),
+            )
 
         log = self.logsWidget.logsListWidget.openLog(filename)
         self.updateDataItems(log)
