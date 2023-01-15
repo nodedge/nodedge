@@ -93,6 +93,7 @@ class NPlotWidget(GraphicsLayoutWidget):
         maxWidth = 0
 
         if len(self.plotItems) > 0:
+            defaultViewRange = self.plotItem.viewRange()[0]
             self.plotItem.setXLink(plotItem)
             plotItem.setLimits(
                 xMin=self.xLimits[0],
@@ -100,7 +101,7 @@ class NPlotWidget(GraphicsLayoutWidget):
                 yMin=self.yLimits[0],
                 yMax=self.yLimits[1],
             )
-            plotItem.setRange(xRange=self.plotItem.viewRange()[0])
+            plotItem.setRange(xRange=defaultViewRange)
 
         self.plotItems.append(plotItem)
 
