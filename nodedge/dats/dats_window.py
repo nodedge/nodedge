@@ -80,7 +80,7 @@ class DatsWindow(QMainWindow):
 
         self.addDockWidget(Qt.LeftDockWidgetArea, self.logsDock)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.signalsDock)
-
+        self.readSettings()
         self.createActions()
         self.createMenus()
 
@@ -91,8 +91,6 @@ class DatsWindow(QMainWindow):
         self.createStatusBar()
 
         self._modifiedConfig = False
-
-        self.readSettings()
 
     @property
     def modifiedConfig(self):
@@ -703,14 +701,18 @@ class DatsWindow(QMainWindow):
 
     def updateRecentFilesMenu(self):
         self.recentFilesMenu.clear()
+        logger.debug(f"Recent files: {self.recentFiles}")
         for index, filePath in enumerate(self.recentFiles):
+            if index > 9:
+                break
+
             shortpath = filePath.replace("\\", "/")
             shortpath = filePath.split("/")[-1]
             action = self.createAction(
                 shortpath,
                 lambda: self.openFile(filePath),
                 f"Open {filePath}",
-                QKeySequence(f"Ctrl+Shift+{1}"),
+                QKeySequence(f"Ctrl+Shift+{index}"),
             )
             self.recentFilesMenu.addAction(action)
 
