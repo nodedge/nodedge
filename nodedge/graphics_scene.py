@@ -67,14 +67,14 @@ class GraphicsScene(QGraphicsScene):
     def initStyle(self) -> None:
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
         p = QApplication.palette()
-        self._colorBackground = p.base().color()
+        self._colorBackground = p.dark().color()
         self._colorSmallSquares = p.linkVisited().color()
         self._colorBigSquares = p.link().color()
 
-        self._penSmallSquares = QPen(self._colorSmallSquares, 0.3, Qt.DotLine)
+        self._penSmallSquares = QPen(self._colorSmallSquares, 0.1)
 
-        self._penBigSquares = QPen(self._colorBigSquares, 0.6)
-        self._penBigSquares.setDashPattern([2, 6])
+        self._penBigSquares = QPen(self._colorBigSquares, 0.2)
+        # self._penBigSquares.setDashPattern([2, 6])
 
     # noinspection PyAttributeOutsideInit
     def initSizes(self) -> None:

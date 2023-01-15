@@ -128,7 +128,7 @@ class GraphicsEdge(QGraphicsPathItem):
         Initialize ``QObject`` like ``QColor``, ``QPen`` and ``QBrush``
         """
         p = QApplication.palette()
-        self._defaultColor: QColor = p.dark().color()
+        self._defaultColor: QColor = p.light().color()
         self._color: QColor = self._defaultColor
         self._colorSelected: QColor = QApplication.palette().highlight().color()
 

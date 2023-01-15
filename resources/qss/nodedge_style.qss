@@ -322,19 +322,15 @@ border-radius: 0px;
 }
 
 GraphicsNodeContent {
-background: palette(midlight);
+background: palette(base);
 }
 
 GraphicsNodeTitleLabel{
-background:palette(base);
+background:palette(mid);
 max-height: 20px;
 padding-left: 10px;
 padding-top: 2px;
 padding-bottom: 2px;
-}
-
-GraphicsNodeTitleLabel:hover{
-    background: palette(base);
 }
 
 /*QMenu{
@@ -393,14 +389,23 @@ margin-left: 5px;
 font-size: 14px;
 }
 
-QToolBar{
-background: palette(mid);
-border-top:1px solid palette(light);
-border-bottom:1px solid palette(light);
+GraphicsNodeWidget{
+background:palette(base);
 }
 
-GraphicsNodeWidget{
-background:palette(mid);
+GraphicsBlockContent QListWidget {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 0px;
+}
+
+GraphicsNodeTitleFrame, GraphicsNodeStatusLabel {
+    background: palette(mid);
+}
+
+GraphicsNodeTypeLabel {
+    background: palette(mid);
+    color: palette(light);
 }
 
 QToolBar::separator {
@@ -414,6 +419,12 @@ SceneItemsTableWidget {
     min-width: 300px;
 }
 
+QToolBar{
+background: palette(mid);
+border-top:1px solid palette(light);
+border-bottom:1px solid palette(light);
+}
+
 QToolTip {
     background: palette(light);
     color: palette(text);
@@ -422,25 +433,6 @@ QToolTip {
 QListWidget {
     /*max-height: 10;*/
     min-width: 10px;
-}
-
-GraphicsBlockContent QListWidget {
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 0px;
-}
-
-GraphicsNodeTitleFrame {
-    background: palette(base);
-}
-
-GraphicsNodeStatusLabel {
-    background: palette(base);
-}
-
-GraphicsNodeTypeLabel {
-    background: palette(base);
-    color: palette(light);
 }
 
 HeaderIconButton, HeaderTextButton {
