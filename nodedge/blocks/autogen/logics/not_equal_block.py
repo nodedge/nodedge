@@ -2,7 +2,7 @@
 import logging
 from typing import List
 
-from numpy import not_equal
+from numpy import array, not_equal
 
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
@@ -42,7 +42,9 @@ class NumpyNotEqualBlock(Block):
             inputs.append(self.inputNodeAt(i))
 
         try:
-            evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
+            evaluatedInputs = [
+                currentInput.eval().__repr__() for currentInput in inputs
+            ]
             operation = f"{NumpyNotEqualBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:

@@ -11,7 +11,8 @@ from black import FileMode, format_str
 logger = logging.getLogger(__name__)
 
 # Parameters to set before running the block generation
-libraryTitle = "units"  # string of library to generate
+LIBRARIES = ["maths", "advanced_maths", "units", "logics"]
+# libraryTitle = "units"  # string of library to generate
 configFile = "numpy_block_config.json"  # config file
 savePath = "../../nodedge/blocks/autogen"  # path where to save the generated blocks
 overwrite = True  # True to overwrite, False otherwise
@@ -145,11 +146,12 @@ def _generate_config_file(opBlockNames, configFilename, code: int = 1):
 
 
 if __name__ == "__main__":
-    _init_lib_path(savePath, libraryTitle)
-    libraries, opBlockNames = _create_blocks(configFile, savePath, libraryTitle)
-    print(f"{opBlockNames}")
-    _generate_common_init_file(opBlockNames, savePath, initFilename)
-    _generate_init_files(libraries, savePath, initFilename)
-    _generate_config_file(opBlockNames, opNodeFilename, firstCode)
+    for libraryTitle in LIBRARIES:
+        _init_lib_path(savePath, libraryTitle)
+        libraries, opBlockNames = _create_blocks(configFile, savePath, libraryTitle)
+        print(f"{opBlockNames}")
+        # _generate_common_init_file(opBlockNames, savePath, initFilename)
+        _generate_init_files(libraries, savePath, initFilename)
+        # _generate_config_file(opBlockNames, opNodeFilename, firstCode)
 
 # TODO: Generate test for each block in a separated file

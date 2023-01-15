@@ -2,7 +2,7 @@
 import logging
 from typing import List
 
-from numpy import floor_divide
+from numpy import array, floor_divide
 
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
@@ -42,7 +42,9 @@ class NumpyFloorDivideBlock(Block):
             inputs.append(self.inputNodeAt(i))
 
         try:
-            evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
+            evaluatedInputs = [
+                currentInput.eval().__repr__() for currentInput in inputs
+            ]
             operation = (
                 f"{NumpyFloorDivideBlock.evalString}({', '.join(evaluatedInputs)})"
             )

@@ -2,7 +2,7 @@
 import logging
 from typing import List
 
-from numpy import log10
+from numpy import array, log10
 
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
@@ -41,7 +41,9 @@ class NumpyLog10Block(Block):
             inputs.append(self.inputNodeAt(i))
 
         try:
-            evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
+            evaluatedInputs = [
+                currentInput.eval().__repr__() for currentInput in inputs
+            ]
             operation = f"{NumpyLog10Block.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:

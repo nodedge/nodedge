@@ -2,7 +2,7 @@
 import logging
 from typing import List
 
-from numpy import true_divide
+from numpy import array, true_divide
 
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
@@ -42,7 +42,9 @@ class NumpyTrueDivideBlock(Block):
             inputs.append(self.inputNodeAt(i))
 
         try:
-            evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
+            evaluatedInputs = [
+                currentInput.eval().__repr__() for currentInput in inputs
+            ]
             operation = (
                 f"{NumpyTrueDivideBlock.evalString}({', '.join(evaluatedInputs)})"
             )

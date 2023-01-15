@@ -2,7 +2,7 @@
 import logging
 from typing import List
 
-from numpy import rint
+from numpy import array, rint
 
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
@@ -41,7 +41,9 @@ class NumpyRintBlock(Block):
             inputs.append(self.inputNodeAt(i))
 
         try:
-            evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
+            evaluatedInputs = [
+                currentInput.eval().__repr__() for currentInput in inputs
+            ]
             operation = f"{NumpyRintBlock.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:

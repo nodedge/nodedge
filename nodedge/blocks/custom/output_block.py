@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from typing import List
 
+import numpy as np
+
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
 from nodedge.blocks.block_exception import EvaluationError
@@ -8,6 +10,8 @@ from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.blocks.graphics_output_block_content import GraphicsOutputBlockContent
 from nodedge.blocks.op_node import OP_NODE_CUSTOM_OUTPUT
 from nodedge.socket_type import SocketType
+
+np.set_printoptions(precision=2)
 
 
 @registerNode(OP_NODE_CUSTOM_OUTPUT)
@@ -39,6 +43,6 @@ class OutputBlock(Block):
                 f"The result of the input {inputNode} evaluation is None."
             )
 
-        self.content.label.setText(f"{inputResult:.2f}")
+        self.content.label.setText(f"{inputResult}")
 
-        return 223
+        return True
