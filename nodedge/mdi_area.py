@@ -70,14 +70,16 @@ class MdiArea(QMdiArea):
                 painter.drawPixmap(x, y, self.display_pixmap)
         else:
             painter.fillRect(event.rect(), self.palette().color(QPalette.Window))
-            painter.setPen(self.palette().color(QPalette.Link))
-            painter.setOpacity(1)
-            painter.setFont(QFont("Segoe UI", 64, QFont.Weight.Bold))
-            painter.drawText(event.rect(), Qt.AlignCenter, "©Nodedge\n\n")
+            # painter.setPen(self.palette().color(QPalette.Link))
+            # painter.setOpacity(1)
+            # painter.setFont(QFont("Segoe UI", 64, QFont.Weight.Bold))
+            # painter.drawText(event.rect(), Qt.AlignCenter, "©Nodedge\n\n")
 
-            painter.setPen(self.palette().color(QPalette.Link))
+            painter.setPen(self.palette().color(QPalette.Light))
             painter.setOpacity(1)
-            painter.setFont(QFont("Segoe UI"))
+            font = QFont("Segoe UI")
+            font.setPixelSize(20)
+            painter.setFont(font)
             painter.drawText(
                 event.rect(), Qt.AlignCenter, "Open new:  Ctrl+N\n\nOpen file:  Ctrl+O"
             )

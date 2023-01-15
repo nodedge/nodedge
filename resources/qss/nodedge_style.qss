@@ -631,26 +631,43 @@ LeftMenuWidget {
 }
 
 #homeContentTitleLabel {
-    font-size: 50px;
-    color: palette(link);
+    font-size: 64px;
+    font-weight: bold;
+    color: palette(midLight);
 }
 
 #homeContentSubTitleLabel {
-    font-size: 20px;
-    color: palette(link);
+    font-size: 28px;
+    color: palette(midLight);
 }
 
 LinkButton {
+    background-color: palette(midLight);
+    color: palette(text);
+    text-align: left;
+    border: none;
+    max-width: 120px;
+}
+
+LinkButton:hover {
+    background-color: palette(light);
+    color: palette(text);
+}
+
+FilepathButton {
     background-color: palette(base);
     color: palette(highlight);
     text-align: left;
     border: none;
+    font: bold;
+    font: bold;
 }
 
-LinkButton:hover {
+FilepathButton:hover {
     background-color: palette(base);
-    text-decoration: underline;
+    /* text-decoration: underline; */
     color: palette(highlight);
+    font: bold;
 }
 
 LinkButton:pressed:focus {

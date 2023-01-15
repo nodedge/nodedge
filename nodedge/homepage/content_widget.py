@@ -41,6 +41,12 @@ class LinkButton(QPushButton):
         # self.setMinimumHeight(40)
 
 
+class FilepathButton(QPushButton):
+    def __init__(self, parent, text):
+        super().__init__(parent)
+        self.setText(text)
+
+
 class ContentWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -118,7 +124,7 @@ class HomeContentWidget(ContentWidget):
         self.titleLayout.setAlignment(Qt.AlignTop)
         self.titleFrame.setLayout(self.titleLayout)
 
-        self.titleLabel = QLabel("Nodedge")
+        self.titleLabel = QLabel("©Nodedge")
         self.titleLabel.setAlignment(Qt.AlignLeft)
         self.titleLayout.addWidget(self.titleLabel)
         self.titleLabel.setObjectName("homeContentTitleLabel")
@@ -176,11 +182,11 @@ class HomeContentWidget(ContentWidget):
         self.nodedgeOpenLabel = QLabel("<b>Start Nodedge</b>")
         self.nodedgeOpenLabel.setAlignment(Qt.AlignLeft)
         self.nodedgeOpenLayout.addWidget(self.nodedgeOpenLabel)
-        self.nodedgeNewFile = LinkButton(self, "New file")
+        self.nodedgeNewFile = LinkButton(self, "+ New file")
         self.nodedgeOpenLayout.addWidget(self.nodedgeNewFile)
-        self.nodedgeOpenFile = LinkButton(self, "Open file")
+        self.nodedgeOpenFile = LinkButton(self, "+ Open file")
         self.nodedgeOpenLayout.addWidget(self.nodedgeOpenFile)
-        self.nodedgeOpenExample = LinkButton(self, "Open example")
+        self.nodedgeOpenExample = LinkButton(self, "+ Open example")
         self.nodedgeOpenLayout.addWidget(self.nodedgeOpenExample)
 
         self.datsOpenFrame = QFrame()
@@ -198,9 +204,9 @@ class HomeContentWidget(ContentWidget):
         self.datsOpenLayout.addWidget(self.datsOpenLabel)
         # self.datsNewFile = LinkButton(self, "New configuration")
         # self.datsOpenLayout.addWidget(self.datsNewFile)
-        self.datsOpenFile = LinkButton(self, "Open log")
+        self.datsOpenFile = LinkButton(self, "+ Open log")
         self.datsOpenLayout.addWidget(self.datsOpenFile)
-        self.datsOpenExample = LinkButton(self, "Open example")
+        self.datsOpenExample = LinkButton(self, "+ Open example")
         self.datsOpenLayout.addWidget(self.datsOpenExample)
 
         self.createNodedgeRecentFilesWidget()
@@ -302,7 +308,7 @@ class HomeContentWidget(ContentWidget):
             shortpath = shortpath.split("/")[-1]
             shortpath = truncateString(shortpath, 16, 8)
 
-            fileButton = LinkButton(self, shortpath)
+            fileButton = FilepathButton(self, shortpath)
             # fileButton.setFixedSize(BUTTON_SIZE, BUTTON_SIZE)
             # fileButton.setText(shortpath)
             fileButton.setToolTip(filepath)
