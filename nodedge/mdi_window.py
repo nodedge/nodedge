@@ -113,9 +113,8 @@ class MdiWindow(EditorWindow):
         self.createMenus()
         self.createToolBars()
         self.createStatusBar()
-        self.updateMenus()
-
         self.readSettings()
+        self.updateMenus()
 
         self.setWindowTitle(self.productName)
 
@@ -338,6 +337,7 @@ class MdiWindow(EditorWindow):
         """
 
         self.updateFileMenu()
+        self.updateRecentFilesMenu()
         self.updateEditMenu()
         self.updateWindowMenu()
 
