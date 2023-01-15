@@ -46,10 +46,7 @@ def filledScene(emptyScene):
 
 def test_generateCode(filledScene):
     expectedResult = (
-        "var_0 = 2.0\n"
-        + "var_1 = 1.0\n"
-        + "var_2 = add(var_1, var_0)\n"
-        + "return [var_2]"
+        "var_0 = 2\n" + "var_1 = 1\n" + "var_2 = add(var_1, var_0)\n" + "return [var_2]"
     )
 
     _, generatedCode = filledScene.coder.generateCode()
