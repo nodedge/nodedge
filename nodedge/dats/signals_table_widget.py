@@ -44,7 +44,7 @@ class SignalsTableWidget(QTableWidget):
         self.signals: List[str] = []
         self.updateItems(self.log)
 
-        self.selectedRows = []
+        self.selectedRows: List[int] = []
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         super().keyPressEvent(event)

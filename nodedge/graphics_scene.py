@@ -6,7 +6,7 @@ import logging
 from math import ceil, floor, log
 from typing import Optional
 
-from PySide6.QtCore import QLine, QPointF, Qt, Signal
+from PySide6.QtCore import QCoreApplication, QLine, QPointF, Qt, Signal
 from PySide6.QtGui import QPen, QTransform
 from PySide6.QtWidgets import (
     QApplication,
@@ -47,8 +47,8 @@ class GraphicsScene(QGraphicsScene):
 
         super().__init__(parent)
 
-        app: QApplication = QApplication.instance()
-        app.paletteChanged.connect(self.updateColors)
+        app: Optional[QCoreApplication] = QApplication.instance()
+        app.paletteChanged.connect(self.updateColors)  # type: ignore
 
         self.scene = scene
         self.initUI()
