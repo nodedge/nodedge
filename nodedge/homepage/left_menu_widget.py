@@ -6,7 +6,7 @@ from nodedge.homepage.menu_button import MenuButton
 
 MENU_ITEMS = {
     "Home": "homepage.png",
-    "Search": "search_property.png",
+    # "Search": "search_property.png",
     "Help": "questions.png",
     "Spacer": None,
     "Settings": "settings.png",

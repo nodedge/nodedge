@@ -61,7 +61,7 @@ def test_addImports(filledScene):
     orderedNodeList, generatedCode = filledScene.coder.generateCode()
 
     filename = "unnamed"
-    imports = "from operator import add\n\n\n"
+    imports = "from numpy import add\n\n\n"
 
     expectedResult = (
         imports
