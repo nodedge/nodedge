@@ -5,6 +5,7 @@ resizable_rectangle_with_handles.py module containing :class:`~nodedge.resizable
 
 import sys
 
+from PySide6 import QtGui
 from PySide6.QtCore import QPointF, QRectF, Qt
 from PySide6.QtGui import QBrush, QColor, QPainter, QPainterPath, QPen, QPixmap
 from PySide6.QtWidgets import (
@@ -14,6 +15,7 @@ from PySide6.QtWidgets import (
     QGraphicsRectItem,
     QGraphicsScene,
     QGraphicsSceneHoverEvent,
+    QGraphicsTextItem,
     QGraphicsView,
     QLabel,
     QLineEdit,
@@ -65,14 +67,14 @@ class GraphicsRectItem(QGraphicsRectItem):
         self.setFlag(QGraphicsItem.ItemIsFocusable, True)
         self.updateHandlesPos()
 
-        self.proxy = QGraphicsProxyWidget(self)
-
-        self.widget = QWidget()
-        self.layout = QVBoxLayout()
-        self.widget.setLayout(self.layout)
-        self.lineEdit = QLabel("HELLO", self.widget)
-        self.layout.addWidget(self.lineEdit)
-        self.proxy.setWidget(self.widget)
+        # self.proxy = QGraphicsProxyWidget(self)
+        #
+        # self.widget = QWidget()
+        # self.layout = QVBoxLayout()
+        # self.widget.setLayout(self.layout)
+        # self.lineEdit = QLabel("HELLO", self.widget)
+        # self.layout.addWidget(self.lineEdit)
+        # self.proxy.setWidget(self.widget)
 
     def handleAt(self, point):
         """
@@ -330,7 +332,12 @@ def main():
     scene.addItem(item)
 
     # item2 = EditableTextGraphicsItem("MyText")
-    item2 = GraphicsTextItem("LOL")
+    item2 = QGraphicsTextItem("LOL", item)
+    item2.setPos(10, 10)
+
+    item3 = QGraphicsRectItem(0, 0, 100, 100, item)
+    scene.addItem(item3)
+
     scene.addItem(item2)
 
     grview.fitInView(scene.sceneRect(), Qt.KeepAspectRatio)
