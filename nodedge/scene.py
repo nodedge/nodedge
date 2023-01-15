@@ -132,6 +132,7 @@ class Scene(Serializable):
     @property
     def selectedNode(self) -> Optional[Node]:
         ret = None
+        logger.debug(self.selectedItems)
         if len(self.selectedItems) == 1:
             if isinstance(self.selectedItems[0], GraphicsNode):
                 ret = self.selectedItems[0].node
@@ -182,8 +183,7 @@ class Scene(Serializable):
         logger.debug(f"Last selected items in scene: {self._lastSelectedItems}")
 
         if self.selectedItems != self._lastSelectedItems:
-            if selectedItems:
-                self.lastSelectedItems = self.selectedItems
+            self.lastSelectedItems = self.selectedItems
             if not silent:
                 # we could create some kind of UI which could be serialized,
                 # therefore first run all callbacks...

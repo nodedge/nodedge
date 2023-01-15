@@ -145,6 +145,8 @@ class GraphicsScene(QGraphicsScene):
         :param event: Mouse release event
         :type event: ``QGraphicsSceneMouseEvent.py``
         """
+        super().mousePressEvent(event)
+
         item: Optional[QGraphicsItem] = self.itemAt(event.scenePos(), QTransform())
         logger.debug(f"item: {item}")
 
@@ -165,10 +167,13 @@ class GraphicsScene(QGraphicsScene):
             logger.debug(f"Pressed parent item: {item.parentItem()}")
 
         if item is not None:
-            item.setSelected(True)
+            if item.parentItem() is not None:
+                item.parentItem().setSelected(True)
+            else:
+                item.setSelected(True)
 
-        super().mousePressEvent(event)
         self.itemSelected.emit()
+
         logger.debug(f"Selected items in graphics scene: {self.selectedItems()}")
         logger.debug(f"Last selected item: {self.scene.lastSelectedItems}")
 

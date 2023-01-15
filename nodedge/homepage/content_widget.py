@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 from PySide6.QtCore import QSettings, QSize, QStandardPaths, Qt, QUrl, Signal
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QPixmap
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import (
     QComboBox,
@@ -26,12 +26,12 @@ from PySide6.QtWidgets import (
 from nodedge.application_styler import ApplicationStyler
 from nodedge.flow_layout import FlowLayout
 from nodedge.homepage.workspace_selection_button import WorkspaceSelectionButton
-from nodedge.utils import truncateString
+from nodedge.utils import cropImage, truncateString
 
 logger = logging.getLogger(__name__)
 
 MIN_HEIGHT = 30
-BUTTON_SIZE = 300
+BUTTON_SIZE = 150
 
 
 class LinkButton(QPushButton):
@@ -254,9 +254,10 @@ class HomeContentWidget(ContentWidget):
 
             filePath = os.path.join(dataPath, filename + ".png")
             if os.path.exists(filePath):
-                QIcon(filePath)
+                image = QPixmap(filePath)
+                image = cropImage(image)
                 fileButton.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-                fileButton.setIcon(QIcon(filePath))
+                fileButton.setIcon(image)
                 fileButton.setIconSize(QSize(BUTTON_SIZE, BUTTON_SIZE))
             self.recentFilesLayout.addWidget(fileButton)
             fileButton.clicked.connect(self.onNodedgeRecentFileClicked)

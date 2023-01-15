@@ -170,3 +170,18 @@ def truncateString(s, n, m):
         return s[:n] + "..." + s[-m:]
     else:
         return s
+
+
+def cropImage(image):
+    origWidth = image.width()
+    origHeight = image.height()
+
+    targetWidth = origHeight * (4 / 3)
+    targetHeight = origHeight
+
+    startX = (origWidth - targetWidth) / 2
+    startY = 0
+
+    croppedImage = image.copy(startX, startY, targetWidth, targetHeight)
+
+    return croppedImage
