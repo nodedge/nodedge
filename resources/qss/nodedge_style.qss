@@ -653,3 +653,9 @@ LinkButton {
     text-align: left;
     border: none;
 }
+
+LinkButton:hover {
+    background-color: palette(base);
+    text-decoration: underline;
+    color: palette(highlight);
+}

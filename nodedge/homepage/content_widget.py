@@ -31,13 +31,14 @@ from nodedge.utils import truncateString
 logger = logging.getLogger(__name__)
 
 MIN_HEIGHT = 30
-BUTTON_SIZE = 200
+BUTTON_SIZE = 300
 
 
 class LinkButton(QPushButton):
     def __init__(self, parent, text):
         super().__init__(parent)
         self.setText(text)
+        # self.setMinimumHeight(40)
 
 
 class ContentWidget(QWidget):
@@ -107,14 +108,13 @@ class HomeContentWidget(ContentWidget):
         self.setLayout(self.layout)
 
         self.titleFrame = QFrame()
-        self.titleFrame.setFixedHeight(150)
-
+        # self.titleFrame.setFixedHeight(150)
         self.titleFrame.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
         )
         self.titleLayout = QVBoxLayout()
         self.titleLayout.setSpacing(0)
-        self.titleLayout.setContentsMargins(0, 0, 0, 0)
+        self.titleLayout.setContentsMargins(0, 0, 0, 50)
         self.titleLayout.setAlignment(Qt.AlignTop)
         self.titleFrame.setLayout(self.titleLayout)
 
@@ -131,12 +131,12 @@ class HomeContentWidget(ContentWidget):
         self.subTitleLabel.setObjectName("homeContentSubTitleLabel")
 
         self.newsFrame = QFrame()
-        self.newsFrame.setFixedHeight(100)
+        # self.newsFrame.setFixedHeight(100)
         self.newsFrame.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum
         )
         self.newsLayout = QVBoxLayout()
-        self.newsLayout.setSpacing(0)
+        # self.newsLayout.setSpacing(0)
         self.newsLayout.setContentsMargins(0, 0, 0, 50)
         self.newsFrame.setLayout(self.newsLayout)
 
@@ -153,18 +153,22 @@ class HomeContentWidget(ContentWidget):
         self.newsLayout.addWidget(self.newsContentLabel)
 
         self.openFrame = QFrame()
+        self.openFrame.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
         self.openLayout = QGridLayout()
-        self.openLayout.setSpacing(0)
+        # self.openLayout.setSpacing(0)
         self.openLayout.setContentsMargins(0, 0, 0, 0)
+        self.openLayout.setAlignment(Qt.AlignTop)
         self.openFrame.setLayout(self.openLayout)
 
         self.nodedgeOpenFrame = QFrame()
         # self.nodedgeOpenFrame.setSizePolicy(
         #     QSizePolicy.Expanding, QSizePolicy.Policy.Minimum
         # )
-        self.nodedgeOpenFrame.setFixedHeight(200)
+        # self.nodedgeOpenFrame.setFixedHeight(200)
         self.nodedgeOpenLayout = QVBoxLayout()
-        self.nodedgeOpenLayout.setSpacing(0)
+        # self.nodedgeOpenLayout.setSpacing(0)
         self.nodedgeOpenLayout.setContentsMargins(0, 0, 0, 50)
         self.nodedgeOpenFrame.setLayout(self.nodedgeOpenLayout)
         self.openLayout.addWidget(self.nodedgeOpenFrame, 0, 0)
@@ -180,10 +184,10 @@ class HomeContentWidget(ContentWidget):
         self.nodedgeOpenLayout.addWidget(self.nodedgeOpenExample)
 
         self.datsOpenFrame = QFrame()
-        self.datsOpenFrame.setFixedHeight(200)
+        # self.datsOpenFrame.setFixedHeight(200)
 
         self.datsOpenLayout = QVBoxLayout()
-        self.datsOpenLayout.setSpacing(0)
+        # self.datsOpenLayout.setSpacing(0)
         self.datsOpenLayout.setContentsMargins(0, 0, 0, 50)
         self.datsOpenFrame.setLayout(self.datsOpenLayout)
         self.openLayout.addWidget(self.datsOpenFrame, 0, 1)
@@ -211,8 +215,8 @@ class HomeContentWidget(ContentWidget):
 
         self.recentNodedgeLayout = QVBoxLayout()
         self.recentNodedgeLayout.setAlignment(Qt.AlignTop)
-        self.recentNodedgeLayout.setSpacing(10)
-        self.recentNodedgeLayout.setContentsMargins(0, 0, 0, 0)
+        self.recentNodedgeLayout.setSpacing(20)
+        self.recentNodedgeLayout.setContentsMargins(0, 0, 0, 50)
         self.recentNodedgeFrame.setLayout(self.recentNodedgeLayout)
         self.openLayout.addWidget(self.recentNodedgeFrame, 1, 0)
 

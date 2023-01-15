@@ -64,6 +64,7 @@ class ConsoleWidget(QWidget):
         self.output = self.ui.output
         self.input = self.ui.input
         self.input.setFocus()
+        self.input.setPlaceholderText("Enter command here")
 
         if text is not None:
             self.output.setPlainText(text)
