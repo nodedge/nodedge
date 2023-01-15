@@ -210,6 +210,8 @@ class HomeContentWidget(ContentWidget):
         self.layout.addWidget(self.newsFrame)
         self.layout.addWidget(self.openFrame)
 
+        self.datsRecentButtons = []
+
     def createNodedgeRecentFilesWidget(self):
         self.recentNodedgeFrame = QFrame()
         # self.recentNodedgeFrame.setStyleSheet("background-color: green;")
@@ -286,6 +288,13 @@ class HomeContentWidget(ContentWidget):
         self.datsRecentButtonsFrame.setLayout(self.datsRecentButtonsLayout)
 
     def updateDatsRecentFilesWidget(self, filePaths):
+
+        for button in self.datsRecentButtons:
+            self.datsRecentButtonsLayout.removeWidget(button)
+            button.deleteLater()
+
+        self.datsRecentButtons = []
+
         for index, filepath in enumerate(filePaths):
             if index > 3:
                 break
@@ -299,6 +308,7 @@ class HomeContentWidget(ContentWidget):
             fileButton.setToolTip(filepath)
             fileButton.clicked.connect(self.onDatsRecentFileClicked)
             self.datsRecentButtonsLayout.addWidget(fileButton)
+            self.datsRecentButtons.append(fileButton)
 
     def onDatsRecentFileClicked(self):
         self.datsFileClicked.emit(self.sender().toolTip())
