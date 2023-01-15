@@ -236,7 +236,6 @@ class HomeContentWidget(ContentWidget):
     def updateNodedgeRecentFilesButtons(self, filepaths):
         self.recentFilesLayout.clear()
         for index, filepath in enumerate(filepaths):
-            print(f"filepath: {filepath}")
             if index > 3:
                 break
             shortpath = filepath.replace("\\", "/")
