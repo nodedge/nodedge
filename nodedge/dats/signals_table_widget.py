@@ -1,3 +1,4 @@
+import logging
 from typing import List
 
 from asammdf import MDF
@@ -15,6 +16,8 @@ from PySide6.QtWidgets import (
 from nodedge.utils import dumpException
 
 COLUMNS = ["Type", "Name"]
+
+logger = logging.getLogger(__name__)
 
 
 class SignalsTableWidget(QTableWidget):
@@ -41,6 +44,8 @@ class SignalsTableWidget(QTableWidget):
         self.signals: List[str] = []
         self.updateItems(self.log)
 
+        self.selectedRows = []
+
     def keyPressEvent(self, event: QKeyEvent) -> None:
         super().keyPressEvent(event)
         if event.modifiers() & Qt.KeyboardModifier.ControlModifier:
@@ -48,7 +53,7 @@ class SignalsTableWidget(QTableWidget):
 
     def keyReleaseEvent(self, event: QKeyEvent) -> None:
         super().keyReleaseEvent(event)
-        if event.modifiers() & Qt.KeyboardModifier.ControlModifier:
+        if not event.modifiers() & Qt.KeyboardModifier.ControlModifier:
             self.multiSelectionMode = False
 
     def updateItems(self, log: MDF):
@@ -96,13 +101,24 @@ class SignalsTableWidget(QTableWidget):
             self.setItem(row, 1, nameItem)
 
     def onCellClicked(self, row, column):
+        logger.debug(f"Multi selection mode: {self.multiSelectionMode}")
         if not self.multiSelectionMode:
             self.clearSelection()
+            self.selectedRows = []
+
+        selection = True
+        if row not in self.selectedRows:
+            self.selectedRows.append(row)
+        else:
+            selection = False
+            self.selectedRows.remove(row)
+
+        logger.debug(f"Selected rows: {self.selectedRows}")
 
         for i in range(self.columnCount()):
             item = self.item(row, i)
             if item:
-                item.setSelected(True)
+                item.setSelected(selection)
             else:
                 widget = self.cellWidget(row, i)
 
