@@ -75,12 +75,10 @@ class NodeTreeWidget(QTreeWidget):
         # associateOperationCodeWithBlock(operationCode, blockClass)
 
         keys = list(BLOCKS.keys())
-        print(keys)
         keys.sort()
 
         for key in keys:
             node = getClassFromOperationCode(key)
-            print
             self.addNode(
                 node.operationTitle, node.icon, node.operationCode, node.libraryTitle
             )

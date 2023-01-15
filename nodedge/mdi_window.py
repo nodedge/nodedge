@@ -337,7 +337,6 @@ class MdiWindow(EditorWindow):
         """
 
         self.updateFileMenu()
-        self.updateRecentFilesMenu()
         self.updateEditMenu()
         self.updateWindowMenu()
 
