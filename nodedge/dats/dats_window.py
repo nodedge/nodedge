@@ -80,7 +80,7 @@ class DatsWindow(QMainWindow):
 
         self.addDockWidget(Qt.LeftDockWidgetArea, self.logsDock)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.signalsDock)
-
+        self.readSettings()
         self.createActions()
         self.createMenus()
 
@@ -91,8 +91,6 @@ class DatsWindow(QMainWindow):
         self.createStatusBar()
 
         self._modifiedConfig = False
-
-        self.readSettings()
 
     @property
     def modifiedConfig(self):
@@ -311,14 +309,18 @@ class DatsWindow(QMainWindow):
 
         log: MDF = self.logsWidget.logsListWidget.logs[logName]
 
+        w: WorksheetsTabWidget = self.workbooksTabWidget.currentWidget()
+
         for name in channelNames:
+            if name in list(w.currentWidget().plotItem.vb.curves.keys()):
+                continue
+
             try:
                 channel: Channel = log.get(name)
             except Exception as e:
                 channelIndex, channelGroup = log.channels_db[name][0]
                 channel: Channel = log.get(name, channelIndex, channelGroup)
 
-            w: WorksheetsTabWidget = self.workbooksTabWidget.currentWidget()
             w.addCurvePlot(channel.timestamps, channel.samples, channel.name)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit
@@ -627,7 +629,7 @@ class DatsWindow(QMainWindow):
         if filename is None or not filename:
             filename, ok = QFileDialog.getOpenFileName(
                 parent=self,
-                caption="Open file",
+                caption="Open log file",
                 dir=DatsWindow.getFileDialogDirectory(),
                 filter=DatsWindow.getFileDialogFilter(),
             )
@@ -646,6 +648,14 @@ class DatsWindow(QMainWindow):
             else:
                 logger.warning(f"File {filename} not found.")
                 return
+
+        if os.path.isdir(filename):
+            filename, ok = QFileDialog.getOpenFileName(
+                parent=self,
+                caption="Open log example from file",
+                dir=filename,
+                filter=DatsWindow.getFileDialogFilter(),
+            )
 
         log = self.logsWidget.logsListWidget.openLog(filename)
         self.updateDataItems(log)
@@ -691,14 +701,18 @@ class DatsWindow(QMainWindow):
 
     def updateRecentFilesMenu(self):
         self.recentFilesMenu.clear()
+        logger.debug(f"Recent files: {self.recentFiles}")
         for index, filePath in enumerate(self.recentFiles):
+            if index > 9:
+                break
+
             shortpath = filePath.replace("\\", "/")
             shortpath = filePath.split("/")[-1]
             action = self.createAction(
                 shortpath,
                 lambda: self.openFile(filePath),
                 f"Open {filePath}",
-                QKeySequence(f"Ctrl+Shift+{1}"),
+                QKeySequence(f"Ctrl+Shift+{index}"),
             )
             self.recentFilesMenu.addAction(action)
 

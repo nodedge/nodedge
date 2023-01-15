@@ -93,7 +93,10 @@ class EditorWidget(QWidget):
 
         :rtype: ``str``
         """
-        return os.path.basename(self.filename)
+        if os.path.exists(self.filename):
+            return os.path.basename(self.filename)
+        else:
+            return "untitled"
 
     @property
     def userFriendlyFilename(self) -> str:

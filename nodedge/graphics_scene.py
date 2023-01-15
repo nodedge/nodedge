@@ -6,7 +6,7 @@ import logging
 from math import ceil, floor, log
 from typing import Optional
 
-from PySide6.QtCore import QLine, QPointF, Qt, Signal
+from PySide6.QtCore import QCoreApplication, QLine, QPointF, Qt, Signal
 from PySide6.QtGui import QPen, QTransform
 from PySide6.QtWidgets import (
     QApplication,
@@ -47,8 +47,15 @@ class GraphicsScene(QGraphicsScene):
 
         super().__init__(parent)
 
+        app: Optional[QCoreApplication] = QApplication.instance()
+        app.paletteChanged.connect(self.updateColors)  # type: ignore
+
         self.scene = scene
         self.initUI()
+
+    def updateColors(self):
+        self.initUI()
+        self.drawBackground()
 
     def initUI(self) -> None:
         """Set up this ``QGraphicsScene``"""
@@ -60,14 +67,14 @@ class GraphicsScene(QGraphicsScene):
     def initStyle(self) -> None:
         """Initialize ``QObjects`` like ``QColor``, ``QPen`` and ``QBrush``"""
         p = QApplication.palette()
-        self._colorBackground = p.base().color()
+        self._colorBackground = p.dark().color()
         self._colorSmallSquares = p.linkVisited().color()
         self._colorBigSquares = p.link().color()
 
-        self._penSmallSquares = QPen(self._colorSmallSquares, 0.3, Qt.DotLine)
+        self._penSmallSquares = QPen(self._colorSmallSquares, 0.1)
 
-        self._penBigSquares = QPen(self._colorBigSquares, 0.6)
-        self._penBigSquares.setDashPattern([2, 6])
+        self._penBigSquares = QPen(self._colorBigSquares, 0.2)
+        # self._penBigSquares.setDashPattern([2, 6])
 
     # noinspection PyAttributeOutsideInit
     def initSizes(self) -> None:
@@ -138,6 +145,8 @@ class GraphicsScene(QGraphicsScene):
         :param event: Mouse release event
         :type event: ``QGraphicsSceneMouseEvent.py``
         """
+        super().mousePressEvent(event)
+
         item: Optional[QGraphicsItem] = self.itemAt(event.scenePos(), QTransform())
         logger.debug(f"item: {item}")
 
@@ -158,10 +167,13 @@ class GraphicsScene(QGraphicsScene):
             logger.debug(f"Pressed parent item: {item.parentItem()}")
 
         if item is not None:
-            item.setSelected(True)
+            if item.parentItem() is not None:
+                item.parentItem().setSelected(True)
+            else:
+                item.setSelected(True)
 
-        super().mousePressEvent(event)
         self.itemSelected.emit()
+
         logger.debug(f"Selected items in graphics scene: {self.selectedItems()}")
         logger.debug(f"Last selected item: {self.scene.lastSelectedItems}")
 

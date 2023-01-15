@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from typing import List
 
+import numpy as np
+
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
 from nodedge.blocks.graphics_block import GraphicsBlock
@@ -17,6 +19,7 @@ class InputBlock(Block):
     contentLabel = "In"
     contentLabelObjectName = "InputBlockContent"
     library = "input/output"
+    libraryTitle = "input/output"
     inputSocketTypes: List[SocketType] = []
     outputSocketTypes: List[SocketType] = [
         SocketType.Any,
@@ -41,7 +44,10 @@ class InputBlock(Block):
     def evalImplementation(self):
         rawValue = self.content.edit.text()
 
-        convertedValue = float(rawValue)
+        rawValue = eval(rawValue)
+
+        convertedValue = np.array(rawValue)
+
         self.value = convertedValue
 
         self.isDirty = False

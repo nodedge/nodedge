@@ -1,5 +1,6 @@
 import csv
 import json
+import logging
 import os.path
 import shutil
 from string import Template
@@ -7,13 +8,16 @@ from typing import Dict, List
 
 from black import FileMode, format_str
 
+logger = logging.getLogger(__name__)
+
 # Parameters to set before running the block generation
-lib = "numpy"  # string of library to generate
+LIBRARIES = ["maths", "advanced_maths", "units", "logics"]
+# libraryTitle = "units"  # string of library to generate
 configFile = "numpy_block_config.json"  # config file
 savePath = "../../nodedge/blocks/autogen"  # path where to save the generated blocks
 overwrite = True  # True to overwrite, False otherwise
 initFilename = "__init__.py"
-firstCode = 16
+firstCode = 48
 opNodeFilename = "op_node.py"
 
 
@@ -64,7 +68,8 @@ def _init_lib_path(savePath, lib):
             try:
                 shutil.rmtree(libPath)
             except OSError:
-                os.remove(libPath)
+                logger.warning(f"Lib path does not exist: {libPath}")
+                # os.remove(libPath)
 
 
 def _create_blocks(configFile, savePath, lib):
@@ -74,7 +79,7 @@ def _create_blocks(configFile, savePath, lib):
         elif "json" in configFile:
             reader = json.load(infile)
         else:
-            raise ValueError(f"Invalid config file format: {configFileFormat}")
+            raise ValueError(f"Invalid config file format: {configFile}")
         libraries: Dict[str, List[str]] = {}
         opBlockNames: Dict[str, List[str]] = {}
 
@@ -82,15 +87,15 @@ def _create_blocks(configFile, savePath, lib):
         for row in reader:
 
             # Give a warning if
-            if row["library"] == lib:
+            if row["library_title"] == lib:
 
                 # Save block in dictionary
-                if row["library"] not in libraries.keys():
-                    libraries[row["library"]] = [row["function"]]
-                    opBlockNames[row["library"]] = [row["op_block_string"]]
+                if row["library_title"] not in libraries.keys():
+                    libraries[row["library_title"]] = [row["function"]]
+                    opBlockNames[row["library_title"]] = [row["op_block_string"]]
                 else:
-                    libraries[row["library"]].append(row["function"])
-                    opBlockNames[row["library"]].append(row["op_block_string"])
+                    libraries[row["library_title"]].append(row["function"])
+                    opBlockNames[row["library_title"]].append(row["op_block_string"])
 
                 # Add socket type object
                 row["input_socket_types"] = _prepend_socket_type(
@@ -109,7 +114,7 @@ def _create_blocks(configFile, savePath, lib):
                 outputData = template.substitute(**row)
                 outputData = format_str(outputData, mode=FileMode())
                 folder = f"{(row['function'])}_block.py"
-                libraryPath = os.path.join(savePath, row["library"])
+                libraryPath = os.path.join(savePath, row["library_title"])
                 if not os.path.exists(libraryPath):
                     os.makedirs(libraryPath)
                 filePath = os.path.join(libraryPath, folder)
@@ -141,10 +146,12 @@ def _generate_config_file(opBlockNames, configFilename, code: int = 1):
 
 
 if __name__ == "__main__":
-    _init_lib_path(savePath, lib)
-    libraries, opBlockNames = _create_blocks(configFile, savePath, lib)
-    # _generate_common_init_file(libraries, savePath, initFilename)
-    _generate_init_files(libraries, savePath, initFilename)
-    _generate_config_file(opBlockNames, opNodeFilename, firstCode)
+    for libraryTitle in LIBRARIES:
+        _init_lib_path(savePath, libraryTitle)
+        libraries, opBlockNames = _create_blocks(configFile, savePath, libraryTitle)
+        print(f"{opBlockNames}")
+        # _generate_common_init_file(opBlockNames, savePath, initFilename)
+        _generate_init_files(libraries, savePath, initFilename)
+        # _generate_config_file(opBlockNames, opNodeFilename, firstCode)
 
 # TODO: Generate test for each block in a separated file

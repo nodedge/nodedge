@@ -128,9 +128,10 @@ class GraphicsEdge(QGraphicsPathItem):
         Initialize ``QObject`` like ``QColor``, ``QPen`` and ``QBrush``
         """
         p = QApplication.palette()
-        self._defaultColor: QColor = p.dark().color()
+        self._defaultColor: QColor = p.light().color()
         self._color: QColor = self._defaultColor
         self._colorSelected: QColor = QApplication.palette().highlight().color()
+        self._colorHovered: QColor = p.alternateBase().color()
 
         self._pen: QPen = QPen(self._color)
         self._pen.setWidthF(2.0)
@@ -191,7 +192,7 @@ class GraphicsEdge(QGraphicsPathItem):
         """
         p = QApplication.palette()
         self.hovered = True
-        self._pen.setColor(p.alternateBase().color())
+        self._pen.setColor(self._colorHovered)
         self.update()
 
     def hoverLeaveEvent(self, event: QGraphicsSceneHoverEvent) -> None:
@@ -203,7 +204,7 @@ class GraphicsEdge(QGraphicsPathItem):
         """
         self.hovered = False
         p = QApplication.palette()
-        self._pen.setColor(p.dark().color())
+        self._pen.setColor(self._defaultColor)
         self.update()
 
     def shape(self) -> QPainterPath:

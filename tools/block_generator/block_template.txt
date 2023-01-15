@@ -3,6 +3,7 @@ from typing import List
 
 import logging
 from ${library} import ${function}
+from numpy import array
 
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_exception import EvaluationError
@@ -27,6 +28,7 @@ class ${block_name}Block(Block):
     contentLabelObjectName = "BlockBackground"
     evalString = "${function}"
     library = "${library}"
+    libraryTitle = "${library_title}"
     inputSocketTypes: List[SocketType] = ${input_socket_types}
     outputSocketTypes: List[SocketType] = ${output_socket_types}
 
@@ -36,7 +38,7 @@ class ${block_name}Block(Block):
             inputs.append(self.inputNodeAt(i))
 
         try:
-            evaluatedInputs = [str(currentInput.eval()) for currentInput in inputs]
+            evaluatedInputs = [currentInput.eval().__repr__() for currentInput in inputs]
             operation = f"{${block_name}Block.evalString}({', '.join(evaluatedInputs)})"
             result = eval(operation)
         except TypeError as e:

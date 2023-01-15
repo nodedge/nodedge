@@ -11,8 +11,8 @@ class SignalsWidget(QWidget):
         super().__init__(parent)
 
         self.layout = QVBoxLayout()
-        self.layout.setContentsMargins(1, 1, 1, 1)
-        self.layout.setSpacing(1)
+        # self.layout.setContentsMargins(1, 1, 1, 1)
+        # self.layout.setSpacing(1)
         self.signalsTableWidget = SignalsTableWidget(parent, parent.curveConfig)
         self.lineEdit = QLineEdit()
         self.lineEdit.setPlaceholderText("Search signals")

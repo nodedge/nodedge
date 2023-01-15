@@ -1,0 +1,600 @@
+{
+    "id": 2199207980208,
+    "sceneWidth": 64000,
+    "sceneHeight": 64000,
+    "nodes": [
+        {
+            "id": 2199207981408,
+            "title": "input_voltage",
+            "posX": -630.0,
+            "posY": -90.0,
+            "inputSockets": [],
+            "outputSockets": [
+                {
+                    "id": 2199207981936,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 0
+                }
+            ],
+            "content": {
+                "value": "1"
+            },
+            "operationCode": 1
+        },
+        {
+            "id": 2199207982224,
+            "title": "r",
+            "posX": -360.0,
+            "posY": 80.0,
+            "inputSockets": [],
+            "outputSockets": [
+                {
+                    "id": 2199207982464,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 0
+                }
+            ],
+            "content": {
+                "value": "1"
+            },
+            "operationCode": 1
+        },
+        {
+            "id": 2099446333200,
+            "title": "k_v",
+            "posX": -990.0,
+            "posY": -15.0,
+            "inputSockets": [],
+            "outputSockets": [
+                {
+                    "id": 2099446332288,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 0
+                }
+            ],
+            "content": {
+                "value": "1"
+            },
+            "operationCode": 1
+        },
+        {
+            "id": 2099446333104,
+            "title": "angular_vel",
+            "posX": 945.0,
+            "posY": -30.0,
+            "inputSockets": [
+                {
+                    "id": 2099446332336,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [
+                {
+                    "id": 2099446331904,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {},
+            "operationCode": 50
+        },
+        {
+            "id": 2099459902240,
+            "title": "square",
+            "posX": 945.0,
+            "posY": 75.0,
+            "inputSockets": [],
+            "outputSockets": [
+                {
+                    "id": 2099459902864,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 0
+                }
+            ],
+            "content": {
+                "value": "2"
+            },
+            "operationCode": 1
+        },
+        {
+            "id": 3077276497568,
+            "title": "angular_vel_0",
+            "posX": -960.0,
+            "posY": 105.0,
+            "inputSockets": [],
+            "outputSockets": [
+                {
+                    "id": 3077276499728,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 0
+                }
+            ],
+            "content": {
+                "value": "1"
+            },
+            "operationCode": 1
+        },
+        {
+            "id": 3077276485376,
+            "title": "square1",
+            "posX": -960.0,
+            "posY": 330.0,
+            "inputSockets": [],
+            "outputSockets": [
+                {
+                    "id": 3077276485664,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 0
+                }
+            ],
+            "content": {
+                "value": "2"
+            },
+            "operationCode": 1
+        },
+        {
+            "id": 3077276487056,
+            "title": "force_z",
+            "posX": 1710.0,
+            "posY": -30.0,
+            "inputSockets": [
+                {
+                    "id": 3077276499008,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 0
+                }
+            ],
+            "outputSockets": [],
+            "content": {},
+            "operationCode": 2
+        },
+        {
+            "id": 2630114357600,
+            "title": "Multiplication1",
+            "posX": -630.0,
+            "posY": 15.0,
+            "inputSockets": [
+                {
+                    "id": 2630155764688,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                },
+                {
+                    "id": 2630155768816,
+                    "index": 1,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [
+                {
+                    "id": 2630155769152,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {},
+            "operationCode": 5
+        },
+        {
+            "id": 1310418738752,
+            "title": "applied_voltage",
+            "posX": -360.0,
+            "posY": -45.0,
+            "inputSockets": [
+                {
+                    "id": 1310418739664,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                },
+                {
+                    "id": 1310418739760,
+                    "index": 1,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [
+                {
+                    "id": 1310418736112,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {},
+            "operationCode": 4
+        },
+        {
+            "id": 1310418740624,
+            "title": "Division",
+            "posX": -120.0,
+            "posY": -30.0,
+            "inputSockets": [
+                {
+                    "id": 1310418737936,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                },
+                {
+                    "id": 1310418739808,
+                    "index": 1,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [
+                {
+                    "id": 1310418740816,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {},
+            "operationCode": 6
+        },
+        {
+            "id": 1310418740720,
+            "title": "kt",
+            "posX": 135.0,
+            "posY": -30.0,
+            "inputSockets": [
+                {
+                    "id": 1310418739088,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [
+                {
+                    "id": 1310418740864,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {
+                "value": "1"
+            },
+            "operationCode": 51
+        },
+        {
+            "id": 1310418741968,
+            "title": "beta",
+            "posX": -150.0,
+            "posY": 300.0,
+            "inputSockets": [
+                {
+                    "id": 1310418742160,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [
+                {
+                    "id": 1310418742112,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {
+                "value": "1"
+            },
+            "operationCode": 51
+        },
+        {
+            "id": 1310418742688,
+            "title": "net_torque",
+            "posX": 375.0,
+            "posY": -30.0,
+            "inputSockets": [
+                {
+                    "id": 1310418741488,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                },
+                {
+                    "id": 1310418738608,
+                    "index": 1,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [
+                {
+                    "id": 1310418742208,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {},
+            "operationCode": 4
+        },
+        {
+            "id": 1310418742496,
+            "title": "1/j",
+            "posX": 645.0,
+            "posY": -30.0,
+            "inputSockets": [
+                {
+                    "id": 1310418742736,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [
+                {
+                    "id": 1310418742352,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {
+                "value": "1"
+            },
+            "operationCode": 51
+        },
+        {
+            "id": 1310418742880,
+            "title": "Power",
+            "posX": 1200.0,
+            "posY": -30.0,
+            "inputSockets": [
+                {
+                    "id": 1310418738512,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                },
+                {
+                    "id": 1310418739424,
+                    "index": 1,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [
+                {
+                    "id": 1310418742304,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {},
+            "operationCode": 8
+        },
+        {
+            "id": 1310418741872,
+            "title": "k_l",
+            "posX": 1440.0,
+            "posY": -30.0,
+            "inputSockets": [
+                {
+                    "id": 1310418741824,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [
+                {
+                    "id": 1310418742640,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {
+                "value": "1"
+            },
+            "operationCode": 51
+        },
+        {
+            "id": 1310418743072,
+            "title": "Power1",
+            "posX": -555.0,
+            "posY": 300.0,
+            "inputSockets": [
+                {
+                    "id": 1310418739040,
+                    "index": 0,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                },
+                {
+                    "id": 1310418742064,
+                    "index": 1,
+                    "allowMultiEdges": false,
+                    "location": 1,
+                    "socketType": 1
+                }
+            ],
+            "outputSockets": [
+                {
+                    "id": 1310418738176,
+                    "index": 0,
+                    "allowMultiEdges": true,
+                    "location": 4,
+                    "socketType": 1
+                }
+            ],
+            "content": {},
+            "operationCode": 8
+        }
+    ],
+    "edges": [
+        {
+            "id": 2630155764736,
+            "edgeType": 3,
+            "source": 2630155764688,
+            "target": 2099446332288
+        },
+        {
+            "id": 2630155765264,
+            "edgeType": 3,
+            "source": 2630155768816,
+            "target": 3077276499728
+        },
+        {
+            "id": 1310418740096,
+            "edgeType": 3,
+            "source": 2199207981936,
+            "target": 1310418739664
+        },
+        {
+            "id": 1310418734432,
+            "edgeType": 3,
+            "source": 1310418739760,
+            "target": 2630155769152
+        },
+        {
+            "id": 1310418739712,
+            "edgeType": 3,
+            "source": 1310418736112,
+            "target": 1310418737936
+        },
+        {
+            "id": 1310418737984,
+            "edgeType": 3,
+            "source": 1310418739808,
+            "target": 2199207982464
+        },
+        {
+            "id": 1310418740288,
+            "edgeType": 3,
+            "source": 1310418740816,
+            "target": 1310418739088
+        },
+        {
+            "id": 1310418741296,
+            "edgeType": 3,
+            "source": 1310418740864,
+            "target": 1310418741488
+        },
+        {
+            "id": 1310418738800,
+            "edgeType": 3,
+            "source": 1310418738608,
+            "target": 1310418742112
+        },
+        {
+            "id": 1310418741680,
+            "edgeType": 3,
+            "source": 1310418742208,
+            "target": 1310418742736
+        },
+        {
+            "id": 1310418742928,
+            "edgeType": 3,
+            "source": 1310418742352,
+            "target": 2099446332336
+        },
+        {
+            "id": 1310418738848,
+            "edgeType": 3,
+            "source": 2099446331904,
+            "target": 1310418738512
+        },
+        {
+            "id": 1310418738992,
+            "edgeType": 3,
+            "source": 1310418739424,
+            "target": 2099459902864
+        },
+        {
+            "id": 1310418742016,
+            "edgeType": 3,
+            "source": 1310418742304,
+            "target": 1310418741824
+        },
+        {
+            "id": 1310418738368,
+            "edgeType": 3,
+            "source": 1310418742640,
+            "target": 3077276499008
+        },
+        {
+            "id": 2134025903872,
+            "edgeType": 3,
+            "source": 3077276499728,
+            "target": 1310418739040
+        },
+        {
+            "id": 2134025903440,
+            "edgeType": 3,
+            "source": 1310418742064,
+            "target": 3077276485664
+        },
+        {
+            "id": 2134025903728,
+            "edgeType": 3,
+            "source": 1310418738176,
+            "target": 1310418742160
+        }
+    ],
+    "elements": [],
+    "simulator": {
+        "solver": null,
+        "solverName": null,
+        "solverOptions": null,
+        "timeStep": 0.1,
+        "maxIterations": null,
+        "tolerance": null
+    }
+}

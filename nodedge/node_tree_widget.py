@@ -11,7 +11,6 @@ from PySide6.QtCore import (
     QIODevice,
     QMimeData,
     QPoint,
-    QSize,
     Qt,
     Signal,
 )
@@ -52,6 +51,7 @@ class NodeTreeWidget(QTreeWidget):
         self.initUI()
         self.setSortingEnabled(True)
         self.setHeaderLabels(list(COLUMNS.keys()))
+        self.sortByColumn(0, Qt.AscendingOrder)
 
     # noinspection PyAttributeOutsideInit
     def initUI(self) -> None:
@@ -80,7 +80,7 @@ class NodeTreeWidget(QTreeWidget):
         for key in keys:
             node = getClassFromOperationCode(key)
             self.addNode(
-                node.operationTitle, node.icon, node.operationCode, node.library
+                node.operationTitle, node.icon, node.operationCode, node.libraryTitle
             )
 
     def addNode(
@@ -106,7 +106,7 @@ class NodeTreeWidget(QTreeWidget):
         item.setData(0, Qt.UserRole, pixmap)
         item.setData(0, Qt.UserRole + 1, operationCode)
 
-        libraryName = libraryName.capitalize()
+        libraryName = libraryName.capitalize().replace("_", " ")
         if libraryName == "":
             self.addTopLevelItem(item)
         else:
@@ -145,7 +145,7 @@ class NodeTreeWidget(QTreeWidget):
             drag = QDrag(self)
             drag.setMimeData(mimeData)
             drag.setHotSpot(QPoint(pixmap.width() // 2, pixmap.height() // 2))
-            drag.setPixmap(pixmap)
+            # drag.setPixmap(pixmap)
 
             drag.exec_(Qt.MoveAction)
 

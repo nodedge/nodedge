@@ -12,6 +12,8 @@ from nodedge.mdi_window import MdiWindow
 
 logger = logging.getLogger(__name__)
 
+examplePath = os.path.join(os.path.dirname(__file__), "../examples").replace("\\", "/")
+
 
 class NodedgeAppWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -56,12 +58,22 @@ class NodedgeAppWindow(QMainWindow):
         )
         self.mdiWindow.recentFilesUpdated.emit(self.mdiWindow.recentFiles)
 
-        def openNodeEdgeFile(text):
+        def openNodeEdgeFile(text=None):
             self.mainWidget.setCurrentWidget(self.mdiWindow)
             self.mdiWindow.openFile(text)
 
         self.homepageWindow.homeContentWidget.nodedgeFileClicked.connect(
             openNodeEdgeFile
+        )
+
+        self.homepageWindow.homeContentWidget.nodedgeNewFile.clicked.connect(
+            lambda: openNodeEdgeFile("")
+        )
+        self.homepageWindow.homeContentWidget.nodedgeOpenExample.clicked.connect(
+            lambda: openNodeEdgeFile(examplePath)
+        )
+        self.homepageWindow.homeContentWidget.nodedgeOpenFile.clicked.connect(
+            lambda: openNodeEdgeFile("")
         )
 
         self.datsWindow.recentFilesUpdated.connect(
@@ -72,6 +84,16 @@ class NodedgeAppWindow(QMainWindow):
         def openDatsFile(text):
             self.mainWidget.setCurrentWidget(self.datsWindow)
             self.datsWindow.openLog(text)
+
+        # self.homepageWindow.homeContentWidget.datsNewFile.clicked.connect(
+        #     lambda: openDatsFile("")
+        # )
+        self.homepageWindow.homeContentWidget.datsOpenExample.clicked.connect(
+            lambda: openDatsFile(examplePath)
+        )
+        self.homepageWindow.homeContentWidget.datsOpenFile.clicked.connect(
+            lambda: openDatsFile("")
+        )
 
         self.homepageWindow.homeContentWidget.datsFileClicked.connect(openDatsFile)
 

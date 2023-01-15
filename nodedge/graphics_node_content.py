@@ -6,7 +6,13 @@ from collections import OrderedDict
 from typing import Optional, cast
 
 from PySide6.QtGui import QFocusEvent
-from PySide6.QtWidgets import QGraphicsProxyWidget, QTextEdit, QVBoxLayout, QWidget
+from PySide6.QtWidgets import (
+    QGraphicsProxyWidget,
+    QSizePolicy,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
 
 from nodedge.serializable import Serializable
 
@@ -36,6 +42,7 @@ class GraphicsNodeContent(QWidget, Serializable):
         QWidget.__init__(self, parent)
         self.node: "Node" = node  # type: ignore
         self.initUI()
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
     # noinspection PyAttributeOutsideInit
     def initUI(self):

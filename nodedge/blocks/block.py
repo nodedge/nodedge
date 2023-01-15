@@ -32,6 +32,7 @@ class Block(Node):
     contentLabelObjectName = "blockBackground"
     evalString = ""
     library = ""
+    libraryTitle = ""
     inputSocketTypes: List[SocketType] = [SocketType.Any, SocketType.Any]
     outputSocketTypes: List[SocketType] = [
         SocketType.Any,

@@ -112,3 +112,9 @@ loggers:
         handlers: [debug_file_handler]
         level: DEBUG
         propagate: false
+
+
+    nodedge.dats.signals_table_widget:
+        handlers: [debug_file_handler]
+        level: DEBUG
+        propagate: false

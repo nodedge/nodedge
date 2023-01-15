@@ -1,7 +1,7 @@
 import pytest
 from PySide6.QtWidgets import QMainWindow
 
-from nodedge.blocks.autogen.operator.add_block import AddBlock
+from nodedge.blocks.autogen.maths.add_block import NumpyAddBlock
 from nodedge.blocks.custom.input_block import InputBlock
 from nodedge.blocks.custom.output_block import OutputBlock
 from nodedge.edge import Edge
@@ -26,7 +26,7 @@ def filledScene(emptyScene):
     inputBlock1.content.edit.setText(str(1))
     inputBlock2: InputBlock = InputBlock(emptyScene)  # noqa: F841
     inputBlock2.content.edit.setText(str(2))
-    addBlock: AddBlock = AddBlock(emptyScene)
+    addBlock: NumpyAddBlock = NumpyAddBlock(emptyScene)
     edgeIn1Add: Edge = Edge(
         emptyScene, inputBlock1.outputSockets[0], addBlock.inputSockets[0]
     )  # noqa: F841
@@ -46,10 +46,7 @@ def filledScene(emptyScene):
 
 def test_generateCode(filledScene):
     expectedResult = (
-        "var_0 = 2.0\n"
-        + "var_1 = 1.0\n"
-        + "var_2 = add(var_1, var_0)\n"
-        + "return [var_2]"
+        "var_0 = 2\n" + "var_1 = 1\n" + "var_2 = add(var_1, var_0)\n" + "return [var_2]"
     )
 
     _, generatedCode = filledScene.coder.generateCode()
@@ -61,7 +58,7 @@ def test_addImports(filledScene):
     orderedNodeList, generatedCode = filledScene.coder.generateCode()
 
     filename = "unnamed"
-    imports = "from operator import add\n\n\n"
+    imports = "from numpy import add\n\n\n"
 
     expectedResult = (
         imports

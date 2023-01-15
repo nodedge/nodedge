@@ -26,6 +26,7 @@ class IntegralBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "IntegralBlockContent"
     library = "integration/derivation"
+    libraryTitle = "integration/derivation"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

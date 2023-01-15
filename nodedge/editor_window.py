@@ -31,6 +31,8 @@ from nodedge.editor_widget import EditorWidget
 from nodedge.scene_coder import SceneCoder
 from nodedge.solver_dialog import SolverDialog
 
+logger = logging.getLogger(__name__)
+
 
 class EditorWindow(QMainWindow):
     """
@@ -79,6 +81,7 @@ class EditorWindow(QMainWindow):
         self.lastActiveEditorWidget: Optional[EditorWidget] = None
         self.debugMode: bool = False
         self.recentFiles: List[str] = []
+        self.recentFilesActions: List[QAction] = []
 
         self.actionsDict: Dict[str, dict] = {}
         self.initUI()
@@ -135,8 +138,27 @@ class EditorWindow(QMainWindow):
         :class:`~nodedge.graphics_view.GraphicsView`'s scenePosChanged event.
         """
         self.statusBar().showMessage("")
+        # self.playFrame = QFrame()
+        # self.playLayout = QHBoxLayout()
+        # self.statusBar().addPermanentWidget(self.playFrame)
+
+        # self.playLayout.setContentsMargins(0, 0, 0, 0)
+        # self.playFrame.setLayout(self.playLayout)
+        # self.playButton = QPushButton("Play")
+        # # self.playButton.setFixedWidth(50)
+        # self.playLayout.addWidget(self.playButton)
+        # self.pauseButton = QPushButton("Pause")
+        # # self.pauseButton.setFixedWidth(50)
+        # self.playLayout.addWidget(self.pauseButton)
+        # self.stopButton = QPushButton("Stop")
+        # # self.stopButton.setFixedWidth(50)
+        # self.playLayout.addWidget(self.stopButton)
         self.statusMousePos = QLabel("")
         self.statusBar().addPermanentWidget(self.statusMousePos)
+        # self.currentViewLabel = QLabel(f"Current view: blablajson")
+        # self.currentViewLabel.setFixedWidth(300)
+        # self.currentViewLabel.setAlignment(Qt.AlignRight)
+        # self.statusBar().addPermanentWidget(self.currentViewLabel)
 
         if self.currentEditorWidget is None:
             return
@@ -431,17 +453,28 @@ class EditorWindow(QMainWindow):
         self.fileMenu.addAction(self.takeScreenShotAct)
 
     def updateRecentFilesMenu(self):
+        print("Clearing recent files actions")
         self.recentFilesMenu.clear()
+        for action in self.recentFilesActions:
+            action.deleteLater()
+        self.recentFilesActions = []
+        logger.debug("Creating new recent files actions")
+
         for index, filePath in enumerate(self.recentFiles):
+            if index >= 8:
+                break
+            logger.debug(f"Creating action for {filePath}")
+
             shortpath = filePath.replace("\\", "/")
-            shortpath = filePath.split("/")[-1]
+            shortpath = shortpath.split("/")[-1]
             action = self.createAction(
                 shortpath,
                 lambda: self.openFile(filePath),
                 f"Open {filePath}",
-                QKeySequence(f"Ctrl+Shift+{1}"),
+                QKeySequence(f"Ctrl+Shift+{index+1}"),
             )
             self.recentFilesMenu.addAction(action)
+            self.recentFilesActions.append(action)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
     def createEditMenu(self):
@@ -510,7 +543,7 @@ class EditorWindow(QMainWindow):
         :param y: new cursor y position
         :type y: float
         """
-        self.statusMousePos.setText(f"Scene pos: {x}, {y}")
+        self.statusMousePos.setText(f"Scene pos: {x:.2f}, {y:.2f}")
 
     def newFile(self):
         """
@@ -810,6 +843,7 @@ class EditorWindow(QMainWindow):
         else:
             self.debugMode = debugMode
         self.recentFiles = list(settings.value("recent_files", []))
+        self.updateRecentFilesMenu()
 
     def writeSettings(self):
         """

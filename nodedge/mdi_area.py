@@ -78,7 +78,9 @@ class MdiArea(QMdiArea):
             painter.setPen(self.palette().color(QPalette.Link))
             painter.setOpacity(1)
             painter.setFont(QFont("Segoe UI"))
-            painter.drawText(event.rect(), Qt.AlignCenter, "Open new:  Ctrl+N\n\nOpen file:  Ctrl+O")
+            painter.drawText(
+                event.rect(), Qt.AlignCenter, "Open new:  Ctrl+N\n\nOpen file:  Ctrl+O"
+            )
 
         painter.end()
 
