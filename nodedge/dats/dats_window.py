@@ -311,14 +311,18 @@ class DatsWindow(QMainWindow):
 
         log: MDF = self.logsWidget.logsListWidget.logs[logName]
 
+        w: WorksheetsTabWidget = self.workbooksTabWidget.currentWidget()
+
         for name in channelNames:
+            if name in list(w.currentWidget().plotItem.vb.curves.keys()):
+                continue
+
             try:
                 channel: Channel = log.get(name)
             except Exception as e:
                 channelIndex, channelGroup = log.channels_db[name][0]
                 channel: Channel = log.get(name, channelIndex, channelGroup)
 
-            w: WorksheetsTabWidget = self.workbooksTabWidget.currentWidget()
             w.addCurvePlot(channel.timestamps, channel.samples, channel.name)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit
