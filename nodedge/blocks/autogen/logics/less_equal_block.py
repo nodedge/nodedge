@@ -12,21 +12,22 @@ from nodedge.connector import SocketType
 _LOG = logging.getLogger(__name__)
 
 try:
-    from nodedge.blocks.op_node import OP_NODE_LESS_NUMPY_EQUAL
+    from nodedge.blocks.op_node import OP_NODE_NUMPY_LESS_EQUAL
 except NameError:
     _LOG.warning(f"Not registered block: {__name__}")
     op_block_string = -1
 
 
-@registerNode(OP_NODE_LESS_NUMPY_EQUAL)
+@registerNode(OP_NODE_NUMPY_LESS_EQUAL)
 class NumpyLessEqualBlock(Block):
     icon = f"{BLOCKS_ICONS_PATH}/less_or_equal_100.png"
-    operationCode = OP_NODE_LESS_NUMPY_EQUAL
+    operationCode = OP_NODE_NUMPY_LESS_EQUAL
     operationTitle = "Less or equal"
     contentLabel = "<="
     contentLabelObjectName = "BlockBackground"
     evalString = "less_equal"
-    library = "logics"
+    library = "numpy"
+    libraryTitle = "logics"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
         SocketType.Number,

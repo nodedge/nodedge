@@ -18,6 +18,7 @@ class OutputBlock(Block):
     contentLabel = "Out"
     contentLabelObjectName = "OutputBlockContent"
     library = "input/output"
+    libraryTitle = "input/output"
     inputSocketTypes: List[SocketType] = [
         SocketType.Any,
     ]

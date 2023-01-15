@@ -11,12 +11,12 @@ from black import FileMode, format_str
 logger = logging.getLogger(__name__)
 
 # Parameters to set before running the block generation
-libraryTitle = "maths"  # string of library to generate
+libraryTitle = "units"  # string of library to generate
 configFile = "numpy_block_config.json"  # config file
 savePath = "../../nodedge/blocks/autogen"  # path where to save the generated blocks
 overwrite = True  # True to overwrite, False otherwise
 initFilename = "__init__.py"
-firstCode = 16
+firstCode = 48
 opNodeFilename = "op_node.py"
 
 

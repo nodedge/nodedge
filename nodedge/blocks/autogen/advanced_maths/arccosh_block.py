@@ -26,7 +26,8 @@ class NumpyArccoshBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "arccosh"
-    library = "advanced_maths"
+    library = "numpy"
+    libraryTitle = "advanced_maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

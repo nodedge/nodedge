@@ -26,7 +26,8 @@ class NumpyRad2DegBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "rad2deg"
-    library = "units"
+    library = "numpy"
+    libraryTitle = "units"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

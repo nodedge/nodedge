@@ -26,7 +26,8 @@ class NumpyArctan2Block(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "arctan2"
-    library = "advanced_maths"
+    library = "numpy"
+    libraryTitle = "advanced_maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

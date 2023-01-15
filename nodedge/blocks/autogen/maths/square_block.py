@@ -26,7 +26,8 @@ class NumpySquareBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "square"
-    library = "maths"
+    library = "numpy"
+    libraryTitle = "maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

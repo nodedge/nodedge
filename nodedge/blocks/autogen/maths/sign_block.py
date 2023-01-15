@@ -26,7 +26,8 @@ class NumpySignBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "sign"
-    library = "maths"
+    library = "numpy"
+    libraryTitle = "maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

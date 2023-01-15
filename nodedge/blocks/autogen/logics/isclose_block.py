@@ -26,7 +26,8 @@ class NumpyIsCloseBlock(Block):
     contentLabel = ">="
     contentLabelObjectName = "BlockBackground"
     evalString = "isclose"
-    library = "logics"
+    library = "numpy"
+    libraryTitle = "logics"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
         SocketType.Number,

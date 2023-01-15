@@ -26,7 +26,8 @@ class NumpyFloorDivideBlock(Block):
     contentLabel = "//"
     contentLabelObjectName = "BlockBackground"
     evalString = "floor_divide"
-    library = "maths"
+    library = "numpy"
+    libraryTitle = "maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
         SocketType.Number,

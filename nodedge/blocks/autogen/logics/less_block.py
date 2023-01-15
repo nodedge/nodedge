@@ -26,7 +26,8 @@ class NumpyLessThanBlock(Block):
     contentLabel = "<"
     contentLabelObjectName = "BlockBackground"
     evalString = "less"
-    library = "logics"
+    library = "numpy"
+    libraryTitle = "logics"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
         SocketType.Number,

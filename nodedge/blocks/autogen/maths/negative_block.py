@@ -26,7 +26,8 @@ class NumpyNegativeBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "negative"
-    library = "maths"
+    library = "numpy"
+    libraryTitle = "maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

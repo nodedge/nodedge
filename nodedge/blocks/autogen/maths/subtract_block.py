@@ -26,7 +26,8 @@ class NumpySubtractBlock(Block):
     contentLabel = "-"
     contentLabelObjectName = "BlockBackground"
     evalString = "subtract"
-    library = "maths"
+    library = "numpy"
+    libraryTitle = "maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
         SocketType.Number,

@@ -26,7 +26,8 @@ class NumpyTrueDivideBlock(Block):
     contentLabel = "/"
     contentLabelObjectName = "BlockBackground"
     evalString = "true_divide"
-    library = "maths"
+    library = "numpy"
+    libraryTitle = "maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
         SocketType.Number,

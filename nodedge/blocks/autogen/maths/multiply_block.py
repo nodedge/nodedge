@@ -26,7 +26,8 @@ class NumpyMultiplyBlock(Block):
     contentLabel = "*"
     contentLabelObjectName = "BlockBackground"
     evalString = "multiply"
-    library = "maths"
+    library = "numpy"
+    libraryTitle = "maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
         SocketType.Number,

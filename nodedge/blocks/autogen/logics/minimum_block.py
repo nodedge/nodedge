@@ -26,7 +26,8 @@ class NumpyMinimumBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "minimum"
-    library = "logics"
+    library = "numpy"
+    libraryTitle = "logics"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
         SocketType.Number,

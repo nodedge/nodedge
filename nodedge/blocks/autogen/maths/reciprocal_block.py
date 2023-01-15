@@ -26,7 +26,8 @@ class NumpyReciprocalBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "reciprocal"
-    library = "maths"
+    library = "numpy"
+    libraryTitle = "maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

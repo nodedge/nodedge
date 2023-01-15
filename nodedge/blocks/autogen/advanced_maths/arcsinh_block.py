@@ -26,7 +26,8 @@ class NumpyArcsinhBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "arcsinh"
-    library = "advanced_maths"
+    library = "numpy"
+    libraryTitle = "advanced_maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

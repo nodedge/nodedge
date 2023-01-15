@@ -26,7 +26,8 @@ class NumpyNotEqualBlock(Block):
     contentLabel = "=="
     contentLabelObjectName = "BlockBackground"
     evalString = "not_equal"
-    library = "logics"
+    library = "numpy"
+    libraryTitle = "logics"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
         SocketType.Number,

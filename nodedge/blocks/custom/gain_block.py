@@ -17,6 +17,7 @@ class GainBlock(Block):
     contentLabel = "Gain2"
     contentLabelObjectName = "InputBlockContent"
     library = "maths"
+    libraryTitle = "maths"
     inputSocketTypes: List[SocketType] = [SocketType.Number]
     outputSocketTypes: List[SocketType] = [SocketType.Number]
 

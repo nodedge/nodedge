@@ -26,7 +26,8 @@ class NumpySqrtBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "sqrt"
-    library = "maths"
+    library = "numpy"
+    libraryTitle = "maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

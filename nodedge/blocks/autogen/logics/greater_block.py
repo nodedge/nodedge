@@ -26,7 +26,8 @@ class NumpyGreaterBlock(Block):
     contentLabel = ">"
     contentLabelObjectName = "BlockBackground"
     evalString = "greater"
-    library = "logics"
+    library = "numpy"
+    libraryTitle = "logics"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
         SocketType.Number,

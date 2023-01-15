@@ -26,7 +26,8 @@ class ${block_name}Block(Block):
     contentLabel = "${operation_symbol}"
     contentLabelObjectName = "BlockBackground"
     evalString = "${function}"
-    library = "${library_title}"
+    library = "${library}"
+    libraryTitle = "${library_title}"
     inputSocketTypes: List[SocketType] = ${input_socket_types}
     outputSocketTypes: List[SocketType] = ${output_socket_types}
 

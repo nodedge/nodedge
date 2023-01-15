@@ -26,7 +26,8 @@ class NumpyTruncBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "trunc"
-    library = "maths"
+    library = "numpy"
+    libraryTitle = "maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

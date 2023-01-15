@@ -17,6 +17,7 @@ class InputBlock(Block):
     contentLabel = "In"
     contentLabelObjectName = "InputBlockContent"
     library = "input/output"
+    libraryTitle = "input/output"
     inputSocketTypes: List[SocketType] = []
     outputSocketTypes: List[SocketType] = [
         SocketType.Any,

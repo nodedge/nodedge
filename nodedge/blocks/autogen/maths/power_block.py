@@ -26,7 +26,8 @@ class NumpyPowerBlock(Block):
     contentLabel = "**"
     contentLabelObjectName = "BlockBackground"
     evalString = "power"
-    library = "maths"
+    library = "numpy"
+    libraryTitle = "maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
         SocketType.Number,

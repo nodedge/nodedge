@@ -26,7 +26,8 @@ class NumpyCosBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "cos"
-    library = "advanced_maths"
+    library = "numpy"
+    libraryTitle = "advanced_maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

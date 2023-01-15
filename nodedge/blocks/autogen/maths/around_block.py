@@ -26,7 +26,8 @@ class NumpyAroundBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "around"
-    library = "maths"
+    library = "numpy"
+    libraryTitle = "maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

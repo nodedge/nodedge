@@ -26,7 +26,8 @@ class NumpyNumpyModBlock(Block):
     contentLabel = "%"
     contentLabelObjectName = "BlockBackground"
     evalString = "mod"
-    library = "maths"
+    library = "numpy"
+    libraryTitle = "maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
         SocketType.Number,

@@ -26,7 +26,8 @@ class NumpyLog2Block(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "log2"
-    library = "advanced_maths"
+    library = "numpy"
+    libraryTitle = "advanced_maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

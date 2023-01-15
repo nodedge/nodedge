@@ -26,7 +26,8 @@ class NumpySinhBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "sinh"
-    library = "advanced_maths"
+    library = "numpy"
+    libraryTitle = "advanced_maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

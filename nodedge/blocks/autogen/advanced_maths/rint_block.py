@@ -26,7 +26,8 @@ class NumpyRintBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "rint"
-    library = "advanced_maths"
+    library = "numpy"
+    libraryTitle = "advanced_maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

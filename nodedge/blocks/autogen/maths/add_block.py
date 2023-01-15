@@ -26,7 +26,8 @@ class NumpyAddBlock(Block):
     contentLabel = "+"
     contentLabelObjectName = "BlockBackground"
     evalString = "add"
-    library = "maths"
+    library = "numpy"
+    libraryTitle = "maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
         SocketType.Number,

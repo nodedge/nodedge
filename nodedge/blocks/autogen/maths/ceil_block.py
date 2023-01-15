@@ -26,7 +26,8 @@ class NumpyCeilBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "ceil"
-    library = "maths"
+    library = "numpy"
+    libraryTitle = "maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

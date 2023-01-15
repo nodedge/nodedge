@@ -26,7 +26,8 @@ class NumpyExpBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "exp"
-    library = "advanced_maths"
+    library = "numpy"
+    libraryTitle = "advanced_maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

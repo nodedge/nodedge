@@ -529,7 +529,7 @@ class EditorWindow(QMainWindow):
         :param y: new cursor y position
         :type y: float
         """
-        self.statusMousePos.setText(f"Scene pos: {x}, {y}")
+        self.statusMousePos.setText(f"Scene pos: {x:.2f}, {y:.2f}")
 
     def newFile(self):
         """

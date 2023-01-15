@@ -26,7 +26,8 @@ class NumpySinBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "sin"
-    library = "advanced_maths"
+    library = "numpy"
+    libraryTitle = "advanced_maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]

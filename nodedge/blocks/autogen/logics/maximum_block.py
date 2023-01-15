@@ -26,7 +26,8 @@ class NumpyMaximumBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "maximum"
-    library = "logics"
+    library = "numpy"
+    libraryTitle = "logics"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
         SocketType.Number,

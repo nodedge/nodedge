@@ -26,7 +26,8 @@ class NumpyPositiveBlock(Block):
     contentLabel = ""
     contentLabelObjectName = "BlockBackground"
     evalString = "positive"
-    library = "maths"
+    library = "numpy"
+    libraryTitle = "maths"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]
