@@ -25,7 +25,7 @@
         },
         {
             "id": 1583749318256,
-            "title": "Multiply",
+            "title": "Multiply1",
             "posX": -45.0,
             "posY": -330.0,
             "inputSockets": [
@@ -129,7 +129,7 @@
         },
         {
             "id": 1976542437120,
-            "title": "Multiplication",
+            "title": "Multiply",
             "posX": -285.0,
             "posY": -120.0,
             "inputSockets": [
