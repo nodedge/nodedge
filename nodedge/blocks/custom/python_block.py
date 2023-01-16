@@ -49,16 +49,13 @@ class PythonBlock(Block):
         inputValue = self.inputNodeAt(0).eval()
         text = self.params[0].value.replace("\n", "\n    ")
 
-        inputFunction = f"""
-def func(inputValue):
-    {text}
-"""
+        inputFunction = f"def func(inputValue):\n    {text}"
 
         print(inputFunction)
 
         exec(inputFunction, globals())
 
-        self.value = func(inputValue)
+        self.value = func(inputValue)  # type: ignore
 
         self.isDirty = False
         self.isInvalid = False
