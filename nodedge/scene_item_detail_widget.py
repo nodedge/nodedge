@@ -111,7 +111,8 @@ class SceneItemDetailWidget(QFrame):
                 outputs = [i.name for i in selectedNode.outputSocketTypes]
                 self.inputsTypeLabel.setText(str(inputs))
                 self.outputsTypeLabel.setText(str(outputs))
-                self.updateParams(selectedNode.params)
+                if hasattr(selectedNode, "params"):
+                    self.updateParams(selectedNode.params)
             else:
                 self.titleLineEdit.setText("")
                 self.typeLabel.setText("")
