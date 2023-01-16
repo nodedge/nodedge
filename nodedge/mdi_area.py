@@ -83,7 +83,7 @@ class MdiArea(QMdiArea):
             painter.drawText(
                 event.rect(),
                 Qt.AlignCenter,
-                "Open new:  Ctrl+N\n\nOpen File:  Ctrl+O\n\nFit to View:  Space\n\nGenerate cCode:  Ctrl+G\n\nStart "
+                "Open New:  Ctrl+N\n\nOpen File:  Ctrl+O\n\nFit to View:  Space\n\nGenerate Code:  Ctrl+G\n\nStart "
                 "Simulation:  Ctrl+Shift+S",
             )
 
