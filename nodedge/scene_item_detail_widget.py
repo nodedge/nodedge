@@ -7,12 +7,19 @@ import logging
 from typing import cast
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QGridLayout, QLabel, QLineEdit, QSizePolicy, QWidget
+from PySide6.QtWidgets import (
+    QFrame,
+    QGridLayout,
+    QLabel,
+    QLineEdit,
+    QSizePolicy,
+    QWidget,
+)
 
 from nodedge import utils
 
 
-class SceneItemDetailWidget(QWidget):
+class SceneItemDetailWidget(QFrame):
     """:class:`~nodedge.scene_item_detail_widget.SceneItemDetailWidget` class ."""
 
     def __init__(self, parent=None):

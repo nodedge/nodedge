@@ -1,6 +1,7 @@
 QAbstractScrollArea,QCheckBox,QColumnView,QComboBox,QDateEdit,QDateTimeEdit,QDialog,QDialogButtonBox,QDockWidget,QDoubleSpinBox,QFrame,QGroupBox,QHeaderView,QLabel,QLineEdit,QListView,QListWidget,QMainWindow,QMenu,QMenuBar,QMessageBox,QProgressBar,QPushButton,QRadioButton,QScrollBar,QSizeGrip,QSlider,QSpinBox,QSplitter,QStatusBar,QTabBar,QTabWidget,QTableView,QTableWidget,QTextEdit,QTimeEdit,QToolBar,QToolButton,QToolBox,QToolTip,QTreeView,QTreeWidget,QWidget,
 QWidget {
     font-size: 14px;
+    font-family: "Microsoft YaHei";  /*"Segoe UI"*/
 }
 QFrame,QDialog,QMainWindow{
     background:palette(window);
@@ -83,6 +84,10 @@ QDockWidget{
     icon-size: 50px;
     width: 25px;
     border: 1px solid palette(highlight);
+}
+
+SceneItemDetailWidget {
+    border: 1px solid palette(mid);
 }
 
 QDockWidget::title{
