@@ -47,8 +47,18 @@ class PythonBlock(Block):
 
     def evalImplementation(self):
         inputValue = self.inputNodeAt(0).eval()
+        text = self.params[0].value.replace("\n", "\n    ")
 
-        self.value = inputValue
+        inputFunction = f"""
+def func(inputValue):
+    {text}
+"""
+
+        print(inputFunction)
+
+        exec(inputFunction, globals())
+
+        self.value = func(inputValue)
 
         self.isDirty = False
         self.isInvalid = False
