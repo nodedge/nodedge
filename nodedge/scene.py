@@ -190,7 +190,7 @@ class Scene(Serializable):
                 for callback in self._itemSelectedListeners:
                     callback()
                 # and store history as a last step always
-                self.history.store("Change selection")
+                # self.history.store("Change selection")
 
     def onItemsDeselected(self, silent: bool = False):
         """

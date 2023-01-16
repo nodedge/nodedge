@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from typing import List
 
+from numpy import array
+
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import registerNode
 from nodedge.blocks.block_param import BlockParam, BlockParamType
@@ -31,11 +33,6 @@ class PythonBlock(Block):
 
         self.params = [
             BlockParam("code", "", BlockParamType.LongText),
-            BlockParam("input", "", BlockParamType.ShortText),
-            BlockParam("output", "", BlockParamType.ShortText),
-            BlockParam("intValue", 0, BlockParamType.Int, -5, 6, 5),
-            BlockParam("floatValue", 0.0, BlockParamType.Float),
-            BlockParam("boolValue", False, BlockParamType.Bool),
         ]
 
         self.eval()
@@ -47,15 +44,21 @@ class PythonBlock(Block):
 
     def evalImplementation(self):
         inputValue = self.inputNodeAt(0).eval()
+        inputNodeTitle = self.inputNodeAt(0).title
+        funcTitle = "function_" + self.title.lower()
         text = self.params[0].value.replace("\n", "\n    ")
 
-        inputFunction = f"def func(inputValue):\n    {text}"
+        inputFunction = f"def {funcTitle}({inputNodeTitle}):\n    {text}"
 
         print(inputFunction)
 
         exec(inputFunction, globals())
 
-        self.value = func(inputValue)  # type: ignore
+        print(inputValue)
+        functionEvaluationStr = f"{funcTitle}({inputValue.__repr__()})"
+        print(functionEvaluationStr)
+        self.value = eval(functionEvaluationStr)  # type: ignore
+        # self.value = function_python(inputValue)
 
         self.isDirty = False
         self.isInvalid = False
@@ -66,5 +69,13 @@ class PythonBlock(Block):
         return self.value
 
     def generateCode(self, currentVarIndex: int, inputVarIndexes: List[int]):
-        generatedCode: str = f"var_{str(currentVarIndex)} = {str(self.eval())}\n"
-        return generatedCode
+        inputValue = self.inputNodeAt(0).eval()
+        inputNodeName = self.inputNodeAt(0).title.lower()
+        text = self.params[0].value.replace("\n", "\n    ")
+        funcTitle = "function_" + self.title
+
+        inputFunction = f"def {funcTitle}({inputNodeName}):\n    {text}"
+        generatedCode: str = (
+            f"var_{self.title.lower()} = {funcTitle}(var_{inputNodeName})\n"
+        )
+        return inputFunction + "\n" + generatedCode

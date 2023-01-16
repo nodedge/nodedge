@@ -203,7 +203,7 @@ class Node(Serializable):
         :setter: set node title and pass it to the graphical node
         :rtype: ``str``
         """
-        return self._title
+        return self._title.lower().replace(" ", "_")
 
     @title.setter
     def title(self, newTitle: str) -> None:

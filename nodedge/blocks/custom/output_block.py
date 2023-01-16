@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from typing import List
+from typing import List, Optional
 
 import numpy as np
 
@@ -46,3 +46,8 @@ class OutputBlock(Block):
         self.content.label.setText(f"{inputResult}")
 
         return True
+
+    def generateCode(
+        self, currentVarIndex: int = 0, inputVarIndexes: Optional[List[int]] = None
+    ):
+        return f"var_{self.inputNodeAt(0).title}"

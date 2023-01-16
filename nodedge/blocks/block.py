@@ -170,8 +170,11 @@ class Block(Node):
         return res
 
     def generateCode(self, currentVarIndex: int, inputVarIndexes: List[int]):
-        generatedCode: str = (
-            "var_" + str(currentVarIndex) + " = " + str(self.evalString) + "("
+        generatedCode: str = "var_" + self.title + " = " + str(self.evalString) + "("
+        generatedCode += ", ".join(
+            [
+                f"var_{self.inputNodeAt(index).title}"
+                for index in range(len(self.inputSockets))
+            ]
         )
-        generatedCode += ", ".join([f"var_{str(index)}" for index in inputVarIndexes])
         return generatedCode + ")\n"
