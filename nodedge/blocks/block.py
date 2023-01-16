@@ -38,7 +38,6 @@ class Block(Node):
     outputSocketTypes: List[SocketType] = [
         SocketType.Any,
     ]
-    params: List[BlockParam] = []
 
     GraphicsNodeClass = GraphicsBlock
     GraphicsNodeContentClass = GraphicsBlockContent
@@ -60,6 +59,8 @@ class Block(Node):
         self.isDirty = True
 
         self.graphicsNode.content.updateIO()
+
+        self.params: List[BlockParam] = []
 
     # noinspection PyAttributeOutsideInit
     def initSettings(self):

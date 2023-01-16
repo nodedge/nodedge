@@ -134,6 +134,12 @@ class SceneItemDetailWidget(QFrame):
             if param.paramType == BlockParamType.Int:
                 spinbox = QSpinBox()
                 spinbox.setValue(param.value)
+                if param.minValue is not None:
+                    spinbox.setMinimum(param.minValue)
+                if param.maxValue is not None:
+                    spinbox.setMaximum(param.maxValue)
+                if param.step is not None:
+                    spinbox.setSingleStep(param.step)
                 self.paramsLayout.addRow(param.name, spinbox)
                 spinbox.valueChanged.connect(
                     lambda value, paramName=param.name: self.onParamWidgetChanged(
@@ -143,6 +149,12 @@ class SceneItemDetailWidget(QFrame):
             elif param.paramType == BlockParamType.Float:
                 spinbox = QDoubleSpinBox()
                 spinbox.setValue(param.value)
+                if param.minValue is not None:
+                    spinbox.setMinimum(param.minValue)
+                if param.maxValue is not None:
+                    spinbox.setMaximum(param.maxValue)
+                if param.step is not None:
+                    spinbox.setSingleStep(param.step)
                 self.paramsLayout.addRow(param.name, spinbox)
                 spinbox.valueChanged.connect(
                     lambda value, paramName=param.name: self.onParamWidgetChanged(
@@ -152,10 +164,12 @@ class SceneItemDetailWidget(QFrame):
             elif param.paramType == BlockParamType.ShortText:
                 lineEdit = QLineEdit()
                 lineEdit.setText(param.value)
+                if param.maxValue is not None:
+                    lineEdit.setMaxLength(param.maxValue)
                 self.paramsLayout.addRow(param.name, lineEdit)
                 lineEdit.textEdited.connect(
-                    lambda value, paramName=param.name: self.onParamWidgetChanged(
-                        paramName, value
+                    lambda paramName=param.name: self.onParamWidgetChanged(
+                        paramName, lineEdit.text()
                     )
                 )
             elif param.paramType == BlockParamType.LongText:
@@ -163,8 +177,8 @@ class SceneItemDetailWidget(QFrame):
                 textEdit.setText(param.value)
                 self.paramsLayout.addRow(param.name, textEdit)
                 textEdit.textChanged.connect(
-                    lambda value, paramName=param.name: self.onParamWidgetChanged(
-                        paramName, value
+                    lambda paramName=param.name: self.onParamWidgetChanged(
+                        paramName, textEdit.toPlainText()
                     )
                 )
             elif param.paramType == BlockParamType.Bool:

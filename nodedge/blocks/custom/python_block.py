@@ -21,14 +21,6 @@ class PythonBlock(Block):
     libraryTitle = "custom"
     inputSocketTypes: List[SocketType] = [SocketType.Number]
     outputSocketTypes: List[SocketType] = [SocketType.Number]
-    params = [
-        BlockParam("code", "", BlockParamType.LongText),
-        BlockParam("input", "", BlockParamType.ShortText),
-        BlockParam("output", "", BlockParamType.ShortText),
-        BlockParam("intValue", 0, BlockParamType.Int),
-        BlockParam("floatValue", 0.0, BlockParamType.Float),
-        BlockParam("boolValue", False, BlockParamType.Bool),
-    ]
 
     def __init__(self, scene):
         super().__init__(
@@ -36,6 +28,15 @@ class PythonBlock(Block):
             inputSocketTypes=self.__class__.inputSocketTypes,
             outputSocketTypes=self.__class__.outputSocketTypes,
         )
+
+        self.params = [
+            BlockParam("code", "", BlockParamType.LongText),
+            BlockParam("input", "", BlockParamType.ShortText),
+            BlockParam("output", "", BlockParamType.ShortText),
+            BlockParam("intValue", 0, BlockParamType.Int, -5, 6, 5),
+            BlockParam("floatValue", 0.0, BlockParamType.Float),
+            BlockParam("boolValue", False, BlockParamType.Bool),
+        ]
 
         self.eval()
 
