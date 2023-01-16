@@ -29,13 +29,15 @@ def setupLogging(
     if os.path.exists(path):
         with open(path, "rt") as f:
             try:
+                coloredlogs.install(
+                    logger=logging.getLogger(),
+                    # level=logging.getLogger().level,
+                    fmt=logging.getLogger().handlers[0].formatter._fmt,  # type: ignore
+                    reconfigure=True,
+                )
                 config = yaml.safe_load(f.read())
                 logging.config.dictConfig(config)
                 # noinspection PyProtectedMember
-                coloredlogs.install(
-                    level=logging.getLogger().level,
-                    fmt=logging.getLogger().handlers[0].formatter._fmt,  # type: ignore
-                )
             except Exception as e:
                 logger.warning(e)
                 logger.info("Error in Logging Configuration. Using default configs")

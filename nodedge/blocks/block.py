@@ -10,6 +10,7 @@ from nodedge.blocks.block_exception import (
     MissInputError,
     RedundantInputError,
 )
+from nodedge.blocks.block_param import BlockParam
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.blocks.graphics_block_content import GraphicsBlockContent
 from nodedge.connector import Socket, SocketLocation
@@ -37,6 +38,7 @@ class Block(Node):
     outputSocketTypes: List[SocketType] = [
         SocketType.Any,
     ]
+    params: List[BlockParam] = []
 
     GraphicsNodeClass = GraphicsBlock
     GraphicsNodeContentClass = GraphicsBlockContent
@@ -131,6 +133,16 @@ class Block(Node):
     def serialize(self) -> OrderedDict:
         res = super().serialize()
         res["operationCode"] = self.__class__.operationCode
+        paramsDict = {}
+        for p in self.params:
+            paramsDict[p.name] = {
+                "value": p.value,
+                "type": p.paramType,
+                "minValue": p.minValue,
+                "maxValue": p.maxValue,
+                "step": p.step,
+            }
+        res["params"] = paramsDict
         return res
 
     def deserialize(
@@ -145,6 +157,13 @@ class Block(Node):
             hashmap = {}
         res = super().deserialize(data, hashmap, restoreId)
         self.__logger.debug(f"Deserialized block {self.__class__.__name__}: {res}")
+        if "params" in data:
+            for param in self.params:
+                if param.name in data["params"]:
+                    param.value = data["params"][param.name]["value"]
+                    param.minValue = data["params"][param.name]["minValue"]
+                    param.maxValue = data["params"][param.name]["maxValue"]
+                    param.step = data["params"][param.name]["step"]
 
         self.graphicsNode.content.updateIO()
         return res
