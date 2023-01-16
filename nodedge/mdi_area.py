@@ -78,10 +78,13 @@ class MdiArea(QMdiArea):
             painter.setPen(self.palette().color(QPalette.Light))
             painter.setOpacity(1)
             font = QFont("Segoe UI")
-            font.setPixelSize(20)
+            # font.setPixelSize(20)
             painter.setFont(font)
             painter.drawText(
-                event.rect(), Qt.AlignCenter, "Open new:  Ctrl+N\n\nOpen file:  Ctrl+O"
+                event.rect(),
+                Qt.AlignCenter,
+                "Open new:  Ctrl+N\n\nOpen File:  Ctrl+O\n\nFit to View:  Space\n\nGenerate cCode:  Ctrl+G\n\nStart "
+                "Simulation:  Ctrl+Shift+S",
             )
 
         painter.end()
