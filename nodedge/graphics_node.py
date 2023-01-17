@@ -344,6 +344,7 @@ class GraphicsNode(QGraphicsItem):
         Qt overridden event for doubleclick.
         Resend to :func:`~nodedge.node.Node.onDoubleClicked`
         """
+        super().mouseDoubleClickEvent(event)
         self.node.onDoubleClicked(event)
 
     def onSelected(self):

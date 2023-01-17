@@ -453,7 +453,6 @@ class EditorWindow(QMainWindow):
         self.fileMenu.addAction(self.takeScreenShotAct)
 
     def updateRecentFilesMenu(self):
-        print("Clearing recent files actions")
         self.recentFilesMenu.clear()
         for action in self.recentFilesActions:
             action.deleteLater()

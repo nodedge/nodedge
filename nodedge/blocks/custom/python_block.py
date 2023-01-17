@@ -50,13 +50,9 @@ class PythonBlock(Block):
 
         inputFunction = f"def {funcTitle}({inputNodeTitle}):\n    {text}"
 
-        print(inputFunction)
-
         exec(inputFunction, globals())
 
-        print(inputValue)
         functionEvaluationStr = f"{funcTitle}({inputValue.__repr__()})"
-        print(functionEvaluationStr)
         self.value = eval(functionEvaluationStr)
 
         self.isDirty = False
