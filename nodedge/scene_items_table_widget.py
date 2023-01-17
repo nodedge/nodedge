@@ -83,38 +83,6 @@ class SceneItemsTableWidget(QTableWidget):
 
                 self.setRowHeight(row, 30)
 
-            # TODO: Activate elements in table widget.
-            # for element in self.scene.elements:
-            #     nameItem = QTableWidgetItem(element.content)
-            #     nameItem.setFlags(nameItem.flags() ^ Qt.ItemIsEditable)
-            #
-            #     typeItem = QTableWidgetItem(f"{element.__class__.__name__}")
-            #     typeItem.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
-            #     typeItem.setFlags(typeItem.flags() ^ Qt.ItemIsEditable)
-            #
-            #     posXItem = QTableWidgetItem(f"{element.pos.x()}")
-            #     posXItem.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
-            #     posXItem.setFlags(posXItem.flags() ^ Qt.ItemIsEditable)
-            #
-            #     posYItem = QTableWidgetItem(f"{element.pos.y()}")
-            #     posYItem.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
-            #     posYItem.setFlags(posYItem.flags() ^ Qt.ItemIsEditable)
-            #
-            #     row = self.rowCount()
-            #     self.insertRow(row)
-            #     self.setItem(row, 0, nameItem)
-            #     self.setItem(row, 1, typeItem)
-            #     self.setItem(row, 2, posXItem)
-            #     self.setItem(row, 3, posYItem)
-            #
-            #     if element.graphicsElement in self.scene.selectedItems:
-            #         nameItem.setSelected(True)
-            #         typeItem.setSelected(True)
-            #         posXItem.setSelected(True)
-            #         posYItem.setSelected(True)
-            #
-            #     self.setRowHeight(row, 30)
-
         super().viewport().update()
 
     def onCellClicked(self, row: int, column: int):
