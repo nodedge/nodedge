@@ -66,7 +66,7 @@ class GraphicsNode(QGraphicsItem):
         :setter: Store and make visible the new title
         :type: ``str``
         """
-        return self._title
+        return self._title.lower().replace(" ", "_")
 
     @title.setter
     def title(self, value):
@@ -344,6 +344,7 @@ class GraphicsNode(QGraphicsItem):
         Qt overridden event for doubleclick.
         Resend to :func:`~nodedge.node.Node.onDoubleClicked`
         """
+        super().mouseDoubleClickEvent(event)
         self.node.onDoubleClicked(event)
 
     def onSelected(self):

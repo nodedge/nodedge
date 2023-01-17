@@ -31,11 +31,13 @@ def setupLogging(
             try:
                 config = yaml.safe_load(f.read())
                 logging.config.dictConfig(config)
-                # noinspection PyProtectedMember
                 coloredlogs.install(
-                    level=logging.getLogger().level,
+                    logger=logging.getLogger(),
+                    # level=logging.getLogger().level,
                     fmt=logging.getLogger().handlers[0].formatter._fmt,  # type: ignore
+                    reconfigure=True,
                 )
+                # noinspection PyProtectedMember
             except Exception as e:
                 logger.warning(e)
                 logger.info("Error in Logging Configuration. Using default configs")

@@ -66,7 +66,7 @@ handlers:
 root:
     level: DEBUG
     handlers: [stdout, debug_file_handler]
-#    propagate: false
+    propagate: false
 
 loggers:
     nodedge.node:
@@ -116,5 +116,10 @@ loggers:
 
     nodedge.dats.signals_table_widget:
         handlers: [debug_file_handler]
+        level: DEBUG
+        propagate: false
+
+    nodedge.scene_item_detail_widget:
+        handlers: [stdout, debug_file_handler]
         level: DEBUG
         propagate: false

@@ -139,6 +139,13 @@ class GraphicsView(QGraphicsView):
         """
         self._dropListeners.append(callback)
 
+    def mouseDoubleClickEvent(self, event: QMouseEvent) -> None:
+        """
+        Dispatch Qt `mouseDoubleClickEvent` to corresponding function below.
+        """
+        super().mouseDoubleClickEvent(event)
+        logger.debug("mouseDoubleClickEvent in graphics view")
+
     def mousePressEvent(self, event: QMouseEvent):
         """
         Dispatch Qt `mousePressEvent` to corresponding function below.

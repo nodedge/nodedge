@@ -71,9 +71,6 @@ class Node(Serializable):
         self.inputSocketTypes: Collection[SocketType] = inputSocketTypes
         self.outputSocketTypes: Collection[SocketType] = outputSocketTypes
 
-        self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.INFO)
-
         self.initInnerClasses()
         self.initSettings()
 
@@ -179,7 +176,7 @@ class Node(Serializable):
         :param newEdge: reference to the changed :class:`~nodedge.edge.Edge`
         :type newEdge: :class:`~nodedge.edge.Edge`
         """
-        self.__logger.debug(f"{newEdge}")
+        logger.debug(f"{newEdge}")
 
     def onInputChanged(self, socket: Socket):
         """
@@ -190,7 +187,7 @@ class Node(Serializable):
         :type socket: :class:`~nodedge.socket.Socket`
         """
 
-        self.__logger.debug(f"{socket}")
+        logger.debug(f"{socket}")
         self.isDirty = True
         self.markDescendantsDirty()
 
@@ -203,7 +200,7 @@ class Node(Serializable):
         :setter: set node title and pass it to the graphical node
         :rtype: ``str``
         """
-        return self._title
+        return self._title.lower().replace(" ", "_")
 
     @title.setter
     def title(self, newTitle: str) -> None:
@@ -372,10 +369,10 @@ class Node(Serializable):
         """
         for socket in self.inputSockets + self.outputSockets:
             for edge in socket.edges:
-                self.__logger.debug("Updating socket edges.")
+                logger.debug("Updating socket edges.")
                 edge.updatePos()
             else:
-                self.__logger.debug("No edge is connected.")
+                logger.debug("No edge is connected.")
 
     # noinspection PyAttributeOutsideInit
     def remove(self):
@@ -383,14 +380,14 @@ class Node(Serializable):
         Safely remove this node.
         """
         logger.debug(f"Removing {self}")
-        self.__logger.debug("Removing all edges connected to the node.")
+        logger.debug("Removing all edges connected to the node.")
         for socket in self.inputSockets + self.outputSockets:
             socket.removeAllEdges()
-        self.__logger.debug("Removing the graphical node.")
+        logger.debug("Removing the graphical node.")
         self.scene.graphicsScene.removeItem(self.graphicsNode)
         # TODO: Investigate why setting graphicsNode to None makes tests crash.
         # self.graphicsNode = None
-        self.__logger.debug("Removing the node from the scene.")
+        logger.debug("Removing the node from the scene.")
         self.scene.removeNode(self)
 
     def onMarkedDirty(self):
@@ -511,7 +508,7 @@ class Node(Serializable):
             raise NotImplementedError
 
         if not socketList:
-            self.__logger.debug("Socket list is empty")
+            logger.debug("Socket list is empty")
             return []
 
         otherNodes: List["Node"] = []
@@ -540,7 +537,7 @@ class Node(Serializable):
                     IONodes.append(otherSocket.node)
                     IOSockets.append(otherSocket)
         except IndexError:
-            self.__logger.warning(
+            logger.warning(
                 f"Trying to get connected {side} node at #{index} "
                 f"but {self} has only {len(socketList)} outputs."
             )
@@ -682,12 +679,12 @@ class Node(Serializable):
                         found.socketType = SocketType(socketData["socketType"])
                         break
                 if found is None:
-                    self.__logger.debug(
+                    logger.debug(
                         "Deserialization of socket data has not found "
                         "input socket with index:",
                         socketData["index"],
                     )
-                    self.__logger.debug("Actual socket data:", socketData)
+                    logger.debug("Actual socket data:", socketData)
 
                     # Create new socket for this
                     found = self.__class__.SocketClass(
@@ -726,7 +723,7 @@ class Node(Serializable):
                         found.socketType = SocketType(socketData["socketType"])
                         break
                 if found is None:
-                    self.__logger.debug(
+                    logger.debug(
                         "Deserialization of socket data has not found output socket "
                         "with index:",
                         socketData["index"],
@@ -760,7 +757,7 @@ class Node(Serializable):
         :type event: ``QMouseEvent``
         """
 
-        self.__logger.debug(f"Graphics node has been double clicked: {event}")
+        logger.debug(f"Graphics node has been double clicked: {event}")
 
     def getNodeContentClass(self):
         """

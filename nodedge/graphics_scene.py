@@ -138,6 +138,10 @@ class GraphicsScene(QGraphicsScene):
         """
         pass
 
+    def mouseDoubleClickEvent(self, event: QGraphicsSceneMouseEvent) -> None:
+        super().mouseDoubleClickEvent(event)
+        logger.debug("Double click in graphics scene")
+
     def mousePressEvent(self, event: QGraphicsSceneMouseEvent) -> None:
         """
         Handle Qt mouse's button press event.

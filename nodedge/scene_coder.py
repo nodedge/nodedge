@@ -97,7 +97,7 @@ class SceneCoder(QObject):
         for node in outputNodes:
             inputNode = node.getParentNodes()
             inputVarIndex = orderedNodeList.index(inputNode[0])
-            outputVarNames.append("var_" + str(inputVarIndex))
+            outputVarNames.append(node.generateCode())
         generatedCode += "return [" + ", ".join(outputVarNames) + "]"
         self.__logger.debug(orderedNodeList)
 
@@ -117,14 +117,13 @@ class SceneCoder(QObject):
             generatedImport += (
                 f"from {key} import {', '.join(importedLibraries[key])}\n"
             )
+        generatedImport += "from numpy import array\n"
         generatedImport += "\n\n"
 
         # put code into a function
         functionName = self._getFunctionName()
         generatedFunctionDef = f"def {functionName}():"
-        generatedFunctionCall = (
-            f"\n\n\nif __name__ == '__main__':\n    {functionName}()\n"
-        )
+        generatedFunctionCall = f"\n\n\nif __name__ == '__main__':\n    result = {functionName}()\n    print(result)"
 
         outputFileString = (
             generatedImport

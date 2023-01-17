@@ -46,7 +46,10 @@ def filledScene(emptyScene):
 
 def test_generateCode(filledScene):
     expectedResult = (
-        "var_0 = 2\n" + "var_1 = 1\n" + "var_2 = add(var_1, var_0)\n" + "return [var_2]"
+        "var_input = array(2)\n"
+        "var_input = array(1)\n"
+        "var_addition = add(var_input, var_input)\n"
+        "return [var_addition]"
     )
 
     _, generatedCode = filledScene.coder.generateCode()
@@ -58,13 +61,13 @@ def test_addImports(filledScene):
     orderedNodeList, generatedCode = filledScene.coder.generateCode()
 
     filename = "unnamed"
-    imports = "from numpy import add\n\n\n"
+    imports = "from numpy import add\nfrom numpy import array\n\n\n"
 
     expectedResult = (
         imports
         + f"def {filename}():"
         + indentCode(generatedCode)
-        + f"\n\n\nif __name__ == '__main__':\n    {filename}()\n"
+        + f"\n\n\nif __name__ == '__main__':\n    result = {filename}()\n    print(result)"
     )
 
     generatedFileString = filledScene.coder.addImports(orderedNodeList, generatedCode)
