@@ -57,8 +57,7 @@ class PythonBlock(Block):
         print(inputValue)
         functionEvaluationStr = f"{funcTitle}({inputValue.__repr__()})"
         print(functionEvaluationStr)
-        self.value = eval(functionEvaluationStr)  # type: ignore
-        # self.value = function_python(inputValue)
+        self.value = eval(functionEvaluationStr)
 
         self.isDirty = False
         self.isInvalid = False
@@ -69,8 +68,11 @@ class PythonBlock(Block):
         return self.value
 
     def generateCode(self, currentVarIndex: int, inputVarIndexes: List[int]):
-        inputValue = self.inputNodeAt(0).eval()
-        inputNodeName = self.inputNodeAt(0).title.lower()
+        inputNode = self.inputNodeAt(0)
+        if inputNode is None:
+            return ""
+        inputValue = inputNode.eval()
+        inputNodeName = inputNode.title.lower()
         text = self.params[0].value.replace("\n", "\n    ")
         funcTitle = "function_" + self.title
 

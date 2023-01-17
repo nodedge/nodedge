@@ -170,10 +170,19 @@ class Block(Node):
         return res
 
     def generateCode(self, currentVarIndex: int, inputVarIndexes: List[int]):
+        for index in range(len(self.inputSockets)):
+            inputNodes = self.inputNodesAt(index)
+            inputNodesLength = len(inputNodes)
+            if inputNodesLength > 1:
+                raise RedundantInputError(
+                    f"{inputNodesLength} inputs connected to input socket #{index}."
+                )
+            if inputNodesLength == 0:
+                raise MissInputError(f"No input connected to input socket #{index}.")
         generatedCode: str = "var_" + self.title + " = " + str(self.evalString) + "("
         generatedCode += ", ".join(
             [
-                f"var_{self.inputNodeAt(index).title}"
+                f"var_{self.inputNodeAt(index).title}"  # type: ignore
                 for index in range(len(self.inputSockets))
             ]
         )

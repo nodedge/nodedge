@@ -4,7 +4,7 @@ Scene item detail widget module containing
 :class:`~nodedge.scene_item_detail_widget.SceneItemDetailWidget` class.
 """
 import logging
-from typing import List, cast
+from typing import List, Optional, cast
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
@@ -55,7 +55,9 @@ class SceneItemDetailWidget(QFrame):
         self.paramsFrame.setLayout(self.paramsLayout)
         self.addRow("Params", shortEdit=False, widget=self.paramsFrame)
 
-    def addRow(self, title: str, shortEdit: bool = False, widget: QWidget = None):
+    def addRow(
+        self, title: str, shortEdit: bool = False, widget: Optional[QWidget] = None
+    ):
         """
         Add a widget on a new row to the layout.
 
@@ -148,16 +150,16 @@ class SceneItemDetailWidget(QFrame):
                     )
                 )
             elif param.paramType == BlockParamType.Float:
-                spinbox = QDoubleSpinBox()
-                spinbox.setValue(param.value)
+                doubleSpinbox: QDoubleSpinBox = QDoubleSpinBox()
+                doubleSpinbox.setValue(param.value)
                 if param.minValue is not None:
-                    spinbox.setMinimum(param.minValue)
+                    doubleSpinbox.setMinimum(param.minValue)
                 if param.maxValue is not None:
-                    spinbox.setMaximum(param.maxValue)
+                    doubleSpinbox.setMaximum(param.maxValue)
                 if param.step is not None:
-                    spinbox.setSingleStep(param.step)
-                self.paramsLayout.addRow(param.name, spinbox)
-                spinbox.valueChanged.connect(
+                    doubleSpinbox.setSingleStep(param.step)
+                self.paramsLayout.addRow(param.name, doubleSpinbox)
+                doubleSpinbox.valueChanged.connect(
                     lambda value, paramName=param.name: self.onParamWidgetChanged(
                         paramName, value
                     )

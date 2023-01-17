@@ -50,4 +50,8 @@ class OutputBlock(Block):
     def generateCode(
         self, currentVarIndex: int = 0, inputVarIndexes: Optional[List[int]] = None
     ):
-        return f"var_{self.inputNodeAt(0).title}"
+        inputNode = self.inputNodeAt(0)
+        if inputNode is not None:
+            return f"var_{inputNode.title}"
+        else:
+            return ""
