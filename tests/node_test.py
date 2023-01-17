@@ -50,15 +50,17 @@ def connectedNode(emptyScene: Scene) -> Node:
 
 def test_defaultTitle(undefinedNode: Node):
     undefinedTitle = "Undefined node"
-    assert undefinedNode.title == undefinedTitle
-    assert undefinedNode.graphicsNode.title == undefinedTitle
+    expectedTitle = "undefined_node"
+    assert undefinedNode.title == expectedTitle
+    assert undefinedNode.graphicsNode.title == expectedTitle
 
 
 def test_setTitle(undefinedNode: Node):
     newTitle = "A coherent title"
     undefinedNode.title = "A coherent title"
-    assert undefinedNode.title == newTitle
-    assert undefinedNode.graphicsNode.title == newTitle
+    expectTitle = "a_coherent_title"
+    assert undefinedNode.title == expectTitle
+    assert undefinedNode.graphicsNode.title == expectTitle
 
 
 def test_defaultPos(undefinedNode: Node):

@@ -148,7 +148,7 @@ def test_serializeSelected(qtbot):
     graphicsNode.setSelected(True)
     assert set(scene.graphicsScene.selectedItems()) <= {graphicsEdge, graphicsNode}
 
-    expectedTitle = "A great title"
+    expectedTitle = "A great title".lower().replace(" ", "_")
     node.title = expectedTitle
     data = scene.clipboard.serializeSelected()
 

@@ -66,7 +66,7 @@ class GraphicsNode(QGraphicsItem):
         :setter: Store and make visible the new title
         :type: ``str``
         """
-        return self._title
+        return self._title.lower().replace(" ", "_")
 
     @title.setter
     def title(self, value):
