@@ -5,3 +5,13 @@
     /* --cover-background-image : url("./media/cover.png"); */
     /* background-image : url("./media/cover.png"); */
     }
+
+.row {
+    display: flex;
+    text-align: center;
+}
+
+.column {
+    flex: 33.33%;
+    padding: 5px;
+}
