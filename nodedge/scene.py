@@ -80,6 +80,16 @@ class Scene(Serializable):
         self.filename: Optional[str] = None
 
     @property
+    def shortName(self) -> str:
+        """
+        :return: short name of the scene
+        :rtype: ``str``
+        """
+        if self.filename:
+            return os.path.splitext(os.path.basename(self.filename))[0]
+        return "Untitled"
+
+    @property
     def isModified(self) -> bool:
         """
         Has this `Scene` been modified?

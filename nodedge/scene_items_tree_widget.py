@@ -49,8 +49,10 @@ class SceneItemsTreeWidget(QTreeWidget):
     @scene.setter
     def scene(self, scene: Scene) -> None:
         self._scene = scene
-        self._scene.history.addHistoryModifiedListener(self.update)
         self.update()
+        if self._scene is None:
+            return
+        self._scene.history.addHistoryModifiedListener(self.update)
 
     def update(self, *__args) -> None:
         self.clear()
@@ -58,7 +60,7 @@ class SceneItemsTreeWidget(QTreeWidget):
 
         if self._scene is not None:
             self.rootItem = QTreeWidgetItem()
-            self.rootItem.setText(0, self._scene.filename)
+            self.rootItem.setText(0, self._scene.shortName)
             self.addTopLevelItem(self.rootItem)
             for node in self._scene.nodes:
                 nameItem = QTreeWidgetItem()
