@@ -22,13 +22,13 @@ constantly evolving and improving based on the latest needs of its users.
 </div>
 <br>
 
-<center><img src="media/nodedge_interface.png" alt="nodedge_interface" width="500" /></center>
+<center><img src="media/concept/nodedge_apps.png" alt="nodedge" width="800" /></center>
 <br>
 
 
 ## Physical simulation
 
-The Nodedge simulation app allows you to simulate various types of systems and processes. 
+The Nodedge simulation app allows you to simulate various types of dynamic systems and processes. 
 These simulations can suit a variety of purposes, such as testing and analyzing the behavior of a physical model, 
 predicting the outcomes of a chemical reaction, or studying the movements and actions of a robotic system.
 To learn more about it, check out the [examples](resources.md#quick-start-examples) provided.
@@ -57,34 +57,35 @@ code that can be understood by off-the-shelf microcontrollers and uploaded to th
 
 Nodedge can accelerate scientific research, engineering design, system development and deployment for applications in 
 many industries. Are you curious about how to integrate it into your current workflow or do you need custom support?
+
 [Contact our team](mailto:admin@nodedge.io)!
 
 <div class="row">
   <div class="column">
-    <img src="media/robotics.jpg" alt="robotics" style="width:100%">
+    <img src="media/industries/robotics.jpg" alt="robotics" style="width:100%">
     Robotics
   </div>
   <div class="column">
-    <img src="media/automotive.jpg" alt="automotive" style="width:100%">
+    <img src="media/industries/automotive.jpg" alt="automotive" style="width:100%">
     Automotive
   </div>
   <div class="column">
-    <img src="media/uavs.jpg" alt="uavs" style="width:100%">
+    <img src="media/industries/uavs.jpg" alt="uavs" style="width:100%">
     UAVs
   </div>
 </div>
 
 <div class="row">
   <div class="column">
-    <img src="media/clean_energy.jpg" alt="clean_energy" style="width:100%">
+    <img src="media/industries/clean_energy.jpg" alt="clean_energy" style="width:100%">
     Energy & electrification
   </div>
   <div class="column">
-    <img src="media/aerospace.jpg" alt="aerospace" style="width:100%">
+    <img src="media/industries/aerospace.jpg" alt="aerospace" style="width:100%">
     Aerospace
   </div>
   <div class="column">
-    <img src="media/pharma.jpg" alt="pharma" style="width:100%">
+    <img src="media/industries/pharma.jpg" alt="pharma" style="width:100%">
     Pharmaceutical
   </div>
 </div>
