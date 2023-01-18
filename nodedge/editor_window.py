@@ -324,10 +324,10 @@ class EditorWindow(QMainWindow):
             category="Simulation",
         )
 
-        self.takeScreenShotAct = self.createAction(
-            "Take screenShot",
+        self.takeScreenshotAct = self.createAction(
+            "Take screenshot",
             self.takeScreenshot,
-            "Take screenShot",
+            "Take screenshot",
             QKeySequence("Ctrl+Shift+Space"),
             category="File",
         )
@@ -353,9 +353,9 @@ class EditorWindow(QMainWindow):
 
     def takeScreenshot(self, filename=None):
         """
-        Take screenShot
+        Take screenshot
         """
-        self.__logger.debug("Take screenShot")
+        self.__logger.debug("Take screenshot")
         if filename is None:
             filename, _ = QFileDialog.getSaveFileName(
                 parent=self,
@@ -450,7 +450,7 @@ class EditorWindow(QMainWindow):
         self.fileMenu.addAction(self.saveAct)
         self.fileMenu.addAction(self.saveAsAct)
         self.fileMenu.addSeparator()
-        self.fileMenu.addAction(self.takeScreenShotAct)
+        self.fileMenu.addAction(self.takeScreenshotAct)
 
     def updateRecentFilesMenu(self):
         self.recentFilesMenu.clear()

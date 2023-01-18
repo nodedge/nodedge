@@ -427,9 +427,9 @@ class DatsWindow(QMainWindow):
             QKeySequence("Space"),
         )
 
-        self.takeScreenShotAct = self.createAction(
+        self.takeScreenshotAct = self.createAction(
             "Take screenshot",
-            self.onScreenShot,
+            self.onScreenshot,
             "Take screenshot",
             QKeySequence("Ctrl+Shift+Space"),
         )
@@ -476,9 +476,9 @@ class DatsWindow(QMainWindow):
 
         self.updateDataItems(MDF())
 
-    def onScreenShot(self):
+    def onScreenshot(self):
         """
-        Take screenShot
+        Take screenshot
         """
         filename, _ = QFileDialog.getSaveFileName(
             parent=self,
@@ -600,7 +600,7 @@ class DatsWindow(QMainWindow):
         self.fileMenu.addAction(self.restoreConfigAct)
         self.fileMenu.addAction(self.closeConfigAct)
         self.fileMenu.addSeparator()
-        self.fileMenu.addAction(self.takeScreenShotAct)
+        self.fileMenu.addAction(self.takeScreenshotAct)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit
     def createHelpMenu(self):

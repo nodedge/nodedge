@@ -46,7 +46,7 @@
         {
             "id": 2099446333200,
             "title": "k_v",
-            "posX": -990.0,
+            "posX": -960.0,
             "posY": -15.0,
             "inputSockets": [],
             "outputSockets": [
@@ -133,7 +133,7 @@
             "id": 3077276485376,
             "title": "square1",
             "posX": -960.0,
-            "posY": 330.0,
+            "posY": 315.0,
             "inputSockets": [],
             "outputSockets": [
                 {
