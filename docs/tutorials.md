@@ -49,7 +49,7 @@ We welcome your feedback and contributions to improve it.
 >
 > If needed, edit the node configuration (e.g., change title, value, etc.) and connect it to your model.
 
-![media/add_node.gif](media/add_node.gif) 
+![media/add_node.gif](media/nodedge/add_node.gif) 
 
 ## Rename a node
 
@@ -57,7 +57,7 @@ We welcome your feedback and contributions to improve it.
 > 2. Edit the title in the *Node details* widget on the right.
 > 3. Click on `Enter` key. The node will show the new title
 
-![media/rename_nodes_02.gif](media/rename_nodes_02.gif)  
+![media/rename_nodes_02.gif](media/nodedge/rename_nodes_02.gif)  
 
 ## Add an edge
 
@@ -69,7 +69,7 @@ We welcome your feedback and contributions to improve it.
 > an input socket which is already taken, the latter will connect to the new edge and automatically disconnect from the 
 > previous one.
 
-![media/add_edge.gif](media/add_edge.gif)
+![media/add_edge.gif](media/nodedge/add_edge.gif)
 
 ## Add a comment
 
@@ -81,7 +81,7 @@ We welcome your feedback and contributions to improve it.
 
 > To navigate the scene, you can use the arrow keys of your keyboard.
 
-![media/zoom_in_out.gif](media/zoom_in_out.gif)
+![media/zoom_in_out.gif](media/nodedge/zoom_in_out.gif)
 
 ## Select multiple objects
 

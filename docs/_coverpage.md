@@ -11,7 +11,7 @@
 
 [Download](https://github.com/nodedge/nodedge/releases/download/v0.4.0/NodedgeSetup.exe)
 [GitHub](https://github.com/nodedge/nodedge)
-[Donate]()
+[Contact us](mailto:admin@nodedge.io)
 
 <!-- background image 
 ![](media/cover.png) -->

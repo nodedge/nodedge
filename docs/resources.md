@@ -70,11 +70,27 @@ Congratulations! You have successfully analyzed your first dataset in Dats!
 
 <center><img src="media/csv_analyzer_example.png" alt="csv_analyzer_example" width="800" /></center>
 
+# Roadmap
+
+Nodedge development team has a lot of exciting features planned for the future! 
+The project is actively being developed and there are plans to add support for a wide range of features.
+If you wish to join our efforts, do not hesitate to contact us. Any help is welcome!
+
+Our roadmap includes, and is not limited to:
+* In Dats, add support for **hdf**, **tdms**, and **rosag** files
+* In Nodedge, add support for matrix operation
+* In Nodedge, add support for Python custom nodes. In a custom node, the user can enter a custom piece of Python code 
+that runs within the current Nodedge model. The custom node can be saved to the nodes library and reused it in the future
+* In Nodedge, add support for **integral and derivative nodes**
+* In Nodedge, add support for the simulation of dynamic systems. In particular, add a widget for the selection of a solver 
+and its configuration
+* In Nodedge and Dats, add support for robotics-specific features, such as **embedded code generation** for common hardware platform, 
+real-time data acquisition and inspection.
 
 # Contributing
 
 You can contribute to Nodedge in several ways: 
-* [Donate]() to let us cover basic expenses (e.g. domain name, tooling, etc.), as well as the creation of free and open-source Nodedge features
+* [Donate]() to keep Nodedge core free and open-source, provide support for current features and implement new ones
 * [Submit your feedback](mailto:admin@nodedge.io). Share your goals and tell us how Nodedge can help
 * [Share example files](mailto:admin@nodedge.io)
 * Report bugs on [Nodedge issue tracker](https://github.com/nodedge/nodedge/issues)
