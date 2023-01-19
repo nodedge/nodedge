@@ -895,7 +895,7 @@ class EditorWindow(QMainWindow):
         name: str,
         callback: Callable,
         statusTip: Optional[str] = None,
-        shortcut: Union[None, str, QKeySequence] = None,
+        shortcut: Union[None, str, QKeySequence, QKeySequence.StandardKey] = None,
         checkable: bool = False,
         category: str = "",
     ) -> QAction:
