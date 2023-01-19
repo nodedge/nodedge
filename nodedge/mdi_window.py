@@ -28,6 +28,7 @@ from nodedge.mdi_widget import MdiWidget
 from nodedge.node_tree_widget import NodeTreeWidget
 from nodedge.scene_item_detail_widget import SceneItemDetailWidget
 from nodedge.scene_items_table_widget import SceneItemsTableWidget
+from nodedge.scene_items_tree_widget import SceneItemsTreeWidget
 
 logger = logging.getLogger(__name__)
 
@@ -107,6 +108,7 @@ class MdiWindow(EditorWindow):
         self.createNodesDock()
         self.createHistoryDock()
         self.createSceneItemsDock()
+        self.createSceneItemsTreeDock()
         self.createPythonConsole()
 
         self.createActions()
@@ -464,6 +466,7 @@ class MdiWindow(EditorWindow):
 
         self.mdiArea.setActiveSubWindow(subWindowToBeDeleted)
         self.sceneItemsTableWidget.scene = None
+        self.sceneItemsTreeWidget.scene = None
         self.sceneItemsTableWidget.clearContents()
 
         if self.maybeSave():
@@ -545,7 +548,7 @@ class MdiWindow(EditorWindow):
         Create scene items dock.
         """
         self.sceneItemsTableWidget = SceneItemsTableWidget(self)
-        self.sceneItemsTableWidget.itemsPressed.connect(self.showItemsInStatusBar)
+        # self.sceneItemsTableWidget.itemsPressed.connect(self.showItemsInStatusBar)
         self.addCurrentEditorWidgetChangedListener(self.sceneItemsTableWidget.update)
 
         self.sceneItemsDock = QDockWidget("Scene items")
@@ -554,6 +557,20 @@ class MdiWindow(EditorWindow):
 
         self.addDockWidget(Qt.LeftDockWidgetArea, self.sceneItemsDock)
         self.sceneItemsDock.hide()
+
+    # noinspection PyAttributeOutsideInit
+    def createSceneItemsTreeDock(self) -> None:
+        """
+        Create scene items tree dock.
+        """
+        self.sceneItemsTreeWidget = SceneItemsTreeWidget(self)
+        self.sceneItemsTreeWidget.itemsPressed.connect(self.showItemsInStatusBar)
+        self.addCurrentEditorWidgetChangedListener(self.sceneItemsTreeWidget.update)
+
+        self.sceneItemsTreeDock = QDockWidget("Scene items tree")
+        self.sceneItemsTreeDock.setWidget(self.sceneItemsTreeWidget)
+        self.sceneItemsTreeDock.setFloating(False)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.sceneItemsTreeDock)
 
     # noinspection PyAttributeOutsideInit
     def createPythonConsole(self) -> None:
@@ -666,6 +683,7 @@ class MdiWindow(EditorWindow):
                         subWindow = self._createMdiSubWindow(editor)
                         subWindow.show()
                         self.sceneItemsTableWidget.update()
+                        self.sceneItemsTreeWidget.update()
                     else:
                         self.__logger.debug("Loading fail")
                         editor.close()
@@ -675,6 +693,7 @@ class MdiWindow(EditorWindow):
                 subWindow = self._createMdiSubWindow(editor)
                 subWindow.show()
                 self.sceneItemsTableWidget.update()
+                self.sceneItemsTreeWidget.update()
 
     def about(self) -> None:
         """
@@ -731,6 +750,7 @@ class MdiWindow(EditorWindow):
         if self.currentEditorWidget is not None:
             self.historyListWidget.history = self.currentEditorWidget.scene.history
             self.sceneItemsTableWidget.scene = self.currentEditorWidget.scene
+            self.sceneItemsTreeWidget.scene = self.currentEditorWidget.scene
             graphicsScene = self.currentEditorWidget.scene.graphicsScene
             graphicsScene.itemsPressed.connect(self.showItemsInStatusBar)
             graphicsScene.mouseMoved.connect(self.updateStatusBar)

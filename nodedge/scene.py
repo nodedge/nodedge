@@ -10,8 +10,9 @@ from collections import OrderedDict
 from typing import Callable, List, Optional, cast
 
 from PySide6.QtGui import QDragEnterEvent, QDropEvent
-from PySide6.QtWidgets import QGraphicsItem
+from PySide6.QtWidgets import QGraphicsItem, QMessageBox
 
+from nodedge.blocks.block_config import OperationCodeNotRegistered
 from nodedge.edge import Edge
 from nodedge.elements.comment_element import CommentElement
 from nodedge.elements.element import Element
@@ -77,6 +78,16 @@ class Scene(Serializable):
 
         # current filename assigned to this scene
         self.filename: Optional[str] = None
+
+    @property
+    def shortName(self) -> str:
+        """
+        :return: short name of the scene
+        :rtype: ``str``
+        """
+        if self.filename:
+            return os.path.splitext(os.path.basename(self.filename))[0]
+        return "Untitled"
 
     @property
     def isModified(self) -> bool:
@@ -463,8 +474,18 @@ class Scene(Serializable):
                         existingNode = node
 
                 if not existingNode:
-                    newNode = self.getNodeClassFromData(nodeData)(self)
-                    newNode.deserialize(nodeData, hashmap, restoreId)
+                    try:
+                        newNode = self.getNodeClassFromData(nodeData)(self)
+                        newNode.deserialize(nodeData, hashmap, restoreId)
+                    except OperationCodeNotRegistered as e:
+                        QMessageBox.warning(
+                            None,  # type: ignore
+                            "Operation code not registered",
+                            f"Operation code {nodeData['operationCode']} is not registered. "
+                            f"Please update Nodedge to use this model.",
+                        )
+                        logger.warning(e)
+                        continue
                 else:
                     existingNode.deserialize(nodeData, hashmap, restoreId)
 
