@@ -96,9 +96,14 @@ class WorksheetsTabWidget(QTabWidget):
         if index is None:
             index = self.clickedIndex
         if name is None:
-            name, ok = QInputDialog.getText(
-                self, "Enter worksheet name", "Worksheet name"
-            )
+            dlg = QInputDialog(self)
+            dlg.setWindowTitle("Enter new worksheet name")
+            dlg.setLabelText("Name:")
+            dlg.setInputMode(QInputDialog.TextInput)
+            dlg.setLabelText("Worksheet name:")
+            ok = dlg.exec_()
+            name = dlg.textValue()
+            dlg.resize(500, 100)
 
             if not ok:
                 return

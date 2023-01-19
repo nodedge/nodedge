@@ -60,9 +60,6 @@ class EditorWindow(QMainWindow):
 
         super().__init__(parent)
 
-        self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.INFO)
-
         self.companyName = "Nodedge"
         self.productName = "Nodedge"
 
@@ -355,7 +352,7 @@ class EditorWindow(QMainWindow):
         """
         Take screenshot
         """
-        self.__logger.debug("Take screenshot")
+        logger.debug("Take screenshot")
         if filename is None:
             filename, _ = QFileDialog.getSaveFileName(
                 parent=self,
@@ -898,7 +895,7 @@ class EditorWindow(QMainWindow):
         name: str,
         callback: Callable,
         statusTip: Optional[str] = None,
-        shortcut: Union[None, str, QKeySequence] = None,
+        shortcut: Union[None, str, QKeySequence, QKeySequence.StandardKey] = None,
         checkable: bool = False,
         category: str = "",
     ) -> QAction:
@@ -935,7 +932,7 @@ class EditorWindow(QMainWindow):
         if isinstance(shortcut, QKeySequence):
             shortcut = str(shortcut.toString(QKeySequence.NativeText))
         elif isinstance(shortcut, QKeySequence.StandardKey):
-            shortcut = QKeySequence.keyBindings(shortcut)[0]  # type: ignore
+            shortcut = QKeySequence.keyBindings(shortcut)[0]
             shortcut = shortcut.toString()
 
         self.actionsDict.update(

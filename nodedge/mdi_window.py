@@ -419,7 +419,6 @@ class MdiWindow(EditorWindow):
         hasSelection = hasMdiChild and active.hasSelectedItems
         self.cutAct.setEnabled(hasSelection)
         self.copyAct.setEnabled(hasMdiChild and active.hasSelectedItems)
-        self.deleteAct.setEnabled(hasMdiChild and active.hasSelectedItems)
 
         self.undoAct.setEnabled(hasMdiChild and active.canUndo)
         self.redoAct.setEnabled(hasMdiChild and active.canRedo)

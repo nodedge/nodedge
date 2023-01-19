@@ -124,6 +124,11 @@ loggers:
         level: DEBUG
         propagate: false
 
+    nodedge.editor_window:
+        handlers: [stdout, debug_file_handler]
+        level: DEBUG
+        propagate: false
+
     nodedge.scene_items_tree_widget:
         handlers: [stdout, debug_file_handler]
         level: DEBUG
