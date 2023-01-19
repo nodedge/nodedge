@@ -47,7 +47,7 @@ class SceneItemsTreeWidget(QTreeWidget):
         return self._scene
 
     @scene.setter
-    def scene(self, scene: Scene) -> None:
+    def scene(self, scene: Optional[Scene]) -> None:
         self._scene = scene
         self.update()
         if self._scene is None:
@@ -76,21 +76,25 @@ class SceneItemsTreeWidget(QTreeWidget):
         # super().viewport().update()
 
     def onItemClicked(self, item: QTreeWidgetItem, column: int):
-        if self.scene is not None:
-            self.scene.doDeselectItems(True)
-        nodeTitles = {node.title: node for node in self.scene.nodes}
+        scene = self.scene
+        if scene is None:
+            return
+        scene.doDeselectItems(True)
+        nodeTitles = {node.title: node for node in scene.nodes}
         if item.text(0) in list(nodeTitles.keys()):
             nodeTitles[item.text(0)].isSelected = True
 
     def onItemDoubleClicked(self, item: QTreeWidgetItem, column: int):
-        if self.scene is not None:
-            self.scene.doDeselectItems(True)
-        nodeTitles = {node.title: node for node in self.scene.nodes}
+        scene = self.scene
+        if scene is None:
+            return
+        scene.doDeselectItems(True)
+        nodeTitles = {node.title: node for node in scene.nodes}
         if item.text(0) in list(nodeTitles.keys()):
             node = nodeTitles[item.text(0)]
             node.isSelected = True
             logger.debug(f"Double clicked on {node.title}")
-            self.scene.graphicsView.centerOn(node.pos)
+            scene.graphicsView.centerOn(node.pos)
 
     #
     # def onCellDoubleClicked(self, row, column):

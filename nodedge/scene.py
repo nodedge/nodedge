@@ -479,7 +479,7 @@ class Scene(Serializable):
                         newNode.deserialize(nodeData, hashmap, restoreId)
                     except OperationCodeNotRegistered as e:
                         QMessageBox.warning(
-                            None,
+                            None,  # type: ignore
                             "Operation code not registered",
                             f"Operation code {nodeData['operationCode']} is not registered. "
                             f"Please update Nodedge to use this model.",
