@@ -675,8 +675,14 @@ FilepathButton:hover {
     font: bold;
 }
 
-LinkButton:pressed:focus {
+FilepathButton:pressed:focus  {
     background-color: palette(base);
     text-decoration: underline;
+    color: palette(highlight);
+    font: bold;
+}
+
+LinkButton:pressed:focus {
+    background-color: palette(base);
     color: palette(highlight);
 }
