@@ -28,7 +28,7 @@ class SignalsTableWidget(QTableWidget):
         self.setRowCount(1)
         self.setHorizontalHeaderLabels(COLUMNS)
         self.horizontalHeader().setSectionResizeMode(0, QHeaderView.Fixed)
-        self.setColumnWidth(0, 16)
+        self.setColumnWidth(0, 40)
         self.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
 
         self.verticalHeader().setVisible(False)
