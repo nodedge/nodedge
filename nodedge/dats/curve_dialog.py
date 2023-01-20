@@ -112,6 +112,10 @@ class CurveDialog(QDialog):
         self.layout.addWidget(self.mainFrame)
         self.mainFrame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
+        self.initialCurveName = None
+        if curveName is not None:
+            self.initialCurveName = curveName
+
         logs = self.parent.logsWidget.logsListWidget.logs
         self.logsWidget = LogsListWidget(logs=logs)
         signals = self.parent.signalsWidget.signalsTableWidget.signals
@@ -211,9 +215,20 @@ class CurveDialog(QDialog):
         newSignal = evaluateFormula(curveName, curveFormula, signals, log)
 
         log.append([newSignal])
+        tupleSignals = [
+            (channel, group[0][0])
+            for channel, group in log.channels_db.items()
+            if channel != self.initialCurveName
+        ]
+
         self.signalsWidget.signals.append(curveName)
+        if self.initialCurveName is not None:
+            log = log.filter(tupleSignals)
+
         self.parent.logsWidget.logsListWidget.logs[logName] = log
 
+        if self.initialCurveName is not None:
+            del self.parent.curveConfig[self.initialCurveName]
         self.parent.curveConfig.update(
             {
                 curveName: {
@@ -226,6 +241,7 @@ class CurveDialog(QDialog):
             }
         )
         self.parent.signalsWidget.signalsTableWidget.updateItems(log)
+        self.parent.replaceCurve(self.initialCurveName, curveName)
 
     def onSignalDoubleClicked(self, item):
 

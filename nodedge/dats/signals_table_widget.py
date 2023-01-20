@@ -41,6 +41,7 @@ class SignalsTableWidget(QTableWidget):
 
         self.log = log
         self.signals: List[str] = []
+        self.allSignals: List[str] = []
         self.updateItems(self.log)
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
@@ -68,8 +69,10 @@ class SignalsTableWidget(QTableWidget):
         signals = [c for c in signals if c != "time"]
 
         self.signals = sorted(signals)
+        print(self.signals)
 
         configSignals = list(self._parent.curveConfig.keys())
+        self.allSignals = sorted(list(set(self.signals + configSignals)))
 
         self.clearContents()
         self.setRowCount(0)
@@ -117,6 +120,9 @@ class SignalsTableWidget(QTableWidget):
             drag.setMimeData(mimeData)
 
             drag.exec_(Qt.MoveAction)
+
+            for item in items:
+                item.setSelected(False)
 
         except Exception as e:
             dumpException(e)

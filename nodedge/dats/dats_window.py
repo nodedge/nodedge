@@ -524,7 +524,22 @@ class DatsWindow(QMainWindow):
         curveConfig = self.curveConfig[curveName]
         w: CurveDialog = CurveDialog(self, curveName, curveConfig)
         w.show()
+        log = self.logsWidget.logsListWidget.logs[
+            self.logsWidget.logsListWidget.currentItem().text()
+        ]
+        self.signalsWidget.signalsTableWidget.updateItems(log)
         self.modifiedConfig = True
+
+    def replaceCurve(self, oldName, newName):
+        for workbook in self.workbooksTabWidget.workbooks:
+            for worksheet in workbook.worksheets:
+                for plotItem in worksheet.plotItems:
+                    if oldName in list(plotItem.vb.curves.keys()):
+                        curve = plotItem.vb.curves.pop(oldName)
+                        plotItem.removeItem(curve)
+                        self.workbooksTabWidget.setCurrentWidget(workbook)
+                        workbook.setCurrentWidget(worksheet)
+                        self.plotCurves([newName])
 
     def deleteCurve(self):
 
