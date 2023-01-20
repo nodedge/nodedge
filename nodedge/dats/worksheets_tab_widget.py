@@ -101,9 +101,9 @@ class WorksheetsTabWidget(QTabWidget):
             dlg.setLabelText("Name:")
             dlg.setInputMode(QInputDialog.TextInput)
             dlg.setLabelText("Worksheet name:")
-            ok = dlg.exec_()
             name = dlg.textValue()
             dlg.resize(500, 100)
+            ok = dlg.exec_()
 
             if not ok:
                 return
