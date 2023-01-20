@@ -12,6 +12,7 @@ class SolverConfiguration:
         self.timeStep = None
         self.maxIterations = None
         self.tolerance = None
+        self.finalTime = None
 
     def to_dict(self):
         return {
@@ -21,6 +22,7 @@ class SolverConfiguration:
             "timeStep": self.timeStep,
             "maxIterations": self.maxIterations,
             "tolerance": self.tolerance,
+            "finalTime": self.finalTime,
         }
 
     def from_dict(self, data: dict) -> bool:
@@ -30,6 +32,7 @@ class SolverConfiguration:
         self.timeStep = data["timeStep"]
         self.maxIterations = data["maxIterations"]
         self.tolerance = data["tolerance"]
+        self.finalTime = data["finalTime"]
 
         return True
 

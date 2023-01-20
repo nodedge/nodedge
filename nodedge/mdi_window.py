@@ -270,6 +270,13 @@ class MdiWindow(EditorWindow):
         self.coderToolBar.addAction(self.configureSolverAct)
         self.toolBars.append(self.coderToolBar)
 
+        self.simuToolbar = QToolBar("Simulation")
+        self.addToolBar(Qt.ToolBarArea.BottomToolBarArea, self.simuToolbar)
+        self.simuToolbar.setMovable(True)
+        self.simuToolbar.addAction(self.startSimulationAct)
+        self.simuToolbar.addAction(self.pauseSimulationAct)
+        self.simuToolbar.addAction(self.stopSimulationAct)
+
     def hideToolBars(self):
         if self.toolBars[0].isVisible():
             for toolBar in self.toolBars:
