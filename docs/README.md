@@ -55,8 +55,8 @@ code that can be understood by off-the-shelf microcontrollers and uploaded to th
 
 # Industries
 
-Nodedge can accelerate scientific research, engineering design, system development and deployment for applications in 
-many industries. Are you curious about how to integrate it into your current workflow or do you need custom support?
+Nodedge can provide support to many industries. It accelerates R&D processes from engineering design to system development and deployment. 
+Are you curious about how to integrate it into your current workflow or do you need custom support for your application?
 
 [Contact our team](mailto:admin@nodedge.io)!
 
@@ -86,3 +86,4 @@ many industries. Are you curious about how to integrate it into your current wor
     Pharmaceutical
   </div>
 </div>
+

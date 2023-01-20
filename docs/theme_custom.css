@@ -11,6 +11,26 @@
     padding: 5px;
 }
 
+.button{
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	right: 30px;
+	cursor: pointer;
+    padding: var(--cover-button-padding);
+    border: var(--cover-button-border);
+    border-radius: var(--cover-button-border-radius);
+    text-align: center;
+    border: var(--cover-button-primary-border, var(--cover-button-border));
+    box-shadow: var(--cover-button-primary-box-shadow, var(--cover-button-box-shadow));
+    background: var(--cover-button-primary-background, var(--cover-button-background));
+    -webkit-text-decoration: var(--cover-button-primary-text-decoration, var(--cover-button-text-decoration));
+    text-decoration: var(--cover-button-primary-text-decoration, var(--cover-button-text-decoration));
+    -webkit-text-decoration-color: var(--cover-button-primary-text-decoration-color, var(--cover-button-text-decoration-color));
+    text-decoration-color: var(--cover-button-primary-text-decoration-color, var(--cover-button-text-decoration-color));
+    color: var(--cover-button-primary-color, var(--cover-button-color))
+}
+
 .github-corner {
     position: absolute;
     z-index: 40;
