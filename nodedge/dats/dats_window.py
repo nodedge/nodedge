@@ -70,6 +70,9 @@ class DatsWindow(QMainWindow):
         self.signalsDock.setWidget(self.signalsWidget)
         self.signalsDock.setWidget(self.signalsWidget)
         self.signalsWidget.plotSelectedSignals.connect(self.onPlotSelectedItems)
+        self.signalsWidget.signalsTableWidget.itemClicked.connect(
+            self.onSignalTableItemClicked
+        )
 
         self.logsWidget = LogsWidget()
         self.logsDock = QDockWidget("Logs")
@@ -123,6 +126,13 @@ class DatsWindow(QMainWindow):
     def configPath(self, path):
         self._configPath = path
         self.setConfigPathLabelText()
+
+    def onSignalTableItemClicked(self, item):
+        print(item.text())
+        if item.text() in self.curveConfig:
+            self.modifySignalAct.setEnabled(True)
+        else:
+            self.modifySignalAct.setEnabled(False)
 
     def createStatusBar(self) -> None:
         """
@@ -420,6 +430,14 @@ class DatsWindow(QMainWindow):
             QKeySequence("Ctrl+M"),
         )
 
+        self.modifySignalAct = self.createAction(
+            "&Modify signal",
+            self.modifySignal,
+            "Modify signal",
+            QKeySequence("Ctrl+Shift+M"),
+        )
+        self.modifySignalAct.setEnabled(False)
+
         self.FitToViewAct = self.createAction(
             "&Fit to view",
             self.viewAll,
@@ -501,6 +519,13 @@ class DatsWindow(QMainWindow):
         w.show()
         self.modifiedConfig = True
 
+    def modifySignal(self):
+        curveName = self.signalsWidget.signalsTableWidget.selectedItems()[0].text()
+        curveConfig = self.curveConfig[curveName]
+        w: CurveDialog = CurveDialog(self, curveName, curveConfig)
+        w.show()
+        self.modifiedConfig = True
+
     def deleteCurve(self):
 
         worksheetTabWidget = self.workbooksTabWidget.currentWidget()
@@ -579,6 +604,7 @@ class DatsWindow(QMainWindow):
         self.toolsMenu: QMenu = self.menuBar().addMenu("&Tools")
         self.toolsMenu.addAction(self.delAct)
         self.toolsMenu.addAction(self.createSignalAct)
+        self.toolsMenu.addAction(self.modifySignalAct)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit
     def createFileMenu(self):
@@ -710,7 +736,7 @@ class DatsWindow(QMainWindow):
             shortpath = filePath.split("/")[-1]
             action = self.createAction(
                 shortpath,
-                lambda: self.openFile(filePath),
+                lambda: self.openLog(filePath),
                 f"Open {filePath}",
                 QKeySequence(f"Ctrl+Shift+{index}"),
             )
@@ -740,6 +766,8 @@ class DatsWindow(QMainWindow):
 
             log.append(newSignal)
         self.signalsWidget.signalsTableWidget.updateItems(log)
+        lastFoundDataItem = NPlotDataItem()
+        lastFoundDataItem.setData(x=[0, 1], y=[0, 1])
         for workbook in self.workbooksTabWidget.workbooks:
             for worksheet in workbook.worksheets:
                 signalName: str
@@ -747,23 +775,27 @@ class DatsWindow(QMainWindow):
                 for signalName, dataItem in worksheet.items.items():
                     try:
                         data = log.get(signalName)
-                        dataItem.curve.show()
-                        dataItem.scatter.show()
+                        dataItem.show()
+                        # dataItem.curve.show()
+                        # dataItem.scatter.show()
                         dataItem.setData(
                             x=data.timestamps, y=data.samples, name=data.name
                         )
                         worksheet.updateRange(dataItem)
+                        lastFoundDataItem = dataItem
 
                     except MdfException as mdfException:
                         logging.warning(mdfException)
                         dataItem.setData(x=[0, 1], y=[0, 0])
-                        worksheet.updateRange(dataItem)
+                        # worksheet.updateRange(dataItem)
 
-                        dataItem.curve.hide()
-                        dataItem.scatter.hide()
-                        self.viewAll()
+                        # dataItem.curve.hide()
+                        # dataItem.scatter.hide()
+                        dataItem.hide()
+                        # self.viewAll()
 
-        self.viewAll()
+                worksheet.updateRange(lastFoundDataItem)
+        # self.viewAll()
 
     @staticmethod
     def getFileDialogFilter() -> str:

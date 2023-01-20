@@ -28,7 +28,7 @@ class SignalsTableWidget(QTableWidget):
         self.setRowCount(1)
         self.setHorizontalHeaderLabels(COLUMNS)
         self.horizontalHeader().setSectionResizeMode(0, QHeaderView.Fixed)
-        self.setColumnWidth(0, 16)
+        self.setColumnWidth(0, 40)
         self.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
 
         self.verticalHeader().setVisible(False)
@@ -39,12 +39,9 @@ class SignalsTableWidget(QTableWidget):
 
         self.cellClicked.connect(self.onCellClicked)
 
-        self.multiSelectionMode = False
         self.log = log
         self.signals: List[str] = []
         self.updateItems(self.log)
-
-        self.selectedRows: List[int] = []
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         super().keyPressEvent(event)
@@ -101,26 +98,10 @@ class SignalsTableWidget(QTableWidget):
             self.setItem(row, 1, nameItem)
 
     def onCellClicked(self, row, column):
-        logger.debug(f"Multi selection mode: {self.multiSelectionMode}")
-        if not self.multiSelectionMode:
-            self.clearSelection()
-            self.selectedRows = []
-
-        selection = True
-        if row not in self.selectedRows:
-            self.selectedRows.append(row)
-        else:
-            selection = False
-            self.selectedRows.remove(row)
-
-        logger.debug(f"Selected rows: {self.selectedRows}")
-
-        for i in range(self.columnCount()):
-            item = self.item(row, i)
-            if item:
-                item.setSelected(selection)
-            else:
-                widget = self.cellWidget(row, i)
+        for item in self.selectedItems():
+            if item.column() != 1:
+                item.setSelected(False)
+                self.item(row, 1).setSelected(True)
 
     def startDrag(self, supportedActions: Qt.DropAction) -> None:
         try:
