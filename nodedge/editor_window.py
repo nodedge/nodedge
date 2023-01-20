@@ -13,6 +13,7 @@ from PySide6.QtGui import (
     QClipboard,
     QCloseEvent,
     QGuiApplication,
+    QIcon,
     QKeySequence,
 )
 from PySide6.QtWidgets import (
@@ -307,6 +308,7 @@ class EditorWindow(QMainWindow):
             QKeySequence("Ctrl+Shift+S"),
             category="Simulation",
         )
+        self.startSimulationAct.setIcon(QIcon("resources/lucide/play.svg"))
 
         self.stopSimulationAct = self.createAction(
             "Stop simulation",
@@ -314,12 +316,14 @@ class EditorWindow(QMainWindow):
             "Stop the current model as a simulation",
             category="Simulation",
         )
+        self.stopSimulationAct.setIcon(QIcon("resources/lucide/square.svg"))
 
         self.pauseSimulationAct = self.createAction(
             "Pause simulation",
             self.onPauseSim,
             category="Simulation",
         )
+        self.pauseSimulationAct.setIcon(QIcon("resources/lucide/pause.svg"))
 
         self.takeScreenshotAct = self.createAction(
             "Take screenshot",
@@ -529,7 +533,7 @@ class EditorWindow(QMainWindow):
 
         :return: ``None``
         """
-        self.__logger.debug(f"Clipboard changed: '{self.clipboard.text()}'")
+        logger.debug(f"Clipboard changed: '{self.clipboard.text()}'")
 
     def OnScenePosChanged(self, x: float, y: float):
         """
@@ -548,7 +552,7 @@ class EditorWindow(QMainWindow):
         Confirmation is asked to the user if there are unsaved changes.
         """
         if self.maybeSave():
-            self.__logger.info("Creating new model")
+            logger.info("Creating new model")
             self.currentEditorWidget.newFile()
         self.updateTitle()
 
@@ -561,7 +565,7 @@ class EditorWindow(QMainWindow):
         :param filename: absolute path and filename of the file to open.
         :type filename: ``str``
         """
-        self.__logger.debug("Opening graph")
+        logger.debug("Opening graph")
         if self.maybeSave():
             if filename is None:
                 filename, ok = QFileDialog.getOpenFileName(
@@ -588,7 +592,7 @@ class EditorWindow(QMainWindow):
         Save serialized JSON version of the currently opened file, in a JSON file
         based on the editor's filename.
         """
-        self.__logger.warning("Saving graph")
+        logger.warning("Saving graph")
         if not self.currentEditorWidget.hasName:
             self.saveFileAs()
 
@@ -663,7 +667,7 @@ class EditorWindow(QMainWindow):
         Save serialized JSON version of the currently opened file, allowing the user
         to choose the filename via a ``QFileDialog``.
         """
-        self.__logger.debug("Saving graph as...")
+        logger.debug("Saving graph as...")
         filename, _ = QFileDialog.getSaveFileName(
             parent=self,
             caption="Save graph to file",
@@ -704,7 +708,7 @@ class EditorWindow(QMainWindow):
         """
         Undo last operation.
         """
-        self.__logger.debug("Undoing last action")
+        logger.debug("Undoing last action")
         if self.currentEditorWidget:
             self.currentEditorWidget.scene.history.undo()
 
@@ -712,7 +716,7 @@ class EditorWindow(QMainWindow):
         """
         Redo previously cancelled operation.
         """
-        self.__logger.debug("Redoing last action")
+        logger.debug("Redoing last action")
         if self.currentEditorWidget:
             self.currentEditorWidget.scene.history.redo()
 
@@ -720,7 +724,7 @@ class EditorWindow(QMainWindow):
         """
         Delete selected items.
         """
-        self.__logger.debug("Deleting selected items")
+        logger.debug("Deleting selected items")
         if self.currentEditorWidget:
             self.currentEditorWidget.graphicsView.deleteSelected()
 
@@ -728,7 +732,7 @@ class EditorWindow(QMainWindow):
         """
         Cut to clipboard selected items.
         """
-        self.__logger.debug("Cutting selected items")
+        logger.debug("Cutting selected items")
         if self.currentEditorWidget:
             data = self.currentEditorWidget.scene.clipboard.serializeSelected(
                 delete=True
@@ -740,29 +744,29 @@ class EditorWindow(QMainWindow):
         """
         Copy to clipboard selected items.
         """
-        self.__logger.debug("Copying selected items")
+        logger.debug("Copying selected items")
         if self.currentEditorWidget:
             data = self.currentEditorWidget.scene.clipboard.serializeSelected()
             strData = json.dumps(data, indent=4)
-            self.__logger.debug(strData)
+            logger.debug(strData)
             self.clipboard.setText(strData)
 
     def paste(self):
         """
         Paste from clipboard, creating items after deserialization.
         """
-        self.__logger.debug("Pasting saved items in clipboard")
+        logger.debug("Pasting saved items in clipboard")
         if self.currentEditorWidget:
             rawData = self.clipboard.text()
             try:
                 data = json.loads(rawData)
             except ValueError as e:
-                self.__logger.debug(f"Pasting of not valid json data: {e}")
+                logger.debug(f"Pasting of not valid json data: {e}")
                 return
 
             # Check if json data are correct
             if "nodes" not in data:
-                self.__logger.debug("JSON does not contain any blocks!")
+                logger.debug("JSON does not contain any blocks!")
 
             self.currentEditorWidget.scene.clipboard.deserialize(data)
 
@@ -886,7 +890,7 @@ class EditorWindow(QMainWindow):
             if coder is not None:
                 self.currentEditorWidget.scene.coder.generateCodeAndSave()
                 successStr = f"File saved to {coder.filename}"
-                self.__logger.debug(successStr)
+                logger.debug(successStr)
                 self.statusBar().showMessage(successStr, 5000)
                 self.showCodeAct.setEnabled(True)
 

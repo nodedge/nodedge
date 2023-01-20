@@ -81,13 +81,20 @@ class SolverDialog(QDialog):
         self.toleranceSpinBox.valueChanged.disconnect(self.updateSolverConfig)
         self.finalTimeEdit.textChanged.disconnect(self.updateSolverConfig)
 
-        self.solverCombo.setCurrentText(self.solverConfiguration.solver)
-        self.solverName.setText(self.solverConfiguration.solverName)
-        self.solverOptions.setText(self.solverConfiguration.solverOptions)
-        self.timestepSpinBox.setValue(self.solverConfiguration.timeStep)
-        self.maxIterationsSpinBox.setValue(self.solverConfiguration.maxIterations)
-        self.toleranceSpinBox.setValue(self.solverConfiguration.tolerance)
-        self.finalTimeEdit.setText(self.solverConfiguration.finalTime)
+        if self.solverConfiguration.solver is not None:
+            self.solverCombo.setCurrentText(self.solverConfiguration.solver)
+        if self.solverConfiguration.solverOptions is not None:
+            self.solverOptions.setText(self.solverConfiguration.solverOptions)
+        if self.solverConfiguration.solverName is not None:
+            self.solverName.setText(self.solverConfiguration.solverName)
+        if self.solverConfiguration.timeStep is not None:
+            self.timestepSpinBox.setValue(self.solverConfiguration.timeStep)
+        if self.solverConfiguration.maxIterations is not None:
+            self.maxIterationsSpinBox.setValue(self.solverConfiguration.maxIterations)
+        if self.solverConfiguration.tolerance is not None:
+            self.toleranceSpinBox.setValue(self.solverConfiguration.tolerance)
+        if self.solverConfiguration.finalTime is not None:
+            self.finalTimeEdit.setText(self.solverConfiguration.finalTime)
 
         self.solverCombo.currentIndexChanged.connect(self.updateSolverConfig)
         self.solverName.textChanged.connect(self.updateSolverConfig)
