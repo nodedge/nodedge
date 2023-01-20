@@ -27,7 +27,7 @@ We welcome your feedback and contributions to improve it.
 >    * clicking on `File` > `Open` in the Menu bar, or
 >    * clicking on the `Open` button in the Tool bar, or
 >    * using `CTRL+O` shortcut
-> 3. In the file dialog, select the file to open
+> 3. In the file navigator window that opens, select the file to open
 
 ## Save a model
 
@@ -114,25 +114,25 @@ We welcome your feedback and contributions to improve it.
 
 ## Open a dataset
 
-> Dats can handle a variety of dataset extensions: csv, txt, json, and tdms. We are planning to add support for hdf and rosbag, too.
-> To open a dataset in Dats:
+> Dats can handle a variety of data file extensions: csv, txt, json, and tdms. We are planning to add support for hdf and rosbag, too.
+> To open a data file in Dats:
 > 1. Open Dats by clicking on its icon in the home page
 > 2. Open a file by:
 >    * clicking on `File` > `Open` in the Menu bar, or
 >    * using `CTRL+O` shortcut
-> 3. In the file dialog, select the file to open
+> 3. In the file navigator window that opens, select the file to open
 > 
-> The log will appear in the *Logs* widget on the left side of the page. The signals contained in the log will be listed in the
-> *Signals* widget.
+> The data file will appear in the *Data files* widget on the left side of the page. The variables contained in the data file will be listed in the
+> *Variables* widget.
 
-## Plot a signal
+## Plot a variable
 
-> 1. In the *Signals* widget, select the name of the signal you want to plot
+> 1. In the *Variables* widget, select the name of the variable you want to plot
 > 2. To plot it:
->    * drag and drop the signal in the subplot area, or
->    * click on the `Plot` button at the bottom of the *Signals* widget
+>    * drag and drop the variable in the subplot area, or
+>    * click on the `Plot` button at the bottom of the *Variables* widget
 >
-> You can also select and plot multiple signals at once. To do so, hold down the `CTRL` or `SHIFT` key to perform the 
+> You can also select and plot multiple variables at once. To do so, hold down the `CTRL` or `SHIFT` key to perform the 
 > multiple section.
 
 ## Create a subplot
@@ -144,7 +144,7 @@ We welcome your feedback and contributions to improve it.
 
 ## Create a worksheet
 
-> A worksheet is a window that contains one or multiple subplots where you can plot signals. 
+> A worksheet is a window that contains one or multiple subplots where you can plot variables. 
 > To create a worksheet: 
 > 
 > * Click on `File` > `Create worksheet` in the Menu bar, or
@@ -170,9 +170,9 @@ We welcome your feedback and contributions to improve it.
 ## Save Dats configuration
 
 > Data can store the configuration of a work session, including workbooks, worksheets, and subplots layout, as well as 
-> the formulas of any signals created. 
+> the formulas of any variables created. 
 > This function is useful for freezing the current work session and allowing you to return to it at a later time. 
-> It is also helpful for regularly working with logs that contain the same signals.
+> It is also helpful for regularly working with data files that contain the same variables.
 >
 > 1. Click on `File` > `Save configuration` in the Menu bar
 > 2. Select the folder where to save the configuration file and edit the file name
@@ -191,14 +191,14 @@ We welcome your feedback and contributions to improve it.
 > * Click on `View` > `Fit to view`, or
 > * Press the `Spacebar` key
  
-## Create new signal
+## Create new variable
 
-> In Dats, signals may be native or derived from a user-provided formula. Native signals are those imported from a dataset and 
-> they are denoted with a tilde (`~`) in the *Signals* widget, while signals derived from a formula are indicated with the letter `f`.
+> In Dats, variables may be native or derived from a user-provided formula. Native variables are those imported from a dataset and 
+> they are denoted with a tilde (`~`) in the *Variables* widget, while variables derived from a formula are indicated with the letter `f`.
 > 
-> 1. Click on `Tools` > `Create signal` in the Menu bar
-> 2. In the signal editor window that opens, edit the name and formula of the signal to be created. If the formula includes  
-> existing signals, you can either manually type their name or double-click on them from the signal list on the left 
+> 1. Click on `Tools` > `Create variable` in the Menu bar
+> 2. In the variable editor window that opens, edit the name and formula of the variable to be created. If the formula includes  
+> existing variables, you can either manually type their name or double-click on them from the variable list on the left 
 > to paste their name
 > 3. Validate your formula by clicking on `Ok`
 

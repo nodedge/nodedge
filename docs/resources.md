@@ -55,7 +55,7 @@ In this example, we show you how to import a dataset into Dats, plot the signals
 1. Open Dats by clicking on its icon in the home page
 2. Click on `File` > `Open` then navigate to the example file `examples/csv_analyzer/reinforcement_learning_data.csv`
 3. Click on `Open`
-4. From the *Signals* widget on the left, select `init_x` and `target_x` by clicking on their labels
+4. From the *Variables* widget on the left, select `init_x` and `target_x` by clicking on their labels
 5. Plot the curves by: 
    * clicking on the `Plot` button, or
    * drag-and-dropping the signals to the worksheet
