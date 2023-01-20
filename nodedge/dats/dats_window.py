@@ -431,9 +431,9 @@ class DatsWindow(QMainWindow):
         )
 
         self.modifySignalAct = self.createAction(
-            "&Modify signal",
+            "&Modify variable",
             self.modifySignal,
-            "Modify signal",
+            "Modify variable",
             QKeySequence("Ctrl+Shift+M"),
         )
         self.modifySignalAct.setEnabled(False)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Scene items table widget module containing
-:class:`~nodedge.scene_items_table_widget.SceneItemsTableWidget` class.
+Scene items tree widget module containing
+:class:`~nodedge.scene_items_tree_widget.SceneItemsTreeWidget` class.
 """
 import logging
 from typing import Optional
