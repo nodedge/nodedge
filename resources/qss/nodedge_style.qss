@@ -638,12 +638,12 @@ LeftMenuWidget {
 #homeContentTitleLabel {
     font-size: 64px;
     font-weight: bold;
-    color: palette(midLight);
+    color: palette(light);
 }
 
 #homeContentSubTitleLabel {
     font-size: 28px;
-    color: palette(midLight);
+    color: palette(light);
 }
 
 LinkButton {
@@ -651,7 +651,7 @@ LinkButton {
     color: palette(text);
     text-align: left;
     border: none;
-    max-width: 120px;
+    max-width: 170px;
 }
 
 LinkButton:hover {

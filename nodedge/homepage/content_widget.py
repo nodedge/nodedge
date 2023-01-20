@@ -31,7 +31,7 @@ from nodedge.utils import cropImage, truncateString
 logger = logging.getLogger(__name__)
 
 MIN_HEIGHT = 30
-BUTTON_SIZE = 150
+BUTTON_SIZE = 200
 
 
 class LinkButton(QPushButton):
