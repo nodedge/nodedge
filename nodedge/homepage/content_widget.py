@@ -31,7 +31,7 @@ from nodedge.utils import cropImage, truncateString
 logger = logging.getLogger(__name__)
 
 MIN_HEIGHT = 30
-BUTTON_SIZE = 150
+BUTTON_SIZE = 200
 
 
 class LinkButton(QPushButton):
@@ -204,7 +204,7 @@ class HomeContentWidget(ContentWidget):
         self.datsOpenLayout.addWidget(self.datsOpenLabel)
         # self.datsNewFile = LinkButton(self, "New configuration")
         # self.datsOpenLayout.addWidget(self.datsNewFile)
-        self.datsOpenFile = LinkButton(self, "+ Open log")
+        self.datsOpenFile = LinkButton(self, "+ Open data file")
         self.datsOpenLayout.addWidget(self.datsOpenFile)
         self.datsOpenExample = LinkButton(self, "+ Open example")
         self.datsOpenLayout.addWidget(self.datsOpenExample)

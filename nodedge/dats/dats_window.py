@@ -66,7 +66,7 @@ class DatsWindow(QMainWindow):
         self.setCentralWidget(self.mainWidget)
 
         self.signalsWidget = SignalsWidget(self)
-        self.signalsDock = QDockWidget("Signals")
+        self.signalsDock = QDockWidget("Variables")
         self.signalsDock.setWidget(self.signalsWidget)
         self.signalsDock.setWidget(self.signalsWidget)
         self.signalsWidget.plotSelectedSignals.connect(self.onPlotSelectedItems)
@@ -75,7 +75,7 @@ class DatsWindow(QMainWindow):
         )
 
         self.logsWidget = LogsWidget()
-        self.logsDock = QDockWidget("Logs")
+        self.logsDock = QDockWidget("Data files")
         self.logsDock.setMinimumWidth(300)
         self.logsDock.setWidget(self.logsWidget)
         self.logsWidget.openButton.clicked.connect(self.openLog)
@@ -424,9 +424,9 @@ class DatsWindow(QMainWindow):
         )
 
         self.createSignalAct = self.createAction(
-            "&Create signal",
+            "&Create variable",
             self.createSignal,
-            "Create signal",
+            "Create variable",
             QKeySequence("Ctrl+M"),
         )
 
@@ -453,9 +453,9 @@ class DatsWindow(QMainWindow):
         )
 
         self.closeLogAct = self.createAction(
-            "Close log",
+            "Close data file",
             self.closeLog,
-            "Close log",
+            "Close data file",
             QKeySequence("Ctrl+Shift+Delete"),
         )
 
@@ -655,7 +655,7 @@ class DatsWindow(QMainWindow):
         if filename is None or not filename:
             filename, ok = QFileDialog.getOpenFileName(
                 parent=self,
-                caption="Open log file",
+                caption="Open data file",
                 dir=DatsWindow.getFileDialogDirectory(),
                 filter=DatsWindow.getFileDialogFilter(),
             )
