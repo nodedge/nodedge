@@ -710,7 +710,7 @@ class DatsWindow(QMainWindow):
             shortpath = filePath.split("/")[-1]
             action = self.createAction(
                 shortpath,
-                lambda: self.openFile(filePath),
+                lambda: self.openLog(filePath),
                 f"Open {filePath}",
                 QKeySequence(f"Ctrl+Shift+{index}"),
             )
@@ -740,6 +740,8 @@ class DatsWindow(QMainWindow):
 
             log.append(newSignal)
         self.signalsWidget.signalsTableWidget.updateItems(log)
+        lastFoundDataItem = NPlotDataItem()
+        lastFoundDataItem.setData(x=[0, 1], y=[0, 1])
         for workbook in self.workbooksTabWidget.workbooks:
             for worksheet in workbook.worksheets:
                 signalName: str
@@ -747,23 +749,27 @@ class DatsWindow(QMainWindow):
                 for signalName, dataItem in worksheet.items.items():
                     try:
                         data = log.get(signalName)
-                        dataItem.curve.show()
-                        dataItem.scatter.show()
+                        dataItem.show()
+                        # dataItem.curve.show()
+                        # dataItem.scatter.show()
                         dataItem.setData(
                             x=data.timestamps, y=data.samples, name=data.name
                         )
                         worksheet.updateRange(dataItem)
+                        lastFoundDataItem = dataItem
 
                     except MdfException as mdfException:
                         logging.warning(mdfException)
                         dataItem.setData(x=[0, 1], y=[0, 0])
-                        worksheet.updateRange(dataItem)
+                        # worksheet.updateRange(dataItem)
 
-                        dataItem.curve.hide()
-                        dataItem.scatter.hide()
-                        self.viewAll()
+                        # dataItem.curve.hide()
+                        # dataItem.scatter.hide()
+                        dataItem.hide()
+                        # self.viewAll()
 
-        self.viewAll()
+                worksheet.updateRange(lastFoundDataItem)
+        # self.viewAll()
 
     @staticmethod
     def getFileDialogFilter() -> str:
