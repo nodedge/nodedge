@@ -70,6 +70,9 @@ class DatsWindow(QMainWindow):
         self.signalsDock.setWidget(self.signalsWidget)
         self.signalsDock.setWidget(self.signalsWidget)
         self.signalsWidget.plotSelectedSignals.connect(self.onPlotSelectedItems)
+        self.signalsWidget.signalsTableWidget.itemClicked.connect(
+            self.onSignalTableItemClicked
+        )
 
         self.logsWidget = LogsWidget()
         self.logsDock = QDockWidget("Logs")
@@ -123,6 +126,13 @@ class DatsWindow(QMainWindow):
     def configPath(self, path):
         self._configPath = path
         self.setConfigPathLabelText()
+
+    def onSignalTableItemClicked(self, item):
+        print(item.text())
+        if item.text() in self.curveConfig:
+            self.modifySignalAct.setEnabled(True)
+        else:
+            self.modifySignalAct.setEnabled(False)
 
     def createStatusBar(self) -> None:
         """
@@ -420,6 +430,14 @@ class DatsWindow(QMainWindow):
             QKeySequence("Ctrl+M"),
         )
 
+        self.modifySignalAct = self.createAction(
+            "&Modify signal",
+            self.modifySignal,
+            "Modify signal",
+            QKeySequence("Ctrl+Shift+M"),
+        )
+        self.modifySignalAct.setEnabled(False)
+
         self.FitToViewAct = self.createAction(
             "&Fit to view",
             self.viewAll,
@@ -501,6 +519,13 @@ class DatsWindow(QMainWindow):
         w.show()
         self.modifiedConfig = True
 
+    def modifySignal(self):
+        curveName = self.signalsWidget.signalsTableWidget.selectedItems()[0].text()
+        curveConfig = self.curveConfig[curveName]
+        w: CurveDialog = CurveDialog(self, curveName, curveConfig)
+        w.show()
+        self.modifiedConfig = True
+
     def deleteCurve(self):
 
         worksheetTabWidget = self.workbooksTabWidget.currentWidget()
@@ -579,6 +604,7 @@ class DatsWindow(QMainWindow):
         self.toolsMenu: QMenu = self.menuBar().addMenu("&Tools")
         self.toolsMenu.addAction(self.delAct)
         self.toolsMenu.addAction(self.createSignalAct)
+        self.toolsMenu.addAction(self.modifySignalAct)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit
     def createFileMenu(self):

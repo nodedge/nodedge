@@ -91,7 +91,7 @@ class CurveFormulaEdit(QTextEdit):
 
 
 class CurveDialog(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, curveName=None, curveConfig=None):
         super().__init__(parent=parent)
         self.parent = parent
         self.setWindowTitle("Signal editor")
@@ -115,6 +115,9 @@ class CurveDialog(QDialog):
         logs = self.parent.logsWidget.logsListWidget.logs
         self.logsWidget = LogsListWidget(logs=logs)
         signals = self.parent.signalsWidget.signalsTableWidget.signals
+        createdSignals = list(self.parent.curveConfig.keys())
+        signals = list(set(signals).difference(createdSignals))
+
         self.signalsWidget = SignalsListWidget(signals=signals)
         self.signalsWidget.itemDoubleClicked.connect(self.onSignalDoubleClicked)
 
@@ -124,8 +127,12 @@ class CurveDialog(QDialog):
         self.leftLayout.addWidget(self.signalsWidget)
 
         self.curveNameEdit = CurveLineEdit(signals=signals)
+        if curveName:
+            self.curveNameEdit.setText(curveName)
         self.mainLayout.addWidget(self.curveNameEdit)
         self.curveFormulaEdit = CurveFormulaEdit()
+        if curveConfig:
+            self.curveFormulaEdit.setText(curveConfig["formula"])
         self.mainLayout.addWidget(self.curveFormulaEdit)
 
         self.unitWidget = QWidget()
