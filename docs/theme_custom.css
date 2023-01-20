@@ -1,10 +1,13 @@
 .row {
     display: flex;
+    flex-wrap: wrap;
     text-align: center;
+    justify-content: center;
 }
 
 .column {
-    flex: 33.33%;
+    flex-basis: 33.33%;
+    min-width: 250px;
     padding: 5px;
 }
 

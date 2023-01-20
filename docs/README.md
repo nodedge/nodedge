@@ -73,9 +73,6 @@ many industries. Are you curious about how to integrate it into your current wor
     <img src="media/industries/uavs.jpg" alt="uavs" style="width:100%">
     UAVs
   </div>
-</div>
-
-<div class="row">
   <div class="column">
     <img src="media/industries/clean_energy.jpg" alt="clean_energy" style="width:100%">
     Energy & electrification
