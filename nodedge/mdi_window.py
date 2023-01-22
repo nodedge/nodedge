@@ -41,8 +41,6 @@ class MdiWindow(EditorWindow):
     """
 
     def __init__(self) -> None:
-        self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.INFO)
         self.currentEditorWidgetChangedListeners: List[Callable] = []
         super(MdiWindow, self).__init__()
 
@@ -394,7 +392,7 @@ class MdiWindow(EditorWindow):
         for i, window in enumerate(windows):
             widget: QWidget = window.widget()
             if not isinstance(widget, EditorWidget):
-                self.__logger.warning(
+                logger.warning(
                     "The widget of the sub window should be an 'editor widget'"
                 )
             editorWidget: EditorWidget = cast(EditorWidget, widget)
@@ -414,7 +412,7 @@ class MdiWindow(EditorWindow):
         """
         Update edit menu.
         """
-        # self.__logger.debug("Update edit menu")
+        # logger.debug("Update edit menu")
 
         active = self.currentEditorWidget
         if active is None:
@@ -649,7 +647,7 @@ class MdiWindow(EditorWindow):
                 filenames = [filenames]
 
         for filename in filenames:
-            self.__logger.debug(f"Loading {filename}")
+            logger.debug(f"Loading {filename}")
             if filename:
                 if not os.path.exists(filename):
                     ok = QMessageBox.warning(
@@ -677,13 +675,13 @@ class MdiWindow(EditorWindow):
 
                 existingSubWindow = self.findMdiSubWindow(filename)
                 if existingSubWindow:
-                    self.__logger.debug("Existing sub window")
+                    logger.debug("Existing sub window")
                     self.mdiArea.setActiveSubWindow(existingSubWindow)
                 else:
                     # Create a new sub window and open the file
                     editor = MdiWidget()
                     if editor.loadFile(filename):
-                        self.__logger.debug("Loading success")
+                        logger.debug("Loading success")
                         self.statusBar().showMessage(f"File {filename} loaded.", 5000)
                         editor.updateTitle()
                         subWindow = self._createMdiSubWindow(editor)
@@ -691,7 +689,7 @@ class MdiWindow(EditorWindow):
                         self.sceneItemsTableWidget.update()
                         self.sceneItemsTreeWidget.update()
                     else:
-                        self.__logger.debug("Loading fail")
+                        logger.debug("Loading fail")
                         editor.close()
             else:
                 editor = MdiWidget()
@@ -728,7 +726,7 @@ class MdiWindow(EditorWindow):
 
         :return: ``None``
         """
-        self.__logger.debug("Toolbar triggered")
+        logger.debug("Toolbar triggered")
 
         if self.nodesDock.isVisible():
             self.nodesDock.hide()
@@ -750,8 +748,6 @@ class MdiWindow(EditorWindow):
 
         :return: ``None``
         """
-        for callback in self.currentEditorWidgetChangedListeners:
-            callback()
 
         if self.currentEditorWidget is not None:
             self.historyListWidget.history = self.currentEditorWidget.scene.history
@@ -760,6 +756,9 @@ class MdiWindow(EditorWindow):
             graphicsScene = self.currentEditorWidget.scene.graphicsScene
             graphicsScene.itemsPressed.connect(self.showItemsInStatusBar)
             graphicsScene.mouseMoved.connect(self.updateStatusBar)
+
+        for callback in self.currentEditorWidgetChangedListeners:
+            callback()
 
     def updateStatusBar(self, point: QPointF):
         self.statusMousePos.setText(f"{point.x()}, {point.y()}")
@@ -779,19 +778,19 @@ class MdiWindow(EditorWindow):
         """Event called when the debug action is triggered."""
         self.debugMode = not self.debugMode
         if self.debugMode:
-            self.__logger.debug("Debug mode activated")
+            logger.debug("Debug mode activated")
             self.statusBar().showMessage("Debug mode activated")
             self.sceneItemsDock.show()
             self.debugAct.setChecked(True)
         else:
-            self.__logger.debug("Debug mode deactivated")
+            logger.debug("Debug mode deactivated")
             self.statusBar().showMessage("Debug mode deactivated")
             self.sceneItemsDock.hide()
             self.debugAct.setChecked(False)
 
     @Slot()
     def onShowDialogActions(self):
-        self.__logger.info(self.actionsDict)
+        logger.info(self.actionsDict)
         dialog = ActionPalette(widgetNames=self.actionsDict)
         dialog.exec()
 
