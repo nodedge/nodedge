@@ -117,15 +117,13 @@ The project is actively being developed and there are plans to add support for a
 If you wish to join our efforts, do not hesitate to contact us. Any help is welcome!
 
 Our roadmap includes, and is not limited to:
-* In Dats, add support for **hdf**, **tdms**, and **rosag** files
-* In Nodedge, add support for matrix operation
-* In Nodedge, add support for Python custom nodes. In a custom node, the user can enter a custom piece of Python code 
+* In Dats, extend support to other file formats, including **hdf**, **rosag**, etc.
+* In Nodedge, add support for saving and sharing Python custom nodes in a node library. In a custom node, the user can enter a custom piece of Python code 
 that runs within the current Nodedge model. The custom node can be saved to the nodes library and reused it in the future
-* In Nodedge, add support for **integral and derivative nodes**
-* In Nodedge, add support for the simulation of dynamic systems. In particular, add a widget for the selection of a solver 
-and its configuration
+* In Nodedge, add support for the **simulation** of dynamic systems. In particular, add a widget for the selection of a solver 
+and its configuration, as well as start/pause/stop buttons and others
 * In Nodedge and Dats, add support for robotics-specific features, such as **embedded code generation** for common hardware platform, 
-real-time data acquisition and inspection.
+real-time data acquisition and inspection
 
 # Contributing
 
