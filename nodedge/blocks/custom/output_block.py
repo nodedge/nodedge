@@ -28,6 +28,30 @@ class OutputBlock(Block):
     ]
     outputSocketTypes: List[SocketType] = []
 
+    def __init__(self, scene: "Scene"):  # type: ignore
+        super().__init__(
+            scene,
+            inputSocketTypes=self.__class__.inputSocketTypes,
+            outputSocketTypes=self.__class__.outputSocketTypes,
+        )
+        self.state = ""
+
+    @property
+    def state(self):
+        return self._state
+
+    @state.setter
+    def state(self, value):
+        print(f"OutputBlock.state.setter: {value}")
+        print(f"Old state: {self._state}")
+        print(f"Old Initial state: {self.initialState}")
+        self._state = value
+
+        if self.initialState is None:
+            self.initialState = value
+
+        self.content.label.setText(f"{self.state}")
+
     # noinspection PyAttributeOutsideInit
     def initInnerClasses(self):
         self.content = GraphicsOutputBlockContent(self)

@@ -9,7 +9,7 @@ import numpy as np
 from PySide6.QtCore import QObject, QRunnable, QThread, QThreadPool, Signal, Slot
 from PySide6.QtWidgets import QApplication
 
-from nodedge.blocks import OP_NODE_CUSTOM_OUTPUT
+from nodedge.blocks import OP_NODE_CUSTOM_OUTPUT, Block
 from nodedge.connector import Socket
 from nodedge.node import Node
 from nodedge.serializable import Serializable
@@ -182,6 +182,7 @@ class SceneSimulator(Serializable):
 
     def run(self):
         self.isPaused = False
+        self.isStopped = False
         self.generateOrderedNodeList()
         if self.config.finalTime is None:
             raise ValueError("Final time must be defined")
@@ -211,7 +212,7 @@ class SceneSimulator(Serializable):
         app = QApplication.instance()
         app.aboutToQuit.connect(self.stop)
         # worker.signals.result.connect(self.print_output)
-        # worker.signals.finished.connect(self.thread_complete)
+        worker.signals.finished.connect(self.scene.resetAllNodes)
         # worker.signals.progress.connect(self.progress_fn)
 
         # Execute

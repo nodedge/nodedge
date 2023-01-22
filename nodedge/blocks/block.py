@@ -18,6 +18,8 @@ from nodedge.node import Node
 from nodedge.socket_type import SocketType
 from nodedge.utils import dumpException
 
+logger = logging.getLogger(__name__)
+
 
 class Block(Node):
     """
@@ -57,10 +59,27 @@ class Block(Node):
 
         # A fresh block has not been evaluated yet. It means it is dirty.
         self.isDirty = True
+        self._state = None
+        self.initialState = None
 
         self.graphicsNode.content.updateIO()
 
         self.params: List[BlockParam] = []
+
+    @property
+    def state(self):
+        return self._state
+
+    @state.setter
+    def state(self, state):
+        # print(f"Setting state of {self.title} to {state}")
+        # print(f"Old state: {self._state}")
+        # print(f"Old Initial state: {self.initialState}")
+        self._state = state
+
+        if self.initialState is None:
+            self.initialState = state
+        # print(f"Initial state: {self.initialState}")
 
     # noinspection PyAttributeOutsideInit
     def initSettings(self):
@@ -187,3 +206,11 @@ class Block(Node):
             ]
         )
         return generatedCode + ")\n"
+
+    def resetState(self):
+        self.isDirty = True
+        self.isInvalid = False
+        self.graphicsNode.setToolTip("")
+        self.markChildrenDirty()
+        self.state = self.initialState
+        logger.debug(f"Reset state of {self.title}: {self.state}")

@@ -596,6 +596,10 @@ class Scene(Serializable):
                 return node
         return None
 
+    def resetAllNodes(self):
+        for node in self.nodes:
+            node.resetState()
+
 
 class InvalidFile(Exception):
     pass
