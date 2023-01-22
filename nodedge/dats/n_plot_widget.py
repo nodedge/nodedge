@@ -392,7 +392,7 @@ class NViewBox(pg.ViewBox):
         color = QColorDialog.getColor()
         logger.info(f"New color for curve {curveName}: {color}")
 
-        curve.setPen(pg.mkPen(color))
+        curve.setPen(pg.mkPen(color, width=curve.pen.width()))
         curve.setSymbolPen(pg.mkPen(color))
         curve.setBrush(pg.mkBrush(color))
         curve.setSymbolBrush(pg.mkBrush(color))
