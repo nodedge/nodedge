@@ -47,7 +47,7 @@ Nodedge will instantly re-evaluate the model and display the updated result.
 
 <br>
  
-<center><img src="media/gravitational_force_example.png" alt="gravitational_force_example" width="800" /></center>
+<center><img src="media/nodedge/gravitational_force_example.png" alt="gravitational_force_example" width="800" /></center>
 
 ## Open a dataset in Dats
 
@@ -68,7 +68,7 @@ Congratulations! You have successfully analyzed your first dataset in Dats!
 
 <br>
 
-<center><img src="media/csv_analyzer_example.png" alt="csv_analyzer_example" width="800" /></center>
+<center><img src="media/nodedge/csv_analyzer_example.png" alt="csv_analyzer_example" width="800" /></center>
 
 # Roadmap
 
