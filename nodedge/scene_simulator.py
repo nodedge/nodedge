@@ -6,7 +6,8 @@ from collections import OrderedDict
 from typing import List, Optional
 
 import numpy as np
-from PySide6.QtCore import QObject, QRunnable, QThreadPool, Signal, Slot
+from PySide6.QtCore import QObject, QRunnable, QThread, QThreadPool, Signal, Slot
+from PySide6.QtWidgets import QApplication
 
 from nodedge.blocks import OP_NODE_CUSTOM_OUTPUT
 from nodedge.connector import Socket
@@ -134,6 +135,9 @@ class SceneSimulator(Serializable):
         self.isPaused = False
         self.isStopped = False
 
+    def __del__(self):
+        self.isStopped = True
+
     def generateOrderedNodeList(self) -> List[Node]:
         orderedNodeList: List[Node] = []
         outputNodes: List[Node] = []
@@ -202,9 +206,10 @@ class SceneSimulator(Serializable):
         except ValueError:
             raise ValueError("Final time must be a number")
 
-        worker = Worker(
-            self.runIterations, finalTime
-        )  # Any other args, kwargs are passed to the run function
+        worker = Worker(self.runIterations, finalTime)
+
+        app = QApplication.instance()
+        app.aboutToQuit.connect(self.stop)
         # worker.signals.result.connect(self.print_output)
         # worker.signals.finished.connect(self.thread_complete)
         # worker.signals.progress.connect(self.progress_fn)
