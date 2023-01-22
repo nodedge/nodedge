@@ -63,7 +63,6 @@ class IntegralBlock(Block):
             # Integrated signal
             result = quad(my_func, t0, t)
             self.state[0] = self.state[0] + result[0]
-            print(self.state[0])
             self.state[1] = result[1]
 
         except TypeError as e:

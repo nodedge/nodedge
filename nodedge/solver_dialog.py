@@ -123,4 +123,3 @@ class SolverDialog(QDialog):
     def onAccepted(self):
         self.accept()
         self.solverConfigChanged.emit(self.solverConfiguration)
-        print(self.solverConfiguration.to_dict())

@@ -345,12 +345,10 @@ class EditorWindow(QMainWindow):
         pass
 
     def onStopSim(self) -> None:
-        QMessageBox.warning(self, "Not yet implemented", "Not yet implemented")
-        # TODO: Implement stop simulation
+        self.currentEditorWidget.scene.simulator.stop()
 
     def onPauseSim(self) -> None:
-        QMessageBox.warning(self, "Not yet implemented", "Not yet implemented")
-        # TODO: Implement pause simulation
+        self.currentEditorWidget.scene.simulator.pause()
 
     def takeScreenshot(self, filename=None):
         """

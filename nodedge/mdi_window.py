@@ -265,9 +265,8 @@ class MdiWindow(EditorWindow):
         self.toolBars.append(self.editToolBar)
 
         self.coderToolBar = self.addToolBar("Coder")
-        # self.coderToolBar.setMovable(False)
+        self.coderToolBar.setMovable(False)
         self.coderToolBar.addAction(self.generateCodeAct)
-        self.coderToolBar.addAction(self.configureSolverAct)
         self.toolBars.append(self.coderToolBar)
 
         self.simuToolbar = QToolBar("Simulation")
@@ -276,6 +275,7 @@ class MdiWindow(EditorWindow):
         self.simuToolbar.addAction(self.startSimulationAct)
         self.simuToolbar.addAction(self.pauseSimulationAct)
         self.simuToolbar.addAction(self.stopSimulationAct)
+        self.simuToolbar.addAction(self.configureSolverAct)
 
     def hideToolBars(self):
         if self.toolBars[0].isVisible():
