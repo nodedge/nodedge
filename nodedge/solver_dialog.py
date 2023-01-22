@@ -94,7 +94,7 @@ class SolverDialog(QDialog):
         if self.solverConfiguration.tolerance is not None:
             self.toleranceSpinBox.setValue(self.solverConfiguration.tolerance)
         if self.solverConfiguration.finalTime is not None:
-            self.finalTimeEdit.setText(self.solverConfiguration.finalTime)
+            self.finalTimeEdit.setText(str(self.solverConfiguration.finalTime))
 
         self.solverCombo.currentIndexChanged.connect(self.updateSolverConfig)
         self.solverName.textChanged.connect(self.updateSolverConfig)

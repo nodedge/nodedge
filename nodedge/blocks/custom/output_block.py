@@ -42,9 +42,6 @@ class OutputBlock(Block):
 
     @state.setter
     def state(self, value):
-        print(f"OutputBlock.state.setter: {value}")
-        print(f"Old state: {self._state}")
-        print(f"Old Initial state: {self.initialState}")
         self._state = value
 
         if self.initialState is None:

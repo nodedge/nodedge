@@ -23,6 +23,7 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QMenu,
     QMessageBox,
+    QProgressBar,
     QTextEdit,
     QVBoxLayout,
     QWidget,
@@ -136,27 +137,14 @@ class EditorWindow(QMainWindow):
         :class:`~nodedge.graphics_view.GraphicsView`'s scenePosChanged event.
         """
         self.statusBar().showMessage("")
-        # self.playFrame = QFrame()
-        # self.playLayout = QHBoxLayout()
-        # self.statusBar().addPermanentWidget(self.playFrame)
-
-        # self.playLayout.setContentsMargins(0, 0, 0, 0)
-        # self.playFrame.setLayout(self.playLayout)
-        # self.playButton = QPushButton("Play")
-        # # self.playButton.setFixedWidth(50)
-        # self.playLayout.addWidget(self.playButton)
-        # self.pauseButton = QPushButton("Pause")
-        # # self.pauseButton.setFixedWidth(50)
-        # self.playLayout.addWidget(self.pauseButton)
-        # self.stopButton = QPushButton("Stop")
-        # # self.stopButton.setFixedWidth(50)
-        # self.playLayout.addWidget(self.stopButton)
         self.statusMousePos = QLabel("")
-        self.statusBar().addPermanentWidget(self.statusMousePos)
-        # self.currentViewLabel = QLabel(f"Current view: blablajson")
-        # self.currentViewLabel.setFixedWidth(300)
-        # self.currentViewLabel.setAlignment(Qt.AlignRight)
-        # self.statusBar().addPermanentWidget(self.currentViewLabel)
+        self.simulationProgressLabel = QLabel("")
+        self.simulationProgressBar = QProgressBar()
+        self.simulationProgressBar.setFixedWidth(400)
+        self.simulationProgressBar.setRange(0, 100)
+        self.statusBar().addPermanentWidget(self.simulationProgressLabel)
+        self.statusBar().addPermanentWidget(self.simulationProgressBar)
+        self.statusBar().addWidget(self.statusMousePos)
 
         if self.currentEditorWidget is None:
             return
@@ -346,6 +334,8 @@ class EditorWindow(QMainWindow):
 
     def onStopSim(self) -> None:
         self.currentEditorWidget.scene.simulator.stop()
+        self.simulationProgressLabel.setText("")
+        self.simulationProgressBar.setValue(0)
 
     def onPauseSim(self) -> None:
         self.currentEditorWidget.scene.simulator.pause()
@@ -370,6 +360,24 @@ class EditorWindow(QMainWindow):
 
     def onStartSimulation(self):
         self.currentEditorWidget.scene.simulator.run()
+        self.currentEditorWidget.scene.simulator.progressed.connect(
+            self.updateProgressLabel
+        )
+
+    def updateProgressLabel(self, progress):
+        totalSteps = self.currentEditorWidget.scene.simulator.totalSteps
+        finalTime = self.currentEditorWidget.scene.simulator.config.finalTime
+        currentTime = self.currentEditorWidget.scene.simulator.currentTimeStep
+        stepsPerSecond = self.currentEditorWidget.scene.simulator.stepsPerSecond
+        percentPerSecond = stepsPerSecond / totalSteps * 100
+        percentProgress = progress / totalSteps * 100
+        self.simulationProgressBar.setValue(int(percentProgress))
+        self.simulationProgressLabel.setText(
+            f"Progress: {currentTime:.1E} s/{finalTime} s [{percentProgress:.1E}%] [{percentPerSecond:.0E} %/s]"
+        )
+        self.simulationProgressLabel.setToolTip(
+            f"{progress:.0E}/{totalSteps:.0E} [{percentProgress:.0E}]% [{stepsPerSecond:.0E} steps/s]"
+        )
 
     def onShowGraph(self):
         QMessageBox.information(self, "Graph", "Show graph")

@@ -6,7 +6,15 @@ from collections import OrderedDict
 from typing import List, Optional
 
 import numpy as np
-from PySide6.QtCore import QObject, QRunnable, QThread, QThreadPool, Signal, Slot
+from PySide6.QtCore import (
+    QObject,
+    QRunnable,
+    QThread,
+    QThreadPool,
+    QTimer,
+    Signal,
+    Slot,
+)
 from PySide6.QtWidgets import QApplication
 
 from nodedge.blocks import OP_NODE_CUSTOM_OUTPUT, Block
@@ -66,9 +74,6 @@ class Worker(QRunnable):
         self.kwargs = kwargs
         self.signals = WorkerSignals()
 
-        # Add the callback to our kwargs
-        # self.kwargs["progress_callback"] = self.signals.progress
-
     @Slot()
     def run(self):
         """
@@ -97,7 +102,15 @@ class SolverConfiguration:
         self.timeStep = None
         self.maxIterations = None
         self.tolerance = None
-        self.finalTime = None
+        self._finalTime = None
+
+    @property
+    def finalTime(self):
+        return self._finalTime
+
+    @finalTime.setter
+    def finalTime(self, value):
+        self._finalTime = float(value)
 
     def to_dict(self):
         return {
@@ -122,9 +135,9 @@ class SolverConfiguration:
         return True
 
 
-class SceneSimulator(Serializable):
+class SceneSimulator(QObject, Serializable):
     notConnectedSocket = Signal()
-    simulatorStep = Signal(int)
+    progressed = Signal(int)
 
     def __init__(self, scene: "Scene"):  # type: ignore
         super().__init__()
@@ -134,9 +147,27 @@ class SceneSimulator(Serializable):
         self.threadpool = QThreadPool()
         self.isPaused = False
         self.isStopped = False
+        self.currentStep = 0
+        self.stepsPerSecond = 0
+        self.lastCurrentStep = 0
+        self.stepPerSecondTimer = QTimer()
+        self.stepPerSecondTimer.timeout.connect(self._updateStepPerSecond)
+        self.stepPerSecondTimer.start(1000)
+
+    def _updateStepPerSecond(self):
+        self.stepsPerSecond = self.currentStep - self.lastCurrentStep
+        self.lastCurrentStep = self.currentStep
 
     def __del__(self):
         self.isStopped = True
+
+    @property
+    def totalSteps(self):
+        return int(float(self.config.finalTime) / self.config.timeStep)
+
+    @property
+    def currentTimeStep(self):
+        return self.currentStep * self.config.timeStep
 
     def generateOrderedNodeList(self) -> List[Node]:
         orderedNodeList: List[Node] = []
@@ -222,6 +253,8 @@ class SceneSimulator(Serializable):
 
     def runIterations(self, finalTime):
         for i in np.arange(0, finalTime, self.config.timeStep):
+            self.currentStep = i
+            self.progressed.emit(i)
 
             while self.isPaused:
                 time.sleep(0)

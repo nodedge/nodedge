@@ -72,14 +72,10 @@ class Block(Node):
 
     @state.setter
     def state(self, state):
-        # print(f"Setting state of {self.title} to {state}")
-        # print(f"Old state: {self._state}")
-        # print(f"Old Initial state: {self.initialState}")
         self._state = state
 
         if self.initialState is None:
             self.initialState = state
-        # print(f"Initial state: {self.initialState}")
 
     # noinspection PyAttributeOutsideInit
     def initSettings(self):
@@ -97,9 +93,9 @@ class Block(Node):
         :param socket: the socket on which the input has changed
         :return: ``None``
         """
-        self.__logger.debug(f"New edge: {socket}")
+        self.__logger.debug(f"New socket: {socket}")
         self.isDirty = True
-        self.eval()
+        # self.eval()
 
     def checkInputsValidity(self):
         for index in range(len(self.inputSockets)):
