@@ -75,10 +75,10 @@ class NPlotWidget(GraphicsLayoutWidget):
 
     def onXRangeChanged(self, plotitem, range):
         minValue = (
-            (range[0] - self.xLimits[0]) / (self.xLimits[1] - self.xLimits[0]) * 100
+            (range[0] - self.xLimits[0]) / (self.xLimits[1] - self.xLimits[0]) * 100.0
         )
         maxValue = (
-            (range[1] - self.xLimits[0]) / (self.xLimits[1] - self.xLimits[0]) * 100
+            (range[1] - self.xLimits[0]) / (self.xLimits[1] - self.xLimits[0]) * 100.0
         )
         logger.debug(f"Updapte x range: [{minValue}, {maxValue}]")
         self.xRangeUpdated.emit(minValue, maxValue)

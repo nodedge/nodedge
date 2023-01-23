@@ -298,8 +298,8 @@ font-size: 14px;
 border-color: palette(window);
 padding-top: 0px;
 gridline-color: palette(window);
-border-left: 1px solid palette(light);
-border-bottom: 1px solid palette(light);
+/*border-left: 1px solid palette(light);*/
+/*border-bottom: 1px solid palette(light);*/
 }
 
 QTableWidget::item:selected{
