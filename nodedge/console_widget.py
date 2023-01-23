@@ -127,12 +127,13 @@ class ConsoleWidget(QWidget):
                 self.execMulti(cmd)
             else:
                 p = QApplication.palette()
-                color = p.dark().color().name()
+                color = p.base().color().name()
                 textColor = p.text().color().name()
+                highlight = p.highlight().color().name()
 
                 self.write(
-                    f"<br><div style='background-color: {color}; color: {textColor}'><b>%s</b>\n"
-                    % encCmd,
+                    f"<br><span style='background-color: {color}; color: {highlight}'>>>> </span>"
+                    f"<span style='background-color: {color}; color: {textColor}'><b> {encCmd}</b>\n",
                     html=True,
                     scrollToBottom=True,
                 )
@@ -140,7 +141,7 @@ class ConsoleWidget(QWidget):
                 self.execSingle(cmd)
 
             if not self.inCmd:
-                self.write("</div>\n", html=True, scrollToBottom=True)
+                self.write("</span>", html=True, scrollToBottom=True)
 
         finally:
             sys.stdout = orig_stdout
@@ -249,11 +250,11 @@ class ConsoleWidget(QWidget):
         else:
             if self.inCmd:
                 p = QApplication.palette()
-                color = p.mid().color().name()
+                color = p.base().color().name()
                 textColor = p.text().color().name()
                 self.inCmd = False
                 self.output.textCursor().insertHtml(
-                    f"</div><br><div style='font-weight: normal; background-color: {color}; color: {textColor}'>"
+                    f"</span><br><span style='font-weight: normal; background-color: {color}; color: {textColor}'>"
                 )
             self.output.insertPlainText(strn)
 
