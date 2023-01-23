@@ -58,7 +58,7 @@ class CutLine:
             if (
                 eventType == QEvent.MouseButtonPress
                 and eventButton == Qt.LeftButton
-                and eventModifiers & Qt.ControlModifier
+                and eventModifiers & Qt.AltModifier
             ):
 
                 self.mode = CutLineMode.CUTTING
@@ -96,6 +96,7 @@ class CutLine:
         try:
             scene: "Scene" = self.graphicsView.graphicsScene.scene  # type: ignore
             self.__logger.debug(f"Cutting points: {self.graphicsCutLine.linePoints}")
+            atLeastOneEdge = False
             for ix in range(len(self.graphicsCutLine.linePoints) - 1):
                 p1 = self.graphicsCutLine.linePoints[ix]
                 p2 = self.graphicsCutLine.linePoints[ix + 1]
@@ -112,13 +113,16 @@ class CutLine:
                             f"[{p1.__pos__()}, {p2.__pos__()}] intersects with: {edge}"
                         )
                         edge.remove()
+                        atLeastOneEdge = True
                     else:
                         self.__logger.debug(
                             f"[{p1.__pos__()}, {p2.__pos__()}] does not intersect with: "
                             f"{edge.graphicsEdge.path()}"
                         )
 
-            scene.history.store("Delete edges.")
+            if atLeastOneEdge:
+                scene.history.store("Delete edge(s).")
+
             self.__logger.debug("Cutting has been done.")
 
         except Exception as e:
