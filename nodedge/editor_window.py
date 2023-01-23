@@ -333,11 +333,15 @@ class EditorWindow(QMainWindow):
         pass
 
     def onStopSim(self) -> None:
+        if self.currentEditorWidget is None:
+            return
         self.currentEditorWidget.scene.simulator.stop()
         self.simulationProgressLabel.setText("")
         self.simulationProgressBar.setValue(0)
 
     def onPauseSim(self) -> None:
+        if self.currentEditorWidget is None:
+            return
         self.currentEditorWidget.scene.simulator.pause()
 
     def takeScreenshot(self, filename=None):
