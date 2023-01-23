@@ -229,7 +229,7 @@ class HomeContentWidget(ContentWidget):
         self.recentNodedgeFrame.setLayout(self.recentNodedgeLayout)
         self.openLayout.addWidget(self.recentNodedgeFrame, 1, 0)
 
-        self.recentNodedgeLabel = QLabel("<b>Recent Nodedge models</b>")
+        self.recentNodedgeLabel = QLabel("<b>Recent models</b>")
         self.recentNodedgeLayout.addWidget(self.recentNodedgeLabel)
 
         self.recentFilesWidget = QFrame()
@@ -283,7 +283,7 @@ class HomeContentWidget(ContentWidget):
         self.datsRecentFilesFrame.setLayout(self.datsRecentFilesLayout)
         self.openLayout.addWidget(self.datsRecentFilesFrame, 1, 1)
 
-        self.datsRecentFilesLabel = QLabel("<b>Recent Dats configurations</b>")
+        self.datsRecentFilesLabel = QLabel("<b>Recent data files</b>")
         self.datsRecentFilesLayout.addWidget(self.datsRecentFilesLabel)
 
         self.datsRecentButtonsFrame = QFrame()

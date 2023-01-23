@@ -1,3 +1,4 @@
+import logging
 from typing import Callable, List, Optional, Union
 
 import pyqtgraph as pg
@@ -7,6 +8,8 @@ from PySide6.QtWidgets import QInputDialog, QMenu, QTabWidget
 
 from nodedge.dats.n_plot_data_item import NPlotDataItem
 from nodedge.dats.n_plot_widget import NPlotWidget
+
+logger = logging.getLogger(__name__)
 
 
 class WorksheetsTabWidget(QTabWidget):
@@ -101,12 +104,13 @@ class WorksheetsTabWidget(QTabWidget):
             dlg.setLabelText("Name:")
             dlg.setInputMode(QInputDialog.TextInput)
             dlg.setLabelText("Worksheet name:")
-            name = dlg.textValue()
+            logger.info(f"{name=}")
             dlg.resize(500, 100)
             ok = dlg.exec_()
 
             if not ok:
                 return
+            name = dlg.textValue()
         self.setTabText(index, name)
         self.worksheets[index].name = name
 

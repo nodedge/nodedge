@@ -115,10 +115,10 @@ class WorkbooksTabWidget(QTabWidget):
             dlg.setLabelText("Workbook name:")
             dlg.resize(500, 100)
             ok = dlg.exec_()
-            name = dlg.textValue()
 
             if not ok:
                 return
+            name = dlg.textValue()
         self.setTabText(index, name)
         self.workbooks[index].name = name
 

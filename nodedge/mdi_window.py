@@ -566,7 +566,7 @@ class MdiWindow(EditorWindow):
         self.sceneItemsTreeWidget.itemsPressed.connect(self.showItemsInStatusBar)
         self.addCurrentEditorWidgetChangedListener(self.sceneItemsTreeWidget.update)
 
-        self.sceneItemsTreeDock = QDockWidget("Scene items tree")
+        self.sceneItemsTreeDock = QDockWidget("Model tree")
         self.sceneItemsTreeDock.setWidget(self.sceneItemsTreeWidget)
         self.sceneItemsTreeDock.setFloating(False)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.sceneItemsTreeDock)
@@ -626,6 +626,7 @@ class MdiWindow(EditorWindow):
         :type filenames: Optional[bool, str, List[str]]
         :return: ``None``
         """
+        logger.info(f"Opening {filenames} in Nodedge.")
         if isinstance(filenames, bool) or filenames is None:
             filenames, ok = QFileDialog.getOpenFileNames(
                 parent=self,

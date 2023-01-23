@@ -50,7 +50,7 @@ class SplashScreen(QMainWindow):
         self.labelTitle.setFont(QFont(["Segoe UI"], 36, QFont.Weight.Bold))
         self.labelTitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.labelTitle.setText("NODEDGE")
-        self.labelTitle.setStyleSheet("color: #007BFF;")
+        self.labelTitle.setStyleSheet("color: #2860AC;")
 
         self.labelDescription = QLabel(self.dropShadowFrame)
         self.labelDescription.setGeometry(QRect(0, 150, 661, 61))
