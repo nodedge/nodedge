@@ -390,15 +390,16 @@ class EditorWindow(QMainWindow):
         totalSteps = self.currentEditorWidget.scene.simulator.totalSteps
         finalTime = self.currentEditorWidget.scene.simulator.config.finalTime
         currentTime = self.currentEditorWidget.scene.simulator.currentTimeStep
+        currentStep = self.currentEditorWidget.scene.simulator.currentStep
         stepsPerSecond = self.currentEditorWidget.scene.simulator.stepsPerSecond
         percentPerSecond = stepsPerSecond / totalSteps * 100
-        percentProgress = progress / totalSteps * 100
+        percentProgress = currentStep / totalSteps * 100
         self.simulationProgressBar.setValue(int(percentProgress))
         self.simulationProgressLabel.setText(
-            f"Progress: {currentTime:.1E} s/{finalTime} s [{percentProgress:.1E}%] [{percentPerSecond:.0E} %/s]"
+            f"Progress: {currentTime:.1E} s/{finalTime:.1E} s [{percentProgress:.0f}%] [{percentPerSecond:.0E} %/s]"
         )
         self.simulationProgressLabel.setToolTip(
-            f"{progress:.0E}/{totalSteps:.0E} [{percentProgress:.0E}]% [{stepsPerSecond:.0E} steps/s]"
+            f"{currentStep:.0E}/{totalSteps:.0E} [{percentProgress:.0E}]% [{stepsPerSecond:.0E} steps/s]"
         )
 
     def onShowGraph(self):

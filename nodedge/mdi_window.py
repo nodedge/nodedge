@@ -261,15 +261,15 @@ class MdiWindow(EditorWindow):
         self.editToolBar.addAction(self.addCommentElementAct)
         self.editToolBar.addSeparator()
         self.toolBars.append(self.editToolBar)
-
-        self.coderToolBar = self.addToolBar("Coder")
-        self.coderToolBar.setMovable(False)
-        self.coderToolBar.addAction(self.generateCodeAct)
-        self.toolBars.append(self.coderToolBar)
+        #
+        # self.coderToolBar = self.addToolBar("Coder")
+        # self.coderToolBar.setMovable(False)
+        # self.coderToolBar.addAction(self.generateCodeAct)
+        # self.toolBars.append(self.coderToolBar)
 
         self.simuToolbar = QToolBar("Simulation")
         self.addToolBar(self.simuToolbar)
-        self.simuToolbar.setMovable(True)
+        self.simuToolbar.setMovable(False)
         self.simuToolbar.addAction(self.realTimeEvalAct)
         self.simuToolbar.addSeparator()
         self.simuToolbar.addAction(self.startSimulationAct)
