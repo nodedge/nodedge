@@ -13,6 +13,7 @@ from PySide6.QtGui import (
     QClipboard,
     QCloseEvent,
     QGuiApplication,
+    QIcon,
     QKeySequence,
 )
 from PySide6.QtWidgets import (
@@ -22,6 +23,7 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QMenu,
     QMessageBox,
+    QProgressBar,
     QTextEdit,
     QVBoxLayout,
     QWidget,
@@ -135,27 +137,14 @@ class EditorWindow(QMainWindow):
         :class:`~nodedge.graphics_view.GraphicsView`'s scenePosChanged event.
         """
         self.statusBar().showMessage("")
-        # self.playFrame = QFrame()
-        # self.playLayout = QHBoxLayout()
-        # self.statusBar().addPermanentWidget(self.playFrame)
-
-        # self.playLayout.setContentsMargins(0, 0, 0, 0)
-        # self.playFrame.setLayout(self.playLayout)
-        # self.playButton = QPushButton("Play")
-        # # self.playButton.setFixedWidth(50)
-        # self.playLayout.addWidget(self.playButton)
-        # self.pauseButton = QPushButton("Pause")
-        # # self.pauseButton.setFixedWidth(50)
-        # self.playLayout.addWidget(self.pauseButton)
-        # self.stopButton = QPushButton("Stop")
-        # # self.stopButton.setFixedWidth(50)
-        # self.playLayout.addWidget(self.stopButton)
         self.statusMousePos = QLabel("")
-        self.statusBar().addPermanentWidget(self.statusMousePos)
-        # self.currentViewLabel = QLabel(f"Current view: blablajson")
-        # self.currentViewLabel.setFixedWidth(300)
-        # self.currentViewLabel.setAlignment(Qt.AlignRight)
-        # self.statusBar().addPermanentWidget(self.currentViewLabel)
+        self.simulationProgressLabel = QLabel("")
+        self.simulationProgressBar = QProgressBar()
+        self.simulationProgressBar.setFixedWidth(400)
+        self.simulationProgressBar.setRange(0, 100)
+        self.statusBar().addPermanentWidget(self.simulationProgressLabel)
+        self.statusBar().addPermanentWidget(self.simulationProgressBar)
+        self.statusBar().addWidget(self.statusMousePos)
 
         if self.currentEditorWidget is None:
             return
@@ -307,6 +296,7 @@ class EditorWindow(QMainWindow):
             QKeySequence("Ctrl+Shift+S"),
             category="Simulation",
         )
+        self.startSimulationAct.setIcon(QIcon("resources/lucide/play.svg"))
 
         self.stopSimulationAct = self.createAction(
             "Stop simulation",
@@ -314,12 +304,14 @@ class EditorWindow(QMainWindow):
             "Stop the current model as a simulation",
             category="Simulation",
         )
+        self.stopSimulationAct.setIcon(QIcon("resources/lucide/square.svg"))
 
         self.pauseSimulationAct = self.createAction(
             "Pause simulation",
             self.onPauseSim,
             category="Simulation",
         )
+        self.pauseSimulationAct.setIcon(QIcon("resources/lucide/pause.svg"))
 
         self.takeScreenshotAct = self.createAction(
             "Take screenshot",
@@ -341,12 +333,16 @@ class EditorWindow(QMainWindow):
         pass
 
     def onStopSim(self) -> None:
-        QMessageBox.warning(self, "Not yet implemented", "Not yet implemented")
-        # TODO: Implement stop simulation
+        if self.currentEditorWidget is None:
+            return
+        self.currentEditorWidget.scene.simulator.stop()
+        self.simulationProgressLabel.setText("")
+        self.simulationProgressBar.setValue(0)
 
     def onPauseSim(self) -> None:
-        QMessageBox.warning(self, "Not yet implemented", "Not yet implemented")
-        # TODO: Implement pause simulation
+        if self.currentEditorWidget is None:
+            return
+        self.currentEditorWidget.scene.simulator.pause()
 
     def takeScreenshot(self, filename=None):
         """
@@ -368,6 +364,24 @@ class EditorWindow(QMainWindow):
 
     def onStartSimulation(self):
         self.currentEditorWidget.scene.simulator.run()
+        self.currentEditorWidget.scene.simulator.progressed.connect(
+            self.updateProgressLabel
+        )
+
+    def updateProgressLabel(self, progress):
+        totalSteps = self.currentEditorWidget.scene.simulator.totalSteps
+        finalTime = self.currentEditorWidget.scene.simulator.config.finalTime
+        currentTime = self.currentEditorWidget.scene.simulator.currentTimeStep
+        stepsPerSecond = self.currentEditorWidget.scene.simulator.stepsPerSecond
+        percentPerSecond = stepsPerSecond / totalSteps * 100
+        percentProgress = progress / totalSteps * 100
+        self.simulationProgressBar.setValue(int(percentProgress))
+        self.simulationProgressLabel.setText(
+            f"Progress: {currentTime:.1E} s/{finalTime} s [{percentProgress:.1E}%] [{percentPerSecond:.0E} %/s]"
+        )
+        self.simulationProgressLabel.setToolTip(
+            f"{progress:.0E}/{totalSteps:.0E} [{percentProgress:.0E}]% [{stepsPerSecond:.0E} steps/s]"
+        )
 
     def onShowGraph(self):
         QMessageBox.information(self, "Graph", "Show graph")
@@ -529,7 +543,7 @@ class EditorWindow(QMainWindow):
 
         :return: ``None``
         """
-        self.__logger.debug(f"Clipboard changed: '{self.clipboard.text()}'")
+        logger.debug(f"Clipboard changed: '{self.clipboard.text()}'")
 
     def OnScenePosChanged(self, x: float, y: float):
         """
@@ -548,7 +562,7 @@ class EditorWindow(QMainWindow):
         Confirmation is asked to the user if there are unsaved changes.
         """
         if self.maybeSave():
-            self.__logger.info("Creating new model")
+            logger.info("Creating new model")
             self.currentEditorWidget.newFile()
         self.updateTitle()
 
@@ -561,7 +575,7 @@ class EditorWindow(QMainWindow):
         :param filename: absolute path and filename of the file to open.
         :type filename: ``str``
         """
-        self.__logger.debug("Opening graph")
+        logger.debug("Opening graph")
         if self.maybeSave():
             if filename is None:
                 filename, ok = QFileDialog.getOpenFileName(
@@ -588,7 +602,7 @@ class EditorWindow(QMainWindow):
         Save serialized JSON version of the currently opened file, in a JSON file
         based on the editor's filename.
         """
-        self.__logger.warning("Saving graph")
+        logger.warning("Saving graph")
         if not self.currentEditorWidget.hasName:
             self.saveFileAs()
 
@@ -663,7 +677,7 @@ class EditorWindow(QMainWindow):
         Save serialized JSON version of the currently opened file, allowing the user
         to choose the filename via a ``QFileDialog``.
         """
-        self.__logger.debug("Saving graph as...")
+        logger.debug("Saving graph as...")
         filename, _ = QFileDialog.getSaveFileName(
             parent=self,
             caption="Save graph to file",
@@ -704,7 +718,7 @@ class EditorWindow(QMainWindow):
         """
         Undo last operation.
         """
-        self.__logger.debug("Undoing last action")
+        logger.debug("Undoing last action")
         if self.currentEditorWidget:
             self.currentEditorWidget.scene.history.undo()
 
@@ -712,7 +726,7 @@ class EditorWindow(QMainWindow):
         """
         Redo previously cancelled operation.
         """
-        self.__logger.debug("Redoing last action")
+        logger.debug("Redoing last action")
         if self.currentEditorWidget:
             self.currentEditorWidget.scene.history.redo()
 
@@ -720,7 +734,7 @@ class EditorWindow(QMainWindow):
         """
         Delete selected items.
         """
-        self.__logger.debug("Deleting selected items")
+        logger.debug("Deleting selected items")
         if self.currentEditorWidget:
             self.currentEditorWidget.graphicsView.deleteSelected()
 
@@ -728,7 +742,7 @@ class EditorWindow(QMainWindow):
         """
         Cut to clipboard selected items.
         """
-        self.__logger.debug("Cutting selected items")
+        logger.debug("Cutting selected items")
         if self.currentEditorWidget:
             data = self.currentEditorWidget.scene.clipboard.serializeSelected(
                 delete=True
@@ -740,29 +754,29 @@ class EditorWindow(QMainWindow):
         """
         Copy to clipboard selected items.
         """
-        self.__logger.debug("Copying selected items")
+        logger.debug("Copying selected items")
         if self.currentEditorWidget:
             data = self.currentEditorWidget.scene.clipboard.serializeSelected()
             strData = json.dumps(data, indent=4)
-            self.__logger.debug(strData)
+            logger.debug(strData)
             self.clipboard.setText(strData)
 
     def paste(self):
         """
         Paste from clipboard, creating items after deserialization.
         """
-        self.__logger.debug("Pasting saved items in clipboard")
+        logger.debug("Pasting saved items in clipboard")
         if self.currentEditorWidget:
             rawData = self.clipboard.text()
             try:
                 data = json.loads(rawData)
             except ValueError as e:
-                self.__logger.debug(f"Pasting of not valid json data: {e}")
+                logger.debug(f"Pasting of not valid json data: {e}")
                 return
 
             # Check if json data are correct
             if "nodes" not in data:
-                self.__logger.debug("JSON does not contain any blocks!")
+                logger.debug("JSON does not contain any blocks!")
 
             self.currentEditorWidget.scene.clipboard.deserialize(data)
 
@@ -886,7 +900,7 @@ class EditorWindow(QMainWindow):
             if coder is not None:
                 self.currentEditorWidget.scene.coder.generateCodeAndSave()
                 successStr = f"File saved to {coder.filename}"
-                self.__logger.debug(successStr)
+                logger.debug(successStr)
                 self.statusBar().showMessage(successStr, 5000)
                 self.showCodeAct.setEnabled(True)
 

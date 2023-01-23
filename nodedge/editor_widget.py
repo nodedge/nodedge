@@ -201,7 +201,8 @@ class EditorWidget(QWidget):
             # Don't store initial stamp because the file has still not been changed.
             self.scene.history.clear()
             QApplication.restoreOverrideCursor()
-            self.evalNodes()
+            # self.evalNodes()
+            self.scene.resetAllNodes()
             return True
         except FileNotFoundError as e:
             self.__logger.warning(e)

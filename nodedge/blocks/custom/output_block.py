@@ -6,6 +6,7 @@ import numpy as np
 from nodedge.blocks.block import Block
 from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
 from nodedge.blocks.block_exception import EvaluationError
+from nodedge.blocks.block_param import BlockParam, BlockParamType
 from nodedge.blocks.graphics_block import GraphicsBlock
 from nodedge.blocks.graphics_output_block_content import GraphicsOutputBlockContent
 from nodedge.blocks.op_node import OP_NODE_CUSTOM_OUTPUT
@@ -28,6 +29,32 @@ class OutputBlock(Block):
     ]
     outputSocketTypes: List[SocketType] = []
 
+    def __init__(self, scene: "Scene"):  # type: ignore
+        super().__init__(
+            scene,
+            inputSocketTypes=self.__class__.inputSocketTypes,
+            outputSocketTypes=self.__class__.outputSocketTypes,
+        )
+        self.state = ""
+
+        self.params = [
+            BlockParam("Scientific notation", True, BlockParamType.Bool),
+            BlockParam("Digits", 2, BlockParamType.Int),
+        ]
+
+    @property
+    def state(self):
+        return self._state
+
+    @state.setter
+    def state(self, value):
+        self._state = value
+
+        if self.initialState is None:
+            self.initialState = value
+
+        self.content.label.setText(f"{self.state}")
+
     # noinspection PyAttributeOutsideInit
     def initInnerClasses(self):
         self.content = GraphicsOutputBlockContent(self)
@@ -43,7 +70,12 @@ class OutputBlock(Block):
                 f"The result of the input {inputNode} evaluation is None."
             )
 
-        self.content.label.setText(f"{inputResult}")
+        # TODO: Update label if a parameter has changed.
+        digits = self.params[1].value
+        if self.params[0].value:
+            self.content.label.setText(f"{inputResult:.{digits}E}")
+        else:
+            self.content.label.setText(f"{inputResult:.{digits}f}")
 
         return True
 
