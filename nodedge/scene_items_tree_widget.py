@@ -42,6 +42,8 @@ class SceneItemsTreeWidget(QTreeWidget):
         self.itemClicked.connect(self.onItemClicked)
         self.itemDoubleClicked.connect(self.onItemDoubleClicked)
 
+        self.setIndentation(6)
+
     @property
     def scene(self) -> Optional[Scene]:
         return self._scene
