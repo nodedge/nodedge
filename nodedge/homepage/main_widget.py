@@ -19,6 +19,7 @@ class MainWidget(QWidget):
         self.mainBodyFrame = MainBodyFrame()
         self.layout.addWidget(self.headerFrame)
         self.layout.addWidget(self.mainBodyFrame)
+        self.mainBodyFrame.leftMenuWidget.toggle()
 
         self.headerFrame.menuButton.clicked.connect(self.updateLeftMenu)
 
