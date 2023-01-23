@@ -92,7 +92,7 @@ setup(
     classifiers=CLASSIFIERS,
     install_requires=requirements,
     long_description=readme + "\n\n" + history + "\n",
-    long_description_content_type="text/x-rst",
+    long_description_content_type="text/markdown",
     platforms=PLATFORMS,
     packages=find_packages(include="nodedge*", exclude=["tests"]),
     include_package_data=True,
