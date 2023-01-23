@@ -440,6 +440,9 @@ class EditorWindow(QMainWindow):
         self.coderMenu.addAction(self.showCodeAct)
 
     def configureSolver(self):
+        if self.currentEditorWidget is None:
+            QMessageBox.warning(self, "No model", "No model is open.")
+            return
         simulatorConfig = self.currentEditorWidget.scene.simulator.config
         self.solverDialog = SolverDialog(simulatorConfig)
         self.solverDialog.solverConfigChanged.connect(

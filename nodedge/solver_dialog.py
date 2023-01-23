@@ -28,10 +28,11 @@ class SolverDialog(QDialog):
         self.setWindowIcon(self.icon)
         self.setWindowFlags(Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint)
         self.setWindowModality(Qt.ApplicationModal)
-        # self.setFixedSize(400, 300)
         self.initUI()
         self.solverConfiguration = solverConfig
         self.updateUIFromConfig()
+
+        self.setFixedWidth(400)
 
     def initUI(self):
         self.mainLayout = QVBoxLayout()
