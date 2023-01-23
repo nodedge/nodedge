@@ -757,7 +757,7 @@ class DatsWindow(QMainWindow):
             )
             self.recentFilesMenu.addAction(action)
 
-    def updateDataItems(self, log):
+    def updateDataItems(self, log: Optional[MDF]):
         self.signalsWidget.signalsTableWidget.updateItems(log)
 
         for curveName in self.curveConfig:
@@ -799,8 +799,8 @@ class DatsWindow(QMainWindow):
                         worksheet.updateRange(dataItem)
                         lastFoundDataItem = dataItem
 
-                    except MdfException as mdfException:
-                        logging.warning(mdfException)
+                    except (MdfException, AttributeError) as e:
+                        logging.warning(e)
                         dataItem.setData(x=[0, 1], y=[0, 0])
                         # worksheet.updateRange(dataItem)
 

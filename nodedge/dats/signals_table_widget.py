@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Optional
 
 from asammdf import MDF
 from PySide6.QtCore import QByteArray, QMimeData, Qt
@@ -54,7 +54,9 @@ class SignalsTableWidget(QTableWidget):
         if not event.modifiers() & Qt.KeyboardModifier.ControlModifier:
             self.multiSelectionMode = False
 
-    def updateItems(self, log: MDF):
+    def updateItems(self, log: Optional[MDF]):
+        self.clearContents()
+        self.setRowCount(0)
         if log is None:
             return
         signals = list(log.channels_db.keys())
@@ -73,9 +75,6 @@ class SignalsTableWidget(QTableWidget):
 
         configSignals = list(self._parent.curveConfig.keys())
         self.allSignals = sorted(list(set(self.signals + configSignals)))
-
-        self.clearContents()
-        self.setRowCount(0)
 
         for signal in self.signals:
             typeItem = QTableWidgetItem()

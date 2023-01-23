@@ -1,3 +1,5 @@
+from typing import Optional
+
 from asammdf import MDF
 from PySide6.QtWidgets import QAbstractItemView, QListWidget
 
@@ -11,7 +13,12 @@ class SignalsListWidget(QListWidget):
         self.signals = signals
         self.addItems(self.signals)
 
-    def updateList(self, log: MDF):
+    def updateList(self, log: Optional[MDF]):
+        self.clear()
+
+        if log is None:
+            return
+
         signals = list(log.channels_db.keys())
         signals = [c for c in signals if c[0:3] != "CAN"]
         signals = [c for c in signals if c[0:3] != "LIN"]
@@ -20,5 +27,4 @@ class SignalsListWidget(QListWidget):
         self.signals = signals
         self.signals = sorted(self.signals)
 
-        self.clear()
         self.addItems(self.signals)
