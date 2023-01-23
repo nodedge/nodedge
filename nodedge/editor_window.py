@@ -329,6 +329,24 @@ class EditorWindow(QMainWindow):
             category="Help",
         )
 
+        self.realTimeEvalAct = self.createAction(
+            "Real-time evaluation",
+            self.onRealTimeEval,
+            "Evaluate model in real time",
+            QKeySequence("Ctrl+Shift+A"),
+            category="Simulator",
+        )
+        self.realTimeEvalAct.setCheckable(True)
+        self.realTimeEvalAct.setIcon(QIcon("resources/lucide/alarm-check.svg"))
+
+    def onRealTimeEval(self, checked: bool) -> None:
+        """
+        Enable/disable real-time evaluation.
+        """
+        self.currentEditorWidget.scene.realTimeEval = checked
+        if checked:
+            self.currentEditorWidget.evalNodes()
+
     def onHelp(self):
         pass
 

@@ -105,7 +105,7 @@ class MdiWindow(EditorWindow):
         self.createSceneItemDetailDock()
         self.createNodesDock()
         self.createHistoryDock()
-        self.createSceneItemsDock()
+        # self.createSceneItemsDock()
         self.createSceneItemsTreeDock()
         self.createPythonConsole()
 
@@ -268,8 +268,10 @@ class MdiWindow(EditorWindow):
         self.toolBars.append(self.coderToolBar)
 
         self.simuToolbar = QToolBar("Simulation")
-        self.addToolBar(Qt.ToolBarArea.BottomToolBarArea, self.simuToolbar)
+        self.addToolBar(self.simuToolbar)
         self.simuToolbar.setMovable(True)
+        self.simuToolbar.addAction(self.realTimeEvalAct)
+        self.simuToolbar.addSeparator()
         self.simuToolbar.addAction(self.startSimulationAct)
         self.simuToolbar.addAction(self.pauseSimulationAct)
         self.simuToolbar.addAction(self.stopSimulationAct)
@@ -446,9 +448,9 @@ class MdiWindow(EditorWindow):
         subWindow.setWindowIcon(icon)
         editor.scene.history.addHistoryModifiedListener(self.updateEditMenu)
         editor.scene.history.addHistoryModifiedListener(self.historyListWidget.update)
-        editor.scene.history.addHistoryModifiedListener(
-            self.sceneItemsTableWidget.update
-        )
+        # editor.scene.history.addHistoryModifiedListener(
+        #     self.sceneItemsTableWidget.update
+        # )
         editor.scene.addItemsDeselectedListener(self.sceneItemDetailsWidget.update)
         editor.scene.addItemSelectedListener(self.sceneItemDetailsWidget.update)
         editor.addCloseEventListener(self.onSubWindowClosed)
@@ -469,9 +471,9 @@ class MdiWindow(EditorWindow):
             return
 
         self.mdiArea.setActiveSubWindow(subWindowToBeDeleted)
-        self.sceneItemsTableWidget.scene = None
+        # self.sceneItemsTableWidget.scene = None
         self.sceneItemsTreeWidget.scene = None
-        self.sceneItemsTableWidget.clearContents()
+        # self.sceneItemsTableWidget.clearContents()
 
         if self.maybeSave():
             event.accept()
@@ -687,7 +689,7 @@ class MdiWindow(EditorWindow):
                         editor.updateTitle()
                         subWindow = self._createMdiSubWindow(editor)
                         subWindow.show()
-                        self.sceneItemsTableWidget.update()
+                        # self.sceneItemsTableWidget.update()
                         self.sceneItemsTreeWidget.update()
                     else:
                         logger.debug("Loading fail")
@@ -697,7 +699,7 @@ class MdiWindow(EditorWindow):
                 editor.newFile()
                 subWindow = self._createMdiSubWindow(editor)
                 subWindow.show()
-                self.sceneItemsTableWidget.update()
+                # self.sceneItemsTableWidget.update()
                 self.sceneItemsTreeWidget.update()
 
     def about(self) -> None:
@@ -752,7 +754,7 @@ class MdiWindow(EditorWindow):
 
         if self.currentEditorWidget is not None:
             self.historyListWidget.history = self.currentEditorWidget.scene.history
-            self.sceneItemsTableWidget.scene = self.currentEditorWidget.scene
+            # self.sceneItemsTableWidget.scene = self.currentEditorWidget.scene
             self.sceneItemsTreeWidget.scene = self.currentEditorWidget.scene
             graphicsScene = self.currentEditorWidget.scene.graphicsScene
             graphicsScene.itemsPressed.connect(self.showItemsInStatusBar)

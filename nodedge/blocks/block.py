@@ -95,7 +95,8 @@ class Block(Node):
         """
         self.__logger.debug(f"New socket: {socket}")
         self.isDirty = True
-        # self.eval()
+        if self.scene.realTimeEval:
+            self.eval()
 
     def checkInputsValidity(self):
         for index in range(len(self.inputSockets)):
