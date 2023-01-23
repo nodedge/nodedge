@@ -202,7 +202,7 @@ class MdiWindow(EditorWindow):
         self.aboutAct = self.createAction(
             "&About",
             self.about,
-            "Show the application's About box",
+            "Show information about Nodedge",
             category="Help",
         )
 
@@ -710,10 +710,9 @@ class MdiWindow(EditorWindow):
         """
         QMessageBox.about(
             self,
-            "About Nodedge calculator",
-            '"Your assumptions are your windows on the world. \n'
-            "Scrub them off every once in a while, or the light won't come in.\" \n "
-            "Isaac Asimov.",
+            "Nodedge version: pre-release.\n",
+            "For further information, please contact admin@nodedge.io.\n\n",
+            "© 2020-2023 Nodedge",
         )
 
     def addCommentElement(self):

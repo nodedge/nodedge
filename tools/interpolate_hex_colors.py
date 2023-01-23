@@ -67,7 +67,7 @@ if __name__ == "__main__":
     # interpolated_colors = interpolateHexColors("#EEF1F4", "#1B1D23", 10, 2)
 
     # Light palette
-    interpolated_colors = interpolateHexColors("#EEF1F4", "#9ca1a7", 11, 2)
+    interpolated_colors = interpolateHexColors("#EEF1F4", "#4b4f5a", 11, 1)
 
     # Print generated colors
     print(interpolated_colors)
