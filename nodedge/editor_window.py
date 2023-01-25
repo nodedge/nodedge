@@ -343,6 +343,10 @@ class EditorWindow(QMainWindow):
         """
         Enable/disable real-time evaluation.
         """
+        if self.currentEditorWidget is None:
+            return
+        if hasattr(self.currentEditorWidget, "scene") is False:
+            return
         self.currentEditorWidget.scene.realTimeEval = checked
         if checked:
             self.currentEditorWidget.evalNodes()
