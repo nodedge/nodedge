@@ -79,6 +79,8 @@ class Scene(Serializable):
         # current filename assigned to this scene
         self.filename: Optional[str] = None
 
+        self.realTimeEval = False
+
     @property
     def shortName(self) -> str:
         """

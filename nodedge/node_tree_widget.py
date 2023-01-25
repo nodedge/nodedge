@@ -52,6 +52,7 @@ class NodeTreeWidget(QTreeWidget):
         self.setSortingEnabled(True)
         self.setHeaderLabels(list(COLUMNS.keys()))
         self.sortByColumn(0, Qt.AscendingOrder)
+        self.setIndentation(6)
 
     # noinspection PyAttributeOutsideInit
     def initUI(self) -> None:

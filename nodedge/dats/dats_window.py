@@ -757,29 +757,30 @@ class DatsWindow(QMainWindow):
             )
             self.recentFilesMenu.addAction(action)
 
-    def updateDataItems(self, log):
+    def updateDataItems(self, log: Optional[MDF]):
         self.signalsWidget.signalsTableWidget.updateItems(log)
 
-        for curveName in self.curveConfig:
-            formula = self.curveConfig[curveName]["formula"]
-            signals = self.signalsWidget.signalsTableWidget.signals
+        if log is not None:
+            for curveName in self.curveConfig:
+                formula = self.curveConfig[curveName]["formula"]
+                signals = self.signalsWidget.signalsTableWidget.signals
 
-            newSignal = evaluateFormula(curveName, formula, signals, log)
+                newSignal = evaluateFormula(curveName, formula, signals, log)
 
-            if newSignal is None:
-                ret = QMessageBox.warning(
-                    self,
-                    "Error",
-                    f"Error evaluating formula for curve {curveName}.\n Do you want to continue computing curves?",
-                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                )
+                if newSignal is None:
+                    ret = QMessageBox.warning(
+                        self,
+                        "Error",
+                        f"Error evaluating formula for curve {curveName}.\n Do you want to continue computing curves?",
+                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                    )
 
-                if ret == QMessageBox.StandardButton.No:
-                    break
-                elif ret == QMessageBox.StandardButton.Yes:
-                    continue
+                    if ret == QMessageBox.StandardButton.No:
+                        break
+                    elif ret == QMessageBox.StandardButton.Yes:
+                        continue
 
-            log.append(newSignal)
+                log.append(newSignal)
         self.signalsWidget.signalsTableWidget.updateItems(log)
         lastFoundDataItem = NPlotDataItem()
         lastFoundDataItem.setData(x=[0, 1], y=[0, 1])
@@ -799,8 +800,8 @@ class DatsWindow(QMainWindow):
                         worksheet.updateRange(dataItem)
                         lastFoundDataItem = dataItem
 
-                    except MdfException as mdfException:
-                        logging.warning(mdfException)
+                    except (MdfException, AttributeError) as e:
+                        logging.warning(e)
                         dataItem.setData(x=[0, 1], y=[0, 0])
                         # worksheet.updateRange(dataItem)
 

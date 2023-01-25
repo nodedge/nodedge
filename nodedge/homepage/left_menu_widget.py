@@ -54,6 +54,7 @@ class LeftMenuWidget(QFrame):
         self.anim.setStartValue(self.closedWidth)
         self.anim.setEndValue(self.openWidth)
         self.setFixedWidth(0)
+        self.setMinimumWidth(0)
 
         self.open = False
 

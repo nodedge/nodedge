@@ -1,15 +1,22 @@
 import datetime
 import logging
 import os
-from typing import Optional
+from typing import Callable, Optional, Union
 
 import nptdms
 import numpy as np
 import pandas as pd
 from asammdf import MDF
 from asammdf import Signal as asammdfSignal
-from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QInputDialog, QListWidget, QListWidgetItem, QMessageBox
+from PySide6.QtCore import QEvent, Signal
+from PySide6.QtGui import QAction, QKeySequence
+from PySide6.QtWidgets import (
+    QInputDialog,
+    QListWidget,
+    QListWidgetItem,
+    QMenu,
+    QMessageBox,
+)
 from scipy.io import loadmat
 
 DUMMY_CHAR = ["'", "\\", "[", "]", "(", ")"]
@@ -26,6 +33,55 @@ class LogsListWidget(QListWidget):
         self.addLogs(logs, prependDate=False)
 
         self.itemClicked.connect(self.onItemClicked)
+        self.installEventFilter(self)
+
+        self.closeAct = self.createAction(
+            "Close log",
+            self.closeLog,
+            "Close the selected log",
+        )
+
+    def closeLog(self):
+        item = self.currentItem()
+        if item is not None:
+            self.takeItem(self.row(item))
+            del self.logs[item.text()]
+            self.logSelected.emit(None)
+
+    def createAction(
+        self,
+        name: str,
+        callback: Callable,
+        statusTip: Optional[str] = None,
+        shortcut: Union[None, str, QKeySequence] = None,
+    ) -> QAction:
+        """
+        Create an action for this window and add it to actions list.
+
+        :param name: action's name
+        :type name: ``str``
+        :param callback: function to be called when the action is triggered
+        :type callback: ``Callable``
+        :param statusTip: Description of the action displayed
+            at the bottom left of the application.
+        :type statusTip: Optional[``str``]
+        :param shortcut: Keyboard shortcut to trigger the action.
+        :type shortcut: ``Optional[str]``
+        :return:
+        """
+        act = QAction(name, self)
+        act.triggered.connect(callback)  # type: ignore
+
+        if statusTip is not None:
+            act.setStatusTip(statusTip)
+            act.setToolTip(statusTip)
+
+        if shortcut is not None:
+            act.setShortcut(QKeySequence(shortcut))
+
+        self.addAction(act)
+
+        return act
 
     def openLog(self, filename) -> Optional[MDF]:
         shortname = filename.split("/")[-1]
@@ -160,6 +216,17 @@ class LogsListWidget(QListWidget):
 
     def onItemClicked(self, item):
         self.logSelected.emit(self.logs[item.text()])
+
+    def eventFilter(self, source, event):
+        if event.type() == QEvent.ContextMenu and source is self:
+            item = source.itemAt(event.pos())
+            if item is not None:
+                menu = QMenu()
+                menu.addAction(self.closeAct)
+                menu.exec(event.globalPos())
+
+            return True
+        return super().eventFilter(source, event)
 
 
 def remove_dummy_char_from_string(string, dummy_char=DUMMY_CHAR):

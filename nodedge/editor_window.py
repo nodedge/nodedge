@@ -329,6 +329,28 @@ class EditorWindow(QMainWindow):
             category="Help",
         )
 
+        self.realTimeEvalAct = self.createAction(
+            "Real-time evaluation",
+            self.onRealTimeEval,
+            "Evaluate model in real time",
+            QKeySequence("Ctrl+Shift+A"),
+            category="Simulator",
+        )
+        self.realTimeEvalAct.setCheckable(True)
+        self.realTimeEvalAct.setIcon(QIcon("resources/lucide/alarm-check.svg"))
+
+    def onRealTimeEval(self, checked: bool) -> None:
+        """
+        Enable/disable real-time evaluation.
+        """
+        if self.currentEditorWidget is None:
+            return
+        if hasattr(self.currentEditorWidget, "scene") is False:
+            return
+        self.currentEditorWidget.scene.realTimeEval = checked
+        if checked:
+            self.currentEditorWidget.evalNodes()
+
     def onHelp(self):
         pass
 
@@ -372,15 +394,16 @@ class EditorWindow(QMainWindow):
         totalSteps = self.currentEditorWidget.scene.simulator.totalSteps
         finalTime = self.currentEditorWidget.scene.simulator.config.finalTime
         currentTime = self.currentEditorWidget.scene.simulator.currentTimeStep
+        currentStep = self.currentEditorWidget.scene.simulator.currentStep
         stepsPerSecond = self.currentEditorWidget.scene.simulator.stepsPerSecond
         percentPerSecond = stepsPerSecond / totalSteps * 100
-        percentProgress = progress / totalSteps * 100
+        percentProgress = currentStep / totalSteps * 100
         self.simulationProgressBar.setValue(int(percentProgress))
         self.simulationProgressLabel.setText(
-            f"Progress: {currentTime:.1E} s/{finalTime} s [{percentProgress:.1E}%] [{percentPerSecond:.0E} %/s]"
+            f"Progress: {currentTime:.1E} s/{finalTime:.1E} s [{percentProgress:.0f}%] [{percentPerSecond:.0E} %/s]"
         )
         self.simulationProgressLabel.setToolTip(
-            f"{progress:.0E}/{totalSteps:.0E} [{percentProgress:.0E}]% [{stepsPerSecond:.0E} steps/s]"
+            f"{currentStep:.0E}/{totalSteps:.0E} [{percentProgress:.0E}]% [{stepsPerSecond:.0E} steps/s]"
         )
 
     def onShowGraph(self):
@@ -440,6 +463,9 @@ class EditorWindow(QMainWindow):
         self.coderMenu.addAction(self.showCodeAct)
 
     def configureSolver(self):
+        if self.currentEditorWidget is None:
+            QMessageBox.warning(self, "No model", "No model is open.")
+            return
         simulatorConfig = self.currentEditorWidget.scene.simulator.config
         self.solverDialog = SolverDialog(simulatorConfig)
         self.solverDialog.solverConfigChanged.connect(

@@ -28,10 +28,11 @@ class SolverDialog(QDialog):
         self.setWindowIcon(self.icon)
         self.setWindowFlags(Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint)
         self.setWindowModality(Qt.ApplicationModal)
-        # self.setFixedSize(400, 300)
         self.initUI()
         self.solverConfiguration = solverConfig
         self.updateUIFromConfig()
+
+        self.setFixedWidth(400)
 
     def initUI(self):
         self.mainLayout = QVBoxLayout()
@@ -41,7 +42,7 @@ class SolverDialog(QDialog):
         self.configLayout = QFormLayout()
         self.configFrame.setLayout(self.configLayout)
         self.solverCombo = QComboBox()
-        self.solverCombo.addItems(["No Solver", "Solver2", "Solver3"])
+        self.solverCombo.addItems(["Basic solver"])
         self.solverCombo.currentIndexChanged.connect(self.updateSolverConfig)
 
         self.solverOptions = QLineEdit()
@@ -51,9 +52,9 @@ class SolverDialog(QDialog):
         self.toleranceSpinBox = QDoubleSpinBox()
         self.finalTimeEdit = QLineEdit()
 
-        self.configLayout.addRow("Solver Name", self.solverName)
+        self.configLayout.addRow("Solver name", self.solverName)
         self.configLayout.addRow("Solver", self.solverCombo)
-        self.configLayout.addRow("Solver Options", self.solverOptions)
+        self.configLayout.addRow("Solver options", self.solverOptions)
         self.configLayout.addRow("Time step", self.timestepSpinBox)
         self.configLayout.addRow("Max iterations", self.maxIterationsSpinBox)
         self.configLayout.addRow("Tolerance", self.toleranceSpinBox)

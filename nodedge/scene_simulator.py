@@ -137,7 +137,7 @@ class SolverConfiguration:
 
 class SceneSimulator(QObject, Serializable):
     notConnectedSocket = Signal()
-    progressed = Signal(int)
+    progressed = Signal(float)
 
     def __init__(self, scene: "Scene"):  # type: ignore
         super().__init__()
@@ -147,7 +147,7 @@ class SceneSimulator(QObject, Serializable):
         self.threadpool = QThreadPool()
         self.isPaused = False
         self.isStopped = False
-        self.currentStep = 0
+        self.currentTimeStep = 0
         self.stepsPerSecond = 0
         self.lastCurrentStep = 0
         self.stepPerSecondTimer = QTimer()
@@ -155,8 +155,8 @@ class SceneSimulator(QObject, Serializable):
         self.stepPerSecondTimer.start(1000)
 
     def _updateStepPerSecond(self):
-        self.stepsPerSecond = self.currentStep - self.lastCurrentStep
-        self.lastCurrentStep = self.currentStep
+        self.stepsPerSecond = self.currentTimeStep - self.lastCurrentStep
+        self.lastCurrentStep = self.currentTimeStep
 
     def __del__(self):
         self.isStopped = True
@@ -166,8 +166,8 @@ class SceneSimulator(QObject, Serializable):
         return int(float(self.config.finalTime) / self.config.timeStep)
 
     @property
-    def currentTimeStep(self):
-        return self.currentStep * self.config.timeStep
+    def currentStep(self):
+        return self.currentTimeStep / self.config.timeStep
 
     def generateOrderedNodeList(self) -> List[Node]:
         orderedNodeList: List[Node] = []
@@ -252,8 +252,13 @@ class SceneSimulator(QObject, Serializable):
         # self.runIterations(finalTime)
 
     def runIterations(self, finalTime):
-        for i in np.arange(0, finalTime, self.config.timeStep):
-            self.currentStep = i
+        logger.info(f"Final time: {finalTime}")
+        logger.info(f"Time step: {self.config.timeStep}")
+        for i in np.arange(
+            self.config.timeStep, finalTime + self.config.timeStep, self.config.timeStep
+        ):
+            logger.info(f"Running iteration {i}")
+            self.currentTimeStep = i
             self.progressed.emit(i)
 
             while self.isPaused:

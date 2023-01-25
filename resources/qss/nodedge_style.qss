@@ -686,3 +686,7 @@ LinkButton:pressed:focus {
     background-color: palette(base);
     color: palette(highlight);
 }
+
+QToolButton:checked {
+    background: palette(highlight);
+}
