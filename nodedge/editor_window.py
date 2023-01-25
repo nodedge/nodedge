@@ -292,7 +292,7 @@ class EditorWindow(QMainWindow):
         self.startSimulationAct = self.createAction(
             "Start simulation",
             self.onStartSimulation,
-            "Start the current model as a simulation",
+            "Start the simulation of the current model",
             QKeySequence("Ctrl+Shift+S"),
             category="Simulation",
         )
@@ -301,7 +301,7 @@ class EditorWindow(QMainWindow):
         self.stopSimulationAct = self.createAction(
             "Stop simulation",
             self.onStopSim,
-            "Stop the current model as a simulation",
+            "Stop the running simulation",
             category="Simulation",
         )
         self.stopSimulationAct.setIcon(QIcon("resources/lucide/square.svg"))
@@ -309,6 +309,7 @@ class EditorWindow(QMainWindow):
         self.pauseSimulationAct = self.createAction(
             "Pause simulation",
             self.onPauseSim,
+            "Pause the running simulation",
             category="Simulation",
         )
         self.pauseSimulationAct.setIcon(QIcon("resources/lucide/pause.svg"))
@@ -316,7 +317,7 @@ class EditorWindow(QMainWindow):
         self.takeScreenshotAct = self.createAction(
             "Take screenshot",
             self.takeScreenshot,
-            "Take screenshot",
+            "Take a screenshot of the current view",
             QKeySequence("Ctrl+Shift+Space"),
             category="File",
         )
