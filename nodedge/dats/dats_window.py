@@ -660,8 +660,9 @@ class DatsWindow(QMainWindow):
         """
         QMessageBox.about(
             self,
-            "Nodedge version: pre-release.\n",
-            "For further information, please contact admin@nodedge.io.\n\n",
+            "About Nodedge",
+            "Nodedge version: pre-release.\n\n"
+            "For further information, please contact admin@nodedge.io.\n\n"
             "© 2020-2023 Nodedge",
         )
 
