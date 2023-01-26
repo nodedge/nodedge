@@ -176,7 +176,7 @@ class MainWindow(QMainWindow):
         )
 
         self.aboutAct = self.createAction(
-            "&About", self.about, "Show the application's About box"
+            "&About", self.about, "Show information about Nodedge"
         )
 
     def createMenus(self):
