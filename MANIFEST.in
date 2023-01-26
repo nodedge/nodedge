@@ -55,13 +55,13 @@ recursive-include docs *.css
 include SECURITY.md
 include docs/CNAME
 
-recursive-include nodedge/resources *
 recursive-include resources *.ico
 recursive-include resources *.png
 recursive-include resources *.psd
 recursive-include resources *.py
 recursive-include resources *.qss
 recursive-include resources *.yml
+recursive-include resources *.svg
 
 recursive-exclude nodedge/resources/raw_black_icons *
 recursive-exclude nodedge/resources/raw_white_icons *
