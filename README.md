@@ -11,7 +11,7 @@ A Python3 graphic environment for next-generation engineering.
 
 [![PyPI - Nodedge Version](https://badge.fury.io/py/nodedge.svg)](https://badge.fury.io/py/nodedge)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/nodedge)](https://badge.fury.io/py/nodedge)
-[![License](https://img.shields.io/badge/license-GPL3.0-blue.svg?style=flat)](https://choosealicense.com/licenses/gpl-3.0/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://choosealicense.com/licenses/mit/)
 [![Test Status](https://github.com/nodedge/nodedge/actions/workflows/test.yml/badge.svg)](https://github.com/nodedge/nodedge/actions/workflows/python-test.yml)
 [![Test Coverage](https://codecov.io/gh/nodedge/nodedge/branch/main/graph/badge.svg)](https://codecov.io/gh/nodedge/nodedge)
 [![Documentation Status](https://readthedocs.org/projects/nodedge/badge/?version=latest)](https://nodedge.readthedocs.io/en/latest/?badge=latest)
