@@ -3,6 +3,7 @@
 Scene item detail widget module containing
 :class:`~nodedge.scene_item_detail_widget.SceneItemDetailWidget` class.
 """
+import copy
 import logging
 from typing import List, Optional, cast
 
@@ -54,6 +55,8 @@ class SceneItemDetailWidget(QFrame):
         self.paramsLayout = QFormLayout()
         self.paramsFrame.setLayout(self.paramsLayout)
         self.addRow("Params", shortEdit=False, widget=self.paramsFrame)
+
+        self.paramWidgets = {}
 
     def addRow(
         self, title: str, shortEdit: bool = False, widget: Optional[QWidget] = None
@@ -129,8 +132,12 @@ class SceneItemDetailWidget(QFrame):
         :param params: List of params
         :return: `None`
         """
+
+        print([param.value for param in params])
         for i in reversed(range(self.paramsLayout.count())):
             self.paramsLayout.itemAt(i).widget().setParent(None)
+
+        self.paramWidgets = {}
 
         for param in params:
             logger.debug(param.paramType)
@@ -144,11 +151,7 @@ class SceneItemDetailWidget(QFrame):
                 if param.step is not None:
                     spinbox.setSingleStep(param.step)
                 self.paramsLayout.addRow(param.name, spinbox)
-                spinbox.valueChanged.connect(
-                    lambda value, paramName=param.name: self.onParamWidgetChanged(
-                        paramName, value
-                    )
-                )
+                self.paramWidgets.update({param.name: spinbox})
             elif param.paramType == BlockParamType.Float:
                 doubleSpinbox: QDoubleSpinBox = QDoubleSpinBox()
                 doubleSpinbox.setValue(param.value)
@@ -159,48 +162,59 @@ class SceneItemDetailWidget(QFrame):
                 if param.step is not None:
                     doubleSpinbox.setSingleStep(param.step)
                 self.paramsLayout.addRow(param.name, doubleSpinbox)
-                doubleSpinbox.valueChanged.connect(
-                    lambda value, paramName=param.name: self.onParamWidgetChanged(
-                        paramName, value
-                    )
-                )
+                self.paramWidgets.update({param.name: doubleSpinbox})
+
             elif param.paramType == BlockParamType.ShortText:
                 lineEdit = QLineEdit()
                 lineEdit.setText(param.value)
                 if param.maxValue is not None:
                     lineEdit.setMaxLength(param.maxValue)
                 self.paramsLayout.addRow(param.name, lineEdit)
-                lineEdit.textEdited.connect(
-                    lambda paramName=param.name: self.onParamWidgetChanged(
-                        paramName, lineEdit.text()
-                    )
-                )
+                self.paramWidgets.update({param.name: lineEdit})
+
             elif param.paramType == BlockParamType.LongText:
                 textEdit = QTextEdit()
                 textEdit.setText(param.value)
                 self.paramsLayout.addRow(param.name, textEdit)
-                textEdit.textChanged.connect(
-                    lambda paramName=param.name: self.onParamWidgetChanged(
-                        paramName, textEdit.toPlainText()
-                    )
-                )
+                self.paramWidgets.update({param.name: textEdit})
+
             elif param.paramType == BlockParamType.Bool:
                 checkBox = QCheckBox()
                 checkBox.setChecked(param.value)
                 self.paramsLayout.addRow(param.name, checkBox)
-                checkBox.stateChanged.connect(
-                    lambda value, paramName=param.name: self.onParamWidgetChanged(
-                        paramName, bool(value)
-                    )
-                )
+                self.paramWidgets.update({param.name: checkBox})
+
             else:
                 raise NotImplementedError(
                     f"Param type {param.paramType} not implemented"
                 )
 
+        for n, w in self.paramWidgets.items():
+            if hasattr(w, "valueChanged"):
+                w.valueChanged.connect(
+                    lambda value, paramName=n: self.onParamWidgetChanged(
+                        paramName, value
+                    )
+                )
+            elif hasattr(w, "textChanged"):
+                w.textChanged.connect(
+                    lambda value, paramName=n: self.onParamWidgetChanged(
+                        paramName, value
+                    )
+                )
+            elif hasattr(w, "stateChanged"):
+                w.stateChanged.connect(
+                    lambda value, paramName=n: self.onParamWidgetChanged(
+                        paramName, value
+                    )
+                )
+
     def onParamWidgetChanged(self, paramName: str, paramValue) -> None:
         scene = self.parent.currentEditorWidget.scene  # type: ignore
         selectedNode = scene.selectedNode
+
+        print(f"paramName: {paramName}")
+        print(f"paramValue: {paramValue}")
 
         try:
             for p in selectedNode.params:
