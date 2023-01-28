@@ -93,8 +93,9 @@ class SceneItemsTreeWidget(QTreeWidget):
         self.clearSelection()
         for node in self._scene.selectedNodes:
 
-            self.nodeItems[node.title].setSelected(True)
-            self.scrollToItem(self.nodeItems[node.title])
+            if node.title in list(self.nodeItems.keys()):
+                self.nodeItems[node.title].setSelected(True)
+                self.scrollToItem(self.nodeItems[node.title])
 
     def onItemClicked(self, item: QTreeWidgetItem, column: int):
         scene = self.scene

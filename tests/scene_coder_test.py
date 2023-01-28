@@ -46,9 +46,9 @@ def filledScene(emptyScene):
 
 def test_generateCode(filledScene):
     expectedResult = (
-        "var_input = array(2)\n"
-        "var_input = array(1)\n"
-        "var_addition = add(var_input, var_input)\n"
+        "var_constant = array(2)\n"
+        "var_constant = array(1)\n"
+        "var_addition = add(var_constant, var_constant)\n"
         "return [var_addition]"
     )
 
