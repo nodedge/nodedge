@@ -133,7 +133,6 @@ class SceneItemDetailWidget(QFrame):
         :return: `None`
         """
 
-        print([param.value for param in params])
         for i in reversed(range(self.paramsLayout.count())):
             self.paramsLayout.itemAt(i).widget().setParent(None)
 
@@ -212,9 +211,6 @@ class SceneItemDetailWidget(QFrame):
     def onParamWidgetChanged(self, paramName: str, paramValue) -> None:
         scene = self.parent.currentEditorWidget.scene  # type: ignore
         selectedNode = scene.selectedNode
-
-        print(f"paramName: {paramName}")
-        print(f"paramValue: {paramValue}")
 
         try:
             for p in selectedNode.params:

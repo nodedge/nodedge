@@ -242,7 +242,7 @@ class HomeContentWidget(ContentWidget):
     def updateNodedgeRecentFilesButtons(self, filepaths):
         self.recentFilesLayout.clear()
         for index, filepath in enumerate(filepaths):
-            if index > 3:
+            if index > 2:
                 break
             shortpath = filepath.replace("\\", "/")
             shortpath = shortpath.split("/")[-1]
@@ -302,7 +302,7 @@ class HomeContentWidget(ContentWidget):
         self.datsRecentButtons = []
 
         for index, filepath in enumerate(filePaths):
-            if index > 3:
+            if index > 4:
                 break
             shortpath = filepath.replace("\\", "/")
             shortpath = shortpath.split("/")[-1]
