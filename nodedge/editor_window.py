@@ -296,7 +296,7 @@ class EditorWindow(QMainWindow):
             QKeySequence("Ctrl+Shift+S"),
             category="Simulation",
         )
-        self.startSimulationAct.setIcon(QIcon("resources/lucide/play.svg"))
+        self.startSimulationAct.setIcon(QIcon("resources/white_lucide/play.svg"))
 
         self.stopSimulationAct = self.createAction(
             "Stop simulation",
@@ -304,7 +304,7 @@ class EditorWindow(QMainWindow):
             "Stop the running simulation",
             category="Simulation",
         )
-        self.stopSimulationAct.setIcon(QIcon("resources/lucide/square.svg"))
+        self.stopSimulationAct.setIcon(QIcon("resources/white_lucide/square.svg"))
 
         self.pauseSimulationAct = self.createAction(
             "Pause simulation",
@@ -312,7 +312,7 @@ class EditorWindow(QMainWindow):
             "Pause the running simulation",
             category="Simulation",
         )
-        self.pauseSimulationAct.setIcon(QIcon("resources/lucide/pause.svg"))
+        self.pauseSimulationAct.setIcon(QIcon("resources/white_lucide/pause.svg"))
 
         self.takeScreenshotAct = self.createAction(
             "Take screenshot",
@@ -338,7 +338,7 @@ class EditorWindow(QMainWindow):
             category="Simulator",
         )
         self.realTimeEvalAct.setCheckable(True)
-        self.realTimeEvalAct.setIcon(QIcon("resources/lucide/alarm-check.svg"))
+        self.realTimeEvalAct.setIcon(QIcon("resources/white_lucide/alarm-check.svg"))
 
     def onRealTimeEval(self, checked: bool) -> None:
         """
