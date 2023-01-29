@@ -28,11 +28,11 @@ except NameError:
 class DiscreteTransferFunctionBlock(Block):
     icon = f""
     operationCode = OP_NODE_CUSTOM_DISCRETE_TRANSFER_FUNCTION
-    operationTitle = "dtf"
-    contentLabel = "dtf"
+    operationTitle = "Discrete TF"
+    contentLabel = "Discrete TF"
     contentLabelObjectName = "DiscreteTransferFunctionBlockContent"
     library = "scipy"
-    libraryTitle = "advanced_maths"
+    libraryTitle = "discrete"
     inputSocketTypes: List[SocketType] = [
         SocketType.Number,
     ]
