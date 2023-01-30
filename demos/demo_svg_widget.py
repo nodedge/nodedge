@@ -27,9 +27,9 @@ class SvgButton(QPushButton):
         self.setCheckable(True)
         self.setIconSize(QSize(160, 160))
         self.setText("A MEOW BUTTON")
-        self.filename = "resources/lucide/activity.svg"
+        self.filename = "resources/black_lucide/activity.svg"
 
-        # svgRenderer = QSvgRenderer("resources/lucide/activity.svg")
+        # svgRenderer = QSvgRenderer("resources/black_lucide/activity.svg")
         # pix = QPixmap(svgRenderer.defaultSize())
         #
         xmlContent = (
@@ -60,7 +60,7 @@ class SvgButton(QPushButton):
 
         icon = QIcon(QPixmap.fromImage(QImage.fromData(xmlContent)))
 
-        # icon = QIcon("resources/lucide/activity.svg")
+        # icon = QIcon("resources/black_lucide/activity.svg")
         self.setIcon(icon)
         self.setStyleSheet(style)
 

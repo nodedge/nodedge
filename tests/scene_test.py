@@ -192,7 +192,7 @@ def test_onSelectedItems(qtbot: QtBot):
     scene = editorWidget.scene
     scene.clear()
     subWindow.show()
-    node = Node(scene, "", [SocketType.Any], [SocketType.Any])  # noqa: F841
+    node = Node(scene, "a", [SocketType.Any], [SocketType.Any])  # noqa: F841
     pos = QPoint(10, 10)
     node.pos = pos
 

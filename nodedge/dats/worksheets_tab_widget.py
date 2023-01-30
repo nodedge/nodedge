@@ -6,7 +6,7 @@ from PySide6.QtCore import QEvent
 from PySide6.QtGui import QAction, QKeySequence, QMouseEvent, Qt
 from PySide6.QtWidgets import QInputDialog, QMenu, QTabWidget
 
-from nodedge.dats.n_plot_data_item import NPlotDataItem
+from nodedge.dats.n_plot_data_item import NDataCurve
 from nodedge.dats.n_plot_widget import NPlotWidget
 
 logger = logging.getLogger(__name__)
@@ -15,7 +15,8 @@ logger = logging.getLogger(__name__)
 class WorksheetsTabWidget(QTabWidget):
     def __init__(self, parent=None, workbookName="Workbook1"):
         super().__init__(parent)
-        self.workbookTabsWidget = parent
+        self.window = parent
+        # self.workbookTabsWidget = parent
         self.worksheets: List[NPlotWidget] = []
         self.addWorksheet()
         self.name = workbookName
@@ -74,17 +75,29 @@ class WorksheetsTabWidget(QTabWidget):
                 return
 
         if len(self.worksheets) > 0:
-            viewRange = self.worksheets[0].plotItem.viewRange()
+            viewRange = self.worksheets[0].plotItems[0].viewRange()
         plotWidget = NPlotWidget(parent=self, name=worksheetName)
 
         for index, worksheet in enumerate(self.worksheets):
             if index == 0:
-                plotWidget.updateLimits(worksheet.xLimits, worksheet.yLimits)
+                # plotWidget.updateLimits(worksheet.xLimits, worksheet.yLimits)
                 if len(self.worksheets) > 0:
-                    plotWidget.plotItem.setRange(xRange=viewRange[0])
-            worksheet.plotItem.setXLink(plotWidget.plotItem)
+                    plotWidget.plotItems[0].setRange(xRange=viewRange[0])
+            for plotItem in worksheet.plotItems:
+                for otherPlotItem in plotWidget.plotItems:
+                    plotItem.setXLink(otherPlotItem)
         self.addTab(plotWidget, worksheetName)
+        if hasattr(self.window, "workbooksTabWidget"):
+            for workbook in self.window.workbooksTabWidget.workbooks:
+                for worksheet in workbook.worksheets:
+                    for plotItem in worksheet.plotItems:
+                        plotWidget.updateLimits(plotItem.vb.xLimits)
+                        defaultViewRange = plotItem.viewRange()[0]
+                        plotWidget.plotItems[0].setRange(xRange=defaultViewRange)
+                        plotItem.setXLink(plotWidget.plotItems[0])
         self.worksheets.append(plotWidget)
+
+        plotWidget.xRangeUpdated.connect(self.window.updateSlider)
 
     def removeWorksheet(self, index=None):
         if index is None:
@@ -173,8 +186,8 @@ class WorksheetsTabWidget(QTabWidget):
     def addCurvePlot(self, x, y, name=""):
         index = self.currentIndex()
         plotWidget: NPlotWidget = self.worksheets[index]
-        colorIndex = len(plotWidget.plotItem.vb.curves.keys())
-        dataItem: NPlotDataItem = NPlotDataItem(
+        colorIndex = len(plotWidget.focusedPlotItem.vb.curves.keys())
+        dataItem: NDataCurve = NDataCurve(
             clickable=True,
             pen=({"color": (colorIndex, 13), "width": 2}),
             skipFiniteCheck=True,
@@ -187,7 +200,7 @@ class WorksheetsTabWidget(QTabWidget):
         plotWidget.addDataItem(dataItem, name)
         dataItem.getViewBox().setAutoPan(x=True, y=True)
 
-        self.setTabToolTip(index, "\n".join(list(plotWidget.items.keys())))
+        self.setTabToolTip(index, "\n".join(plotWidget.curveNames))
 
     def viewAll(self):
         for worksheet in self.worksheets:

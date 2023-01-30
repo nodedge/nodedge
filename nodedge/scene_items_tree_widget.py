@@ -44,6 +44,8 @@ class SceneItemsTreeWidget(QTreeWidget):
 
         self.setIndentation(6)
 
+        self.nodeItems = {}  # type: ignore
+
     @property
     def scene(self) -> Optional[Scene]:
         return self._scene
@@ -55,9 +57,12 @@ class SceneItemsTreeWidget(QTreeWidget):
         if self._scene is None:
             return
         self._scene.history.addHistoryModifiedListener(self.update)
+        self._scene.addItemSelectedListener(self.highlightSelectedItems)
+        self._scene.addItemsDeselectedListener(self.highlightSelectedItems)
 
     def update(self, *__args) -> None:
         self.clear()
+        self.nodeItems = {}
         logger.debug("Scene items tree widget updating.")
 
         if self._scene is not None:
@@ -68,6 +73,7 @@ class SceneItemsTreeWidget(QTreeWidget):
                 nameItem = QTreeWidgetItem()
                 nameItem.setText(0, node.title)
                 nameItem.setText(1, f"{node.__class__.__name__}")
+                self.nodeItems.update({node.title: nameItem})
                 # nameItem.setText(2, f"{node.pos.x()}")
                 # nameItem.setText(3, f"{node.pos.y()}")
                 # nameItem.setFlags(nameItem.flags() ^ Qt.ItemIsEditable)
@@ -75,7 +81,21 @@ class SceneItemsTreeWidget(QTreeWidget):
                 self.rootItem.addChild(nameItem)
         self.expandAll()
 
+        self.highlightSelectedItems()
+
         # super().viewport().update()
+
+    def highlightSelectedItems(self):
+        logger.debug("Highlighting selected items.")
+        if self._scene is None:
+            return
+
+        self.clearSelection()
+        for node in self._scene.selectedNodes:
+
+            if node.title in list(self.nodeItems.keys()):
+                self.nodeItems[node.title].setSelected(True)
+                self.scrollToItem(self.nodeItems[node.title])
 
     def onItemClicked(self, item: QTreeWidgetItem, column: int):
         scene = self.scene

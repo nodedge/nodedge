@@ -2,7 +2,7 @@ import pytest
 from PySide6.QtWidgets import QMainWindow
 
 from nodedge.blocks.autogen.maths.add_block import NumpyAddBlock
-from nodedge.blocks.custom.input_block import InputBlock
+from nodedge.blocks.custom.constant_block import ConstantBlock
 from nodedge.blocks.custom.output_block import OutputBlock
 from nodedge.edge import Edge
 from nodedge.editor_widget import EditorWidget
@@ -22,9 +22,9 @@ def emptyScene(qtbot):
 
 @pytest.fixture
 def filledScene(emptyScene):
-    inputBlock1: InputBlock = InputBlock(emptyScene)  # noqa: F841
+    inputBlock1: ConstantBlock = ConstantBlock(emptyScene)  # noqa: F841
     inputBlock1.content.edit.setText(str(1))
-    inputBlock2: InputBlock = InputBlock(emptyScene)  # noqa: F841
+    inputBlock2: ConstantBlock = ConstantBlock(emptyScene)  # noqa: F841
     inputBlock2.content.edit.setText(str(2))
     addBlock: NumpyAddBlock = NumpyAddBlock(emptyScene)
     edgeIn1Add: Edge = Edge(
@@ -46,9 +46,9 @@ def filledScene(emptyScene):
 
 def test_generateCode(filledScene):
     expectedResult = (
-        "var_input = array(2)\n"
-        "var_input = array(1)\n"
-        "var_addition = add(var_input, var_input)\n"
+        "var_constant = array(2)\n"
+        "var_constant = array(1)\n"
+        "var_addition = add(var_constant, var_constant)\n"
         "return [var_addition]"
     )
 

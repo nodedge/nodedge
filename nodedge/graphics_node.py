@@ -71,7 +71,7 @@ class GraphicsNode(QGraphicsItem):
     @title.setter
     def title(self, value):
         self._title = value
-        self.titleLabel.setText(self._title.lower())
+        self.titleLabel.setText(self._title.lower().replace(" ", "_"))
 
     @property
     def type(self):
