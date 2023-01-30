@@ -27,7 +27,7 @@ from PySide6.QtWidgets import (
 from nodedge.dats.curve_dialog import CurveDialog
 from nodedge.dats.formula_evaluator import evaluateFormula
 from nodedge.dats.logs_widget import LogsWidget
-from nodedge.dats.n_plot_data_item import NPlotDataItem
+from nodedge.dats.n_plot_data_item import NDataCurve
 from nodedge.dats.signals_widget import SignalsWidget
 from nodedge.dats.workbooks_tab_widget import WorkbooksTabWidget
 from nodedge.dats.worksheets_tab_widget import WorksheetsTabWidget
@@ -60,9 +60,6 @@ class DatsWindow(QMainWindow):
         self.mainLayout.addWidget(self.workbooksTabWidget)
         self.mainLayout.addWidget(self.slider)
         self.slider.sliderMoved.connect(self.updatePlotAxes)
-        self.workbooksTabWidget.workbooks[0].worksheets[0].xRangeUpdated.connect(
-            self.updateSlider
-        )
         self.setCentralWidget(self.mainWidget)
 
         self.signalsWidget = SignalsWidget(self)
@@ -128,7 +125,6 @@ class DatsWindow(QMainWindow):
         self.setConfigPathLabelText()
 
     def onSignalTableItemClicked(self, item):
-        print(item.text())
         if item.text() in self.curveConfig:
             self.modifySignalAct.setEnabled(True)
         else:
@@ -148,18 +144,22 @@ class DatsWindow(QMainWindow):
             return
         if len(self.workbooksTabWidget.workbooks[0].worksheets) == 0:
             return
-        try:
-            self.workbooksTabWidget.workbooks[0].worksheets[0].xRangeUpdated.disconnect(
-                self.updateSlider
-            )
-        except RuntimeError as e:
-            logger.warning(e)
+
+        for workbook in self.workbooksTabWidget.workbooks:
+            for worksheet in workbook.worksheets:
+                try:
+                    worksheet.xRangeUpdated.disconnect(self.updateSlider)
+                    print("disconnecting", worksheet.name)
+                except RuntimeError as e:
+                    logger.warning(e)
         self.workbooksTabWidget.updateXAxis(low, high)
-        self.workbooksTabWidget.workbooks[0].worksheets[0].xRangeUpdated.connect(
-            self.updateSlider
-        )
+        for workbook in self.workbooksTabWidget.workbooks:
+            for worksheet in workbook.worksheets:
+                worksheet.xRangeUpdated.connect(self.updateSlider)
+                print("connecting", worksheet.name)
 
     def updateSlider(self, low, high):
+        print("updateSlider", low, high)
         self.slider.sliderMoved.disconnect(self.updatePlotAxes)
         self.slider.setRange(low, high)
         self.slider.sliderMoved.connect(self.updatePlotAxes)
@@ -256,10 +256,10 @@ class DatsWindow(QMainWindow):
                 worksheet = worksheetsTabWidget.worksheets[item]
                 for index, vbConfig in enumerate(worksheetConfig):
                     if index >= 1:
-                        worksheet.plotItem.vb.addSubPlot()
+                        worksheet.focusedPlotItem.vb.addSubPlot()
 
                     for signalName, curveOptions in vbConfig.items():
-                        dataItem: PlotDataItem = NPlotDataItem(
+                        dataItem: NDataCurve = NDataCurve(
                             clickable=True,
                             pen=curveOptions,
                             skipFiniteCheck=True,
@@ -322,7 +322,7 @@ class DatsWindow(QMainWindow):
         w: WorksheetsTabWidget = self.workbooksTabWidget.currentWidget()
 
         for name in channelNames:
-            if name in list(w.currentWidget().plotItem.vb.curves.keys()):
+            if name in list(w.currentWidget().plotItems[0].vb.curves.keys()):
                 continue
 
             try:
@@ -742,20 +742,26 @@ class DatsWindow(QMainWindow):
 
     def updateRecentFilesMenu(self):
         self.recentFilesMenu.clear()
-        logger.debug(f"Recent files: {self.recentFiles}")
         for index, filePath in enumerate(self.recentFiles):
+            logger.debug(f"adding recent file to menu: {filePath}")
             if index > 9:
                 break
 
             shortpath = filePath.replace("\\", "/")
-            shortpath = filePath.split("/")[-1]
+            shortpath = shortpath.split("/")[-1]
             action = self.createAction(
                 shortpath,
-                lambda: self.openLog(filePath),
-                f"Open {filePath}",
+                self.onRecentFileActionTriggered,
+                f"{filePath}",
                 QKeySequence(f"Ctrl+Shift+{index}"),
             )
             self.recentFilesMenu.addAction(action)
+
+    def onRecentFileActionTriggered(self):
+        sender = self.sender()
+        if not isinstance(sender, QAction):
+            return
+        self.openLog(sender.statusTip())
 
     def updateDataItems(self, log: Optional[MDF]):
         self.signalsWidget.signalsTableWidget.updateItems(log)
@@ -782,36 +788,28 @@ class DatsWindow(QMainWindow):
 
                 log.append(newSignal)
         self.signalsWidget.signalsTableWidget.updateItems(log)
-        lastFoundDataItem = NPlotDataItem()
+        lastFoundDataItem = NDataCurve()
         lastFoundDataItem.setData(x=[0, 1], y=[0, 1])
         for workbook in self.workbooksTabWidget.workbooks:
             for worksheet in workbook.worksheets:
                 signalName: str
-                dataItem: NPlotDataItem
-                for signalName, dataItem in worksheet.items.items():
-                    try:
-                        data = log.get(signalName)
-                        dataItem.show()
-                        # dataItem.curve.show()
-                        # dataItem.scatter.show()
-                        dataItem.setData(
-                            x=data.timestamps, y=data.samples, name=data.name
-                        )
-                        worksheet.updateRange(dataItem)
-                        lastFoundDataItem = dataItem
-
-                    except (MdfException, AttributeError) as e:
-                        logging.warning(e)
-                        dataItem.setData(x=[0, 1], y=[0, 0])
-                        # worksheet.updateRange(dataItem)
-
-                        # dataItem.curve.hide()
-                        # dataItem.scatter.hide()
-                        dataItem.hide()
-                        # self.viewAll()
-
-                worksheet.updateRange(lastFoundDataItem)
-        # self.viewAll()
+                dataItem: NDataCurve
+                for plotItem in worksheet.plotItems:
+                    vb = plotItem.vb
+                    for curveName, curve in vb.curves.items():
+                        try:
+                            data = log.get(curveName)
+                            curve.show()
+                            curve.setData(
+                                x=data.timestamps, y=data.samples, name=data.name
+                            )
+                            worksheet.updateLimitsFromOtherItem(curve)
+                            lastFoundDataItem = curve
+                        except (MdfException, AttributeError) as e:
+                            logging.warning(e)
+                            curve.setData(x=[0, 1], y=[0, 0])
+                            curve.hide()
+                worksheet.updateLimitsFromOtherItem(lastFoundDataItem)
 
     @staticmethod
     def getFileDialogFilter() -> str:
@@ -833,6 +831,9 @@ class DatsWindow(QMainWindow):
     def addWorkbook(self):
         self.workbooksTabWidget.addWorkbook(True)
         self.modifiedConfig = True
+        #
+        # for workbook in self.workbooksTabWidget.workbooks:
+        #     workbook.worksheets[0].xRangeUpdated.connect(self.updateSlider)
 
     def removeWorkbook(self):
         if len(self.workbooksTabWidget.workbooks) > 0:

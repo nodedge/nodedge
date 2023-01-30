@@ -2,7 +2,7 @@ from pyqtgraph import PlotDataItem
 from PySide6.QtGui import QMouseEvent
 
 
-class NPlotDataItem(PlotDataItem):
+class NDataCurve(PlotDataItem):
     def __init__(self, *args, **kargs):
         super().__init__(*args, **kargs)
 

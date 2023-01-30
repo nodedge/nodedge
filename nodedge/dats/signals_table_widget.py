@@ -71,7 +71,6 @@ class SignalsTableWidget(QTableWidget):
         signals = [c for c in signals if c != "time"]
 
         self.signals = sorted(signals)
-        print(self.signals)
 
         configSignals = list(self._parent.curveConfig.keys())
         self.allSignals = sorted(list(set(self.signals + configSignals)))

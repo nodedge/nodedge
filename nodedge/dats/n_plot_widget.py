@@ -19,7 +19,7 @@ from PySide6.QtCore import QEvent, QPointF, Qt, Signal
 from PySide6.QtGui import QAction, QDragEnterEvent, QDropEvent, QMouseEvent
 from PySide6.QtWidgets import QApplication, QColorDialog
 
-from nodedge.dats.n_plot_data_item import NPlotDataItem
+from nodedge.dats.n_plot_data_item import NDataCurve
 
 logger = logging.getLogger(__name__)
 
@@ -35,32 +35,25 @@ class NPlotWidget(GraphicsLayoutWidget):
         self.worksheetsTabWidget = parent
         app: QApplication = QApplication.instance()
         app.paletteChanged.connect(self.updateColors)
-
-        # crosshair
-        self.plotItems = []
-        self.plotProxies = []
-        self.plotItem = self.addPlotItem(viewBox=NViewBox(self, self))
-        vb: NViewBox = self.plotItem.vb
-        vb.setBackgroundColor(QApplication.palette().base().color())
         self.setBackground(QApplication.palette().base().color())
 
-        self.plotItem.showGrid(x=True, y=True, alpha=GRID_ALPHA)
-        self.legend: LegendItem = LegendItem((80, 60), offset=(70, 20))
-        self.legend.setParentItem(self.plotItem)
-        self.items = OrderedDict()
+        self.plotItems = []
+        self.plotProxies = []
 
-        self.xLimits = np.array([0.0, 1.0])
-        self.yLimits = np.array([0.0, 1.0])
-        self.plotItem.setLimits(
-            xMin=self.xLimits[0],
-            xMax=self.xLimits[1],
-            yMin=self.yLimits[0],
-            yMax=self.yLimits[1],
-        )
-
+        self.addPlotItem(viewBox=NViewBox(self, self))
+        # self.legend: LegendItem = LegendItem((80, 60), offset=(70, 20))
+        # self.legend.setParentItem(self.plotItem)
         self.setAcceptDrops(True)
 
-        self.plotItem.vb.sigXRangeChanged.connect(self.onXRangeChanged)
+        self.focusedPlotItem = self.plotItems[0]
+
+    @property
+    def curveNames(self) -> List[str]:
+        curveNameList = []
+        for item in self.plotItems:
+            for curveName in list(item.vb.curves.keys()):
+                curveNameList.append(curveName)
+        return curveNameList
 
     def updateColors(self):
         p = QApplication.palette()
@@ -73,14 +66,19 @@ class NPlotWidget(GraphicsLayoutWidget):
             plotItem.vb.setBorder({"color": p.text().color(), "width": 1})
         self.setBackground(p.base().color())
 
-    def onXRangeChanged(self, plotitem, range):
+    def onXRangeChanged(self, plotItem, range):
+        plotItem = self.plotItems[0]
         minValue = (
-            (range[0] - self.xLimits[0]) / (self.xLimits[1] - self.xLimits[0]) * 100.0
+            (range[0] - plotItem.vb.xLimits[0])
+            / (plotItem.vb.xLimits[1] - plotItem.vb.xLimits[0])
+            * 100.0
         )
         maxValue = (
-            (range[1] - self.xLimits[0]) / (self.xLimits[1] - self.xLimits[0]) * 100.0
+            (range[1] - plotItem.vb.xLimits[0])
+            / (plotItem.vb.xLimits[1] - plotItem.vb.xLimits[0])
+            * 100.0
         )
-        logger.debug(f"Updapte x range: [{minValue}, {maxValue}]")
+        print(f"Updapte x range: [{minValue}, {maxValue}]")
         self.xRangeUpdated.emit(minValue, maxValue)
 
     def addPlotItem(self, *args, **kargs):
@@ -91,15 +89,17 @@ class NPlotWidget(GraphicsLayoutWidget):
         axis.setPen(pg.mkPen(QApplication.palette().text().color()))
 
         maxWidth = 0
+        plotItem.vb.sigXRangeChanged.connect(self.onXRangeChanged)
 
         if len(self.plotItems) > 0:
-            defaultViewRange = self.plotItem.viewRange()[0]
-            self.plotItem.setXLink(plotItem)
+            firstPlotItem = self.plotItems[0]
+            defaultViewRange = firstPlotItem.viewRange()[0]
+            firstPlotItem.setXLink(plotItem)
             plotItem.setLimits(
-                xMin=self.xLimits[0],
-                xMax=self.xLimits[1],
-                yMin=self.yLimits[0],
-                yMax=self.yLimits[1],
+                xMin=firstPlotItem.vb.xLimits[0],
+                xMax=firstPlotItem.vb.xLimits[1],
+                yMin=firstPlotItem.vb.yLimits[0],
+                yMax=firstPlotItem.vb.yLimits[1],
             )
             plotItem.setRange(xRange=defaultViewRange)
 
@@ -123,71 +123,71 @@ class NPlotWidget(GraphicsLayoutWidget):
 
         self.plotProxies.append(proxy)
 
+        self.focusedPlotItem = plotItem
+
         return plotItem
 
-    def addDataItem(self, dataItem: NPlotDataItem, name):
-        self.items.update({name: dataItem})
-        self.plotItem.addItem(dataItem)
+    def addDataItem(self, dataItem: NDataCurve, name):
+        self.focusedPlotItem.addItem(dataItem)
         dataItem.sigClicked.connect(self.modifyCurve)
-        self.plotItem.vb.curves.update({name: dataItem})
-        if len(self.plotItem.vb.curves.keys()) == 0:
-            self.updateRange(dataItem, reset=True)
+        self.focusedPlotItem.vb.curves.update({name: dataItem})
+        if len(self.focusedPlotItem.vb.curves.keys()) == 0:
+            self.updateLimitsFromOtherItem(dataItem, reset=True)
         else:
-            self.updateRange(dataItem, reset=False)
-        self.plotItem.vb.autoRange()
+            self.updateLimitsFromOtherItem(dataItem, reset=False)
+        self.focusedPlotItem.vb.autoRange()
 
-    def updateRange(self, dataItem, reset=True):
-        if reset is True:
-            self.xLimits = np.array([np.NaN, np.NaN])
-            self.yLimits = np.array([np.NaN, np.NaN])
-        self.xLimits[0] = min(np.min(dataItem.xData), self.xLimits[0])
-        self.xLimits[1] = max(np.max(dataItem.xData), self.xLimits[1])
-        self.yLimits[0] = min(np.min(dataItem.yData), self.yLimits[0])
-        self.yLimits[1] = max(np.max(dataItem.yData), self.yLimits[1])
-        yRange = max(self.yLimits[1] - self.yLimits[0], 1e-9)
-
-        logger.debug(f"X limits: {self.xLimits}")
-        logger.debug(f"Y limits: {self.yLimits}")
-
-        self.plotItem.setLimits(
-            xMin=self.xLimits[0],
-            xMax=self.xLimits[1],
-            yMin=self.yLimits[0] - yRange * 0.1,
-            yMax=self.yLimits[1] + yRange * 0.1,
-        )
+    def updateLimitsFromOtherItem(self, dataItem, reset=True):
+        for item in self.plotItems:
+            vb = item.vb
+            if reset is True:
+                vb.xLimits = np.array([np.NaN, np.NaN])
+                vb.yLimits = np.array([np.NaN, np.NaN])
+            vb.xLimits[0] = min(np.min(dataItem.xData), vb.xLimits[0])
+            vb.xLimits[1] = max(np.max(dataItem.xData), vb.xLimits[1])
+            vb.yLimits[0] = min(np.min(dataItem.yData), vb.yLimits[0])
+            vb.yLimits[1] = max(np.max(dataItem.yData), vb.yLimits[1])
+            yRange = max(vb.yLimits[1] - vb.yLimits[0], 1e-9)
+            item.setLimits(
+                xMin=vb.xLimits[0],
+                xMax=vb.xLimits[1],
+                yMin=vb.yLimits[0] - yRange * 0.1,
+                yMax=vb.yLimits[1] + yRange * 0.1,
+            )
 
         # self.plotItem.setRange(yRange=(self.yLimits[0], self.yLimits[1] * 0.5))
 
     def updateLimits(self, xLimits=None, yLimits=None):
-        if xLimits is not None:
-            self.xLimits = xLimits
-        if yLimits is not None:
-            self.yLimits = yLimits
-        yRange = max(self.yLimits[1] - self.yLimits[0], 1e-9)
 
-        self.plotItem.setLimits(
-            xMin=self.xLimits[0],
-            xMax=self.xLimits[1],
-            yMin=self.yLimits[0] - yRange * 0.1,
-            yMax=self.yLimits[1] + yRange * 0.1,
-        )
+        for item in self.plotItems:
+            vb = item.vb
+            if xLimits is not None:
+                vb.xLimits = xLimits
+            if yLimits is not None:
+                vb.yLimits = yLimits
+            yRange = max(vb.yLimits[1] - vb.yLimits[0], 1e-9)
+
+            item.setLimits(
+                xMin=vb.xLimits[0],
+                xMax=vb.xLimits[1],
+                yMin=vb.yLimits[0] - yRange * 0.1,
+                yMax=vb.yLimits[1] + yRange * 0.1,
+            )
 
     def modifyCurve(self, curve, ev: MouseClickEvent):
         logger.info("modifyCurve")
-        if (
-            self.plotItem.vb.highlightedCurve
-            and curve != self.plotItem.vb.highlightedCurve
-        ):
-            self.plotItem.vb.highlightedCurve.setSymbol(None)
-            self.plotItem.vb.highlightedCurve = None
+        highlightedCurve = self.focusedPlotItem.vb.highlightedCurve
+        if highlightedCurve is not None and curve != highlightedCurve:
+            self.focusedPlotItem.vb.highlightedCurve.setSymbol(None)
+            self.focusedPlotItem.vb.highlightedCurve = None
         if ev.button() == Qt.LeftButton:
             if curve.opts["symbol"] is None:
                 curve.setSymbol("x")
-                self.plotItem.vb.highlightedCurve = curve
+                self.focusedPlotItem.vb.highlightedCurve = curve
             else:
                 logger.info("Suppressing highlighted curve.")
                 curve.setSymbol(None)
-                self.plotItem.vb.highlightedCurve = None
+                self.focusedPlotItem.vb.highlightedCurve = None
 
     def mouseMoved(self, evt: QMouseEvent):
         # using signal proxy turns original arguments into a tuple
@@ -196,9 +196,6 @@ class NPlotWidget(GraphicsLayoutWidget):
         mousePoint = vb.mapSceneToView(pos)
 
         x = mousePoint.x()
-
-        if not self.items:
-            return
 
         for plotItem in self.plotItems:
             for index, (name, item) in enumerate(plotItem.vb.curves.items()):
@@ -229,13 +226,11 @@ class NPlotWidget(GraphicsLayoutWidget):
         :param maxValue:max x value to set
         :return: ``None``
         """
-        minRange = (
-            (100 - minValue) * self.xLimits[0] + minValue * self.xLimits[1]
-        ) / 100
-        maxRange = (
-            (100 - maxValue) * self.xLimits[0] + maxValue * self.xLimits[1]
-        ) / 100
-        self.plotItem.setRange(xRange=(minRange, maxRange))
+        vb = self.plotItems[0].vb
+        minRange = ((100 - minValue) * vb.xLimits[0] + minValue * vb.xLimits[1]) / 100
+        maxRange = ((100 - maxValue) * vb.xLimits[0] + maxValue * vb.xLimits[1]) / 100
+        for item in self.plotItems:
+            item.setRange(xRange=(minRange, maxRange))
         # self.plotItem.vb.xAxis.setRange(minRange, maxRange)
 
     def dragEnterEvent(self, e: QDragEnterEvent) -> None:
@@ -258,7 +253,7 @@ class NPlotWidget(GraphicsLayoutWidget):
         if not curvesNamesStr:
             return
         curvesNames: List[str] = curvesNamesStr.split("\n")
-        self.worksheetsTabWidget.workbookTabsWidget.window.plotCurves(curvesNames)
+        self.worksheetsTabWidget.window.plotCurves(curvesNames)
         event.accept()
 
 
@@ -298,8 +293,8 @@ class NViewBox(pg.ViewBox):
         viewAll: QAction = menu.viewAll
         viewAll.setText("Fix to view")
 
-        self.curves: Dict[str, NPlotDataItem] = {}
-        self.highlightedCurve: Optional[NPlotDataItem] = None
+        self.curves: Dict[str, NDataCurve] = {}
+        self.highlightedCurve: Optional[NDataCurve] = None
 
         palette = QApplication.palette()
         self.vLine: InfiniteLine = InfiniteLine(
@@ -310,12 +305,22 @@ class NViewBox(pg.ViewBox):
         )
 
         self.setBorder({"color": palette.text().color(), "width": 1})
+        self.setBackgroundColor(QApplication.palette().base().color())
 
         self.addItem(self.vLine, ignoreBounds=True)
         self.addItem(self.hLine, ignoreBounds=True)
 
         self.setAcceptHoverEvents(True)
         self.setAcceptDrops(True)
+
+        self.xLimits = np.array([0.0, 1.0])
+        self.yLimits = np.array([0.0, 1.0])
+        self.setLimits(
+            xMin=self.xLimits[0],
+            xMax=self.xLimits[1],
+            yMin=self.yLimits[0],
+            yMax=self.yLimits[1],
+        )
 
     def hoverEnterEvent(self, ev: QEvent):
         self.vLine.show()
@@ -403,12 +408,12 @@ class NViewBox(pg.ViewBox):
             row=self.nPlotWidget.nextRow(),
         )
 
-        self.nPlotWidget.plotItem.setXLink(plotItem)
+        for item in self.nPlotWidget.plotItems:
+            item.setXLink(plotItem)
+
         for index, plotItem in enumerate(self.nPlotWidget.plotItems):
             plotItem.vb.removeThisSubPlotAct.setEnabled(True)
             plotItem.vb.removeThisSubPlotAct.setVisible(True)
-
-        self.nPlotWidget.plotItem = plotItem
 
     def closeCurrentSubPlot(self):
         for index, plotItem in enumerate(self.nPlotWidget.plotItems):
@@ -435,7 +440,7 @@ class NViewBox(pg.ViewBox):
             vb.setBorder({"color": palette.text().color(), "width": 1})
             vb.update()
             if vb == self:
-                self.nPlotWidget.plotItem = p
+                self.nPlotWidget.focusedPlotItem = p
         self.setBorder({"color": palette.highlight().color(), "width": 4})
 
     def as_dict(self):

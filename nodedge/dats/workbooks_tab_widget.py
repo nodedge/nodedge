@@ -87,7 +87,7 @@ class WorkbooksTabWidget(QTabWidget):
                 return None
 
         worksheetsTabWidget = WorksheetsTabWidget(
-            parent=self, workbookName=workbookName
+            parent=self.window, workbookName=workbookName
         )
 
         self.addTab(worksheetsTabWidget, workbookName)
