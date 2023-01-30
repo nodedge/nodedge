@@ -44,7 +44,7 @@ class SceneItemsTreeWidget(QTreeWidget):
 
         self.setIndentation(6)
 
-        self.nodeItems = {}
+        self.nodeItems = {}  # type: ignore
 
     @property
     def scene(self) -> Optional[Scene]:
