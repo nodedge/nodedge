@@ -3,7 +3,7 @@
 -r requirements_tests.txt
 bump2version
 pillow
-pre-commit
-wheel
-pyinstaller
 pip-licenses
+pre-commit
+pyinstaller
+wheel
