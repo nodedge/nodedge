@@ -84,7 +84,7 @@ class DatsWindow(QMainWindow):
         self.createActions()
         self.createMenus()
 
-        self.statusBar().showMessage("Welcome in Dats", timeout=5000)
+        self.statusBar().showMessage("Welcome to Dats", timeout=5000)
         self.statusBar().show()
 
         self._configPath = ""
@@ -702,7 +702,9 @@ class DatsWindow(QMainWindow):
         self.updateDataItems(log)
         self.modifiedConfig = True
 
-        self.addToRecentFiles(filename)
+        if log is not None:
+            self.addToRecentFiles(filename)
+
         if len(self.workbooksTabWidget.workbooks) == 0:
             self.addWorkbook()
 

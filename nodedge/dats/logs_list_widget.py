@@ -182,6 +182,7 @@ class LogsListWidget(QListWidget):
 
         else:
             logging.warning("Cannot open this extension")
+            self.unsupportedMessageWarning()
             return None
 
         self.addLog(log, shortname)
@@ -227,6 +228,21 @@ class LogsListWidget(QListWidget):
 
             return True
         return super().eventFilter(source, event)
+
+    def unsupportedMessageWarning(self) -> None:
+        """
+        Unsupported message warning.
+
+        Shows a message box saying that the data format is not supported.
+
+        :return: ``None``
+        """
+        res = QMessageBox.warning(
+            self,
+            "Unsupported file format",
+            "This data file format is not supported yet. "
+            "For further information, please refer to Nodedge documentation.",
+        )
 
 
 def remove_dummy_char_from_string(string, dummy_char=DUMMY_CHAR):
