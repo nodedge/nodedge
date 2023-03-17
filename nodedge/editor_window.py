@@ -4,8 +4,7 @@ Editor window module containing :class:`~nodedge.editor_window.EditorWindow` cla
 import json
 import logging
 import os
-from collections.abc import Callable
-from typing import List, Optional, cast
+from typing import Callable, Dict, List, Optional, Union, cast
 
 from PySide6.QtCore import QSettings, QSize, QStandardPaths, Qt, Signal
 from PySide6.QtGui import (
@@ -52,7 +51,7 @@ class EditorWindow(QMainWindow):
 
     recentFilesUpdated = Signal(object)
 
-    def __init__(self, parent: QWidget | None = None):
+    def __init__(self, parent: Optional[QWidget] = None):
         """
         :Instance Attributes:
 
@@ -77,16 +76,16 @@ class EditorWindow(QMainWindow):
         # noinspection PyUnresolvedReferences
         self.clipboard.dataChanged.connect(self.onClipboardChanged)  # type: ignore
 
-        self.lastActiveEditorWidget: EditorWidget | None = None
+        self.lastActiveEditorWidget: Optional[EditorWidget] = None
         self.debugMode: bool = False
-        self.recentFiles: list[str] = []
-        self.recentFilesActions: list[QAction] = []
+        self.recentFiles: List[str] = []
+        self.recentFilesActions: List[QAction] = []
 
-        self.actionsDict: dict[str, dict] = {}
+        self.actionsDict: Dict[str, dict] = {}
         self.initUI()
 
     @property
-    def currentEditorWidget(self) -> EditorWidget | None:
+    def currentEditorWidget(self) -> Optional[EditorWidget]:
         """
         :getter: Get current :class:`~nodedge.editor_widget.EditorWidget`
 
@@ -939,8 +938,8 @@ class EditorWindow(QMainWindow):
         self,
         name: str,
         callback: Callable,
-        statusTip: str | None = None,
-        shortcut: None | str | QKeySequence | QKeySequence.StandardKey = None,
+        statusTip: Optional[str] = None,
+        shortcut: Union[None, str, QKeySequence, QKeySequence.StandardKey] = None,
         checkable: bool = False,
         category: str = "",
     ) -> QAction:
