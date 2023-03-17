@@ -5,7 +5,7 @@ import json
 import logging
 import os
 from collections.abc import Callable
-from typing import Optional, cast
+from typing import List, Optional, cast
 
 from PySide6.QtCore import QSettings, QSize, QStandardPaths, Qt, Signal
 from PySide6.QtGui import (
