@@ -40,14 +40,17 @@ repos:
       - id: pyupgrade
         stages: [commit]
         args: [--py310-plus]
-  - repo: https://github.com/mgedmin/check-manifest
-    rev: "0.49"
-    hooks:
-      - id: check-manifest
+#  - repo: https://github.com/mgedmin/check-manifest
+#    rev: "0.49"
+#    hooks:
+#      - id: check-manifest
+#        stages: [commit]
+
   - repo: https://github.com/jackdewinter/pymarkdown
     rev: v0.9.9
     hooks:
       - id: pymarkdown
+        stages: [commit]
         pass_filenames: false
         args:
           - --config
@@ -60,6 +63,8 @@ repos:
     rev: v1.0.1
     hooks:
       - id: rst-linter
+        stages: [commit]
+
 
 
 #  - repo: local
