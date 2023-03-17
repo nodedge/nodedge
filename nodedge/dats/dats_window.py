@@ -542,7 +542,6 @@ class DatsWindow(QMainWindow):
                         self.plotCurves([newName])
 
     def deleteCurve(self):
-
         worksheetTabWidget = self.workbooksTabWidget.currentWidget()
         nPlotWidget = worksheetTabWidget.currentWidget()
         if not nPlotWidget.items:
@@ -666,7 +665,7 @@ class DatsWindow(QMainWindow):
             "© 2020-2023 Nodedge",
         )
 
-    def openLog(self, filename=None):
+    def openLog(self, filename=None) -> bool:
         if filename is None or not filename:
             filename, ok = QFileDialog.getOpenFileName(
                 parent=self,
@@ -675,7 +674,7 @@ class DatsWindow(QMainWindow):
                 filter=DatsWindow.getFileDialogFilter(),
             )
             if not ok:
-                return
+                return False
         if not os.path.exists(filename):
             ok = QMessageBox.warning(
                 self,
@@ -688,7 +687,7 @@ class DatsWindow(QMainWindow):
                 self.openLog()
             else:
                 logger.warning(f"File {filename} not found.")
-                return
+                return False
 
         if os.path.isdir(filename):
             filename, ok = QFileDialog.getOpenFileName(
@@ -699,6 +698,8 @@ class DatsWindow(QMainWindow):
             )
 
         log = self.logsWidget.logsListWidget.openLog(filename)
+        if log is None:
+            return False
         self.updateDataItems(log)
         self.modifiedConfig = True
 
@@ -707,6 +708,8 @@ class DatsWindow(QMainWindow):
 
         if len(self.workbooksTabWidget.workbooks) == 0:
             self.addWorkbook()
+
+        return True
 
     def addToRecentFiles(self, filepath):
         """
