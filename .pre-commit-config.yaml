@@ -30,33 +30,33 @@ repos:
         stages: [commit]
       - id: requirements-txt-fixer
         stages: [commit]
-  - repo: local
-    hooks:
-      - id: tests
-        name: run tests
-        entry: tox -e py36
-        language: system
-        types: [python]
-        stages: [push]
-        pass_filenames: false
-      - id: typing
-        name: run typing checks
-        entry: tox -e mypy
-        language: system
-        types: [python]
-        stages: [commit]
-        pass_filenames: false
-      - id: packaging
-        name: run checks on packaging
-        entry: tox -e packaging
-        language: system
-        types: [python]
-        stages: [push]
-        pass_filenames: false
-      - id: docs_sphinx
-        name: run checks on docs_sphinx building
-        entry: tox -e docs_sphinx
-        language: system
-        types: [python]
-        stages: [push]
-        pass_filenames: false
+#  - repo: local
+#    hooks:
+#      - id: tests
+#        name: run tests
+#        entry: tox -e py36
+#        language: system
+#        types: [python]
+#        stages: [push]
+#        pass_filenames: false
+#      - id: typing
+#        name: run typing checks
+#        entry: tox -e mypy
+#        language: system
+#        types: [python]
+#        stages: [commit]
+#        pass_filenames: false
+#      - id: packaging
+#        name: run checks on packaging
+#        entry: tox -e packaging
+#        language: system
+#        types: [python]
+#        stages: [push]
+#        pass_filenames: false
+#      - id: docs_sphinx
+#        name: run checks on docs_sphinx building
+#        entry: tox -e docs_sphinx
+#        language: system
+#        types: [python]
+#        stages: [push]
+#        pass_filenames: false

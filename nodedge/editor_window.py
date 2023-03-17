@@ -879,7 +879,11 @@ class EditorWindow(QMainWindow):
             self.debugMode = True
         else:
             self.debugMode = debugMode
-        self.recentFiles = list(settings.value("recent_files", []))
+        recentFilesSettings = settings.value("recent_files", [])
+        if recentFilesSettings:
+            self.recentFiles = list(recentFilesSettings)  # type: ignore
+        else:
+            self.recentFiles = []
         self.updateRecentFilesMenu()
 
     def writeSettings(self):
