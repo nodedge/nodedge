@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
 """
 Editor window module containing :class:`~nodedge.editor_window.EditorWindow` class.
 """
 import json
 import logging
 import os
-from typing import Callable, Dict, List, Optional, Union, cast
+from collections.abc import Callable
+from typing import Optional, cast
 
 from PySide6.QtCore import QSettings, QSize, QStandardPaths, Qt, Signal
 from PySide6.QtGui import (
@@ -52,7 +52,7 @@ class EditorWindow(QMainWindow):
 
     recentFilesUpdated = Signal(object)
 
-    def __init__(self, parent: Optional[QWidget] = None):
+    def __init__(self, parent: QWidget | None = None):
         """
         :Instance Attributes:
 
@@ -77,16 +77,16 @@ class EditorWindow(QMainWindow):
         # noinspection PyUnresolvedReferences
         self.clipboard.dataChanged.connect(self.onClipboardChanged)  # type: ignore
 
-        self.lastActiveEditorWidget: Optional[EditorWidget] = None
+        self.lastActiveEditorWidget: EditorWidget | None = None
         self.debugMode: bool = False
-        self.recentFiles: List[str] = []
-        self.recentFilesActions: List[QAction] = []
+        self.recentFiles: list[str] = []
+        self.recentFilesActions: list[QAction] = []
 
-        self.actionsDict: Dict[str, dict] = {}
+        self.actionsDict: dict[str, dict] = {}
         self.initUI()
 
     @property
-    def currentEditorWidget(self) -> Optional[EditorWidget]:
+    def currentEditorWidget(self) -> EditorWidget | None:
         """
         :getter: Get current :class:`~nodedge.editor_widget.EditorWidget`
 
@@ -881,7 +881,7 @@ class EditorWindow(QMainWindow):
             self.debugMode = debugMode
         recentFilesSettings = settings.value("recent_files", [])
         if recentFilesSettings:
-            self.recentFiles = list(recentFilesSettings)  # type: ignore
+            self.recentFiles = list(recentFilesSettings)
         else:
             self.recentFiles = []
         self.updateRecentFilesMenu()
@@ -939,8 +939,8 @@ class EditorWindow(QMainWindow):
         self,
         name: str,
         callback: Callable,
-        statusTip: Optional[str] = None,
-        shortcut: Union[None, str, QKeySequence, QKeySequence.StandardKey] = None,
+        statusTip: str | None = None,
+        shortcut: None | str | QKeySequence | QKeySequence.StandardKey = None,
         checkable: bool = False,
         category: str = "",
     ) -> QAction:
