@@ -91,7 +91,7 @@ class LogsListWidget(QListWidget):
         if extension.lower() == "mf4":
             log = MDF(filename)
         elif extension.lower() in ["csv", "txt"]:
-            with open(filename, "r") as f:
+            with open(filename) as f:
                 line = f.readline()
                 separator = ","
                 if "," not in line:
@@ -211,7 +211,6 @@ class LogsListWidget(QListWidget):
 
     def addLogs(self, logs, prependDate=True):
         for logName, log in logs.items():
-
             self.addLog(log, logName, prependDate)
 
     def onItemClicked(self, item):
