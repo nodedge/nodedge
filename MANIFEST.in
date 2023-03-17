@@ -75,3 +75,7 @@ recursive-include deploy *
 
 include deploy.py
 include nodedge.spec
+
+recursive-exclude docs/build *
+
+include pymarkdown_config.json

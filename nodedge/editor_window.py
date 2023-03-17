@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Editor window module containing :class:`~nodedge.editor_window.EditorWindow` class.
 """
@@ -879,7 +878,11 @@ class EditorWindow(QMainWindow):
             self.debugMode = True
         else:
             self.debugMode = debugMode
-        self.recentFiles = list(settings.value("recent_files", []))
+        recentFilesSettings = settings.value("recent_files", [])
+        if recentFilesSettings:
+            self.recentFiles = list(recentFilesSettings)
+        else:
+            self.recentFiles = []
         self.updateRecentFilesMenu()
 
     def writeSettings(self):

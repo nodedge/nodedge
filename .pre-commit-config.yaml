@@ -30,33 +30,70 @@ repos:
         stages: [commit]
       - id: requirements-txt-fixer
         stages: [commit]
-  - repo: local
+      - id: detect-private-key
+        stages: [commit]
+      - id: detect-aws-credentials
+        stages: [commit]
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.3.1
     hooks:
-      - id: tests
-        name: run tests
-        entry: tox -e py36
-        language: system
-        types: [python]
-        stages: [push]
-        pass_filenames: false
-      - id: typing
-        name: run typing checks
-        entry: tox -e mypy
-        language: system
-        types: [python]
+      - id: pyupgrade
+        stages: [commit]
+        args: [--py38-plus]
+#  - repo: https://github.com/mgedmin/check-manifest
+#    rev: "0.49"
+#    hooks:
+#      - id: check-manifest
+#        stages: [commit]
+
+  - repo: https://github.com/jackdewinter/pymarkdown
+    rev: v0.9.9
+    hooks:
+      - id: pymarkdown
         stages: [commit]
         pass_filenames: false
-      - id: packaging
-        name: run checks on packaging
-        entry: tox -e packaging
-        language: system
-        types: [python]
-        stages: [push]
-        pass_filenames: false
-      - id: docs_sphinx
-        name: run checks on docs_sphinx building
-        entry: tox -e docs_sphinx
-        language: system
-        types: [python]
-        stages: [push]
-        pass_filenames: false
+        args:
+          - --config
+          - pymarkdown_config.json
+          - scan
+          - .
+          - ./docs
+          - ./docs_sphinx
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-markup
+    rev: v1.0.1
+    hooks:
+      - id: rst-linter
+        stages: [commit]
+
+
+
+#  - repo: local
+#    hooks:
+#      - id: tests
+#        name: run tests
+#        entry: tox -e py36
+#        language: system
+#        types: [python]
+#        stages: [push]
+#        pass_filenames: false
+#      - id: typing
+#        name: run typing checks
+#        entry: tox -e mypy
+#        language: system
+#        types: [python]
+#        stages: [commit]
+#        pass_filenames: false
+#      - id: packaging
+#        name: run checks on packaging
+#        entry: tox -e packaging
+#        language: system
+#        types: [python]
+#        stages: [push]
+#        pass_filenames: false
+#      - id: docs_sphinx
+#        name: run checks on docs_sphinx building
+#        entry: tox -e docs_sphinx
+#        language: system
+#        types: [python]
+#        stages: [push]
+#        pass_filenames: false
