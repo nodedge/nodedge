@@ -542,7 +542,6 @@ class DatsWindow(QMainWindow):
                         self.plotCurves([newName])
 
     def deleteCurve(self):
-
         worksheetTabWidget = self.workbooksTabWidget.currentWidget()
         nPlotWidget = worksheetTabWidget.currentWidget()
         if not nPlotWidget.items:
@@ -715,6 +714,17 @@ class DatsWindow(QMainWindow):
         :param filepath: absolute path and filename of the file to open.
         :type filepath: ``str``
         """
+        extension = os.path.splitext(filepath)[1]
+        if extension.lower() not in [
+            ".mf4",
+            ".mdf4",
+            ".csv",
+            ".mat",
+            ".txt",
+            ".hdf5",
+            ".h5",
+        ]:
+            return
         if filepath in self.recentFiles:
             self.recentFiles.remove(filepath)
         self.recentFiles.insert(0, filepath)
