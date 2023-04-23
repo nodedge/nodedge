@@ -158,7 +158,6 @@ class NPlotWidget(GraphicsLayoutWidget):
         # self.plotItem.setRange(yRange=(self.yLimits[0], self.yLimits[1] * 0.5))
 
     def updateLimits(self, xLimits=None, yLimits=None):
-
         for item in self.plotItems:
             vb = item.vb
             if xLimits is not None:
@@ -269,7 +268,7 @@ class NViewBox(pg.ViewBox):
         """
         Constructor of the NViewBox
         """
-        super(NViewBox, self).__init__()
+        super().__init__()
         self.nPlotWidget = nPlotWidget
         # self.setRectMode() # Set mouse mode to rect for convenient zooming
         # self.menu = None # Override pyqtgraph ViewBoxMenu
@@ -386,7 +385,6 @@ class NViewBox(pg.ViewBox):
         self.setMouseMode(self.PanMode)
 
     def customizeCurves(self):
-
         if self.highlightedCurve is None:
             logger.warning("No curve selected")
             return

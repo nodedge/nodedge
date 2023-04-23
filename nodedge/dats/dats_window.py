@@ -547,15 +547,17 @@ class DatsWindow(QMainWindow):
         if not nPlotWidget.items:
             return
 
-        if nPlotWidget.plotItem.vb.highlightedCurve is not None:
-            nPlotWidget.plotItem.vb.curves.pop(
-                nPlotWidget.plotItem.vb.highlightedCurve.name()
+        if nPlotWidget.focusedPlotItem.vb.highlightedCurve is not None:
+            nPlotWidget.focusedPlotItem.vb.curves.pop(
+                nPlotWidget.focusedPlotItem.vb.highlightedCurve.name()
             )
-            nPlotWidget.plotItem.removeItem(nPlotWidget.plotItem.vb.highlightedCurve)
+            nPlotWidget.focusedPlotItem.removeItem(
+                nPlotWidget.focusedPlotItem.vb.highlightedCurve
+            )
         else:
-            lastKey = list(nPlotWidget.plotItem.vb.curves.keys())[-1]
-            curve = nPlotWidget.plotItem.vb.curves.pop(lastKey)
-            nPlotWidget.plotItem.removeItem(curve)
+            lastKey = list(nPlotWidget.focusedPlotItem.vb.curves.keys())[-1]
+            curve = nPlotWidget.focusedPlotItem.vb.curves.pop(lastKey)
+            nPlotWidget.focusedPlotItem.removeItem(curve)
         self.modifiedConfig = True
 
     # TODO: Remove duplicates of createAction
