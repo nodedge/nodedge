@@ -78,7 +78,6 @@ class NPlotWidget(GraphicsLayoutWidget):
             / (plotItem.vb.xLimits[1] - plotItem.vb.xLimits[0])
             * 100.0
         )
-        print(f"Updapte x range: [{minValue}, {maxValue}]")
         self.xRangeUpdated.emit(minValue, maxValue)
 
     def addPlotItem(self, *args, **kargs):
