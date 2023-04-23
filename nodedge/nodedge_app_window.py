@@ -17,7 +17,7 @@ examplePath = os.path.join(os.path.dirname(__file__), "../examples").replace("\\
 
 class NodedgeAppWindow(QMainWindow):
     def __init__(self, parent=None):
-        super(NodedgeAppWindow, self).__init__(parent)
+        super().__init__(parent)
         self.setWindowTitle("Nodedge")
         icon = QIcon(
             os.path.join(os.path.dirname(__file__), "../resources/nodedge_logo.png")
@@ -82,8 +82,8 @@ class NodedgeAppWindow(QMainWindow):
         self.datsWindow.recentFilesUpdated.emit(self.datsWindow.recentFiles)
 
         def openDatsFile(text):
-            self.mainWidget.setCurrentWidget(self.datsWindow)
-            self.datsWindow.openLog(text)
+            if self.datsWindow.openLog(text):
+                self.mainWidget.setCurrentWidget(self.datsWindow)
 
         # self.homepageWindow.homeContentWidget.datsNewFile.clicked.connect(
         #     lambda: openDatsFile("")

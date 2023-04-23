@@ -547,15 +547,17 @@ class DatsWindow(QMainWindow):
         if not nPlotWidget.items:
             return
 
-        if nPlotWidget.plotItem.vb.highlightedCurve is not None:
-            nPlotWidget.plotItem.vb.curves.pop(
-                nPlotWidget.plotItem.vb.highlightedCurve.name()
+        if nPlotWidget.focusedPlotItem.vb.highlightedCurve is not None:
+            nPlotWidget.focusedPlotItem.vb.curves.pop(
+                nPlotWidget.focusedPlotItem.vb.highlightedCurve.name()
             )
-            nPlotWidget.plotItem.removeItem(nPlotWidget.plotItem.vb.highlightedCurve)
+            nPlotWidget.focusedPlotItem.removeItem(
+                nPlotWidget.focusedPlotItem.vb.highlightedCurve
+            )
         else:
-            lastKey = list(nPlotWidget.plotItem.vb.curves.keys())[-1]
-            curve = nPlotWidget.plotItem.vb.curves.pop(lastKey)
-            nPlotWidget.plotItem.removeItem(curve)
+            lastKey = list(nPlotWidget.focusedPlotItem.vb.curves.keys())[-1]
+            curve = nPlotWidget.focusedPlotItem.vb.curves.pop(lastKey)
+            nPlotWidget.focusedPlotItem.removeItem(curve)
         self.modifiedConfig = True
 
     # TODO: Remove duplicates of createAction
@@ -665,7 +667,7 @@ class DatsWindow(QMainWindow):
             "© 2020-2023 Nodedge",
         )
 
-    def openLog(self, filename=None):
+    def openLog(self, filename=None) -> bool:
         if filename is None or not filename:
             filename, ok = QFileDialog.getOpenFileName(
                 parent=self,
@@ -674,7 +676,7 @@ class DatsWindow(QMainWindow):
                 filter=DatsWindow.getFileDialogFilter(),
             )
             if not ok:
-                return
+                return False
         if not os.path.exists(filename):
             ok = QMessageBox.warning(
                 self,
@@ -687,7 +689,7 @@ class DatsWindow(QMainWindow):
                 self.openLog()
             else:
                 logger.warning(f"File {filename} not found.")
-                return
+                return False
 
         if os.path.isdir(filename):
             filename, ok = QFileDialog.getOpenFileName(
@@ -698,6 +700,8 @@ class DatsWindow(QMainWindow):
             )
 
         log = self.logsWidget.logsListWidget.openLog(filename)
+        if log is None:
+            return False
         self.updateDataItems(log)
         self.modifiedConfig = True
 
@@ -706,6 +710,8 @@ class DatsWindow(QMainWindow):
 
         if len(self.workbooksTabWidget.workbooks) == 0:
             self.addWorkbook()
+
+        return True
 
     def addToRecentFiles(self, filepath):
         """
