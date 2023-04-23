@@ -248,6 +248,7 @@ class DatsWindow(QMainWindow):
             worksheetsTabWidget = self.workbooksTabWidget.addWorkbook(workbookname)
             worksheetsTabWidget.removeWorksheet(0)
             item = 0
+            self.workbooksTabWidget.setCurrentWidget(worksheetsTabWidget)
             for worksheetname, worksheetConfig in workbookConfig.items():
                 worksheetsTabWidget.addWorksheet(worksheetname)
                 worksheetsTabWidget.setCurrentIndex(item)

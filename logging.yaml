@@ -143,3 +143,8 @@ loggers:
         handlers: [ stdout, debug_file_handler ]
         level: DEBUG
         propagate: false
+
+    nodedge.dats.dats_window:
+        handlers: [ stdout, debug_file_handler ]
+        level: DEBUG
+        propagate: false
