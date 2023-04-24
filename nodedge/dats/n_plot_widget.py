@@ -78,7 +78,6 @@ class NPlotWidget(GraphicsLayoutWidget):
             / (plotItem.vb.xLimits[1] - plotItem.vb.xLimits[0])
             * 100.0
         )
-        print(f"Updapte x range: [{minValue}, {maxValue}]")
         self.xRangeUpdated.emit(minValue, maxValue)
 
     def addPlotItem(self, *args, **kargs):
@@ -395,7 +394,7 @@ class NViewBox(pg.ViewBox):
         color = QColorDialog.getColor()
         logger.info(f"New color for curve {curveName}: {color}")
 
-        curve.setPen(pg.mkPen(color, width=curve.pen.width()))
+        curve.setPen(pg.mkPen(color, width=curve.opts["pen"]["width"]))
         curve.setSymbolPen(pg.mkPen(color))
         curve.setBrush(pg.mkBrush(color))
         curve.setSymbolBrush(pg.mkBrush(color))

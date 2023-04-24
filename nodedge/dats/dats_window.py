@@ -159,7 +159,6 @@ class DatsWindow(QMainWindow):
                 print("connecting", worksheet.name)
 
     def updateSlider(self, low, high):
-        print("updateSlider", low, high)
         self.slider.sliderMoved.disconnect(self.updatePlotAxes)
         self.slider.setRange(low, high)
         self.slider.sliderMoved.connect(self.updatePlotAxes)
@@ -249,6 +248,7 @@ class DatsWindow(QMainWindow):
             worksheetsTabWidget = self.workbooksTabWidget.addWorkbook(workbookname)
             worksheetsTabWidget.removeWorksheet(0)
             item = 0
+            self.workbooksTabWidget.setCurrentWidget(worksheetsTabWidget)
             for worksheetname, worksheetConfig in workbookConfig.items():
                 worksheetsTabWidget.addWorksheet(worksheetname)
                 worksheetsTabWidget.setCurrentIndex(item)
