@@ -9,14 +9,16 @@ Subpackages
    nodedge.blocks
    nodedge.dats
    nodedge.elements
+   nodedge.homepage
 
 Submodules
 ----------
 
 .. toctree::
 
+   nodedge.action_palette
+   nodedge.animated_stack_widget
    nodedge.application_styler
-   nodedge.calculator
    nodedge.connector
    nodedge.edge
    nodedge.edge_dragging
@@ -35,21 +37,27 @@ Submodules
    nodedge.graphics_text_item
    nodedge.graphics_view
    nodedge.history_list_widget
+   nodedge.home_menu
    nodedge.logger
    nodedge.mdi_area
    nodedge.mdi_widget
    nodedge.mdi_window
    nodedge.node
    nodedge.node_tree_widget
+   nodedge.nodedge_app_window
    nodedge.ntypes
+   nodedge.range_slider
    nodedge.scene
    nodedge.scene_clipboard
    nodedge.scene_coder
    nodedge.scene_history
    nodedge.scene_item_detail_widget
    nodedge.scene_items_table_widget
+   nodedge.scene_items_tree_widget
+   nodedge.scene_simulator
    nodedge.serializable
    nodedge.socket_type
+   nodedge.solver_dialog
    nodedge.splash_screen
    nodedge.utils
 

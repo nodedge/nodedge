@@ -17,6 +17,7 @@ Submodules
    nodedge.blocks.block
    nodedge.blocks.block_config
    nodedge.blocks.block_exception
+   nodedge.blocks.block_param
    nodedge.blocks.graphics_block
    nodedge.blocks.graphics_block_content
    nodedge.blocks.graphics_input_block_content
