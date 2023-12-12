@@ -5,7 +5,7 @@
 import sys
 
 from setuptools import find_packages, setup
-from setuptools.command.test import test as TestCommand
+from setuptools.command.test import test as test_command
 
 with open("README.md") as readme_file:
     readme = readme_file.read()
@@ -13,7 +13,7 @@ with open("README.md") as readme_file:
 with open("HISTORY.md") as history_file:
     history = history_file.read()
 
-with open("requirements/packages/requirements.txt") as requirements_file:
+with open("requirements/freeze/requirements.txt") as requirements_file:
     requirements = requirements_file.read()
 
 setup_requirements = ["pytest-runner"]
@@ -24,15 +24,15 @@ test_requirements = ["pytest"]
 # print(find_packages(include=['tage'], exclude=["examples*", "tests*"]))
 
 
-class PyTest(TestCommand):
+class PyTest(test_command):
     user_options = [("pytest-args=", "a", "Arguments to pass to py.test")]
 
     def initialize_options(self):
-        TestCommand.initialize_options(self)
+        test_command.initialize_options(self)
         self.pytest_args = []
 
     def finalize_options(self):
-        TestCommand.finalize_options(self)
+        test_command.finalize_options(self)
         self.test_args = []
         self.test_suite = True
 
@@ -84,7 +84,7 @@ setup(
     keywords=KEYWORDS,
     description="Graphical editor for physical modeling and simulation.",
     url="https://www.nodedge.io",
-    version="0.5.0",
+    version="0.5.1",
     license="MIT",
     author="Anthony De Bortoli",
     author_email="anthony.debortoli@nodedge.io",
