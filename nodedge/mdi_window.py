@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
 """Multi Document Interface window module containing
 :class:`~nodedge.mdi_window.MdiWindow` class. """
 import logging
 import os
 from typing import Any, Callable, List, Optional, cast
 
+from pyqtgraph.console import ConsoleWidget
 from PySide6.QtCore import QPointF, QSignalMapper, QSize, Qt, QTimer, Slot
 from PySide6.QtGui import QAction, QCloseEvent, QIcon, QKeySequence, QMouseEvent
 from PySide6.QtWidgets import (
@@ -18,7 +18,6 @@ from PySide6.QtWidgets import (
 )
 
 from nodedge.action_palette import ActionPalette
-from nodedge.console_widget import ConsoleWidget
 from nodedge.editor_widget import EditorWidget
 from nodedge.editor_window import EditorWindow
 from nodedge.history_list_widget import HistoryListWidget
@@ -42,7 +41,7 @@ class MdiWindow(EditorWindow):
 
     def __init__(self) -> None:
         self.currentEditorWidgetChangedListeners: List[Callable] = []
-        super(MdiWindow, self).__init__()
+        super().__init__()
 
     @property
     def currentEditorWidget(self) -> Optional[EditorWidget]:
