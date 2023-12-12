@@ -2,7 +2,7 @@
 -r requirements_docs.txt
 -r requirements_tests.txt
 bump2version==1.0.1
-Pillow==9.3.0
+Pillow==10.0.1
 pre-commit==2.21.0
 wheel==0.38.4
 pyinstaller==5.7.0
