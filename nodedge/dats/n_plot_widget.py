@@ -1,17 +1,9 @@
 import logging
-from collections import OrderedDict
 from typing import Dict, List, Optional
 
 import numpy as np
 import pyqtgraph as pg
-from pyqtgraph import (
-    AxisItem,
-    GraphicsLayoutWidget,
-    InfiniteLine,
-    LegendItem,
-    SignalProxy,
-    ViewBox,
-)
+from pyqtgraph import AxisItem, GraphicsLayoutWidget, InfiniteLine, SignalProxy, ViewBox
 from pyqtgraph.graphicsItems.ViewBox.ViewBoxMenu import ViewBoxMenu
 from pyqtgraph.GraphicsScene.mouseEvents import MouseClickEvent
 from PySide6 import QtCore, QtGui
@@ -273,15 +265,15 @@ class NViewBox(pg.ViewBox):
         # self.menu = None # Override pyqtgraph ViewBoxMenu
         # self.menu = self.getMenu() # Create the menu
         self.customizeAct = QtGui.QAction("Customize curve", self.menu)
-        self.customizeAct.triggered.connect(self.customizeCurves)  # type: ignore
+        self.customizeAct.triggered.connect(self.customizeCurves)
         self.menu.addAction(self.customizeAct)
 
         self.addSubPlotAct = QtGui.QAction("Add subplot", self.menu)
-        self.addSubPlotAct.triggered.connect(self.addSubPlot)  # type: ignore
+        self.addSubPlotAct.triggered.connect(self.addSubPlot)
         self.menu.addAction(self.addSubPlotAct)
 
         self.removeThisSubPlotAct = QtGui.QAction("Remove this subplot", self.menu)
-        self.removeThisSubPlotAct.triggered.connect(self.closeCurrentSubPlot)  # type: ignore
+        self.removeThisSubPlotAct.triggered.connect(self.closeCurrentSubPlot)
         self.menu.addAction(self.removeThisSubPlotAct)
         self.removeThisSubPlotAct.setEnabled(False)
         self.removeThisSubPlotAct.setVisible(False)

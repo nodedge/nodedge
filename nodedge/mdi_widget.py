@@ -3,7 +3,7 @@
 Mdi widget module containing :class:`~nodedge.mdi_widget.MdiWidget` class.
 """
 import logging
-from typing import Callable, List, Optional
+from typing import Callable, Dict, List, Optional
 
 from PySide6.QtCore import QDataStream, QIODevice, Qt
 from PySide6.QtGui import (
@@ -62,13 +62,13 @@ class MdiWidget(EditorWidget):
         self.initNewNodeActions()
 
     # noinspection PyAttributeOutsideInit
-    def initNewNodeActions(self):
+    def initNewNodeActions(self) -> None:
         """
         Add all available blocks in the
         :class:`~nodedge.node_list_widget.NodeListWidget`.
         """
         self.nodeActions = {}
-        self.libraryMenus = {}
+        self.libraryMenus: Dict[str, QMenu] = {}
 
         keys = list(BLOCKS.keys())
         keys.sort()
@@ -319,7 +319,7 @@ class MdiWidget(EditorWidget):
         self.scene.doDeselectItems()
         newNode.isSelected = True
 
-    def handleNewNodeContextMenu(self, event):
+    def handleNewNodeContextMenu(self, event: QContextMenuEvent) -> None:
         """
         Handle context menu event when the users has right clicked on an empty space.
 
@@ -345,6 +345,10 @@ class MdiWidget(EditorWidget):
                 )
 
                 # newNode.isSelected = True
+
+                if self.scene.graphicsView.edgeDragging.dragStartSocket is None:
+                    logging.warning("Drag start socket is None")
+                    return
 
                 targetSocket: Optional[Socket] = MdiWidget.determineTargetSocketOfNode(
                     self.scene.graphicsView.edgeDragging.dragStartSocket.isOutput,

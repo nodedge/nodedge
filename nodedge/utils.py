@@ -139,7 +139,7 @@ def createAction(
     :return:
     """
     act = QAction(name, parent)
-    act.triggered.connect(callback)  # type: ignore
+    act.triggered.connect(callback)
 
     if statusTip is not None:
         act.setStatusTip(statusTip)

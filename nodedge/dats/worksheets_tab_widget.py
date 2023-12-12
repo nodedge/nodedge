@@ -170,7 +170,7 @@ class WorksheetsTabWidget(QTabWidget):
         :return:
         """
         act = QAction(name, self)
-        act.triggered.connect(callback)  # type: ignore
+        act.triggered.connect(callback)
 
         if statusTip is not None:
             act.setStatusTip(statusTip)

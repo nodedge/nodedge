@@ -28,7 +28,7 @@ class HistoryListWidget(QListWidget):
 
         self.history: SceneHistory = history
 
-        self.itemClicked.connect(self.onItemClicked)  # type: ignore
+        self.itemClicked.connect(self.onItemClicked)
 
     def update(self, *__args) -> None:
         """

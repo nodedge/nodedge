@@ -45,8 +45,8 @@ class SceneItemsTableWidget(QTableWidget):
         self.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
         self.verticalHeader().hide()
         self.setShowGrid(True)
-        self.cellClicked.connect(self.onCellClicked)  # type: ignore
-        self.cellDoubleClicked.connect(self.onCellDoubleClicked)  # type: ignore
+        self.cellClicked.connect(self.onCellClicked)
+        self.cellDoubleClicked.connect(self.onCellDoubleClicked)
 
     def update(self, *__args) -> None:
         self.setRowCount(0)

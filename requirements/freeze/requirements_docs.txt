@@ -1,6 +1,6 @@
 -r requirements.txt
-pydocstyle==6.1.1
+pydocstyle==6.3.0
 recommonmark==0.7.1
-Sphinx==5.3.0
-sphinx_autodoc_typehints==1.19.5
-sphinx-rtd-theme==1.1.1
+Sphinx==7.2.6
+sphinx-autodoc-typehints==1.25.2
+sphinx-rtd-theme==2.0.0

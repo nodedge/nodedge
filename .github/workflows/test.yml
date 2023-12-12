@@ -8,7 +8,7 @@ on:
   pull_request:
     branches:
       - main
-    types: [opened, synchronize]
+    types: [ opened, synchronize, reopened, edited ]
 
 jobs:
   test:
@@ -17,7 +17,7 @@ jobs:
       matrix:
 #        platform: [ubuntu-latest, macos-latest, windows-latest]
         platform: [ubuntu-latest]
-        python-version: [3.8, 3.9, '3.10', '3.11']
+        python-version: [ 3.9, '3.10', '3.11', '3.12' ]
 
     steps:
     - uses: actions/checkout@v3
@@ -41,7 +41,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install setuptools_rust tox tox-gh-actions
     - name: Tests with tox
-      uses: GabrielBB/xvfb-action@v1
+      uses: coactions/setup-xvfb@v1
       with:
         run: tox
       env:
