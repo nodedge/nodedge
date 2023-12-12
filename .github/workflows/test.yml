@@ -41,7 +41,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install setuptools_rust tox tox-gh-actions
     - name: Tests with tox
-      uses: GabrielBB/xvfb-action@v1
+      uses: coactions/setup-xvfb@v1
       with:
         run: tox
       env:
