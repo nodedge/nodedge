@@ -20,5 +20,5 @@ jobs:
     - name: Update pull request body
       uses: riskledger/update-pr-description@v2
       with:
-        body: ${{ steps.pr-description.outputs.pull_request_description }}
+        body: ${{ description }}
         token: ${{ secrets.GITHUB_TOKEN }}
