@@ -191,7 +191,6 @@ class CurveDialog(QDialog):
 
     def onAccepted(self):
         if self.curveNameEdit.valid and self.curveFormulaEdit.valid:
-
             self.interpretFormula()
             self.accept()
         else:
@@ -244,10 +243,8 @@ class CurveDialog(QDialog):
         self.parent.replaceCurve(self.initialCurveName, curveName)
 
     def onSignalDoubleClicked(self, item):
-
         # Automatically set the name only if it is empty
         if self.curveNameEdit.text() == "":
-
             curveName = item.text()
 
             alreadyExistingNames = self.signalsWidget.signals

@@ -37,3 +37,15 @@ jobs:
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
+    - name: Build executable
+      run: |
+        python build_executable.py
+    - uses: actions/upload-artifact@v3
+      with:
+        name: NodedgeSetup.exe
+        path: dist/NodedgeSetup.exe
+    - uses: Shopify/upload-to-release@v1
+      with:
+        name: NodedgeSetup.exe
+        path: dist/NodedgeSetup.exe
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
