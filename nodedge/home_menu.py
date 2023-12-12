@@ -12,18 +12,18 @@ class HomeMenu(QMenu):
 
     def __init__(self, parent):
         super(HomeMenu, self).__init__(parent)
-        self.hovered = False
+        self._hovered = False
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         self.pressed.emit()
         super(HomeMenu, self).mousePressEvent(event)
 
     def enterEvent(self, event: QEnterEvent) -> None:
-        self.hovered = True
+        self._hovered = True
         super(HomeMenu, self).enterEvent(event)
 
     def leaveEvent(self, event: QEvent) -> None:
-        self.hovered = False
+        self._hovered = False
         super(HomeMenu, self).leaveEvent(event)
 
 

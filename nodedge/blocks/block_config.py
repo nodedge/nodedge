@@ -3,9 +3,9 @@ import os
 from typing import Dict
 
 # BlockType = TypeVar("BlockType", bound=Block)
-BLOCKS: Dict[int, type] = {}
+BLOCKS: Dict[int, "Block"] = {}  # type: ignore
 
-BLOCKS_ICONS_PATH = f"{os.path.dirname(__file__)}/../../resources/node_icons"
+BLOCKS_ICONS_PATH: str = f"{os.path.dirname(__file__)}/../../resources/node_icons"
 
 
 # Way to register by function call

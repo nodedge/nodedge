@@ -88,7 +88,7 @@ setup(
     license="MIT",
     author="Anthony De Bortoli",
     author_email="anthony.debortoli@nodedge.io",
-    python_requires=">=3.7",
+    python_requires=">=3.9",
     classifiers=CLASSIFIERS,
     install_requires=requirements,
     long_description=readme + "\n\n" + history + "\n",

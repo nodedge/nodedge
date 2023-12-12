@@ -96,10 +96,10 @@ class MdiWindow(EditorWindow):
 
         self.addCurrentEditorWidgetChangedListener(self.updateMenus)
 
-        self.mdiArea.subWindowActivated.connect(self.onSubWindowActivated)  # type: ignore
+        self.mdiArea.subWindowActivated.connect(self.onSubWindowActivated)
 
         self.windowMapper = QSignalMapper(self)
-        self.windowMapper.mappedObject.connect(self.setActiveSubWindow)  # type: ignore
+        self.windowMapper.mappedObject.connect(self.setActiveSubWindow)
 
         self.createSceneItemDetailDock()
         self.createNodesDock()
@@ -304,7 +304,7 @@ class MdiWindow(EditorWindow):
         self.createHelpMenu()
 
         # noinspection PyUnresolvedReferences
-        self.editMenu.aboutToShow.connect(self.updateEditMenu)  # type: ignore
+        self.editMenu.aboutToShow.connect(self.updateEditMenu)
 
     # noinspection PyAttributeOutsideInit
     def createHomeMenu(self):
@@ -337,7 +337,7 @@ class MdiWindow(EditorWindow):
         """
         self.windowMenu = self.menuBar().addMenu("&Window")
         # noinspection PyUnresolvedReferences
-        self.windowMenu.aboutToShow.connect(self.updateWindowMenu)  # type: ignore
+        self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
 
     def updateMenus(self) -> None:
         """
@@ -407,7 +407,7 @@ class MdiWindow(EditorWindow):
             action.setCheckable(True)
             action.setChecked(editorWidget is self.currentEditorWidget)
             # noinspection PyUnresolvedReferences
-            action.triggered.connect(self.windowMapper.map)  # type: ignore
+            action.triggered.connect(self.windowMapper.map)
             self.windowMapper.setMapping(action, window)
 
     def updateEditMenu(self) -> None:
@@ -653,7 +653,7 @@ class MdiWindow(EditorWindow):
             logger.debug(f"Loading {filename}")
             if filename:
                 if not os.path.exists(filename):
-                    ok = QMessageBox.warning(
+                    but: QMessageBox.StandardButton = QMessageBox.warning(
                         self,
                         "File not found",
                         f"File {filename} does not exist. \n"
@@ -662,7 +662,7 @@ class MdiWindow(EditorWindow):
                         | QMessageBox.StandardButton.Cancel,
                     )
                     self.removeFromRecentFiles(filename)
-                    if ok == QMessageBox.StandardButton.Ok:
+                    if but == QMessageBox.StandardButton.Ok:
                         self.newFile()
                     else:
                         logger.warning(f"File {filename} not found.")

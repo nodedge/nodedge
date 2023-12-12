@@ -20,7 +20,11 @@ os.environ["QT_API"] = "pyside6"
 # os.environ["QT_FONT_DPI"] = "96"  # FIX Problem for High DPI and Scale above 100%
 
 
-def main():
+def main() -> None:
+    """
+    Main function for Nodedge
+    :return: `None`
+    """
     app: QApplication = QApplication(sys.argv)
     app.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.Floor)
 

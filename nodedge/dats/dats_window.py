@@ -8,7 +8,6 @@ import pyqtgraph as pg
 from asammdf import MDF
 from asammdf.blocks.utils import MdfException
 from asammdf.blocks.v2_v3_blocks import Channel
-from pyqtgraph import PlotDataItem
 from PySide6.QtCore import QSettings, QStandardPaths, Qt, QTimer, Signal
 from PySide6.QtGui import QAction, QCloseEvent, QKeySequence
 from PySide6.QtWidgets import (
@@ -584,7 +583,7 @@ class DatsWindow(QMainWindow):
         :return:
         """
         act = QAction(name, self)
-        act.triggered.connect(callback)  # type: ignore
+        act.triggered.connect(callback)
 
         if statusTip is not None:
             act.setStatusTip(statusTip)
@@ -678,14 +677,14 @@ class DatsWindow(QMainWindow):
             if not ok:
                 return False
         if not os.path.exists(filename):
-            ok = QMessageBox.warning(
+            but = QMessageBox.warning(
                 self,
                 "File not found",
                 f"File {filename} does not exist. \n" "Do you want to open a new file?",
                 QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel,
             )
             self.removeFromRecentFiles(filename)
-            if ok == QMessageBox.StandardButton.Ok:
+            if but == QMessageBox.StandardButton.Ok:
                 self.openLog()
             else:
                 logger.warning(f"File {filename} not found.")

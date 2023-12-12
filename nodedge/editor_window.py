@@ -74,7 +74,7 @@ class EditorWindow(QMainWindow):
 
         # Pycharm does not recognise resolve connect method so the inspection is
         # noinspection PyUnresolvedReferences
-        self.clipboard.dataChanged.connect(self.onClipboardChanged)  # type: ignore
+        self.clipboard.dataChanged.connect(self.onClipboardChanged)
 
         self.lastActiveEditorWidget: Optional[EditorWidget] = None
         self.debugMode: bool = False
@@ -457,7 +457,7 @@ class EditorWindow(QMainWindow):
         self.simMenu.addAction(self.evalAct)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
-    def createCoderMenu(self):
+    def createCoderMenu(self) -> None:
         self.coderMenu: QMenu = self.menuBar().addMenu("&Coder")
         self.coderMenu.addAction(self.generateCodeAct)
         self.coderMenu.addAction(self.showCodeAct)
@@ -474,7 +474,7 @@ class EditorWindow(QMainWindow):
         self.solverDialog.show()
 
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
-    def createFileMenu(self):
+    def createFileMenu(self) -> None:
         """
         Create `File` Menu.
         """
@@ -513,7 +513,7 @@ class EditorWindow(QMainWindow):
             self.recentFilesActions.append(action)
 
     # noinspection PyArgumentList, PyAttributeOutsideInit, DuplicatedCode
-    def createEditMenu(self):
+    def createEditMenu(self) -> None:
         """
         Create `Edit` Menu.
         """
@@ -920,11 +920,11 @@ class EditorWindow(QMainWindow):
         """
         pass
 
-    def onFitToView(self):
+    def onFitToView(self) -> None:
         if self.currentEditorWidget is not None:
             self.currentEditorWidget.graphicsView.graphicsScene.fitToView()
 
-    def onGenerateCode(self):
+    def onGenerateCode(self) -> None:
         if self.currentEditorWidget is not None:
             coder: SceneCoder = self.currentEditorWidget.scene.coder
             if coder is not None:
