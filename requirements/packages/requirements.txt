@@ -3,7 +3,6 @@ coloredlogs
 npTDMS
 numpy
 pandas
-pyqtconsole
 pyqtgraph
 PySide6
 PyYAML

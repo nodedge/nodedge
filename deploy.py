@@ -2,7 +2,7 @@ import os
 
 os.environ["NUMEXPR_MAX_THREADS"] = "16"
 
-app_name = "nodedge"
+app_name = "NodedgeSetup"
 path = r"nodedge/__main__.py"
 resources_src = r"resources"
 examples_src = r"examples"

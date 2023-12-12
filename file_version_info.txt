@@ -31,13 +31,13 @@ VSVersionInfo(
         '040904B0',
         [StringStruct('CompanyName', 'Nodedge'),
         StringStruct('FileDescription', 'Nodedge'),
-        StringStruct('FileVersion', '0.5.0'),
+        StringStruct('FileVersion', '0.5.1'),
         StringStruct('InternalName', 'nodedge'),
         StringStruct('LegalCopyright', ''),
         StringStruct('OriginalFilename', 'nodedge.exe'),
         StringStruct('ProductName', ''),
         StringStruct('ProductVersion', '')])
-      ]), 
+      ]),
     VarFileInfo([VarStruct('Translation', [1033, 1200])])
   ]
 )
