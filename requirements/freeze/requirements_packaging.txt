@@ -2,4 +2,4 @@
 check-manifest==0.49
 readme-renderer==37.3
 twine==4.0.2
-pyinstaller==5.7.0
+pyinstaller==5.13.1

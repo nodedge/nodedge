@@ -5,5 +5,5 @@ bump2version==1.0.1
 Pillow==9.3.0
 pre-commit==2.21.0
 wheel==0.38.4
-pyinstaller==5.7.0
+pyinstaller==5.13.1
 pip-licenses==4.0.3
