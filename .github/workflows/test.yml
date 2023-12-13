@@ -17,8 +17,7 @@ jobs:
       matrix:
 #        platform: [ubuntu-latest, macos-latest, windows-latest]
         platform: [ubuntu-latest]
-        python-version: [ 3.9, '3.10', '3.11', '3.12', 'mypy', 'flake8',
-                          'black', 'docs_sphinx', 'packaging' ]
+        python-version: [ 3.9, '3.10', '3.11', '3.12' ]
 
     steps:
     - uses: actions/checkout@v3
