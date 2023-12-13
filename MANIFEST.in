@@ -63,3 +63,5 @@ recursive-exclude docs_sphinx/build *
 recursive-exclude logs *
 recursive-exclude nodedge/resources/raw_black_icons *
 recursive-exclude nodedge/resources/raw_white_icons *
+recursive-exclude tests_outputs *
+recursive-exclude tests/tests_outputs *

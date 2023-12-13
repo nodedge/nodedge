@@ -1,9 +1,12 @@
 import json
+import logging
 import re
 from string import ascii_letters, digits
 
-from asammdf import MDF
+from asammdf import MDF, Signal
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
+    QCheckBox,
     QComboBox,
     QDialog,
     QDialogButtonBox,
@@ -12,6 +15,7 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QMessageBox,
     QSizePolicy,
+    QSpinBox,
     QTextEdit,
     QVBoxLayout,
     QWidget,
@@ -36,6 +40,8 @@ OPERATOR_LIST = [
     "acos",
     "atan",
 ]
+
+logger = logging.getLogger(__name__)
 
 
 class CurveLineEdit(QLineEdit):
@@ -119,8 +125,8 @@ class CurveDialog(QDialog):
         logs = self.parent.logsWidget.logsListWidget.logs
         self.logsWidget = LogsListWidget(logs=logs)
         signals = self.parent.signalsWidget.signalsTableWidget.signals
-        createdSignals = list(self.parent.curveConfig.keys())
-        signals = list(set(signals).difference(createdSignals))
+        # createdSignals = list(self.parent.curveConfig.keys())
+        # signals = list(set(signals).difference(createdSignals))
 
         self.signalsWidget = SignalsListWidget(signals=signals)
         self.signalsWidget.itemDoubleClicked.connect(self.onSignalDoubleClicked)
@@ -144,7 +150,7 @@ class CurveDialog(QDialog):
         self.unitWidget.setLayout(self.unitLayout)
         self.mainLayout.addWidget(self.unitWidget)
         self.rateWidget = QWidget()
-        self.rateLayout = QHBoxLayout()
+        self.rateLayout = QVBoxLayout()
         self.rateWidget.setLayout(self.rateLayout)
         self.mainLayout.addWidget(self.rateWidget)
 
@@ -165,6 +171,7 @@ class CurveDialog(QDialog):
         self.typeRateCombo = QComboBox()
         self.typeRateCombo.addItems(["Frequency", "Period"])
         self.typeRateCombo.setCurrentText("Frequency")
+        self.typeRate = "Frequency"
         self.typeRateCombo.currentTextChanged.connect(self.onTypeRateChanged)
         self.rateLayout.addWidget(self.typeRateCombo)
         self.rateSpin = QDoubleSpinBox()
@@ -175,19 +182,41 @@ class CurveDialog(QDialog):
         self.rateSpin.setValue(1)
         self.rateLayout.addWidget(self.rateSpin)
 
+        self.filterCheck = QCheckBox("Low pass filter")
+        self.filterCheck.setChecked(False)
+        self.filterCheck.stateChanged.connect(self.onFilterCheckChanged)
+        self.rateLayout.addWidget(self.filterCheck)
         self.filterSpin = QDoubleSpinBox()
-        self.filterSpin.setPrefix("Filter: ")
+        self.filterSpin.setPrefix("Low pass Butter filter: ")
         self.filterSpin.setRange(0, 100000)
-        self.filterSpin.setSingleStep(0.1)
+        self.filterSpin.setSingleStep(0.01)
         self.filterSpin.setSuffix(" Hz")
         self.filterSpin.setValue(0)
+        self.filterSpin.setEnabled(False)
         self.rateLayout.addWidget(self.filterSpin)
+
+        self.filterOrderSpin = QSpinBox()
+        self.filterOrderSpin.setPrefix("Order: ")
+        self.filterOrderSpin.setRange(0, 8)
+        self.filterOrderSpin.setSingleStep(1)
+        self.filterOrderSpin.setValue(1)
+        self.filterOrderSpin.setEnabled(False)
+        self.rateLayout.addWidget(self.filterOrderSpin)
 
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         # self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.accepted.connect(self.onAccepted)
         self.buttonBox.rejected.connect(self.reject)
         self.mainLayout.addWidget(self.buttonBox)
+
+    def onFilterCheckChanged(self, state: int):
+        logger.debug(f"State: {state}")
+        if state == Qt.CheckState.Checked.value:
+            self.filterSpin.setEnabled(True)
+            self.filterOrderSpin.setEnabled(True)
+        else:
+            self.filterSpin.setEnabled(False)
+            self.filterOrderSpin.setEnabled(False)
 
     def onAccepted(self):
         if self.curveNameEdit.valid and self.curveFormulaEdit.valid:
@@ -201,9 +230,20 @@ class CurveDialog(QDialog):
         curveName = self.curveNameEdit.text()
         curveFormula = self.curveFormulaEdit.toPlainText()
         curveUnit = self.unitCombo.currentText()
-        curveRate = self.rateSpin.value()
-        curveFilter = self.filterSpin.value()
+        curveRate = (
+            self.rateSpin.value()
+            if self.typeRate == "Frequency"
+            else 1 / (self.rateSpin.value() + 1e-9)
+        )
+        curveFilter = (
+            self.filterSpin.value()
+            if self.typeRate == "Frequency"
+            else 1 / (self.filterSpin.value() + 1e-9)
+        )
+
+        logger.debug(f"Curve filter: {curveFilter}  " f"Curve rate: {curveRate}")
         curveTypeRate = self.typeRateCombo.currentText()
+        orderFilter = self.filterOrderSpin.value()
 
         logName = self.logsWidget.selectedItems()[0].text()
 
@@ -211,8 +251,12 @@ class CurveDialog(QDialog):
 
         signals = self.signalsWidget.signals
 
-        newSignal = evaluateFormula(curveName, curveFormula, signals, log)
+        newSignal: Signal = evaluateFormula(curveName, curveFormula, signals, log)
 
+        if self.filterCheck.isChecked():
+            newSignal.samples = utils.butterLowpassFilter(
+                newSignal.samples, curveFilter, curveRate, orderFilter
+            )
         log.append([newSignal])
         tupleSignals = [
             (channel, group[0][0])
@@ -248,6 +292,7 @@ class CurveDialog(QDialog):
             curveName = item.text()
 
             alreadyExistingNames = self.signalsWidget.signals
+            logger.debug(f"Already existing names: {alreadyExistingNames}")
             curveName = utils.setNewTitle(curveName, alreadyExistingNames)
 
             self.curveNameEdit.setText(curveName)
@@ -258,6 +303,7 @@ class CurveDialog(QDialog):
         self.unitCombo.addItems(self.unitsDict[text])
 
     def onTypeRateChanged(self, text):
+        self.typeRate = text
         if text == "Frequency":
             self.rateSpin.setValue(1 / (self.rateSpin.value() + 1e-9))
             self.rateSpin.setSuffix(" Hz")

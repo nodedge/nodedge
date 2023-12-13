@@ -27,6 +27,8 @@ htmlcov/
 log/
 resources/raw_black_icons
 resources/raw_white_icons
+tests/tests_outputs/
+tests_outputs/
 tools/main_window_template
 tools/plotter
 ui/

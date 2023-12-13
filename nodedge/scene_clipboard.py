@@ -11,6 +11,8 @@ from PySide6.QtCore import QPointF
 from nodedge.edge import Edge
 from nodedge.graphics_edge import GraphicsEdge
 
+logger = logging.getLogger(__file__)
+
 
 class SceneClipboard:
     """
@@ -23,9 +25,6 @@ class SceneClipboard:
     def __init__(self, scene: "Scene") -> None:  # type: ignore
         self.scene = scene
 
-        self.__logger = logging.getLogger(__file__)
-        self.__logger.setLevel(logging.INFO)
-
     def serializeSelected(self, delete=False):
         """
         Serializes selected items in the scene into ``OrderedDict``.
@@ -35,7 +34,7 @@ class SceneClipboard:
         :type delete: ``bool``
         :return: serialized data of current selection in Nodedge's :class:`~nodedge.scene.Scene`
         """
-        self.__logger.debug("Copying to clipboard")
+        logger.debug("Copying to clipboard")
 
         serializedSelectedNodes, selectedEdges, selectedSocket = [], [], {}
 
@@ -48,9 +47,9 @@ class SceneClipboard:
             elif isinstance(item, GraphicsEdge):
                 selectedEdges.append(item.edge)
 
-        self.__logger.debug(f"Nodes: {serializedSelectedNodes}")
-        self.__logger.debug(f"Edges: {selectedEdges}")
-        self.__logger.debug(f"Sockets: {selectedSocket}")
+        logger.debug(f"Nodes: {serializedSelectedNodes}")
+        logger.debug(f"Edges: {selectedEdges}")
+        logger.debug(f"Sockets: {selectedSocket}")
 
         # Remove all edges which are not connected to a node in our list
         edgesToRemove = []
@@ -59,7 +58,7 @@ class SceneClipboard:
                 edge.sourceSocket.id not in selectedSocket
                 or edge.targetSocket.id not in selectedSocket
             ):
-                self.__logger.debug(f"Edge: {edge} is not connected with both sides")
+                logger.debug(f"Edge: {edge} is not connected with both sides")
                 edgesToRemove.append(edge)
 
         for edge in edgesToRemove:
@@ -113,11 +112,9 @@ class SceneClipboard:
         relativeCenterX = (minX + maxX) / 2 - minX
         relativeCenterY = (minY + maxY) / 2 - minY
 
-        self.__logger.debug(f"Mouse pos: X:{mouseScenePos.x()}   Y:{mouseScenePos.y()}")
-        self.__logger.debug(f"Copied boudaries: X:[{minX, maxY}]   Y:[{minY, maxY}]")
-        self.__logger.debug(
-            f"Relative center: X:{relativeCenterX}   Y:{relativeCenterY}"
-        )
+        logger.debug(f"Mouse pos: X:{mouseScenePos.x()}   Y:{mouseScenePos.y()}")
+        logger.debug(f"Copied boudaries: X:[{minX, maxY}]   Y:[{minY, maxY}]")
+        logger.debug(f"Relative center: X:{relativeCenterX}   Y:{relativeCenterY}")
 
         # create each node
         createdNodes = []
@@ -147,6 +144,6 @@ class SceneClipboard:
 
         # Store history
         self.scene.history.store("Paste items in scene.")
-        self.__logger.debug(f"Deserializing from clipboard: {data}")
+        logger.debug(f"Deserializing from clipboard: {data}")
 
         return createdNodes
