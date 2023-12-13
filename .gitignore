@@ -6,6 +6,7 @@
 *.pkl
 *.python-version
 *.tar*
+*.spec
 
 .coverage
 coverage.xml
