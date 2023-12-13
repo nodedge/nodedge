@@ -6,8 +6,10 @@ Subpackages
 
 .. toctree::
 
-   nodedge.blocks.autogen.numpy
-   nodedge.blocks.autogen.operator
+   nodedge.blocks.autogen.advanced_maths
+   nodedge.blocks.autogen.logics
+   nodedge.blocks.autogen.maths
+   nodedge.blocks.autogen.units
 
 Module contents
 ---------------

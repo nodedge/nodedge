@@ -1,47 +1,32 @@
+exclude examples/custom_config.json
+
+include *.txt
+include .bumpversion.cfg
+include .coveragerc
+include .flake8
+include .isort.cfg
+include .pre-commit-config.yaml
 include AUTHORS.rst
+include CODE_OF_CONDUCT.md
 include CONTRIBUTING.rst
 include HISTORY.md
 include LICENSE
 include README.md
+include SECURITY.md
+include build.py
+include docs/CNAME
+include logging.yaml
+include mypy.ini
+include nodedge.spec
+include pymarkdown_config.json
+include pytest.ini
+include readthedocs.yml
 include requirements.txt
 include setup.py
-include readthedocs.yml
-include mypy.ini
-include .bumpversion.cfg
-include CODE_OF_CONDUCT.md
-include logging.yaml
-
-include .flake8
-include .isort.cfg
-include .pre-commit-config.yaml
-include requirements_dev.txt
-include requirements_docs.txt
-include requirements_tests.txt
 include tox.ini
-include pytest.ini
-include .coveragerc
 
-recursive-include nodedge/qss *
-recursive-include tests *
-recursive-include examples *
-recursive-include tools *
-recursive-exclude * __pycache__
-recursive-exclude * *.py[co]
-
-recursive-include docs_sphinx *.rst *.py Makefile make.bat *.png
-recursive-include docs_sphinx/source/_templates *
-recursive-exclude docs_sphinx/build *
-
-include *.txt
-recursive-include nodedge *
-
-recursive-exclude logs *
-recursive-exclude demos *
-
-
-recursive-exclude .idea *
-
-
+recursive-include deploy *
+recursive-include docs *.css
 recursive-include docs *.gif
 recursive-include docs *.html
 recursive-include docs *.ico
@@ -50,32 +35,31 @@ recursive-include docs *.md
 recursive-include docs *.nojekyll
 recursive-include docs *.png
 recursive-include docs *.txt
-recursive-include docs *.css
-
-include SECURITY.md
-include docs/CNAME
-
+recursive-include docs_sphinx *.md
+recursive-include docs_sphinx *.rst *.py Makefile make.bat *.png
+recursive-include docs_sphinx/source/_templates *
+recursive-include examples *
+recursive-include nodedge *
+recursive-include nodedge/qss *
+recursive-include requirements *
 recursive-include resources *.ico
 recursive-include resources *.png
 recursive-include resources *.psd
 recursive-include resources *.py
 recursive-include resources *.qss
-recursive-include resources *.yml
 recursive-include resources *.svg
+recursive-include resources *.yml
+recursive-include tests *
+recursive-include tools *
 
+recursive-exclude * *.py[co]
+recursive-exclude * __pycache__
+recursive-exclude * *.spec
+recursive-exclude .idea *
+recursive-exclude data *
+recursive-exclude demos *
+recursive-exclude docs/build *
+recursive-exclude docs_sphinx/build *
+recursive-exclude logs *
 recursive-exclude nodedge/resources/raw_black_icons *
 recursive-exclude nodedge/resources/raw_white_icons *
-
-recursive-exclude data *
-
-recursive-include requirements *
-
-recursive-include docs_sphinx *.md
-recursive-include deploy *
-
-include deploy.py
-include nodedge.spec
-
-recursive-exclude docs/build *
-
-include pymarkdown_config.json

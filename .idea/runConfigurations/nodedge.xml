@@ -1,17 +1,23 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="nodedge" type="PythonConfigurationType" factoryName="Python">
+  <configuration default="false" name="nodedge" type="PythonConfigurationType" factoryName="Python" folderName="applications">
     <module name="nodedge" />
+    <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
     </envs>
-    <option name="SDK_HOME" value="$PROJECT_DIR$\venv\Scripts\python.exe" />
+    <option name="SDK_HOME" value="$PROJECT_DIR$/../nodedge\venv\Scripts\python.exe" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/" />
-    <option name="IS_MODULE_SDK" value="false" />
+    <option name="IS_MODULE_SDK" value="true" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+    <EXTENSION ID="software.aws.toolkits.jetbrains.core.execution.PythonAwsConnectionExtension">
+      <option name="credential" />
+      <option name="region" />
+      <option name="useCurrentConnection" value="false" />
+    </EXTENSION>
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/nodedge/__main__.py" />
     <option name="PARAMETERS" value="" />
     <option name="SHOW_COMMAND_LINE" value="false" />
