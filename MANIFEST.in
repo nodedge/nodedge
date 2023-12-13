@@ -1,3 +1,5 @@
+exclude examples/custom_config.json
+
 include *.txt
 include .bumpversion.cfg
 include .coveragerc
