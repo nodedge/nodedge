@@ -39,7 +39,7 @@ jobs:
         password: ${{ secrets.PYPI_API_TOKEN }}
     - name: Build executable
       run: |
-        python build_executable.py
+        python build.py
     - uses: actions/upload-artifact@v3
       with:
         name: NodedgeSetup.exe

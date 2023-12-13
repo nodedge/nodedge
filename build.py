@@ -3,7 +3,7 @@ import os
 os.environ["NUMEXPR_MAX_THREADS"] = "16"
 
 
-def build_executable() -> None:
+def build() -> None:
     """
     Build Nodedge executable using pyinstaller
     return: None
@@ -33,4 +33,4 @@ def build_executable() -> None:
 
 
 if __name__ == "__main__":
-    build_executable()
+    build()
