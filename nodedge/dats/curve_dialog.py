@@ -3,7 +3,9 @@ import re
 from string import ascii_letters, digits
 
 from asammdf import MDF
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
+    QCheckBox,
     QComboBox,
     QDialog,
     QDialogButtonBox,
@@ -144,7 +146,7 @@ class CurveDialog(QDialog):
         self.unitWidget.setLayout(self.unitLayout)
         self.mainLayout.addWidget(self.unitWidget)
         self.rateWidget = QWidget()
-        self.rateLayout = QHBoxLayout()
+        self.rateLayout = QVBoxLayout()
         self.rateWidget.setLayout(self.rateLayout)
         self.mainLayout.addWidget(self.rateWidget)
 
@@ -175,8 +177,11 @@ class CurveDialog(QDialog):
         self.rateSpin.setValue(1)
         self.rateLayout.addWidget(self.rateSpin)
 
+        self.filterCheck = QCheckBox("Low pass filter")
+        self.filterCheck.setChecked(False)
+        self.filterCheck.stateChanged.connect(self.onFilterCheckChanged)
         self.filterSpin = QDoubleSpinBox()
-        self.filterSpin.setPrefix("Filter: ")
+        self.filterSpin.setPrefix("Low pass filter: ")
         self.filterSpin.setRange(0, 100000)
         self.filterSpin.setSingleStep(0.1)
         self.filterSpin.setSuffix(" Hz")
@@ -188,6 +193,12 @@ class CurveDialog(QDialog):
         self.buttonBox.accepted.connect(self.onAccepted)
         self.buttonBox.rejected.connect(self.reject)
         self.mainLayout.addWidget(self.buttonBox)
+
+    def onFilterCheckChanged(self, state):
+        if state == Qt.Checked:
+            self.filterSpin.setEnabled(True)
+        else:
+            self.filterSpin.setEnabled(False)
 
     def onAccepted(self):
         if self.curveNameEdit.valid and self.curveFormulaEdit.valid:
