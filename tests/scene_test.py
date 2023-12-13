@@ -134,6 +134,7 @@ def test_resetLastSelectedStates(filledScene):
     assert filledScene.edges[0].graphicsEdge.selectedState is False
 
 
+@pytest.mark.serial
 def test_serializeSelected(qtbot):
     window = QMainWindow()
     editor = EditorWidget(window)

@@ -2,7 +2,6 @@
 """
 ${FILE_NAME} module containing :class:`~nodedge.${FILE_NAME}.<ClassName>` class.
 """
-import logging
 import os
 
 import numpy as np
@@ -11,18 +10,13 @@ import pyqtgraph.exporters
 
 from nodedge.utils import butterLowpassFilter
 
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
-
 
 def test_butter_lowpass_filter():
     inArr = np.ones(100)
     noise = np.random.normal(0, 0.1, 100)
     inArr += noise
-    logger.debug(inArr)
 
     outArr = butterLowpassFilter(inArr, 0.1, 1, 1)
-    logger.debug(outArr)
 
     plt = pg.plot(inArr, pen=pg.mkPen("b", width=1), name="original")
     plt.plot(outArr, pen=pg.mkPen("r", width=1), name="filtered")
