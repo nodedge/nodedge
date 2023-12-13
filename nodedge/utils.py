@@ -190,22 +190,22 @@ def cropImage(image):
 
 
 def butterLowpassFilter(
-    data: np.array, cutoff: float, fs: float, order: int
-) -> np.array:
+    data: np.ndarray, cutoff: float, fs: float, order: int
+) -> np.ndarray:
     """
     Apply a Butterworth lowpass filter to the data.
     :param data: The data
-    :type data: `np.array`
+    :type data: `np.ndarray`
     :param cutoff: Cut off frequency of the filter
     :type cutoff: `float`
     :param fs: Sampling frequency of the data
     :type fs: `float`
     :param order: Order of the filter
     :type order: `int`
-    :return: `np.array`
+    :return: `np.ndarray`
     """
     nyquistFrequency = 0.5 * fs
     normal_cutoff = cutoff / nyquistFrequency
     b, a = butter(order, normal_cutoff, btype="low", analog=False)
-    y = filtfilt(b, a, data)
+    y: np.ndarray = filtfilt(b, a, data)
     return y
