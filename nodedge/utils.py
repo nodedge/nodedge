@@ -9,10 +9,12 @@ import traceback
 from pprint import PrettyPrinter
 from typing import Callable, Optional, Union
 
+import numpy as np
 from PySide6 import QtCore, QtWidgets
 from PySide6.QtCore import QFile, QPoint
 from PySide6.QtGui import QAction, QKeySequence
 from PySide6.QtWidgets import QApplication, QWidget
+from scipy.signal import butter, filtfilt
 
 pp = PrettyPrinter(indent=4).pprint
 
@@ -185,3 +187,25 @@ def cropImage(image):
     croppedImage = image.copy(startX, startY, targetWidth, targetHeight)
 
     return croppedImage
+
+
+def butterLowpassFilter(
+    data: np.array, cutoff: float, fs: float, order: int
+) -> np.array:
+    """
+    Apply a Butterworth lowpass filter to the data.
+    :param data: The data
+    :type data: `np.array`
+    :param cutoff: Cut off frequency of the filter
+    :type cutoff: `float`
+    :param fs: Sampling frequency of the data
+    :type fs: `float`
+    :param order: Order of the filter
+    :type order: `int`
+    :return: `np.array`
+    """
+    nyquistFrequency = 0.5 * fs
+    normal_cutoff = cutoff / nyquistFrequency
+    b, a = butter(order, normal_cutoff, btype="low", analog=False)
+    y = filtfilt(b, a, data)
+    return y
