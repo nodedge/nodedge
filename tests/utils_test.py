@@ -12,7 +12,7 @@ from nodedge.utils import butterLowpassFilter
 
 
 def test_butter_lowpass_filter():
-    inArr = np.ones(100)
+    inArr = np.zeros(100)
     noise = np.random.normal(0, 0.1, 100)
     inArr += noise
 
