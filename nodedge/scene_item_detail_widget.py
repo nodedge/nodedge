@@ -3,7 +3,6 @@
 Scene item detail widget module containing
 :class:`~nodedge.scene_item_detail_widget.SceneItemDetailWidget` class.
 """
-import copy
 import logging
 from typing import List, Optional, cast
 
@@ -133,75 +132,91 @@ class SceneItemDetailWidget(QFrame):
         :return: `None`
         """
 
-        for i in reversed(range(self.paramsLayout.count())):
-            self.paramsLayout.itemAt(i).widget().setParent(None)
+        try:
+            for i in reversed(range(self.paramsLayout.count())):
+                self.paramsLayout.itemAt(i).widget().setParent(None)
 
-        self.paramWidgets = {}
+            self.paramWidgets = {}
 
-        for param in params:
-            logger.debug(param.paramType)
-            if param.paramType == BlockParamType.Int:
-                spinbox = QSpinBox()
-                spinbox.setValue(param.value)
-                if param.minValue is not None:
-                    spinbox.setMinimum(param.minValue)
-                if param.maxValue is not None:
-                    spinbox.setMaximum(param.maxValue)
-                if param.step is not None:
-                    spinbox.setSingleStep(param.step)
-                self.paramsLayout.addRow(param.name, spinbox)
-                self.paramWidgets.update({param.name: spinbox})
-            elif param.paramType == BlockParamType.Float:
-                doubleSpinbox: QDoubleSpinBox = QDoubleSpinBox()
-                doubleSpinbox.setValue(param.value)
-                if param.minValue is not None:
-                    doubleSpinbox.setMinimum(param.minValue)
-                if param.maxValue is not None:
-                    doubleSpinbox.setMaximum(param.maxValue)
-                if param.step is not None:
-                    doubleSpinbox.setSingleStep(param.step)
-                self.paramsLayout.addRow(param.name, doubleSpinbox)
-                self.paramWidgets.update({param.name: doubleSpinbox})
+            for param in params:
+                logger.debug(param.paramType)
+                if param.paramType == BlockParamType.Int:
+                    spinbox = QSpinBox()
+                    spinbox.setValue(param.value)
+                    if param.minValue is not None:
+                        spinbox.setMinimum(param.minValue)
+                    if param.maxValue is not None:
+                        spinbox.setMaximum(param.maxValue)
+                    if param.step is not None:
+                        spinbox.setSingleStep(param.step)
+                    self.paramsLayout.addRow(param.name, spinbox)
+                    self.paramWidgets.update({param.name: spinbox})
+                elif param.paramType == BlockParamType.Float:
+                    doubleSpinbox: QDoubleSpinBox = QDoubleSpinBox()
+                    doubleSpinbox.setValue(param.value)
+                    if param.minValue is not None:
+                        doubleSpinbox.setMinimum(param.minValue)
+                    if param.maxValue is not None:
+                        doubleSpinbox.setMaximum(param.maxValue)
+                    if param.step is not None:
+                        doubleSpinbox.setSingleStep(param.step)
+                    self.paramsLayout.addRow(param.name, doubleSpinbox)
+                    self.paramWidgets.update({param.name: doubleSpinbox})
 
-            elif param.paramType == BlockParamType.ShortText:
-                lineEdit = QLineEdit()
-                lineEdit.setText(param.value)
-                if param.maxValue is not None:
-                    lineEdit.setMaxLength(param.maxValue)
-                self.paramsLayout.addRow(param.name, lineEdit)
-                self.paramWidgets.update({param.name: lineEdit})
+                elif param.paramType == BlockParamType.ShortText:
+                    lineEdit = QLineEdit()
+                    lineEdit.setText(param.value)
+                    if param.maxValue is not None:
+                        lineEdit.setMaxLength(param.maxValue)
+                    self.paramsLayout.addRow(param.name, lineEdit)
+                    self.paramWidgets.update({param.name: lineEdit})
 
-            elif param.paramType == BlockParamType.LongText:
-                textEdit = QTextEdit()
-                textEdit.setText(param.value)
-                self.paramsLayout.addRow(param.name, textEdit)
-                self.paramWidgets.update({param.name: textEdit})
+                elif param.paramType == BlockParamType.LongText:
+                    textEdit = QTextEdit()
+                    textEdit.setText(param.value)
+                    self.paramsLayout.addRow(param.name, textEdit)
+                    self.paramWidgets.update({param.name: textEdit})
 
-            elif param.paramType == BlockParamType.Bool:
-                checkBox = QCheckBox()
-                checkBox.setChecked(param.value)
-                self.paramsLayout.addRow(param.name, checkBox)
-                self.paramWidgets.update({param.name: checkBox})
+                elif param.paramType == BlockParamType.Bool:
+                    checkBox = QCheckBox()
+                    checkBox.setChecked(param.value)
+                    self.paramsLayout.addRow(param.name, checkBox)
+                    self.paramWidgets.update({param.name: checkBox})
 
-            else:
-                raise NotImplementedError(
-                    f"Param type {param.paramType} not implemented"
-                )
+                else:
+                    raise NotImplementedError(
+                        f"Param type {param.paramType} not implemented"
+                    )
+        except Exception as e:
+            logger.error(e)
 
         for n, w in self.paramWidgets.items():
-            if hasattr(w, "valueChanged"):
+            # print(f"{n} has type {type(w)}")
+
+            if hasattr(w, "valueChanged"):  # spinbox, doubleSpinbox
+                logger.debug(f"{n} has type {type(w)}")
                 w.valueChanged.connect(
                     lambda value, paramName=n: self.onParamWidgetChanged(
                         paramName, value
                     )
                 )
-            elif hasattr(w, "textChanged"):
+            elif isinstance(w, QTextEdit):  # lineEdit, textEdit
+                logger.debug(f"{n} has type {type(w)}")
+                w.textChanged.connect(
+                    lambda paramName=n: self.onParamWidgetChanged(
+                        paramName, w.toPlainText()
+                    )
+                )
+            elif isinstance(w, QLineEdit):
+                logger.debug(f"{n} has type {type(w)}")
                 w.textChanged.connect(
                     lambda value, paramName=n: self.onParamWidgetChanged(
                         paramName, value
                     )
                 )
-            elif hasattr(w, "stateChanged"):
+            elif hasattr(w, "stateChanged"):  # checkBox
+                logger.debug(f"{n} has type {type(w)}")
+
                 w.stateChanged.connect(
                     lambda value, paramName=n: self.onParamWidgetChanged(
                         paramName, value
@@ -216,6 +231,7 @@ class SceneItemDetailWidget(QFrame):
             for p in selectedNode.params:
                 if p.name == paramName:
                     p.value = paramValue
+                    logger.debug(f"Param {paramName} changed to {paramValue}")
                     break
         except KeyError:
             logger.error(f"Param {paramName} not found")
