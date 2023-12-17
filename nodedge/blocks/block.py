@@ -5,6 +5,9 @@ import logging
 from collections import OrderedDict
 from typing import List, Optional
 
+import control as ct
+import numpy as np
+
 from nodedge.blocks.block_exception import (
     EvaluationError,
     MissInputError,
@@ -77,6 +80,16 @@ class Block(Node):
         if self.initialState is None:
             self.initialState = state
 
+    @property
+    def paramsDict(self):
+        return {p.name: p for p in self.params}
+
+    @property
+    def ioSystem(self) -> ct.NonlinearIOSystem:
+        return ct.NonlinearIOSystem(
+            self.updfcn, self.outfcn, self.paramsDict, name=self.title
+        )
+
     # noinspection PyAttributeOutsideInit
     def initSettings(self):
         """
@@ -146,6 +159,44 @@ class Block(Node):
         # finally:
         #     self.markChildrenDirty()
         #     self.evalChildren()
+
+    def updfcn(self, t, x, u, params) -> np.ndarray:
+        """
+        Update function for the block.
+
+        :param t: time
+        :type t: float
+        :param x: state
+        :type x: np.ndarray
+        :param u: input
+        :type u: np.ndarray
+        :param params: parameters
+        :type params: np.ndarray
+        :return: state derivative
+        :rtype: np.ndarray
+        """
+        raise NotImplementedError(
+            f"updfcn has not been overridden by {self.__class__.__name__}"
+        )
+
+    def outfcn(self, t, x, u, params) -> np.ndarray:
+        """
+        Output function for the block.
+
+        :param t: time
+        :type t: float
+        :param x: state
+        :type x: np.ndarray
+        :param u: input
+        :type u: np.ndarray
+        :param params: parameters
+        :type params: np.ndarray
+        :return: output
+        :rtype: np.ndarray
+        """
+        raise NotImplementedError(
+            f"outfcn has not been overridden by {self.__class__.__name__}"
+        )
 
     def serialize(self) -> OrderedDict:
         res = super().serialize()
