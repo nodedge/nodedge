@@ -173,6 +173,7 @@ class SceneItemDetailWidget(QFrame):
 
                 elif param.paramType == BlockParamType.LongText:
                     textEdit = QTextEdit()
+                    textEdit.setAcceptRichText(False)
                     textEdit.setText(param.value)
                     self.paramsLayout.addRow(param.name, textEdit)
                     self.paramWidgets.update({param.name: textEdit})
