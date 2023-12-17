@@ -1,5 +1,6 @@
 asammdf
 coloredlogs
+control
 npTDMS
 numpy
 pandas

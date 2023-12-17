@@ -1,9 +1,9 @@
 asammdf==7.3.18
 coloredlogs==15.0.1
+control==0.9.4
 npTDMS==1.7.1
 numpy==1.26.2
 pandas==2.1.4
-pyqtconsole==1.2.3
 pyqtgraph==0.13.3
 PySide6==6.6.1
 PyYAML==6.0.1
