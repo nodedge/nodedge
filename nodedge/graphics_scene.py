@@ -207,7 +207,7 @@ class GraphicsScene(QGraphicsScene):
 
         :return:
         """
-        if len(self.scene.nodes) + len(self.scene.elements) <= 1:
+        if len(self.scene.nodes) + len(self.scene.elements) < 1:
             return
 
         nodes = self.scene.nodes
