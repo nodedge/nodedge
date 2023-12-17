@@ -9,15 +9,14 @@ import numpy as np
 from PySide6.QtCore import (
     QObject,
     QRunnable,
-    QThread,
     QThreadPool,
     QTimer,
     Signal,
     Slot,
 )
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication, QMessageBox
 
-from nodedge.blocks import OP_NODE_CUSTOM_OUTPUT, Block
+from nodedge.blocks import OP_NODE_CUSTOM_OUTPUT
 from nodedge.connector import Socket
 from nodedge.node import Node
 from nodedge.serializable import Serializable
@@ -97,7 +96,6 @@ class Worker(QRunnable):
 class SolverConfiguration:
     def __init__(self):
         self.solver = None
-        self.solverName = None
         self.solverOptions = None
         self.timeStep = None
         self.maxIterations = None
@@ -115,7 +113,6 @@ class SolverConfiguration:
     def to_dict(self):
         return {
             "solver": self.solver,
-            "solverName": self.solverName,
             "solverOptions": self.solverOptions,
             "timeStep": self.timeStep,
             "maxIterations": self.maxIterations,
@@ -125,7 +122,6 @@ class SolverConfiguration:
 
     def from_dict(self, data: dict) -> bool:
         self.solver = data["solver"]
-        self.solverName = data["solverName"]
         self.solverOptions = data["solverOptions"]
         self.timeStep = data["timeStep"]
         self.maxIterations = data["maxIterations"]
@@ -212,6 +208,14 @@ class SceneSimulator(QObject, Serializable):
         return orderedNodeList
 
     def run(self):
+        if self.config.solver is None:
+            raise ValueError("Solver must be defined")
+        elif self.config.solver == "Basic solver":
+            self.runBasicSolver()
+        elif self.config.solver == "Python control solver":
+            self.runPythonControlSolver()
+
+    def runBasicSolver(self):
         self.isPaused = False
         self.isStopped = False
         self.generateOrderedNodeList()
@@ -221,24 +225,18 @@ class SceneSimulator(QObject, Serializable):
         if self.config.timeStep is None:
             raise ValueError("Time step must be defined")
 
-        if self.config.solver is None:
-            raise ValueError("Solver must be defined")
-
         if self.config.maxIterations is None:
             raise ValueError("Max iterations must be defined")
 
         if self.config.tolerance is None:
             raise ValueError("Tolerance must be defined")
 
-        if self.config.solverName is None:
-            raise ValueError("Solver name must be defined")
-
         try:
             finalTime = float(self.config.finalTime)
         except ValueError:
             raise ValueError("Final time must be a number")
 
-        worker = Worker(self.runIterations, finalTime)
+        worker = Worker(self._runIterationsBasicSolver, finalTime)
 
         app = QApplication.instance()
         app.aboutToQuit.connect(self.stop)
@@ -249,9 +247,13 @@ class SceneSimulator(QObject, Serializable):
         # Execute
         self.threadpool.start(worker)
 
-        # self.runIterations(finalTime)
+    def runPythonControlSolver(self):
+        QMessageBox.warning(
+            None, "Warning", "Python control solver is not implemented yet"
+        )
+        raise NotImplementedError("Python control solver is not implemented yet")
 
-    def runIterations(self, finalTime):
+    def _runIterationsBasicSolver(self, finalTime):
         logger.info(f"Final time: {finalTime}")
         logger.info(f"Time step: {self.config.timeStep}")
         for i in np.arange(
