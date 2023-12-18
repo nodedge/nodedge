@@ -40,7 +40,7 @@ jobs:
     - name: Build executable
       run: |
         python build.py
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: NodedgeSetup.exe
         path: dist/NodedgeSetup.exe
