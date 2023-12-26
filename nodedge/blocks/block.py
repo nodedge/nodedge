@@ -5,6 +5,9 @@ import logging
 from collections import OrderedDict
 from typing import List, Optional
 
+import control as ct
+import numpy as np
+
 from nodedge.blocks.block_exception import (
     EvaluationError,
     MissInputError,
@@ -77,6 +80,33 @@ class Block(Node):
         if self.initialState is None:
             self.initialState = state
 
+    @property
+    def paramsDict(self):
+        return {p.name: p for p in self.params}
+
+    @property
+    def ioSystem(self) -> ct.NonlinearIOSystem:
+        ret = ct.NonlinearIOSystem(
+            self.updfcn,
+            self.outfcn,
+            self.paramsDict,
+            name=self.title,
+            inputs=1,
+            outputs=1,
+            states=1,
+        )
+        #
+        # ret.ninputs = len(self.inputSockets)
+        # ret.noutputs = len(self.outputSockets)
+        # ret.nstates = 1
+        # ret.input_labels =
+        # ret.input_index = 0
+        # ret.output_labels = [f"{self.title}" + "_y"]
+        # ret.output_index = 0
+        # ret.state_labels = [f"{self.title}" + "_state"]
+
+        return ret
+
     # noinspection PyAttributeOutsideInit
     def initSettings(self):
         """
@@ -146,6 +176,44 @@ class Block(Node):
         # finally:
         #     self.markChildrenDirty()
         #     self.evalChildren()
+
+    def updfcn(self, t, x, u, params) -> np.ndarray:
+        """
+        Update function for the block.
+
+        :param t: time
+        :type t: float
+        :param x: state
+        :type x: np.ndarray
+        :param u: input
+        :type u: np.ndarray
+        :param params: parameters
+        :type params: np.ndarray
+        :return: state derivative
+        :rtype: np.ndarray
+        """
+        raise NotImplementedError(
+            f"updfcn has not been overridden by {self.__class__.__name__}"
+        )
+
+    def outfcn(self, t, x, u, params) -> np.ndarray:
+        """
+        Output function for the block.
+
+        :param t: time
+        :type t: float
+        :param x: state
+        :type x: np.ndarray
+        :param u: input
+        :type u: np.ndarray
+        :param params: parameters
+        :type params: np.ndarray
+        :return: output
+        :rtype: np.ndarray
+        """
+        raise NotImplementedError(
+            f"outfcn has not been overridden by {self.__class__.__name__}"
+        )
 
     def serialize(self) -> OrderedDict:
         res = super().serialize()
