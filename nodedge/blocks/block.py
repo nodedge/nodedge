@@ -86,9 +86,26 @@ class Block(Node):
 
     @property
     def ioSystem(self) -> ct.NonlinearIOSystem:
-        return ct.NonlinearIOSystem(
-            self.updfcn, self.outfcn, self.paramsDict, name=self.title
+        ret = ct.NonlinearIOSystem(
+            self.updfcn,
+            self.outfcn,
+            self.paramsDict,
+            name=self.title,
+            inputs=1,
+            outputs=1,
+            states=1,
         )
+        #
+        # ret.ninputs = len(self.inputSockets)
+        # ret.noutputs = len(self.outputSockets)
+        # ret.nstates = 1
+        # ret.input_labels =
+        # ret.input_index = 0
+        # ret.output_labels = [f"{self.title}" + "_y"]
+        # ret.output_index = 0
+        # ret.state_labels = [f"{self.title}" + "_state"]
+
+        return ret
 
     # noinspection PyAttributeOutsideInit
     def initSettings(self):

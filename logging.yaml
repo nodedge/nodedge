@@ -153,3 +153,8 @@ loggers:
         handlers: [ stdout, debug_file_handler ]
         level: DEBUG
         propagate: false
+
+    nodedge.scene_simulator:
+        handlers: [ stdout, debug_file_handler ]
+        level: DEBUG
+        propagate: false

@@ -2,17 +2,18 @@
 import logging
 from typing import List
 
+import control as ct
 import numpy as np
 from scipy import signal
 from scipy.signal import dlsim
 
 from nodedge.blocks.block import Block
-from nodedge.blocks.block_config import BLOCKS_ICONS_PATH, registerNode
+from nodedge.blocks.block_config import registerNode
 from nodedge.blocks.block_exception import EvaluationError
 from nodedge.blocks.block_param import BlockParam, BlockParamType
 from nodedge.socket_type import SocketType
 
-_LOG = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 try:
     from nodedge.blocks.op_node import (
@@ -20,7 +21,7 @@ try:
         OP_NODE_CUSTOM_INTEGRAL,
     )
 except NameError:
-    _LOG.warning(f"Not registered block: {__name__}")
+    logger.warning(f"Not registered block: {__name__}")
     op_block_string = -1
 
 
@@ -89,3 +90,25 @@ class DiscreteTransferFunctionBlock(Block):
         self.value = y[0][0]
 
         return self.value
+
+    def outfcn(self, t, x, u, params) -> np.ndarray:
+        return np.array([u[0]])
+
+    def updfcn(self, t, x, u, params) -> np.ndarray:
+        return np.array([0])
+
+    @property
+    def ioSystem(self) -> ct.LinearIOSystem:
+        ret = ct.tf(
+            eval("np.array(" + self.params[0].value + ")"),
+            eval("np.array(" + self.params[1].value + ")"),
+            self.dt,
+            name=f"{self.title}",
+        )
+
+        logger.info(f"ret: {ret}")
+
+        ret = ct.tf2io(ret)
+        ret.name = f"{self.title}"
+
+        return ret

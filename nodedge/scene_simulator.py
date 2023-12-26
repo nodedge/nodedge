@@ -3,20 +3,21 @@ import sys
 import time
 import traceback
 from collections import OrderedDict
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
+import control as ct
 import numpy as np
-from PySide6.QtCore import (
-    QObject,
-    QRunnable,
-    QThreadPool,
-    QTimer,
-    Signal,
-    Slot,
-)
-from PySide6.QtWidgets import QApplication, QMessageBox
+from PySide6.QtCore import QObject, QRunnable, QThreadPool, QTimer, Signal, Slot
+from PySide6.QtWidgets import QApplication
 
-from nodedge.blocks import OP_NODE_CUSTOM_OUTPUT
+from nodedge.blocks import (
+    OP_NODE_CUSTOM_OUTPUT,
+    Block,
+    ConstantBlock,
+    NumpyAddBlock,
+    NumpySubtractBlock,
+    OutputBlock,
+)
 from nodedge.connector import Socket
 from nodedge.node import Node
 from nodedge.serializable import Serializable
@@ -248,10 +249,116 @@ class SceneSimulator(QObject, Serializable):
         self.threadpool.start(worker)
 
     def runPythonControlSolver(self):
-        QMessageBox.warning(
-            None, "Warning", "Python control solver is not implemented yet"
+        systems: List[ct.NonlinearIOSystem] = []
+        sumSubBlocks: List[ct.LinearIOSystem] = []
+        inputBlocks: List[str] = []
+        outputBlocks: List[str] = []
+        connections: List[Tuple[str, str]] = []
+        for n in self.scene.nodes:
+            if not isinstance(n, Block):
+                logger.warning(f"Node {n.title} is not a block")
+                continue
+
+            if isinstance(n, NumpyAddBlock):
+                inputNode1 = n.inputNodesAt(0)[0].title
+
+                inputNode2 = n.inputNodesAt(1)[0].title
+                outputNode = n.outputNodesAt(0)[0].title
+                subBlock: ct.LinearIOSystem = ct.summing_junction(
+                    inputs=[
+                        f"{inputNode1}.y[0]",
+                        f"{inputNode2}.y[0]",
+                    ],
+                    output=f"{outputNode}.u[0]",
+                    name=f"{n.title}_sum",
+                )
+                sumSubBlocks.append(subBlock)
+                logger.debug(f"Add block: {subBlock}")
+            elif isinstance(n, NumpySubtractBlock):
+                name = f"{n.title}_sub"
+                inputNode1 = n.inputNodesAt(0)[0]
+                if isinstance(inputNode1, ConstantBlock):
+                    inputNode1 = f"{inputNode1.title}_y"
+                else:
+                    inputNode1 = f"{inputNode1.title}_y[0]"
+                inputNode2 = n.inputNodesAt(1)[0]
+                if isinstance(inputNode2, ConstantBlock):
+                    inputNode2 = f"{inputNode2.title}_y"
+                else:
+                    connections.append(
+                        (f"{name}.{inputNode2.title}_y[0]", f"{inputNode2.title}.y[0]")
+                    )
+
+                    inputNode2 = f"{inputNode2.title}_y[0]"
+                outputNode = n.outputNodesAt(0)[0]
+                connections.append(
+                    (f"{outputNode.title}.u[0]", f"{name}.{outputNode.title}_u[0]")
+                )
+                subBlock: ct.LinearIOSystem = ct.summing_junction(
+                    inputs=[
+                        inputNode1,
+                        "-" + inputNode2,  # Notice the minus sign
+                    ],
+                    output=f"{outputNode.title}_u[0]",
+                    name=name,
+                )
+                # sumBlock.output_labels = [f"{outputNode}.u[0]"]
+                sumSubBlocks.append(subBlock)
+
+                logger.debug(f"Subtract block: {subBlock}")
+
+            elif isinstance(n, ConstantBlock):
+                inputBlock = f"{n.title}_y"
+                inputBlocks.append(inputBlock)
+                logger.debug(f"Constant block: {inputBlock}")
+            elif isinstance(n, OutputBlock):
+                outputBlock = f"{n.inputNodeAt(0).title}.y[0]"
+                outputBlocks.append(outputBlock)
+                logger.debug(f"Output block: {outputBlock}")
+            else:
+                sys = n.ioSystem
+                logger.debug(f"Created new system: {sys}")
+
+                systems.append(n.ioSystem)
+
+                inputNode = n.inputNodeAt(0)
+                if isinstance(inputNode, NumpyAddBlock) or isinstance(
+                    inputNode, NumpySubtractBlock
+                ):
+                    continue
+                # while isinstance(inputNode, NumpyAddBlock) or isinstance(
+                #     inputNode, NumpySubtractBlock
+                # ):
+                #     inputNode = inputNode.inputNodeAt(0)
+
+                outputNode = n
+                connection = (
+                    f"{outputNode.title}.u[0]",
+                    f"{inputNode.title}.y[0]",
+                )
+                logger.debug(f"Created new connection: {connection}")
+                connections.append(connection)
+
+        logger.debug(f"Sum/Sub blocks: {sumSubBlocks}")
+        logger.debug(f"Input blocks: {inputBlocks}")
+        logger.debug(f"Output blocks: {outputBlocks}")
+        logger.debug(f"Connections: {connections}")
+        logger.debug(f"Systems: {systems}")
+
+        io_closed = ct.interconnect(
+            [s for s in sumSubBlocks + systems],
+            connections=connections,
+            inplist=inputBlocks,
+            outlist=outputBlocks,
         )
-        raise NotImplementedError("Python control solver is not implemented yet")
+
+        logger.debug(f"IO closed: {io_closed}")
+
+        time = np.linspace(0, 10, 100)
+        t, y = ct.input_output_response(io_closed, time, 30, [0])
+
+        logger.debug(f"Time: {t}")
+        logger.debug(f"Y: {y}")
 
     def _runIterationsBasicSolver(self, finalTime):
         logger.info(f"Final time: {finalTime}")
