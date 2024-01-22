@@ -2,7 +2,7 @@
 -r requirements_docs.txt
 -r requirements_tests.txt
 bump2version==1.0.1
-Pillow==10.1.0
+Pillow==10.2.0
 pip-licenses==4.3.3
 pre-commit==3.6.0
 pyinstaller==6.3.0
