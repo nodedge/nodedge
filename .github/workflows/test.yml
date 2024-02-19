@@ -26,7 +26,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         cache: 'pip'
-    - uses: awalsh128/cache-apt-pkgs-action@v1.3.1
+    - uses: awalsh128/cache-apt-pkgs-action@v1.4.1
       with:
         packages: libxml2-utils x11-utils xvfb herbstluftwm libxkbcommon-x11-0
           libxcb-icccm4 libegl1 libxcb-image0 libxcb-keysyms1 libxcb-randr0
